@@ -1,16 +1,9 @@
-# Welcome to your Jupyter Book
+# Introduction
 
-This is a small sample book to give you a feel for how book content is
-structured.
+This is the intro page to our book. 
 
-:::{note}
-Here is a note!
-:::
+This is who we are and the intension or motivation for the book.
 
-And here is a code block:
+ONS staff should also look at our GitLab pages for organisation-specific information.
 
-```
-e = mc^2
-```
-
-Check out the content pages bundled with this sample book to see more.
+Open to contributions from anyone, across UK Govt and beyond.
