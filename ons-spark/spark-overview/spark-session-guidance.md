@@ -4,7 +4,14 @@
 
 There are many versions of the diagram below on the internet. This version illustrates how we interact with data on the Cloudera cluster within the Data Access Plaform using Spark. If ONS staff are looking for more information online, note that our cluster runs on YARN.
 
-![Diagram that shows a CDSW program on an edge node linking to a resource manager then multiple worker nodes containing executors.](./images/spark_driver_executors.PNG "processing diagram")
+```{figure} ../../../../images/spark_driver_executors.PNG
+---
+width: 100%
+name: architecture
+alt: Diagram that shows a CDSW program on an edge node linking to a resource manager and multiple worker nodes containing executors.
+---
+CDSW container running on YARN
+```
 
 Each machine in a cluster is referred to as a node. We start with the edge node, which is sometimes called a gateway node because it’s our gateway or interface to the cluster. There is also a resource manager and some worker nodes. 
 

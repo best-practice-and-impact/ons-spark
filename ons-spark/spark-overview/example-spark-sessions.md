@@ -1,4 +1,4 @@
-## Sample Spark Session Sizes
+## Example Spark Sessions
 
 This document gives some example Spark sessions. For more information on Spark sessions and why you need to be careful with memory usage, please consult the [Guidance on Spark Sessions](http://np2rvlapxx507/DAP_CATS/guidance/-/blob/master/Spark%20session%20guidance.md).
 
