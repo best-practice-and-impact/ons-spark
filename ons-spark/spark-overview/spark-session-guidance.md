@@ -30,6 +30,7 @@ There are many options when it comes to creating a Spark session. We recommend u
 
 As a starting point you can create a Spark session with all the defaults. This is the bare minimum you need to create a Spark session and will work fine in most cases. Note you should give your session a sensible name, here we have called it `default-session`.
 
+````{tabs}
 ```{code-tab} py
 from pyspark.sql import SparkSession
 spark = (
@@ -47,11 +48,12 @@ sc <- spark_connect(
     app_name = "default-session",
     config = default_config)
 ```
-
+````
 ### Specifying configs
 
 When you have a good grasp of how Spark works, you understand what processing needs doing and most importantly the data, you can look to introduce some customised configurations to your Spark session. The session builder will look something like this,
 
+````{tabs}
 ```{code-tab} py
 spark = (
     SparkSession.builder.appName("custom-session")
@@ -68,7 +70,7 @@ sc <- spark_connect(
     app_name = "custom-session",
     config = config)
 ```
-
+````
 The most popular configs to set are listed and explained in the [Config glossary](#config-glossary) section below. Some example Spark configurations are given in [example Spark configurations] section. 
 
 See the page on `spark-defaults.conf` for setting these properties in other ways.
