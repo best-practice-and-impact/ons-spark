@@ -54,6 +54,7 @@ sc <- spark_connect(
 When you have a good grasp of how Spark works, you understand what processing needs doing and most importantly the data, you can look to introduce some customised configurations to your Spark session. The session builder will look something like this,
 
 ````{tabs}
+
 ```{code-tab} py
 spark = (
     SparkSession.builder.appName("custom-session")
@@ -61,6 +62,7 @@ spark = (
     .getOrCreate()
 )
 ```
+
 ```{code-tab} r R
 config <- spark_config()
 config$<property-name> <- <property-value>
@@ -70,6 +72,7 @@ sc <- spark_connect(
     app_name = "custom-session",
     config = config)
 ```
+
 ````
 The most popular configs to set are listed and explained in the [Config glossary](#config-glossary) section below. Some example Spark configurations are given in [example Spark configurations] section. 
 
