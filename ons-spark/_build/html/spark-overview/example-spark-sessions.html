@@ -1,0 +1,643 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Example Spark Sessions &#8212; Spark at the ONS</title>
+    
+  <link href="../_static/css/theme.css" rel="stylesheet">
+  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/tabs.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script>
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Union two DataFrames with different columns" href="../spark-functions/union_dataframes_with_different_columns.html" />
+    <link rel="prev" title="Spark Sessions" href="spark-session-guidance.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Spark at the ONS</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../intro.html">
+   Introduction
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Template pages
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../templates/markdown.html">
+   Markdown Files
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../templates/notebooks.html">
+   Content with notebooks
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Spark overview
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="spark-session-guidance.html">
+   Spark Sessions
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Example Spark Sessions
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Spark functions
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/union_dataframes_with_different_columns.html">
+   Union two DataFrames with different columns
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/sampling.html">
+   Sampling:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .sample()
+    </span>
+   </code>
+   and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     sdf_sample()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/sampling_md.html">
+   Sampling (.md version)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/sampling_tabs.html">
+   Sampling (code tabs version)
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/spark-overview/example-spark-sessions.md"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.md</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/robertswh/Spark at the ONS"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/robertswh/Spark at the ONS/issues/new?title=Issue%20on%20page%20%2Fspark-overview/example-spark-sessions.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#default-blank-session">
+   Default/Blank Session
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#small-session">
+   Small Session
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#medium-session">
+   Medium Session
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#large-session">
+   Large Session
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#extra-large-session">
+   Extra Large session
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#closing-spark-sessions">
+   Closing Spark sessions
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <section id="example-spark-sessions">
+<h1>Example Spark Sessions<a class="headerlink" href="#example-spark-sessions" title="Permalink to this headline">¶</a></h1>
+<p>This document gives some example Spark sessions. For more information on Spark sessions and why you need to be careful with memory usage, please consult the <a class="reference external" href="http://np2rvlapxx507/DAP_CATS/guidance/-/blob/master/Spark%20session%20guidance.md">Guidance on Spark Sessions</a>.</p>
+<p>Remember to only use a Spark session for as long as you need. It’s good etiquette to use <code class="docutils literal notranslate"><span class="pre">spark.stop()</span></code> (for PySpark) or <code class="docutils literal notranslate"><span class="pre">spark_disconnect(sc)</span></code> (for sparklyr) in your scripts. Stopping the CDSW or Jupyter Notebook session will also close the Spark session if one is running.</p>
+<section id="default-blank-session">
+<h2>Default/Blank Session<a class="headerlink" href="#default-blank-session" title="Permalink to this headline">¶</a></h2>
+<p>As a starting point you can create a Spark session with all the default options. This is the bare minimum you need to create a Spark session and will work fine for many DAP users.</p>
+<p>Please use this session by default or if unsure in any way about your resource requirements.</p>
+<p>Note that for PySpark, <code class="docutils literal notranslate"><span class="pre">.config(&quot;spark.ui.showConsoleProgress&quot;,</span> <span class="pre">&quot;false&quot;)</span></code> is still recommended for use with this session; this will stop the console progress in Spark, which sometimes obscures results from displaying properly.</p>
+<p>Details:</p>
+<ul class="simple">
+<li><p>Will give you the default config options</p></li>
+</ul>
+<p>Use case:</p>
+<ul class="simple">
+<li><p>When unsure of your requirements</p></li>
+</ul>
+<p>Example of actual usage:</p>
+<ul class="simple">
+<li><p>Investigation of new or unfamiliar data sources</p></li>
+<li><p>Building a new pipeline where full user requirements aren’t yet known</p></li>
+</ul>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-0-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-0-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span>
+
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;default-session&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.ui.showConsoleProgress&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
+
+<span class="n">default_config</span> <span class="o">&lt;-</span> <span class="nf">spark_config</span><span class="p">()</span>
+
+<span class="n">sc</span> <span class="o">&lt;-</span> <span class="nf">spark_connect</span><span class="p">(</span>
+  <span class="n">master</span> <span class="o">=</span> <span class="s">&quot;yarn-client&quot;</span><span class="p">,</span>
+  <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;default-session&quot;</span><span class="p">,</span>
+  <span class="n">config</span> <span class="o">=</span> <span class="n">default_config</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="small-session">
+<h2>Small Session<a class="headerlink" href="#small-session" title="Permalink to this headline">¶</a></h2>
+<p>This is the smallest session that will realistically be used in DAP. It is similar in size to that used for DAP CATS training, as the low memory and only one core means several people can run this session at the same time on Dev Test, the cluster with the smallest capacity.</p>
+<p>Details:</p>
+<ul class="simple">
+<li><p>Only 1g of memory and 3 executors</p></li>
+<li><p>Only 1 core</p></li>
+<li><p>Number of partitions are limited to 12, which can improve performance with smaller data</p></li>
+</ul>
+<p>Use case:</p>
+<ul class="simple">
+<li><p>Simple data exploration of small survey data</p></li>
+<li><p>Training and demonstrations when several people need to run Spark sessions simultaneously</p></li>
+</ul>
+<p>Example of actual usage:</p>
+<ul class="simple">
+<li><p>Used for DAPCATS PySpark training, with mostly simple calculations on small data</p></li>
+</ul>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-1-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-1-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span>
+
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;small-session&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.executor.memory&quot;</span><span class="p">,</span> <span class="s2">&quot;1g&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.executor.cores&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.dynamicAllocation.enabled&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.dynamicAllocation.maxExecutors&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.sql.shuffle.partitions&quot;</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.shuffle.service.enabled&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.ui.showConsoleProgress&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">enableHiveSupport</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
+
+<span class="n">small_config</span> <span class="o">&lt;-</span> <span class="nf">spark_config</span><span class="p">()</span>
+<span class="n">small_config</span><span class="o">$</span><span class="n">spark.executor.memory</span> <span class="o">&lt;-</span> <span class="s">&quot;1g&quot;</span>
+<span class="n">small_config</span><span class="o">$</span><span class="n">spark.executor.cores</span> <span class="o">&lt;-</span> <span class="m">1</span>
+<span class="n">small_config</span><span class="o">$</span><span class="n">spark.dynamicAllocation.enabled</span> <span class="o">&lt;-</span> <span class="s">&quot;true&quot;</span>
+<span class="n">small_config</span><span class="o">$</span><span class="n">spark.dynamicAllocation.maxExecutors</span> <span class="o">&lt;-</span> <span class="m">3</span>
+<span class="n">small_config</span><span class="o">$</span><span class="n">spark.sql.shuffle.partitions</span> <span class="o">&lt;-</span> <span class="m">12</span>
+<span class="n">small_config</span><span class="o">$</span><span class="n">spark.shuffle.service.enabled</span> <span class="o">&lt;-</span> <span class="s">&quot;true&quot;</span>
+
+<span class="n">sc</span> <span class="o">&lt;-</span> <span class="nf">spark_connect</span><span class="p">(</span>
+  <span class="n">master</span> <span class="o">=</span> <span class="s">&quot;yarn-client&quot;</span><span class="p">,</span>
+  <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;small-session&quot;</span><span class="p">,</span>
+  <span class="n">config</span> <span class="o">=</span> <span class="n">small_config</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="medium-session">
+<h2>Medium Session<a class="headerlink" href="#medium-session" title="Permalink to this headline">¶</a></h2>
+<p>A standard session used for analysing survey or synthetic datasets. Also used for some Production pipelines based on survey and/or smaller administrative data.</p>
+<p>Details:</p>
+<ul class="simple">
+<li><p>6g of memory and 3 executors</p></li>
+<li><p>3 cores</p></li>
+<li><p>Number of partitions are limited to 18, which can improve performance with smaller data</p></li>
+</ul>
+<p>Use case:</p>
+<ul class="simple">
+<li><p>Developing code in Dev Test</p></li>
+<li><p>Data exploration in Production</p></li>
+<li><p>Developing Production pipelines on a sample of data</p></li>
+<li><p>Running smaller Production pipelines on mostly survey data</p></li>
+</ul>
+<p>Example of actual usage:</p>
+<ul class="simple">
+<li><p>Complex calculations, but on smaller synthetic data in Dev Test</p></li>
+</ul>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-2-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-2-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span>
+
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;medium-session&quot;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.executor.memory&quot;</span><span class="p">,</span> <span class="s2">&quot;6g&quot;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.executor.cores&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.dynamicAllocation.enabled&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.dynamicAllocation.maxExecutors&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.sql.shuffle.partitions&quot;</span><span class="p">,</span> <span class="mi">18</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.shuffle.service.enabled&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.ui.showConsoleProgress&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">enableHiveSupport</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
+      <span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
+
+<span class="n">medium_config</span> <span class="o">&lt;-</span> <span class="nf">spark_config</span><span class="p">()</span>
+<span class="n">medium_config</span><span class="o">$</span><span class="n">spark.executor.memory</span> <span class="o">&lt;-</span> <span class="s">&quot;6g&quot;</span>
+<span class="n">medium_config</span><span class="o">$</span><span class="n">spark.executor.cores</span> <span class="o">&lt;-</span> <span class="m">3</span>
+<span class="n">medium_config</span><span class="o">$</span><span class="n">spark.dynamicAllocation.enabled</span> <span class="o">&lt;-</span> <span class="s">&quot;true&quot;</span>
+<span class="n">medium_config</span><span class="o">$</span><span class="n">spark.dynamicAllocation.maxExecutors</span> <span class="o">&lt;-</span> <span class="m">3</span>
+<span class="n">medium_config</span><span class="o">$</span><span class="n">spark.sql.shuffle.partitions</span> <span class="o">&lt;-</span> <span class="m">18</span>
+<span class="n">medium_config</span><span class="o">$</span><span class="n">spark.shuffle.service.enabled</span> <span class="o">&lt;-</span> <span class="s">&quot;true&quot;</span>
+
+<span class="n">sc</span> <span class="o">&lt;-</span> <span class="nf">spark_connect</span><span class="p">(</span>
+ <span class="n">master</span> <span class="o">=</span> <span class="s">&quot;yarn-client&quot;</span><span class="p">,</span>
+ <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;medium-session&quot;</span><span class="p">,</span>
+ <span class="n">config</span> <span class="o">=</span> <span class="n">medium_config</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="large-session">
+<h2>Large Session<a class="headerlink" href="#large-session" title="Permalink to this headline">¶</a></h2>
+<p>Session designed for running Production pipelines on large administrative data, rather than just survey data. Will often develop using a sample and a smaller session then change to this once the pipeline is complete.</p>
+<p>Details:</p>
+<ul class="simple">
+<li><p>10g of memory and 5 executors</p></li>
+<li><p>1g of memory overhead</p></li>
+<li><p>5 cores, which is generally optimal on larger sessions</p></li>
+<li><p>The default number of 200 partitions</p></li>
+</ul>
+<p>Use case:</p>
+<ul class="simple">
+<li><p>Production pipelines on administrative data</p></li>
+<li><p>Cannot be used in Dev Test, as it exceeds the 9 GB limit per executor</p></li>
+</ul>
+<p>Example of actual usage:</p>
+<ul class="simple">
+<li><p>One administrative dataset of 100 million rows</p></li>
+<li><p>Many calculations</p></li>
+</ul>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-3-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-3-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span>
+
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;large-session&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.executor.memory&quot;</span><span class="p">,</span> <span class="s2">&quot;10g&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.yarn.executor.memoryOverhead&quot;</span><span class="p">,</span> <span class="s2">&quot;1g&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.executor.cores&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.dynamicAllocation.enabled&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.dynamicAllocation.maxExecutors&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.sql.shuffle.partitions&quot;</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.shuffle.service.enabled&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.ui.showConsoleProgress&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">enableHiveSupport</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
+
+<span class="n">large_config</span> <span class="o">&lt;-</span> <span class="nf">spark_config</span><span class="p">()</span>
+<span class="n">large_config</span><span class="o">$</span><span class="n">spark.executor.memory</span> <span class="o">&lt;-</span> <span class="s">&quot;10g&quot;</span>
+<span class="n">large_config</span><span class="o">$</span><span class="n">spark.yarn.executor.memoryOverhead</span> <span class="o">&lt;-</span> <span class="s">&quot;1g&quot;</span>
+<span class="n">large_config</span><span class="o">$</span><span class="n">spark.executor.cores</span> <span class="o">&lt;-</span> <span class="m">5</span>
+<span class="n">large_config</span><span class="o">$</span><span class="n">spark.dynamicAllocation.enabled</span> <span class="o">&lt;-</span> <span class="s">&quot;true&quot;</span>
+<span class="n">large_config</span><span class="o">$</span><span class="n">spark.dynamicAllocation.maxExecutors</span> <span class="o">&lt;-</span> <span class="m">5</span>
+<span class="n">large_config</span><span class="o">$</span><span class="n">spark.sql.shuffle.partitions</span> <span class="o">&lt;-</span> <span class="m">200</span>
+<span class="n">large_config</span><span class="o">$</span><span class="n">spark.shuffle.service.enabled</span> <span class="o">&lt;-</span> <span class="s">&quot;true&quot;</span>
+
+<span class="n">sc</span> <span class="o">&lt;-</span> <span class="nf">spark_connect</span><span class="p">(</span>
+  <span class="n">master</span> <span class="o">=</span> <span class="s">&quot;yarn-client&quot;</span><span class="p">,</span>
+  <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;large-session&quot;</span><span class="p">,</span>
+  <span class="n">config</span> <span class="o">=</span> <span class="n">large_config</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="extra-large-session">
+<h2>Extra Large session<a class="headerlink" href="#extra-large-session" title="Permalink to this headline">¶</a></h2>
+<p>Used for the most complex pipelines, with huge administrative data sources and complex calculations. This uses a large amount of resource on the cluster, so only use when running Production pipelines.</p>
+<p>It is even more important when using more resource to close your Spark session once finished.</p>
+<p>Details:</p>
+<ul class="simple">
+<li><p>20g of memory and 12 executors</p></li>
+<li><p>2g of memory overhead</p></li>
+<li><p>5 cores; using too many cores can actually cause worse performance on larger sessions</p></li>
+<li><p>240 partitions; not significantly higher than the default of 200, but it is best for these to be a multiple of cores and executors</p></li>
+</ul>
+<p>Use case:</p>
+<ul class="simple">
+<li><p>Running large, complex pipelines in Production on mostly administrative data</p></li>
+<li><p>Do not use for development purposes; use a smaller session and work on a sample of data or synthetic data</p></li>
+</ul>
+<p>Example of actual usage:</p>
+<ul class="simple">
+<li><p>Three administrative datasets of around 300 million rows</p></li>
+<li><p>Significant calculations, including joins and writing and reading to many intermediate tables</p></li>
+</ul>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-4-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-4-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-4-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span>
+
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;xl-session&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.executor.memory&quot;</span><span class="p">,</span> <span class="s2">&quot;20g&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.yarn.executor.memoryOverhead&quot;</span><span class="p">,</span> <span class="s2">&quot;2g&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.executor.cores&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.dynamicAllocation.enabled&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.dynamicAllocation.maxExecutors&quot;</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.sql.shuffle.partitions&quot;</span><span class="p">,</span> <span class="mi">240</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.shuffle.service.enabled&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.ui.showConsoleProgress&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">enableHiveSupport</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
+
+<span class="n">xl_config</span> <span class="o">&lt;-</span> <span class="nf">spark_config</span><span class="p">()</span>
+<span class="n">xl_config</span><span class="o">$</span><span class="n">spark.executor.memory</span> <span class="o">&lt;-</span> <span class="s">&quot;20g&quot;</span>
+<span class="n">xl_config</span><span class="o">$</span><span class="n">spark.yarn.executor.memoryOverhead</span> <span class="o">&lt;-</span> <span class="s">&quot;2g&quot;</span>
+<span class="n">xl_config</span><span class="o">$</span><span class="n">spark.executor.cores</span> <span class="o">&lt;-</span> <span class="m">5</span>
+<span class="n">xl_config</span><span class="o">$</span><span class="n">spark.dynamicAllocation.enabled</span> <span class="o">&lt;-</span> <span class="s">&quot;true&quot;</span>
+<span class="n">xl_config</span><span class="o">$</span><span class="n">spark.dynamicAllocation.maxExecutors</span> <span class="o">&lt;-</span> <span class="m">12</span>
+<span class="n">xl_config</span><span class="o">$</span><span class="n">spark.sql.shuffle.partitions</span> <span class="o">&lt;-</span> <span class="m">240</span>
+<span class="n">xl_config</span><span class="o">$</span><span class="n">spark.shuffle.service.enabled</span> <span class="o">&lt;-</span> <span class="s">&quot;true&quot;</span>
+
+<span class="n">sc</span> <span class="o">&lt;-</span> <span class="nf">spark_connect</span><span class="p">(</span>
+  <span class="n">master</span> <span class="o">=</span> <span class="s">&quot;yarn-client&quot;</span><span class="p">,</span>
+  <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;xl-session&quot;</span><span class="p">,</span>
+  <span class="n">config</span> <span class="o">=</span> <span class="n">xl_config</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="closing-spark-sessions">
+<h2>Closing Spark sessions<a class="headerlink" href="#closing-spark-sessions" title="Permalink to this headline">¶</a></h2>
+<p>Remember to close your sessions once finished, so that the memory can be re-allocated to another user.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-5-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-5-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-5-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span><span class="o">-</span><span class="nf">disconnect</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./spark-overview"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        
+            <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="spark-session-guidance.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Spark Sessions</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="../spark-functions/union_dataframes_with_different_columns.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Union two DataFrames with different columns</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+        
+        </div>
+    </div>
+    <footer class="footer">
+    <div class="container">
+      <p>
+        
+          By Wil Roberts & Adrian Prince<br/>
+        
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>
