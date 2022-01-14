@@ -7,7 +7,7 @@
 # 
 # It is important to note that sampling in Spark returns an approximate fraction of the data, rather than an exact one. The reason for this is explained in the [Returning an exact sample](#returning-an-exact-sample) section.
 # 
-# ### PySpark example: `.sample()`
+# ### Example: `.sample()` and `sdf_sample()`
 # 
 # First, set up the Spark session, read the Animal Rescue data, and then get the row count:
 
@@ -19,16 +19,34 @@ from pyspark.sql import SparkSession, functions as F
 
 spark = SparkSession.builder.master("local[2]").appName("sampling").getOrCreate()
 
-data_path = f"file:///{os.getcwd()}/../data/animal_rescue.parquet"
-
+data_path = f"file:///{os.getcwd()}/../../data/animal_rescue.parquet"
 rescue = spark.read.parquet(data_path)
 
 rescue.count()
 
 
+# ```r
+# library(sparklyr)
+# 
+# default_config <- sparklyr::spark_config()
+# 
+# sc <- sparklyr::spark_connect(
+#     master = "local[2]",
+#     app_name = "sampling",
+#     config = default_config)
+# 
+# data_path <- "file:///home/cdsw/ons-spark/ons-spark/data/animal_rescue.parquet"
+# 
+# rescue <- sparklyr::spark_read_parquet(sc, data_path)
+# 
+# rescue %>% sparklyr::sdf_nrow()
+# ```
+
 # To use `.sample()`, set the `fraction`, which is between 0 and 1. So if we want a $20\%$ sample, use `fraction=0.2`. Note that this will give an *approximate* sample and so you will likely get slightly more or fewer rows than you expect.
 # 
-# You can select to sample with replacement by setting `withReplacement=True`, which is set to `False` by default.
+# You can select to sample with replacement by setting `withReplacement=True` in PySpark or `replacement=TRUE` in sparklyr, which is set to `False` by default.
+# 
+# For these functions it is advised to specify the arguments explicitly. One reason is that `fraction` is a compulsory argument, but in PySpark is *after* `withReplacement`. Another reason is that in sparklyr the arguments are in a different order, with `fraction` listed first; if you use both languages it is easy to make a mistake.
 
 # In[2]:
 
@@ -36,6 +54,11 @@ rescue.count()
 rescue_sample = rescue.sample(withReplacement=False, fraction=0.1)
 rescue_sample.count()
 
+
+# ```r
+# rescue_sample <- rescue %>% sdf_sample(fraction=0.1, replacement=FALSE)
+# rescue_sample %>% sparklyr::sdf_nrow()
+# ```
 
 # You can also set a seed, in a similar way to how random numbers generators work. This enables replication, which is useful in Spark given that the DataFrame will be otherwise be re-sampled every time an action is called.
 
@@ -54,28 +77,30 @@ print(f"Seed 1 count: {rescue_sample_seed_1.count()}")
 print(f"Seed 2 count: {rescue_sample_seed_1.count()}")
 
 
+# ```r
+# 
+# rescue_sample_seed_1 <- rescue %>% sdf_sample(fraction=0.1, seed=99)
+# rescue_sample_seed_2 <- rescue %>% sdf_sample(fraction=0.1, seed=99)
+# 
+# print(paste0("Seed 1 count: ", rescue_sample_seed_1 %>% sdf_nrow))
+# print(paste0("Seed 2 count: ", rescue_sample_seed_2 %>% sdf_nrow))
+# ```
+
 # We can see that both samples have returned the same number of rows due to the identical seed.
 # 
 # Another way of replicating results is with persisting. Caching or checkpointing the DataFrame will avoid recalculation of the DF within the same Spark session. Writing out the DF to a Hive table or parquet enables it to be used in subsequent Spark sessions. See the chapter on persisting for more detail.
 # 
-# ### R Example: `sdf_sample()`
-# 
-# In sparklyr, you can use `sdf_sample()`. The `fraction`, `seed` and `replacement` (with a slight name variation) arguments work in the same way as `.sample()`. Note that the arguments are in a different default order, which is often more useful in sparklyr as `fraction` is always used whereas `replacement=TRUE` is less common.
-# 
-# ```r
-# rescue_sample <- rescue %>% sparklyr::sdf_sample(fraction=0.1, replacement=FALSE, seed=99)
-# ```
 # ### More details on sampling
 # 
 # The following section gives more detail on sampling and how it is processed on the Spark cluster. is not compulsory reading, but may be of interest to some Spark users.
 # 
 # #### Returning an exact sample
 # 
-# We have demonstrated above that `.sample()` returns an approximate fraction, not an exact one. This is because every row is independently assigned a probability equal to `fraction` of being included in the sample, e.g. with `fraction=0.2` every row has a $20\%$ probability of being in the sample. The number of rows returned in the sample therefore follows the binomial distribution.
+# We have demonstrated above that `.sample()`/`sdf_sample()` return an approximate fraction, not an exact one. This is because every row is independently assigned a probability equal to `fraction` of being included in the sample, e.g. with `fraction=0.2` every row has a $20\%$ probability of being in the sample. The number of rows returned in the sample therefore follows the binomial distribution.
 # 
 # The advantage of the sample being calculated in this way is that it is processed as a *narrow transformation*, which is more efficient than a *wide transformation*.
 # 
-# To return an exact sample, one method is to calculate how many rows are required in the sample, create a new column of random numbers and sort by it, and use `.limit()`. This requires an action and a wide transformation, and so will take longer to process than using `.sample()`.
+# To return an exact sample, one method is to calculate how many rows are required in the sample, create a new column of random numbers and sort by it, and use `.limit()` in PySpark or `head()` in sparklyr. This requires an action and a wide transformation, and so will take longer to process than using `.sample()`.
 
 # In[4]:
 
@@ -85,11 +110,26 @@ row_count = round(rescue.count() * fraction)
 row_count
 
 
+# ```r
+# fraction <- 0.1
+# row_count <- round(sdf_nrow(rescue) * fraction)
+# row_count
+# ```
+
 # In[5]:
 
 
 rescue.withColumn("rand_no", F.rand()).orderBy("rand_no").limit(row_count).drop("rand_no").count()
 
+
+# ```r
+# rescue %>%
+#     sparklyr::mutate(rand_no = rand()) %>%
+#     dplyr::arrange(rand_no) %>%
+#     head(row_count) %>%
+#     sparklyr::select(-rand_no) %>%
+#     sparklyr::sdf_nrow()
+# ```
 
 # #### Partitioning
 # 
@@ -104,6 +144,12 @@ rescue.withColumn("rand_no", F.rand()).orderBy("rand_no").limit(row_count).drop(
 
 rescue.filter(F.col("CalYear").isin(2012, 2017)).count()
 
+
+# ```r
+# rescue %>%
+#     sparklyr::filter(CalYear == 2012 | CalYear == 2017) %>%
+#     sparklyr::sdf_nrow()
+# ```
 
 # The disadvantage of this method is that you may have data quality issues in the original DF that will not be encountered, whereas these may be discovered with `.sample()`. Using unit testing and test driven development can mitigate the risk of these issues.
 # 
@@ -129,6 +175,17 @@ print(f"Split2: {split2.count()}")
 print(f"Split3: {split3.count()}")
 
 
+# ```r
+# splits <- rescue %>% sdf_random_split(
+#     split1 = 0.5,
+#     split2 = 0.4,
+#     split3 = 0.1)
+# 
+# print(paste0("Split1: ", sdf_nrow(splits$split1)))
+# print(paste0("Split2: ", sdf_nrow(splits$split2)))
+# print(paste0("Split3: ", sdf_nrow(splits$split3)))
+# ```
+
 # Check that the count of the splits equals the total row count:
 
 # In[8]:
@@ -137,6 +194,12 @@ print(f"Split3: {split3.count()}")
 print(f"DF count: {rescue.count()}")
 print(f"Split count total: {split1.count() + split2.count() + split3.count()}")
 
+
+# ```r
+# print(paste0("DF count: ", sdf_nrow(rescue)))
+# print(paste0("Split count total: ", sdf_nrow(splits$split1) +
+#              sdf_nrow(splits$split2) + sdf_nrow(splits$split3)))
+# ```
 
 # #### Stratified samples: `.sampleBy()`
 # 

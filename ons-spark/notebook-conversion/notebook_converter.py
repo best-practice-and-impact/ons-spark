@@ -171,8 +171,8 @@ class MarkdownFromNotebook():
             cell["r_output"] = "".join(cell["r_output"])
         
         return_values = pd.DataFrame.from_dict(python_cells)
-        return return_values[["execution_count", "r_output",
-                              "tidy_python_output"]]
+        return return_values[["execution_count", "tidy_python_output",
+                              "r_output"]]
     
     def write_outputs_csv(self, output_results_path):
         """
