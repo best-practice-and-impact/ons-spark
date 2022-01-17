@@ -15,12 +15,16 @@
 
 
 import os
+import yaml
 from pyspark.sql import SparkSession, functions as F
 
 spark = SparkSession.builder.master("local[2]").appName("sampling").getOrCreate()
 
-data_path = f"file:///{os.getcwd()}/../../data/animal_rescue.parquet"
-rescue = spark.read.parquet(data_path)
+with open("../../../config.yaml") as f:
+    config = yaml.safe_load(f)
+    
+rescue_path = config["rescue_path"]
+rescue = spark.read.parquet(rescue_path)
 
 rescue.count()
 
@@ -35,9 +39,9 @@ rescue.count()
 #     app_name = "sampling",
 #     config = default_config)
 # 
-# data_path <- "file:///home/cdsw/ons-spark/ons-spark/data/animal_rescue.parquet"
+# config <- yaml::yaml.load_file("ons-spark/config.yaml")
 # 
-# rescue <- sparklyr::spark_read_parquet(sc, data_path)
+# rescue <- sparklyr::spark_read_parquet(sc, config$rescue_path)
 # 
 # rescue %>% sparklyr::sdf_nrow()
 # ```
@@ -56,7 +60,7 @@ rescue_sample.count()
 
 
 # ```r
-# rescue_sample <- rescue %>% sdf_sample(fraction=0.1, replacement=FALSE)
+# rescue_sample <- rescue %>% sparklyr::sdf_sample(fraction=0.1, replacement=FALSE)
 # rescue_sample %>% sparklyr::sdf_nrow()
 # ```
 
@@ -79,11 +83,11 @@ print(f"Seed 2 count: {rescue_sample_seed_1.count()}")
 
 # ```r
 # 
-# rescue_sample_seed_1 <- rescue %>% sdf_sample(fraction=0.1, seed=99)
-# rescue_sample_seed_2 <- rescue %>% sdf_sample(fraction=0.1, seed=99)
+# rescue_sample_seed_1 <- rescue %>% sparklyr::sdf_sample(fraction=0.1, seed=99)
+# rescue_sample_seed_2 <- rescue %>% sparklyr::sdf_sample(fraction=0.1, seed=99)
 # 
-# print(paste0("Seed 1 count: ", rescue_sample_seed_1 %>% sdf_nrow))
-# print(paste0("Seed 2 count: ", rescue_sample_seed_2 %>% sdf_nrow))
+# print(paste0("Seed 1 count: ", rescue_sample_seed_1 %>% sparklyr::sdf_nrow()))
+# print(paste0("Seed 2 count: ", rescue_sample_seed_2 %>% sparklyr::sdf_nrow()))
 # ```
 
 # We can see that both samples have returned the same number of rows due to the identical seed.
@@ -112,7 +116,7 @@ row_count
 
 # ```r
 # fraction <- 0.1
-# row_count <- round(sdf_nrow(rescue) * fraction)
+# row_count <- round(sparklyr::sdf_nrow(rescue) * fraction)
 # row_count
 # ```
 
@@ -176,14 +180,14 @@ print(f"Split3: {split3.count()}")
 
 
 # ```r
-# splits <- rescue %>% sdf_random_split(
+# splits <- rescue %>% sparklyr::sdf_random_split(
 #     split1 = 0.5,
 #     split2 = 0.4,
 #     split3 = 0.1)
 # 
-# print(paste0("Split1: ", sdf_nrow(splits$split1)))
-# print(paste0("Split2: ", sdf_nrow(splits$split2)))
-# print(paste0("Split3: ", sdf_nrow(splits$split3)))
+# print(paste0("Split1: ", sparklyr::sdf_nrow(splits$split1)))
+# print(paste0("Split2: ", sparklyr::sdf_nrow(splits$split2)))
+# print(paste0("Split3: ", sparklyr::sdf_nrow(splits$split3)))
 # ```
 
 # Check that the count of the splits equals the total row count:
@@ -196,9 +200,11 @@ print(f"Split count total: {split1.count() + split2.count() + split3.count()}")
 
 
 # ```r
-# print(paste0("DF count: ", sdf_nrow(rescue)))
-# print(paste0("Split count total: ", sdf_nrow(splits$split1) +
-#              sdf_nrow(splits$split2) + sdf_nrow(splits$split3)))
+# print(paste0("DF count: ", sparklyr::sdf_nrow(rescue)))
+# print(paste0("Split count total: ",
+#              sparklyr::sdf_nrow(splits$split1) +
+#              sparklyr::sdf_nrow(splits$split2) +
+#              sparklyr::sdf_nrow(splits$split3)))
 # ```
 
 # #### Stratified samples: `.sampleBy()`

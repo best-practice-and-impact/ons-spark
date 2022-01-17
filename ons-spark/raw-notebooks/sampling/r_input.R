@@ -8,24 +8,24 @@ sc <- sparklyr::spark_connect(
     app_name = "sampling",
     config = default_config)
 
-data_path <- "file:///home/cdsw/ons-spark/ons-spark/data/animal_rescue.parquet"
+config <- yaml::yaml.load_file("ons-spark/config.yaml")
 
-rescue <- sparklyr::spark_read_parquet(sc, data_path)
+rescue <- sparklyr::spark_read_parquet(sc, config$rescue_path)
 
 rescue %>% sparklyr::sdf_nrow()
 
-rescue_sample <- rescue %>% sdf_sample(fraction=0.1, replacement=FALSE)
+rescue_sample <- rescue %>% sparklyr::sdf_sample(fraction=0.1, replacement=FALSE)
 rescue_sample %>% sparklyr::sdf_nrow()
 
 
-rescue_sample_seed_1 <- rescue %>% sdf_sample(fraction=0.1, seed=99)
-rescue_sample_seed_2 <- rescue %>% sdf_sample(fraction=0.1, seed=99)
+rescue_sample_seed_1 <- rescue %>% sparklyr::sdf_sample(fraction=0.1, seed=99)
+rescue_sample_seed_2 <- rescue %>% sparklyr::sdf_sample(fraction=0.1, seed=99)
 
-print(paste0("Seed 1 count: ", rescue_sample_seed_1 %>% sdf_nrow))
-print(paste0("Seed 2 count: ", rescue_sample_seed_2 %>% sdf_nrow))
+print(paste0("Seed 1 count: ", rescue_sample_seed_1 %>% sparklyr::sdf_nrow()))
+print(paste0("Seed 2 count: ", rescue_sample_seed_2 %>% sparklyr::sdf_nrow()))
 
 fraction <- 0.1
-row_count <- round(sdf_nrow(rescue) * fraction)
+row_count <- round(sparklyr::sdf_nrow(rescue) * fraction)
 row_count
 
 rescue %>%
@@ -39,15 +39,17 @@ rescue %>%
     sparklyr::filter(CalYear == 2012 | CalYear == 2017) %>%
     sparklyr::sdf_nrow()
 
-splits <- rescue %>% sdf_random_split(
+splits <- rescue %>% sparklyr::sdf_random_split(
     split1 = 0.5,
     split2 = 0.4,
     split3 = 0.1)
 
-print(paste0("Split1: ", sdf_nrow(splits$split1)))
-print(paste0("Split2: ", sdf_nrow(splits$split2)))
-print(paste0("Split3: ", sdf_nrow(splits$split3)))
+print(paste0("Split1: ", sparklyr::sdf_nrow(splits$split1)))
+print(paste0("Split2: ", sparklyr::sdf_nrow(splits$split2)))
+print(paste0("Split3: ", sparklyr::sdf_nrow(splits$split3)))
 
-print(paste0("DF count: ", sdf_nrow(rescue)))
-print(paste0("Split count total: ", sdf_nrow(splits$split1) +
-             sdf_nrow(splits$split2) + sdf_nrow(splits$split3)))
+print(paste0("DF count: ", sparklyr::sdf_nrow(rescue)))
+print(paste0("Split count total: ",
+             sparklyr::sdf_nrow(splits$split1) +
+             sparklyr::sdf_nrow(splits$split2) +
+             sparklyr::sdf_nrow(splits$split3)))

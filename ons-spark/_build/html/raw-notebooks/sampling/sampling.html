@@ -360,12 +360,16 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="k">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
 
 <span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;sampling&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
 
-<span class="n">data_path</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;file:///{os.getcwd()}/../../data/animal_rescue.parquet&quot;</span>
-<span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">data_path</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    
+<span class="n">rescue_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path&quot;</span><span class="p">]</span>
+<span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">)</span>
 
 <span class="n">rescue</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 </pre></div>
@@ -386,9 +390,9 @@
     <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;sampling&quot;</span><span class="p">,</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">default_config</span><span class="p">)</span>
 
-<span class="n">data_path</span> <span class="o">&lt;-</span> <span class="s">&quot;file:///home/cdsw/ons-spark/ons-spark/data/animal_rescue.parquet&quot;</span>
+<span class="n">config</span> <span class="o">&lt;-</span> <span class="n">yaml</span><span class="o">::</span><span class="nf">yaml.load_file</span><span class="p">(</span><span class="s">&quot;ons-spark/config.yaml&quot;</span><span class="p">)</span>
 
-<span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_parquet</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">data_path</span><span class="p">)</span>
+<span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_parquet</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">config</span><span class="o">$</span><span class="n">rescue_path</span><span class="p">)</span>
 
 <span class="n">rescue</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">()</span>
 </pre></div>
@@ -404,16 +408,12 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Testing stream output
-Testing stream output again
-</pre></div>
-</div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>628
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>568
 </pre></div>
 </div>
 </div>
 </div>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_sample</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span> <span class="nf">sdf_sample</span><span class="p">(</span><span class="n">fraction</span><span class="o">=</span><span class="m">0.1</span><span class="p">,</span> <span class="n">replacement</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_sample</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_sample</span><span class="p">(</span><span class="n">fraction</span><span class="o">=</span><span class="m">0.1</span><span class="p">,</span> <span class="n">replacement</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span>
 <span class="n">rescue_sample</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -440,11 +440,11 @@ Seed 2 count: 589
 </div>
 </div>
 </div>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_sample_seed_1</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span> <span class="nf">sdf_sample</span><span class="p">(</span><span class="n">fraction</span><span class="o">=</span><span class="m">0.1</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="m">99</span><span class="p">)</span>
-<span class="n">rescue_sample_seed_2</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span> <span class="nf">sdf_sample</span><span class="p">(</span><span class="n">fraction</span><span class="o">=</span><span class="m">0.1</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="m">99</span><span class="p">)</span>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_sample_seed_1</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_sample</span><span class="p">(</span><span class="n">fraction</span><span class="o">=</span><span class="m">0.1</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="m">99</span><span class="p">)</span>
+<span class="n">rescue_sample_seed_2</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_sample</span><span class="p">(</span><span class="n">fraction</span><span class="o">=</span><span class="m">0.1</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="m">99</span><span class="p">)</span>
 
-<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;Seed 1 count: &quot;</span><span class="p">,</span> <span class="n">rescue_sample_seed_1</span> <span class="o">%&gt;%</span> <span class="n">sdf_nrow</span><span class="p">))</span>
-<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;Seed 2 count: &quot;</span><span class="p">,</span> <span class="n">rescue_sample_seed_2</span> <span class="o">%&gt;%</span> <span class="n">sdf_nrow</span><span class="p">))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;Seed 1 count: &quot;</span><span class="p">,</span> <span class="n">rescue_sample_seed_1</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">()))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;Seed 2 count: &quot;</span><span class="p">,</span> <span class="n">rescue_sample_seed_2</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">()))</span>
 </pre></div>
 </div>
 <p>We can see that both samples have returned the same number of rows due to the identical seed.</p>
@@ -473,7 +473,7 @@ Seed 2 count: 589
 </div>
 </div>
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">fraction</span> <span class="o">&lt;-</span> <span class="m">0.1</span>
-<span class="n">row_count</span> <span class="o">&lt;-</span> <span class="nf">round</span><span class="p">(</span><span class="nf">sdf_nrow</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span> <span class="o">*</span> <span class="n">fraction</span><span class="p">)</span>
+<span class="n">row_count</span> <span class="o">&lt;-</span> <span class="nf">round</span><span class="p">(</span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span> <span class="o">*</span> <span class="n">fraction</span><span class="p">)</span>
 <span class="n">row_count</span>
 </pre></div>
 </div>
@@ -544,21 +544,21 @@ Seed 2 count: 589
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Split1: 2940
-Split2: 2351
-Split3: 607
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Split1: 2955
+Split2: 2382
+Split3: 561
 </pre></div>
 </div>
 </div>
 </div>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">splits</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span> <span class="nf">sdf_random_split</span><span class="p">(</span>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">splits</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_random_split</span><span class="p">(</span>
     <span class="n">split1</span> <span class="o">=</span> <span class="m">0.5</span><span class="p">,</span>
     <span class="n">split2</span> <span class="o">=</span> <span class="m">0.4</span><span class="p">,</span>
     <span class="n">split3</span> <span class="o">=</span> <span class="m">0.1</span><span class="p">)</span>
 
-<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;Split1: &quot;</span><span class="p">,</span> <span class="nf">sdf_nrow</span><span class="p">(</span><span class="n">splits</span><span class="o">$</span><span class="n">split1</span><span class="p">)))</span>
-<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;Split2: &quot;</span><span class="p">,</span> <span class="nf">sdf_nrow</span><span class="p">(</span><span class="n">splits</span><span class="o">$</span><span class="n">split2</span><span class="p">)))</span>
-<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;Split3: &quot;</span><span class="p">,</span> <span class="nf">sdf_nrow</span><span class="p">(</span><span class="n">splits</span><span class="o">$</span><span class="n">split3</span><span class="p">)))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;Split1: &quot;</span><span class="p">,</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">(</span><span class="n">splits</span><span class="o">$</span><span class="n">split1</span><span class="p">)))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;Split2: &quot;</span><span class="p">,</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">(</span><span class="n">splits</span><span class="o">$</span><span class="n">split2</span><span class="p">)))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;Split3: &quot;</span><span class="p">,</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">(</span><span class="n">splits</span><span class="o">$</span><span class="n">split3</span><span class="p">)))</span>
 </pre></div>
 </div>
 <p>Check that the count of the splits equals the total row count:</p>
@@ -576,9 +576,11 @@ Split count total: 5898
 </div>
 </div>
 </div>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;DF count: &quot;</span><span class="p">,</span> <span class="nf">sdf_nrow</span><span class="p">(</span><span class="n">rescue</span><span class="p">)))</span>
-<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;Split count total: &quot;</span><span class="p">,</span> <span class="nf">sdf_nrow</span><span class="p">(</span><span class="n">splits</span><span class="o">$</span><span class="n">split1</span><span class="p">)</span> <span class="o">+</span>
-             <span class="nf">sdf_nrow</span><span class="p">(</span><span class="n">splits</span><span class="o">$</span><span class="n">split2</span><span class="p">)</span> <span class="o">+</span> <span class="nf">sdf_nrow</span><span class="p">(</span><span class="n">splits</span><span class="o">$</span><span class="n">split3</span><span class="p">)))</span>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;DF count: &quot;</span><span class="p">,</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">(</span><span class="n">rescue</span><span class="p">)))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;Split count total: &quot;</span><span class="p">,</span>
+             <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">(</span><span class="n">splits</span><span class="o">$</span><span class="n">split1</span><span class="p">)</span> <span class="o">+</span>
+             <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">(</span><span class="n">splits</span><span class="o">$</span><span class="n">split2</span><span class="p">)</span> <span class="o">+</span>
+             <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">(</span><span class="n">splits</span><span class="o">$</span><span class="n">split3</span><span class="p">)))</span>
 </pre></div>
 </div>
 </section>
@@ -604,9 +606,9 @@ Split count total: 5898
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+-----------------+---------+
 |AnimalGroupParent|row_count|
 +-----------------+---------+
-|              Cat|      150|
-|              Dog|       98|
-|          Hamster|        6|
+|              Cat|      149|
+|              Dog|      114|
+|          Hamster|        7|
 +-----------------+---------+
 </pre></div>
 </div>
@@ -632,9 +634,9 @@ Split count total: 5898
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+-----------------+-----+------+-------------+---------+
 |AnimalGroupParent|count|weight|expected_rows|row_count|
 +-----------------+-----+------+-------------+---------+
-|              Cat| 2909|  0.05|        145.0|      150|
-|              Dog| 1008|   0.1|        101.0|       98|
-|          Hamster|   14|   0.5|          7.0|        6|
+|              Cat| 2909|  0.05|        145.0|      149|
+|              Dog| 1008|   0.1|        101.0|      114|
+|          Hamster|   14|   0.5|          7.0|        7|
 +-----------------+-----+------+-------------+---------+
 </pre></div>
 </div>
