@@ -10,12 +10,16 @@ First, set up the Spark session, read the Animal Rescue data, and then get the r
 ````{tabs}
 ```{code-tab} py
 import os
+import yaml
 from pyspark.sql import SparkSession, functions as F
 
 spark = SparkSession.builder.master("local[2]").appName("sampling").getOrCreate()
 
-data_path = f"file:///{os.getcwd()}/../../data/animal_rescue.parquet"
-rescue = spark.read.parquet(data_path)
+with open("../../../config.yaml") as f:
+    config = yaml.safe_load(f)
+    
+rescue_path = config["rescue_path"]
+rescue = spark.read.parquet(rescue_path)
 
 rescue.count()
 ```
@@ -31,9 +35,9 @@ sc <- sparklyr::spark_connect(
     app_name = "sampling",
     config = default_config)
 
-data_path <- "file:///home/cdsw/ons-spark/ons-spark/data/animal_rescue.parquet"
+config <- yaml::yaml.load_file("ons-spark/config.yaml")
 
-rescue <- sparklyr::spark_read_parquet(sc, data_path)
+rescue <- sparklyr::spark_read_parquet(sc, config$rescue_path)
 
 rescue %>% sparklyr::sdf_nrow()
 
@@ -56,16 +60,14 @@ rescue_sample.count()
 
 ```{code-tab} r R
 
-rescue_sample <- rescue %>% sdf_sample(fraction=0.1, replacement=FALSE)
+rescue_sample <- rescue %>% sparklyr::sdf_sample(fraction=0.1, replacement=FALSE)
 rescue_sample %>% sparklyr::sdf_nrow()
 
 ```
 ````
 
 ```plaintext
-Testing stream output
-Testing stream output again
-628
+568
 ```
 You can also set a seed, in a similar way to how random numbers generators work. This enables replication, which is useful in Spark given that the DataFrame will be otherwise be re-sampled every time an action is called.
 ````{tabs}
@@ -85,11 +87,11 @@ print(f"Seed 2 count: {rescue_sample_seed_1.count()}")
 ```{code-tab} r R
 
 
-rescue_sample_seed_1 <- rescue %>% sdf_sample(fraction=0.1, seed=99)
-rescue_sample_seed_2 <- rescue %>% sdf_sample(fraction=0.1, seed=99)
+rescue_sample_seed_1 <- rescue %>% sparklyr::sdf_sample(fraction=0.1, seed=99)
+rescue_sample_seed_2 <- rescue %>% sparklyr::sdf_sample(fraction=0.1, seed=99)
 
-print(paste0("Seed 1 count: ", rescue_sample_seed_1 %>% sdf_nrow))
-print(paste0("Seed 2 count: ", rescue_sample_seed_2 %>% sdf_nrow))
+print(paste0("Seed 1 count: ", rescue_sample_seed_1 %>% sparklyr::sdf_nrow()))
+print(paste0("Seed 2 count: ", rescue_sample_seed_2 %>% sparklyr::sdf_nrow()))
 
 ```
 ````
@@ -123,7 +125,7 @@ row_count
 ```{code-tab} r R
 
 fraction <- 0.1
-row_count <- round(sdf_nrow(rescue) * fraction)
+row_count <- round(sparklyr::sdf_nrow(rescue) * fraction)
 row_count
 
 ```
@@ -201,22 +203,22 @@ print(f"Split3: {split3.count()}")
 
 ```{code-tab} r R
 
-splits <- rescue %>% sdf_random_split(
+splits <- rescue %>% sparklyr::sdf_random_split(
     split1 = 0.5,
     split2 = 0.4,
     split3 = 0.1)
 
-print(paste0("Split1: ", sdf_nrow(splits$split1)))
-print(paste0("Split2: ", sdf_nrow(splits$split2)))
-print(paste0("Split3: ", sdf_nrow(splits$split3)))
+print(paste0("Split1: ", sparklyr::sdf_nrow(splits$split1)))
+print(paste0("Split2: ", sparklyr::sdf_nrow(splits$split2)))
+print(paste0("Split3: ", sparklyr::sdf_nrow(splits$split3)))
 
 ```
 ````
 
 ```plaintext
-Split1: 2940
-Split2: 2351
-Split3: 607
+Split1: 2955
+Split2: 2382
+Split3: 561
 ```
 Check that the count of the splits equals the total row count:
 ````{tabs}
@@ -227,9 +229,11 @@ print(f"Split count total: {split1.count() + split2.count() + split3.count()}")
 
 ```{code-tab} r R
 
-print(paste0("DF count: ", sdf_nrow(rescue)))
-print(paste0("Split count total: ", sdf_nrow(splits$split1) +
-             sdf_nrow(splits$split2) + sdf_nrow(splits$split3)))
+print(paste0("DF count: ", sparklyr::sdf_nrow(rescue)))
+print(paste0("Split count total: ",
+             sparklyr::sdf_nrow(splits$split1) +
+             sparklyr::sdf_nrow(splits$split2) +
+             sparklyr::sdf_nrow(splits$split3)))
 
 ```
 ````
@@ -263,9 +267,9 @@ stratified_sample_count.show()
 +-----------------+---------+
 |AnimalGroupParent|row_count|
 +-----------------+---------+
-|              Cat|      150|
-|              Dog|       98|
-|          Hamster|        6|
+|              Cat|      149|
+|              Dog|      114|
+|          Hamster|        7|
 +-----------------+---------+
 ```
 We can quickly compare the number of rows for each animal to the expected to confirm that they are approximately equal:
@@ -288,9 +292,9 @@ weights_df = spark.createDataFrame(list(weights.items()), schema=["AnimalGroupPa
 +-----------------+-----+------+-------------+---------+
 |AnimalGroupParent|count|weight|expected_rows|row_count|
 +-----------------+-----+------+-------------+---------+
-|              Cat| 2909|  0.05|        145.0|      150|
-|              Dog| 1008|   0.1|        101.0|       98|
-|          Hamster|   14|   0.5|          7.0|        6|
+|              Cat| 2909|  0.05|        145.0|      149|
+|              Dog| 1008|   0.1|        101.0|      114|
+|          Hamster|   14|   0.5|          7.0|        7|
 +-----------------+-----+------+-------------+---------+
 ```
 ### Further Resources
