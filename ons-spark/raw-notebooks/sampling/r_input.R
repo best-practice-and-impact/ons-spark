@@ -36,7 +36,7 @@ rescue %>%
     sparklyr::sdf_nrow()
 
 rescue %>%
-    sparklyr::filter(CalYear == 2012 | CalYear == 2017) %>%
+    sparklyr::filter(cal_year == 2012 | cal_year == 2017) %>%
     sparklyr::sdf_nrow()
 
 splits <- rescue %>% sparklyr::sdf_random_split(
