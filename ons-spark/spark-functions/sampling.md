@@ -67,7 +67,7 @@ rescue_sample %>% sparklyr::sdf_nrow()
 ````
 
 ```plaintext
-568
+588
 ```
 You can also set a seed, in a similar way to how random numbers generators work. This enables replication, which is useful in Spark given that the DataFrame will be otherwise be re-sampled every time an action is called.
 ````{tabs}
@@ -164,13 +164,13 @@ The number of partitions will remain the same when sampling, even though the Dat
 If the primary reason for using sampling is to process less data during development then an alternative is to filter the data and specify a condition which gives approximately the desired number of rows. This will give consistent results, which may or may not be desirable. For instance, in the Animal Rescue data we could use two years data:
 ````{tabs}
 ```{code-tab} py
-rescue.filter(F.col("CalYear").isin(2012, 2017)).count()
+rescue.filter(F.col("cal_year").isin(2012, 2017)).count()
 ```
 
 ```{code-tab} r R
 
 rescue %>%
-    sparklyr::filter(CalYear == 2012 | CalYear == 2017) %>%
+    sparklyr::filter(cal_year == 2012 | cal_year == 2017) %>%
     sparklyr::sdf_nrow()
 
 ```
@@ -216,9 +216,9 @@ print(paste0("Split3: ", sparklyr::sdf_nrow(splits$split3)))
 ````
 
 ```plaintext
-Split1: 2955
-Split2: 2382
-Split3: 561
+Split1: 2970
+Split2: 2328
+Split3: 600
 ```
 Check that the count of the splits equals the total row count:
 ````{tabs}
@@ -254,48 +254,48 @@ In PySpark, to return $5\%$ of cats, $10\%$ of dogs and $50\%$ of hamsters:
 ````{tabs}
 ```{code-tab} py
 weights = {"Cat": 0.05, "Dog": 0.1, "Hamster": 0.5}
-stratified_sample = rescue.sampleBy("AnimalGroupParent", fractions=weights)
+stratified_sample = rescue.sampleBy("animal_group", fractions=weights)
 stratified_sample_count = (stratified_sample
-                           .groupBy("AnimalGroupParent")
-                           .agg(F.count("AnimalGroupParent").alias("row_count"))
-                           .orderBy("AnimalGroupParent"))
+                           .groupBy("animal_group")
+                           .agg(F.count("animal_group").alias("row_count"))
+                           .orderBy("animal_group"))
 stratified_sample_count.show()
 ```
 ````
 
 ```plaintext
-+-----------------+---------+
-|AnimalGroupParent|row_count|
-+-----------------+---------+
-|              Cat|      149|
-|              Dog|      114|
-|          Hamster|        7|
-+-----------------+---------+
++------------+---------+
+|animal_group|row_count|
++------------+---------+
+|         Cat|      129|
+|         Dog|       86|
+|     Hamster|        9|
++------------+---------+
 ```
 We can quickly compare the number of rows for each animal to the expected to confirm that they are approximately equal:
 ````{tabs}
 ```{code-tab} py
-weights_df = spark.createDataFrame(list(weights.items()), schema=["AnimalGroupParent", "weight"])
+weights_df = spark.createDataFrame(list(weights.items()), schema=["animal_group", "weight"])
 
 (rescue
-    .groupBy("AnimalGroupParent").count()
-    .join(weights_df, on="AnimalGroupParent", how="inner")
+    .groupBy("animal_group").count()
+    .join(weights_df, on="animal_group", how="inner")
     .withColumn("expected_rows", F.round(F.col("count") * F.col("weight"), 0))
-    .join(stratified_sample_count, on="AnimalGroupParent", how="left")
-    .orderBy("AnimalGroupParent")
+    .join(stratified_sample_count, on="animal_group", how="left")
+    .orderBy("animal_group")
     .show()
 )
 ```
 ````
 
 ```plaintext
-+-----------------+-----+------+-------------+---------+
-|AnimalGroupParent|count|weight|expected_rows|row_count|
-+-----------------+-----+------+-------------+---------+
-|              Cat| 2909|  0.05|        145.0|      149|
-|              Dog| 1008|   0.1|        101.0|      114|
-|          Hamster|   14|   0.5|          7.0|        7|
-+-----------------+-----+------+-------------+---------+
++------------+-----+------+-------------+---------+
+|animal_group|count|weight|expected_rows|row_count|
++------------+-----+------+-------------+---------+
+|         Cat| 2909|  0.05|        145.0|      129|
+|         Dog| 1008|   0.1|        101.0|       86|
+|     Hamster|   14|   0.5|          7.0|        9|
++------------+-----+------+-------------+---------+
 ```
 ### Further Resources
 
