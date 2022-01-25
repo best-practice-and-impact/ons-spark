@@ -3,7 +3,7 @@ library(sparklyr)
 
 sc <- sparklyr::spark_connect(
     master = "local[2]",
-    app_name = "sampling",
+    app_name = "padding",
     config = sparklyr::spark_config())
 
 config <- yaml::yaml.load_file("ons-spark/config.yaml")
