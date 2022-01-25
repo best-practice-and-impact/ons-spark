@@ -16,7 +16,7 @@ First, start a Spark session and read in the Animal Rescue data, filter on `Poli
 import yaml
 from pyspark.sql import SparkSession, functions as F
 
-spark = SparkSession.builder.master("local[2]").appName("sampling").getOrCreate()
+spark = SparkSession.builder.master("local[2]").appName("padding").getOrCreate()
 
 with open("../../../config.yaml") as f:
     config = yaml.safe_load(f)
@@ -35,7 +35,7 @@ library(sparklyr)
 
 sc <- sparklyr::spark_connect(
     master = "local[2]",
-    app_name = "sampling",
+    app_name = "padding",
     config = sparklyr::spark_config())
 
 config <- yaml::yaml.load_file("ons-spark/config.yaml")
