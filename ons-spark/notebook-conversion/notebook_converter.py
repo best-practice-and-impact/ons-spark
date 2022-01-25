@@ -49,17 +49,24 @@ class MarkdownFromNotebook():
             self.nb.cells[cell["cell_no"] - 1]["r_code"] = r_code
             # need to check that previous cell is python
         
-    def run_r(self, r_path):
+    def run_r(self, r_path, show_warnings):
         """
         Run the R code and attach results to Python cells
         
-        The code is saved in r_path and ran with Rscript
+        The code is saved in r_path and ran with Rscript, optionally
+            suppressing warnings in the R output
         """
         self._remove_r_path(r_path)
         
         r_cells = [cell for cell in self.nb["cells"]
                         if "r_code" in cell]
         
+        # Suppress warnings when running R code if required
+        if show_warnings == False:
+            r_code = "options(warn = -1)"
+            with open(r_path, "a") as f:
+                    f.write("".join(r_code))
+                
         for cell in r_cells:
             r_code = cell["r_code"]
             with open(r_path, "a") as f:
@@ -182,7 +189,8 @@ class MarkdownFromNotebook():
         return_values.to_csv(output_results_path, index=False)
 
         
-def markdown_from_notebook(notebook_path, output_path, r_path, output_csv):
+def markdown_from_notebook(notebook_path, output_path, r_path, output_csv,
+                          show_warnings=True):
     """
     Creates a Markdown file with code tabs for Python and R saved as
         output_path, from which a Jupyterbook can be created.
@@ -202,12 +210,13 @@ def markdown_from_notebook(notebook_path, output_path, r_path, output_csv):
         output_path (string): Path to save Markdown output
         r_path (string): Path to save raw R code
         output_csv (string): Path to save Python and R output, for comparison
+        show_warnings (boolean): Show or hide warnings in R output
         
     Returns:
         MarkdownFromNotebook
     """
     md_notebook = MarkdownFromNotebook(notebook_path)
-    md_notebook.run_r(r_path)
+    md_notebook.run_r(r_path, show_warnings)
     md_notebook.create_markdown_output()
     md_notebook.write_markdown_file(output_path)
     md_notebook.write_outputs_csv(output_csv)
