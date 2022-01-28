@@ -1,0 +1,710 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add leading zeros with lpad() &#8212; Spark at the ONS</title>
+    
+  <link href="../../_static/css/theme.css" rel="stylesheet">
+  <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script>
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Spark at the ONS</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../intro.html">
+   Introduction
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Template pages
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../templates/markdown.html">
+   Markdown Files
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../templates/notebooks.html">
+   Content with notebooks
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Spark overview
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-overview/spark-session-guidance.html">
+   Spark Sessions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-overview/example-spark-sessions.html">
+   Example Spark Sessions
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Spark functions
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-functions/union_dataframes_with_different_columns.html">
+   Union two DataFrames with different columns
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-functions/padding.html">
+   Add leading zeros with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     lpad()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-functions/sampling.html">
+   Sampling:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .sample()
+    </span>
+   </code>
+   and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     sdf_sample()
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../../_sources/raw-notebooks/padding/padding.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/robertswh/Spark at the ONS"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/robertswh/Spark at the ONS/issues/new?title=Issue%20on%20page%20%2Fraw-notebooks/padding/padding.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+    <div class="dropdown-buttons">
+        
+        <a class="binder-button" href="https://mybinder.org/v2/gh/robertswh/Spark at the ONS/main?urlpath=tree/docs/raw-notebooks/padding/padding.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="../../_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
+        
+        
+        
+        
+    </div>
+</div>
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Add leading zeros with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     lpad()
+    </span>
+   </code>
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#example-incident-numbers">
+     Example: Incident Numbers
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#padding-on-the-right-rpad">
+     Padding on the right:
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       rpad()
+      </span>
+     </code>
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Add leading zeros with lpad()</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Add leading zeros with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     lpad()
+    </span>
+   </code>
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#example-incident-numbers">
+     Example: Incident Numbers
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#padding-on-the-right-rpad">
+     Padding on the right:
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       rpad()
+      </span>
+     </code>
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
+              <div>
+                
+  <div class="section" id="add-leading-zeros-with-lpad">
+<h1>Add leading zeros with <code class="docutils literal notranslate"><span class="pre">lpad()</span></code><a class="headerlink" href="#add-leading-zeros-with-lpad" title="Permalink to this headline">¶</a></h1>
+<p>There are some datasets that consist of code columns, which are fixed width and are stored as strings even though they look like numbers. For instance, the data might have values such as <code class="docutils literal notranslate"><span class="pre">&quot;000123&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;456789&quot;</span></code>.</p>
+<p>However, sometimes these can appear as integers which will lose the initial zeros. So <code class="docutils literal notranslate"><span class="pre">&quot;000123&quot;</span></code> becomes <code class="docutils literal notranslate"><span class="pre">123</span></code>. Commonly this can happen if at some point the data is manipulated in Excel and later read in a CSV file; it can also happen if the column is converted to a numeric type. An ONS example is <a class="reference external" href="https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities/uksic2007">Standard Industrial Classification (SIC)</a>. SIC codes are five digits, but some begin with <span class="math notranslate nohighlight">\(0\)</span>.</p>
+<p>There is an easy way to change this back into the correct format: <a class="reference external" href="https://spark.apache.org/docs/latest/api/python//reference/api/pyspark.sql.functions.lpad.html"><code class="docutils literal notranslate"><span class="pre">F.lpad()</span></code></a> from the <code class="docutils literal notranslate"><span class="pre">functions</span></code> package in PySpark and <a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#lpad"><code class="docutils literal notranslate"><span class="pre">lpad()</span></code></a> inside <code class="docutils literal notranslate"><span class="pre">mutate()</span></code> in sparklyr. This will add a string that you specify to the start, making every value a fixed width string. For instance, <code class="docutils literal notranslate"><span class="pre">&quot;123&quot;</span></code> becomes <code class="docutils literal notranslate"><span class="pre">&quot;000123&quot;</span></code> but <code class="docutils literal notranslate"><span class="pre">&quot;456789&quot;</span></code> remains the same.</p>
+<div class="section" id="example-incident-numbers">
+<h2>Example: Incident Numbers<a class="headerlink" href="#example-incident-numbers" title="Permalink to this headline">¶</a></h2>
+<p>The Animal Rescue data has an <code class="docutils literal notranslate"><span class="pre">incident_number</span></code> column, which is unique and of variable length. We will add leading zeros to this column to make it of a consistent length.</p>
+<p>First, start a Spark session and read in the Animal Rescue data, filter on <code class="docutils literal notranslate"><span class="pre">Police</span></code> and select the relevant columns (note that the output displayed is for PySpark; the sparklyr output may be formatted slightly differently).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
+
+<span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;padding&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    
+<span class="n">rescue_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path&quot;</span><span class="p">]</span>
+<span class="n">rescue</span> <span class="o">=</span> <span class="p">(</span><span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;origin_of_call&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Police&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;date_time_of_call&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;origin_of_call&quot;</span><span class="p">))</span>
+<span class="n">rescue</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+---------------+--------------+
+|incident_number|origin_of_call|
++---------------+--------------+
+|      146647151|        Police|
+|       66969111|        Police|
+|      103407111|        Police|
+|      137525091|        Police|
+|      158794091|        Police|
++---------------+--------------+
+only showing top 5 rows
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
+
+<span class="n">sc</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
+    <span class="n">master</span> <span class="o">=</span> <span class="s">&quot;local[2]&quot;</span><span class="p">,</span>
+    <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;padding&quot;</span><span class="p">,</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">())</span>
+
+<span class="n">config</span> <span class="o">&lt;-</span> <span class="n">yaml</span><span class="o">::</span><span class="nf">yaml.load_file</span><span class="p">(</span><span class="s">&quot;ons-spark/config.yaml&quot;</span><span class="p">)</span>
+
+<span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_parquet</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">config</span><span class="o">$</span><span class="n">rescue_path</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">origin_of_call</span> <span class="o">==</span> <span class="s">&quot;Police&quot;</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">arrange</span><span class="p">(</span><span class="n">date_time_of_call</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">incident_number</span><span class="p">,</span> <span class="n">origin_of_call</span><span class="p">)</span>
+
+<span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
+    <span class="nf">print</span><span class="p">()</span>    
+</pre></div>
+</div>
+<p>The input to <code class="docutils literal notranslate"><span class="pre">lpad()</span></code> will most often be either a string or an integer. In this example, <code class="docutils literal notranslate"><span class="pre">incident_number</span></code> is a string:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>root
+ |-- incident_number: string (nullable = true)
+ |-- origin_of_call: string (nullable = true)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">pillar</span><span class="o">::</span><span class="nf">glimpse</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python//reference/api/pyspark.sql.functions.length.html"><code class="docutils literal notranslate"><span class="pre">length()</span></code></a> to demonstrate that the <code class="docutils literal notranslate"><span class="pre">incident_number</span></code> column is not always the same size:</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;incident_no_length&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">length</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">))</span>
+<span class="n">rescue</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;incident_no_length&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;incident_no_length&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+------------------+-----+
+|incident_no_length|count|
++------------------+-----+
+|                 6|    1|
+|                 7|    6|
+|                 8|   57|
+|                 9|   65|
++------------------+-----+
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">incident_no_length</span> <span class="o">=</span> <span class="nf">length</span><span class="p">(</span><span class="n">incident_number</span><span class="p">))</span>
+
+<span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">incident_no_length</span><span class="p">,</span> <span class="n">origin_of_call</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">summarise</span><span class="p">(</span><span class="n">count</span> <span class="o">=</span> <span class="nf">n</span><span class="p">())</span> <span class="o">%&gt;%</span>
+    <span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
+    <span class="nf">print</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>We want the <code class="docutils literal notranslate"><span class="pre">incident_number</span></code> column to be a string with a fixed width of <span class="math notranslate nohighlight">\(9\)</span>, with zeros at the start if the length is shorter than this.</p>
+<p><code class="docutils literal notranslate"><span class="pre">lpad()</span></code> takes three arguments. The first argument, <code class="docutils literal notranslate"><span class="pre">col</span></code> is the column name, the second, <code class="docutils literal notranslate"><span class="pre">len</span></code> is the fixed width of the string, and the third, <code class="docutils literal notranslate"><span class="pre">pad</span></code>, the value to pad it with if it is too short, often <code class="docutils literal notranslate"><span class="pre">&quot;0&quot;</span></code>. The data type returned from <code class="docutils literal notranslate"><span class="pre">lpad()</span></code> will always be a string.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;padded_incident_no&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">lpad</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">),</span> <span class="mi">9</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">))</span>
+<span class="n">rescue</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;incident_no_length&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">rescue</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;incident_no_length&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+---------------+--------------+------------------+------------------+
+|incident_number|origin_of_call|incident_no_length|padded_incident_no|
++---------------+--------------+------------------+------------------+
+|         955141|        Police|                 6|         000955141|
+|        7003121|        Police|                 7|         007003121|
+|        6311101|        Police|                 7|         006311101|
+|        5930131|        Police|                 7|         005930131|
+|        3223101|        Police|                 7|         003223101|
++---------------+--------------+------------------+------------------+
+only showing top 5 rows
+
++---------------+--------------+------------------+------------------+
+|incident_number|origin_of_call|incident_no_length|padded_incident_no|
++---------------+--------------+------------------+------------------+
+|      205017101|        Police|                 9|         205017101|
+|      207037111|        Police|                 9|         207037111|
+|      135844101|        Police|                 9|         135844101|
+|      216289101|        Police|                 9|         216289101|
+|      145879151|        Police|                 9|         145879151|
++---------------+--------------+------------------+------------------+
+only showing top 5 rows
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">padded_incident_no</span> <span class="o">=</span> <span class="nf">lpad</span><span class="p">(</span><span class="n">incident_number</span><span class="p">,</span> <span class="m">9</span><span class="p">,</span> <span class="s">&quot;0&quot;</span><span class="p">))</span>
+
+<span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">arrange</span><span class="p">(</span><span class="n">incident_no_length</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
+    <span class="nf">print</span><span class="p">()</span>
+
+<span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">arrange</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">incident_no_length</span><span class="p">))</span> <span class="o">%&gt;%</span>
+    <span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
+    <span class="nf">print</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Be careful; if you set the fixed width to be too short you can lose data:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;too_short_inc_no&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">lpad</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">),</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">))</span>
+<span class="n">rescue</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;incident_no_length&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+---------------+--------------+------------------+------------------+----------------+
+|incident_number|origin_of_call|incident_no_length|padded_incident_no|too_short_inc_no|
++---------------+--------------+------------------+------------------+----------------+
+|      114153091|        Police|                 9|         114153091|             114|
+|      138096091|        Police|                 9|         138096091|             138|
+|      110211101|        Police|                 9|         110211101|             110|
+|      101172091|        Police|                 9|         101172091|             101|
+|      102278091|        Police|                 9|         102278091|             102|
++---------------+--------------+------------------+------------------+----------------+
+only showing top 5 rows
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">too_short_inc_no</span> <span class="o">=</span> <span class="nf">lpad</span><span class="p">(</span><span class="n">incident_number</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="s">&quot;0&quot;</span><span class="p">))</span>
+
+<span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">arrange</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">incident_no_length</span><span class="p">))</span> <span class="o">%&gt;%</span>
+    <span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
+    <span class="nf">print</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>You can have values other than zero for the last argument and they do not have to be width 1, although there are fewer use cases for this. For example:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;silly_example&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">lpad</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">),</span> <span class="mi">14</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">))</span>
+<span class="n">rescue</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;incident_no_length&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+---------------+--------------+------------------+------------------+----------------+--------------+
+|incident_number|origin_of_call|incident_no_length|padded_incident_no|too_short_inc_no| silly_example|
++---------------+--------------+------------------+------------------+----------------+--------------+
+|         955141|        Police|                 6|         000955141|             955|xyzxyzxy955141|
+|        7003121|        Police|                 7|         007003121|             700|xyzxyzx7003121|
+|        6311101|        Police|                 7|         006311101|             631|xyzxyzx6311101|
+|        5930131|        Police|                 7|         005930131|             593|xyzxyzx5930131|
+|        3223101|        Police|                 7|         003223101|             322|xyzxyzx3223101|
++---------------+--------------+------------------+------------------+----------------+--------------+
+only showing top 5 rows
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">silly_example</span> <span class="o">=</span> <span class="nf">lpad</span><span class="p">(</span><span class="n">incident_number</span><span class="p">,</span> <span class="m">14</span><span class="p">,</span> <span class="s">&quot;xyz&quot;</span><span class="p">))</span>
+    
+<span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">arrange</span><span class="p">(</span><span class="n">incident_no_length</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
+    <span class="nf">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="padding-on-the-right-rpad">
+<h2>Padding on the right: <code class="docutils literal notranslate"><span class="pre">rpad()</span></code><a class="headerlink" href="#padding-on-the-right-rpad" title="Permalink to this headline">¶</a></h2>
+<p>There is also a similar function, <a class="reference external" href="https://spark.apache.org/docs/latest/api/python//reference/api/pyspark.sql.functions.rpad.html"><code class="docutils literal notranslate"><span class="pre">F.rpad()</span></code></a>, that works in the same way with identical arguments, just padding to the right instead:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;right_padded_inc_no&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">rpad</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">),</span> <span class="mi">9</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">))</span>
+<span class="n">rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;right_padded_inc_no&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+---------------+-------------------+
+|incident_number|right_padded_inc_no|
++---------------+-------------------+
+|      146647151|          146647151|
+|       66969111|          669691110|
+|      103407111|          103407111|
+|      137525091|          137525091|
+|      158794091|          158794091|
++---------------+-------------------+
+only showing top 5 rows
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">right_padded_inc_no</span> <span class="o">=</span> <span class="nf">rpad</span><span class="p">(</span><span class="n">incident_number</span><span class="p">,</span> <span class="m">9</span><span class="p">,</span> <span class="s">&quot;0&quot;</span><span class="p">))</span>
+    
+<span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">arrange</span><span class="p">(</span><span class="n">right_padded_inc_no</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">incident_number</span><span class="p">,</span> <span class="n">right_padded_inc_no</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
+    <span class="nf">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="further-resources">
+<h1>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h1>
+<p>PySpark Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python//reference/api/pyspark.sql.functions.lpad.html"><code class="docutils literal notranslate"><span class="pre">F.lpad()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python//reference/api/pyspark.sql.functions.rpad.html"><code class="docutils literal notranslate"><span class="pre">F.rpad()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python//reference/api/pyspark.sql.functions.length.html"><code class="docutils literal notranslate"><span class="pre">F.length()</span></code></a></p></li>
+</ul>
+<p>Spark SQL Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#lpad"><code class="docutils literal notranslate"><span class="pre">lpad</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#rpad"><code class="docutils literal notranslate"><span class="pre">rpad</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#length"><code class="docutils literal notranslate"><span class="pre">length</span></code></a></p></li>
+</ul>
+<p>Spark in ONS material:</p>
+<ul class="simple">
+<li><p>Spark SQL Functions in sparklyr: note that <code class="docutils literal notranslate"><span class="pre">lpad</span></code>/<code class="docutils literal notranslate"><span class="pre">rpad</span></code> are inherited directly from Spark SQL and need to be used inside <code class="docutils literal notranslate"><span class="pre">mutate()</span></code>, rather than imported from the sparklyr package as standalone functions</p></li>
+</ul>
+<p>Other links:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities/uksic2007">ONS Standard Industrial Classification (SIC)</a></p></li>
+</ul>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./raw-notebooks/padding"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            
+        </div>
+    </div>
+    <footer class="footer">
+  <p>
+    
+      By Wil Roberts & Adrian Prince<br/>
+    
+  </p>
+</footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>
