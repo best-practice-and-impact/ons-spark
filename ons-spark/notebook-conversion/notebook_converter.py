@@ -37,7 +37,8 @@ class MarkdownFromNotebook():
         
     def extract_r(self):
         """
-        Extract the code from the R cells
+        Extract the code from the R cells. Attaches code to previous cell if
+            Python.
         """
         r_cells = [cell for cell in self.nb["cells"]
                         if cell["cell_type"] == "markdown"
@@ -45,13 +46,17 @@ class MarkdownFromNotebook():
                         and cell["source"][-3:] == "```"]
         
         for cell in r_cells:
-            r_code = cell["source"][4:-3] # currently not checking
-            self.nb.cells[cell["cell_no"] - 1]["r_code"] = r_code
-            # need to check that previous cell is python
-        
+            r_code = cell["source"][4:-3]
+            previous_cell = self.nb.cells[cell["cell_no"] - 1]
+            if previous_cell["cell_type"] == "code":
+                # Add R code to previous cell if Python
+                previous_cell["r_code"] = r_code
+            else:
+                cell["r_code"] = r_code
+
     def run_r(self, r_path, show_warnings):
         """
-        Run the R code and attach results to Python cells
+        Run the R code and attach results to cells
         
         The code is saved in r_path and ran with Rscript, optionally
             suppressing warnings in the R output
@@ -77,11 +82,11 @@ class MarkdownFromNotebook():
             raw_r_output = subprocess.check_output(f"Rscript {r_path}",
                                                    shell=True,
                                                    stderr=stderr)
-            cell["raw_r_output"] = raw_r_output
-        
-        prev_r_output = []
+            cell["raw_r_output"] = raw_r_output.decode()
+    
+        prev_r_output = ""
         for cell in r_cells:
-            r_output = cell["raw_r_output"].decode().split("[1]")
+            r_output = cell["raw_r_output"]
             cell["r_output"] = r_output[len(prev_r_output):]
             prev_r_output = r_output
 
@@ -115,24 +120,19 @@ class MarkdownFromNotebook():
         for cell in python_cells:
             cell["tidy_python_output"] = self.tidy_python_cell_output(cell)
     
-    def create_markdown_cell(self, cell):
+    def create_markdown_cell(self, cell, return_python, return_r):
         """
         Translates Jupyter notebook cells to Markdown
         """
-        if cell["source"][:4] == "```r":
-            # Ignore input R cells
-            return ""
-        elif cell["cell_type"] == "markdown":
-            # Markdown returned ad-verbatim
-            return cell["source"]
-        else:
+        if "r_output" in cell or cell["cell_type"] == "code":
             # Create code tab
             output = ["\n````{tabs}\n"]
             
-            # add Python
-            output.append("```{code-tab} py\n")
-            output.append(cell["source"])
-            output.append("\n```\n")
+            # add Python if needed
+            if cell["cell_type"] == "code":
+                output.append("```{code-tab} py\n")
+                output.append(cell["source"])
+                output.append("\n```\n")
             
             # add R if needed
             if "r_code" in cell.keys():
@@ -142,23 +142,50 @@ class MarkdownFromNotebook():
             
             output.append("````\n")
             
-            # add output
-            if "outputs" in cell.keys():
-                
+            # add Python output
+            if return_python == True and "outputs" in cell.keys():
                 output.append("\n```plaintext\n")
                 output.append(cell["tidy_python_output"])
                 output.append("```\n")
             
+            # add R output
+            if return_r == True and "r_output" in cell.keys():
+                if len(cell["r_output"]) > 0:
+                    output.append("\n```plaintext\n")
+                    output.append(cell["r_output"])
+                    output.append("```\n")           
+
             return "".join(output)
+        elif cell["source"][:4] == "```r":
+            # Ignore input R cells
+            return ""
+        else:
+            # Markdown returned ad-verbatim
+            return cell["source"]
     
-    def create_markdown_output(self):
+    def create_markdown_output(self, output_type):
         """
         Runs create_markdown_cell for every cell
         """
+        if output_type == "python":
+            return_python = True
+            return_r = False
+        elif output_type == "r":
+            return_python = False
+            return_r = True
+        elif output_type == "all":
+            return_python = True
+            return_r = True
+        else:
+            return_python = False
+            return_r = False
+        
         output = []
         for cell in self.nb["cells"]:
-            output.append(self.create_markdown_cell(cell))
-        
+            output.append(self.create_markdown_cell(cell,
+                                                    return_python,
+                                                    return_r))
+            
         self.md_output = "".join(output)
     
     def write_markdown_file(self, output_file_path):
@@ -172,17 +199,20 @@ class MarkdownFromNotebook():
         """
         Return a pandas DF of Python and R outputs
         """
-        python_cells = [cell for cell in self.nb["cells"]
-                        if cell["cell_type"] == "code"].copy()
-        r_cells = [cell for cell in python_cells
-                        if "r_output" in cell]
+        code_cells = deepcopy([cell for cell in self.nb["cells"] 
+                        if cell["cell_type"] == "code" or
+                        "r_code" in cell])
+
+        [cell.setdefault("r_output", "") for cell in code_cells]
+        [cell.setdefault("tidy_python_output", "") for cell in code_cells]
+        [cell.setdefault("execution_count", "") for cell in code_cells]
         
-        for cell in r_cells:
+        for cell in code_cells:
             cell["r_output"] = "".join(cell["r_output"])
         
-        return_values = pd.DataFrame.from_dict(python_cells)
-        return return_values[["execution_count", "tidy_python_output",
-                              "r_output"]]
+        return_values = pd.DataFrame.from_dict(code_cells)
+        return return_values[["cell_no", "execution_count",
+                              "tidy_python_output", "r_output"]]
     
     def write_outputs_csv(self, output_results_path):
         """
@@ -192,8 +222,12 @@ class MarkdownFromNotebook():
         return_values.to_csv(output_results_path, index=False)
 
         
-def markdown_from_notebook(notebook_path, output_path, r_path, output_csv,
-                          show_warnings=True):
+def markdown_from_notebook(notebook_path,
+                           output_path,
+                           r_path,
+                           output_csv,
+                           show_warnings=True,
+                           output_type="python"):
     """
     Creates a Markdown file with code tabs for Python and R saved as
         output_path, from which a Jupyterbook can be created.
@@ -214,13 +248,18 @@ def markdown_from_notebook(notebook_path, output_path, r_path, output_csv,
         r_path (string): Path to save raw R code
         output_csv (string): Path to save Python and R output, for comparison
         show_warnings (boolean): Show or hide warnings in R output
+        output_type {"python", "r", "all", None}:
+            * python: outputs only Python code
+            * r: outputs only R code
+            * all: outputs Python and R code
+            * None: no outputs will be returned
         
     Returns:
         MarkdownFromNotebook
     """
     md_notebook = MarkdownFromNotebook(notebook_path)
     md_notebook.run_r(r_path, show_warnings)
-    md_notebook.create_markdown_output()
+    md_notebook.create_markdown_output(output_type)
     md_notebook.write_markdown_file(output_path)
     md_notebook.write_outputs_csv(output_csv)
     
