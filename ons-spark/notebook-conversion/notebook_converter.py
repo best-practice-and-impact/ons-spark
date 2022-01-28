@@ -66,6 +66,9 @@ class MarkdownFromNotebook():
             r_code = "options(warn = -1)"
             with open(r_path, "a") as f:
                     f.write("".join(r_code))
+            stderr = subprocess.DEVNULL
+        else:
+            stderr = None
                 
         for cell in r_cells:
             r_code = cell["r_code"]
@@ -73,7 +76,7 @@ class MarkdownFromNotebook():
                 f.write("".join(r_code))
             raw_r_output = subprocess.check_output(f"Rscript {r_path}",
                                                    shell=True,
-                                                   stderr=subprocess.DEVNULL)
+                                                   stderr=stderr)
             cell["raw_r_output"] = raw_r_output
         
         prev_r_output = []
