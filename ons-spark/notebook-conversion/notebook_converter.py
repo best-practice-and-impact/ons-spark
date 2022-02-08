@@ -53,13 +53,34 @@ class MarkdownFromNotebook():
                 previous_cell["r_code"] = r_code
             else:
                 cell["r_code"] = r_code
+                
+    def _delete_checkpoint(self, checkpoint_path, stderr):
+        """
+        Delete checkpoint directory if it exists
+        
+        stdout should only display information, so the stderr is inherited from
+            the show_warnings value in run_r
+        """
+        if checkpoint_path != None:
+            if os.path.exists(checkpoint_path):
+                subprocess.run(f"hdfs dfs -rm -r -skipTrash {checkpoint_path}",
+                                shell=True, stdout=stderr)
+            # Remove checkpoints if running a local session
+            elif checkpoint_path[:8] == "file:///":
+                if os.path.exists(checkpoint_path[8:]):
+                    subprocess.run(
+                        f"hdfs dfs -rm -r -skipTrash {checkpoint_path}",
+                        shell=True, stdout=stderr)
 
-    def run_r(self, r_path, show_warnings):
+    def run_r(self, r_path, show_warnings, checkpoint_path=None):
         """
         Run the R code and attach results to cells
         
         The code is saved in r_path and ran with Rscript, optionally
             suppressing warnings in the R output
+        
+        Optionally clears checkpoint cache, which is needed when running some
+            R scripts
         """
         self._remove_r_path(r_path)
         
@@ -76,6 +97,10 @@ class MarkdownFromNotebook():
             stderr = None
                 
         for cell in r_cells:
+            # Delete old checkpoint files before running next cell
+            self._delete_checkpoint(checkpoint_path, stderr)
+            
+            # Append R code cell to previous input and run 
             r_code = cell["r_code"]
             with open(r_path, "a") as f:
                 f.write("".join(r_code))
@@ -227,7 +252,8 @@ def markdown_from_notebook(notebook_path,
                            r_path,
                            output_csv,
                            show_warnings=True,
-                           output_type="python"):
+                           output_type="python",
+                           checkpoint_path=None):
     """
     Creates a Markdown file with code tabs for Python and R saved as
         output_path, from which a Jupyterbook can be created.
@@ -253,12 +279,14 @@ def markdown_from_notebook(notebook_path,
             * r: outputs only R code
             * all: outputs Python and R code
             * None: no outputs will be returned
+        checkpoint_path (string): clears checkpoints in this directory if
+            specified when running each R cell
         
     Returns:
         MarkdownFromNotebook
     """
     md_notebook = MarkdownFromNotebook(notebook_path)
-    md_notebook.run_r(r_path, show_warnings)
+    md_notebook.run_r(r_path, show_warnings, checkpoint_path)
     md_notebook.create_markdown_output(output_type)
     md_notebook.write_markdown_file(output_path)
     md_notebook.write_outputs_csv(output_csv)
