@@ -169,9 +169,10 @@ class MarkdownFromNotebook():
             
             # add Python output
             if return_python == True and "outputs" in cell.keys():
-                output.append("\n```plaintext\n")
-                output.append(cell["tidy_python_output"])
-                output.append("```\n")
+                if len(cell["outputs"]) > 0:
+                    output.append("\n```plaintext\n")
+                    output.append(cell["tidy_python_output"])
+                    output.append("```\n")
             
             # add R output
             if return_r == True and "r_output" in cell.keys():
