@@ -320,7 +320,7 @@ ggplot2::ggplot(aggregated_r_plot, ggplot2::aes(cost_group, count)) +
 ```plaintext
 <matplotlib.axes._subplots.AxesSubplot at 0x7faa4841f8d0>
 ```
-![Incident cost by cost group chart]("../images/spark_app_incident_cost_chart.png")
+![Incident cost by cost group chart](../images/spark_app_incident_cost_chart.png)
 
 Now we have our chart, let's see how that translates to tasks in the Spark UI.
 
