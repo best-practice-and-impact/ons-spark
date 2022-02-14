@@ -4,7 +4,9 @@ This article introduces the structure of a Spark application and how the structu
 
 The Spark UI is used to monitor the status and resource consumption of your Spark cluster and is the main tool for troubleshooting slow Spark code. 
 
-Understanding the structure of a Spark application helps to understand how Spark works so you can begin to think differently as you code to get the most out of Spark.## Spark Application Overview
+Understanding the structure of a Spark application helps to understand how Spark works so you can begin to think differently as you code to get the most out of Spark.
+
+## Spark Application Overview
 A Spark application has an underlining structure and learning about this structure will help us
 1. understand the difference between a narrow transformation, wide transformation and an action, 
 2. navigate around the Spark UI
@@ -30,7 +32,9 @@ Then we hit a stage boundary, which means the third operation is a *wide* transf
 
 Finally in the diagram above there is another narrow operation on the aggregated DataFrame before we run into an *action*, e.g. writing the data to HDFS or a simple count of the rows. 
 
-As we execute the wide and narrow transformations nothing happens to the data at this point in time, Spark just builds up a plan of what to do with the DataFrame. This plan is a called the execution plan and is a set of instructions of how to transform the data from one state to another. More on the execution plan in the **Persisting Article**. An action initiates the execution plan and so this is when the DataFrame is processed. All the previous transformations, along with the action, are put into Spark *jobs* and deployed on the Spark cluster. ## Investigate the Spark UI
+As we execute the wide and narrow transformations nothing happens to the data at this point in time, Spark just builds up a plan of what to do with the DataFrame. This plan is a called the execution plan and is a set of instructions of how to transform the data from one state to another. More on the execution plan in the **Persisting Article**. An action initiates the execution plan and so this is when the DataFrame is processed. All the previous transformations, along with the action, are put into Spark *jobs* and deployed on the Spark cluster. 
+
+## Investigate the Spark UI
 
 We will create an application and execute some code to create jobs. Then we can drill down from Job to Stage to Task and investigate their performance. In most cases this is where we look first when trying to diagnose a slow Spark application.
 
@@ -87,7 +91,9 @@ If you follow the above link you will see something silimar to the screenshot be
 
 There is a lot of useful information in the Spark UI, but in this article we will only concentrate on the *Jobs* and *Stages* tabs. Note that we haven't executed any *Jobs* yet, so there isn't much to see at the moment.
 
-![Empty Spark UI page](../images/spark_app_empty_ui.png)Let's import the animal rescue data and find out the number of partitions in which our `rescue` DataFrame is processed. The number of partitions will be useful later when we're investigating our application's tasks.
+![Empty Spark UI page](../images/spark_app_empty_ui.png)
+
+Let's import the animal rescue data and find out the number of partitions in which our `rescue` DataFrame is processed. The number of partitions will be useful later when we're investigating our application's tasks.
 ````{tabs}
 ```{code-tab} py
 with open("../../../config.yaml") as f:
@@ -188,7 +194,9 @@ In the top section of the timeline you will see the executors being added and re
 
 *Tip:* You can tick the *Enable Zooming* button to zoom in and out of different sections of the timeline
 
-![Event timeline within Spark UI showing executors being assigned and jobs being deployed](../images/spark_app_event_timeline.png)Let's look at the *Completed Jobs* table. The description gives us a clue as to the action that initiated that job. The first job, *Job Id* 0, was to interact with HDFS, so it has the description `parquet at NativeMethodAccessorImpl.java:0`. Remember that executing transformations creates an execution plan, so Spark needs to know the DataFrame's schema, i.e. column names and types, to validate our PySpark/sparklyr code. Reading from disk will always create a job, usually consisting of just one stage as shown in the *Stages* column.
+![Event timeline within Spark UI showing executors being assigned and jobs being deployed](../images/spark_app_event_timeline.png)
+
+Let's look at the *Completed Jobs* table. The description gives us a clue as to the action that initiated that job. The first job, *Job Id* 0, was to interact with HDFS, so it has the description `parquet at NativeMethodAccessorImpl.java:0`. Remember that executing transformations creates an execution plan, so Spark needs to know the DataFrame's schema, i.e. column names and types, to validate our PySpark/sparklyr code. Reading from disk will always create a job, usually consisting of just one stage as shown in the *Stages* column.
 
 The second job was initiated by `.show()`/`head()`, again it consists of one stage, which itself had one task as shown in the *Tasks* column. As mentioned in the previous section, Spark only needed to process one partition to produce the output so we therefore have one task in this job. 
 
@@ -203,7 +211,9 @@ The DAG shows the two stages. Here are some rough definitions of the terms insid
 
 There are more informative DAG diagrams on the SQL tab, which are explored in the **Joins Article** and **Persisiting Article**. 
 
-![Stage information in Spark UI showing DAG and stage table](../images/spark_app_stages.png)### Stages page
+![Stage information in Spark UI showing DAG and stage table](../images/spark_app_stages.png)
+
+### Stages page
 
 From the *Completed Stages* table on the *Job Details* page, when we click on the link in the *Description* column for the stage consisting of two tasks (*Stage Id* 2 in the example above), we get to the *Stage Details*. 
 
@@ -221,7 +231,9 @@ The colours also indicate what was going on while the task was being completed. 
 3. shuffle read - reading a shuffle from disk onto an executor or driver
 4. deserialisation - preparing the data to be read in memory
 
-Sometimes when processing many small partitions more time is spent on moving small amounts of data around than useful processing time. This task event timeline will show evidence of this problem in the form of non-green colours. We'll see this in action later.#### Summary Metrics
+Sometimes when processing many small partitions more time is spent on moving small amounts of data around than useful processing time. This task event timeline will show evidence of this problem in the form of non-green colours. We'll see this in action later.
+
+#### Summary Metrics
 
 Summary information about the tasks within a stage are given in the Summary Metrics table. Select the *(De)select All* option to view more metrics.
 
@@ -229,7 +241,9 @@ This is a useful indication of the distribution of times taken for various compo
 
 ![Task metrics table in the Spark UI](../images/spark_app_task_metrics.png)
 
-We won't discuss *GC time*, or garbage collection time, in this article. This is a topic that is covered in **a separate article**.## More information
+We won't discuss *GC time*, or garbage collection time, in this article. This is a topic that is covered in **a separate article**.
+
+## More information
 
 ### Documentation
 
@@ -239,7 +253,9 @@ Finally, since its release of version 3.0.0, Spark's online documentation contai
 
 The documentation runs through the different pages of the Spark UI with screenshots and a brief description of the various elements. It's a good place to start and useful for finding definitions. For example, if you want to know what *Scheduler delay* means, search for this term on the docs page and you will find, 
 
->**Scheduler delay** is the time the task waits to be scheduled for execution### Moving data outside Spark
+>**Scheduler delay** is the time the task waits to be scheduled for execution
+
+### Moving data outside Spark
 
 Note that in our case using the Data Access Platform (DAP) we could call the *driver* here *CDSW session*, but we'll use driver to be consistent with other material in this book.
 
@@ -285,7 +301,7 @@ aggregated_r
 aggregated_pandas_plot = (
     aggregated_pandas.fillna("missing")
     .set_index("cost_group")
-    .loc[["small", "medium", "large", "missing"]]
+    .loc[["large", "medium", "small", "missing"]]
 )
 
 aggregated_pandas_plot.plot(kind="bar")
@@ -302,13 +318,17 @@ ggplot2::ggplot(aggregated_r_plot, ggplot2::aes(cost_group, count)) +
 ````
 
 ```plaintext
-<matplotlib.axes._subplots.AxesSubplot at 0x7f8d729d1b00>
+<matplotlib.axes._subplots.AxesSubplot at 0x7faa4841f8d0>
 ```
+![Incident cost by cost group chart]("../images/spark_app_incident_cost_chart.png")
+
 Now we have our chart, let's see how that translates to tasks in the Spark UI.
 
 There is a job for `.toPandas()`/`collect()`, but nothing after that for the plot. Why? 
 
-The plotting was done in Pandas/R and so Spark was not involved at all. We therefore don't expect the Spark UI to show anything that represents those processes.### Improving performance
+The plotting was done in Pandas/R and so Spark was not involved at all. We therefore don't expect the Spark UI to show anything that represents those processes.
+
+### Improving performance
 
 Finally, let's take a look at the stages and tasks for the latest job in the Spark UI and have and see an example of identifying a performance issue, how to solving it, and finding evidence of improvement.
 
@@ -347,7 +367,9 @@ Note that a 0.3s improvement is nothing to brag about, but a x2 processing speed
 
 Again, the processing took place on the driver with 2 cores, but this time there was one task per core. There's much more green visible in this timeline and comparing *Scheduler Delay* and *Task Deserialization Time* with *Duration* in the *Summary Metrics* tells a very different story.
 
-The important point is that we are processing a small amount of data and therefore should reduce the partitioning. With 200 partitions a lot of time was spent scheduling tasks and (de)serializing data. By putting our small DataFrame into fewer partitions we spent more time on useful processing and decareased the overall processing time.## Summary
+The important point is that we are processing a small amount of data and therefore should reduce the partitioning. With 200 partitions a lot of time was spent scheduling tasks and (de)serializing data. By putting our small DataFrame into fewer partitions we spent more time on useful processing and decareased the overall processing time.
+
+## Summary
 
 **Spark application hierarchy**
 
@@ -366,7 +388,9 @@ The important point is that we are processing a small amount of data and therefo
 - Look out for task colours, green is generally good
 - Use online documentation for more information about the UI
 - Lots of small partitions is an inefficient strategy to process data
-- Matching up the executed code with the job number in the UI is difficult, the description starts with the action used to initiate that job. You can also customise the job description to track jobs easier. See **Job Decription tip** for more information.## Exercises
+- Matching up the executed code with the job number in the UI is difficult, the description starts with the action used to initiate that job. You can also customise the job description to track jobs easier. See **Job Decription tip** for more information.
+
+## Exercises
 
 1. In the Stages page section under the Task Event timeline heading it was stated that "If there was just one core available to the driver the two tasks would not run in parallel". Test this. 
 
