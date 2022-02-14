@@ -17,7 +17,8 @@ class MarkdownFromNotebook():
         source_nb = nbf.read(input_path, nbf.NO_CONVERT)
         self.source_nb = source_nb
         self.nb = deepcopy(source_nb)
-        self.assign_cell_no()
+        self._assign_cell_no()
+        self._format_adjacent_markdown()
         self.tidy_python_cell_outputs()
         self.extract_r()
 
@@ -28,13 +29,36 @@ class MarkdownFromNotebook():
         if os.path.exists(r_path):
             os.remove(r_path)
     
-    def assign_cell_no(self):
+    def _assign_cell_no(self):
         """
         Assign cell numbers to each cell in the notebook
         """
         for cell_no, cell in enumerate(self.nb["cells"]):
-            cell["cell_no"] = cell_no        
-        
+            cell["cell_no"] = cell_no
+            
+    def _is_markdown(self, cell_type, cell_source):
+        """
+        Determine if a cell is pure markdown without R code
+        """
+        if cell_type == "markdown" and cell_source[:4] != "```r":
+            return True
+        else:
+            return False
+    
+    def _format_adjacent_markdown(self):
+        """
+        Adds two new lines to markdown cells if adjacent, to ensure output
+            matches the source notebook
+        """
+        # Use range rather than enumerate as do not want last item
+        for cell_no in range(len(self.nb["cells"]) - 1):
+            cell = self.nb["cells"][cell_no]
+            next_cell = self.nb["cells"][cell_no + 1]
+            if self._is_markdown(cell["cell_type"], cell["source"]):
+                if self._is_markdown(next_cell["cell_type"],
+                                     next_cell["source"]):
+                    cell["source"] = cell["source"] + "\n\n"
+            
     def extract_r(self):
         """
         Extract the code from the R cells. Attaches code to previous cell if
