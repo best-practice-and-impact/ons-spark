@@ -1,6 +1,6 @@
 ## Cross Joins
 
-A *cross joins* is used to return every combination of the rows of two DataFrames. Cross joins are also referred to as the *cartesian product* of two DataFrames. It is different to other types of joins, which depend on matching values by using join keys.
+A *cross join* is used to return every combination of the rows of two DataFrames. Cross joins are also referred to as the *cartesian product* of two DataFrames. It is different to other types of joins, which depend on matching values by using join keys.
 
 As a cross join will return every combination of the rows, the size of the returned DataFrame is equal to the product of the row count of both source DataFrames; this can quickly get large and overwhelm your Spark session. As such, use them carefully!
 
@@ -152,9 +152,9 @@ cal_years <- sparklyr::sdf_checkpoint(cal_years)
 
 ```
 ````
-Now cross join `cal_years` and `animals`. In PySpark, use [`.crossJoin()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.crossJoin.html), which is method applied to the DataFrame and takes one argument, the DF to cross join to. In sparklyr, there is no native cross join function, so use [`full_join()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/join.tbl_spark.html) with `by=character()`.
+Now cross join `cal_years` and `animals`. In PySpark, use [`.crossJoin()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.crossJoin.html), which is a method applied to the DataFrame and takes one argument, the DF to cross join to. In sparklyr, there is no native cross join function, so use [`full_join()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/join.tbl_spark.html) with `by=character()`.
 
-Note that apart from the order of the columns the result will be the same regardless of which DF is on the left and which is on the right. The `result` DF will have $27 * 11 = 297$ rows.
+Note that apart from the order of the columns the result will be the same regardless of which DF is on the left and which is on the right. The `result` DF will have $27 \times 11 = 297$ rows.
 ````{tabs}
 ```{code-tab} py
 result = animals.crossJoin(cal_years).orderBy("animal_group", "cal_year")
@@ -294,7 +294,7 @@ result %>%
 ```
 ### Accidental Cross Joins
 
-Cross joins can be dangerous due to the size of DataFrame that they return. In PySpark, it is possible to create a cross join accidentally when using a regular join where the key column only has one value in it. In these cases Spark will sometimes process the join as a cross join and return an error, depending on the lineage of the DataFrame. You can disable this error with `.config("spark.sql.crossJoin.enabled", "true")`.
+Cross joins can be dangerous due to the size of DataFrame that they return. In PySpark, it is possible to create a cross join accidentally when using a regular join where the key column only has one distinct value in it. In these cases Spark will sometimes process the join as a cross join and return an error, depending on the lineage of the DataFrame. You can disable this error with `.config("spark.sql.crossJoin.enabled", "true")`.
 
 Note that this error is specific to Spark 2; in Spark 3, [this option is enabled by default](https://github.com/apache/spark/pull/25520) and so the error will only occur if you explicitly enable it.
 
@@ -371,7 +371,7 @@ system(paste0("hdfs dfs -rm -r -skipTrash ", config$checkpoint_path))
 ````
 ### Salted Joins
 
-Cross joins can also be used when *salting* a join. Salting improves the efficiency of a join by reducing the skew in join keys. See the article on salted joins for an example.
+Cross joins can also be used when *salting* a join. Salting improves the efficiency of a join by reducing the skew in the DataFrame, by introducing new join keys. See the article on salted joins for an example.
 
 ### Further Resources
 
