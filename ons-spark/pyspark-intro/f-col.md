@@ -147,7 +147,10 @@ Using `df.column_name` can also result in bugs when you think you are referencin
 ````{tabs}
 ```{code-tab} py
 rescue = spark.read.parquet(rescue_path).select("incident_number", "animal_group")
-rescue.withColumn("animal_group", F.upper(rescue.animal_group)).filter(rescue.animal_group == "CAT").show(5)
+(rescue
+    .withColumn("animal_group", F.upper(rescue.animal_group))
+    .filter(rescue.animal_group == "CAT")
+    .show(5))
 ```
 ````
 
@@ -185,7 +188,8 @@ only showing top 5 rows
 One final use case for this method is when your source data has column names with spaces or special characters in them. This can happen if reading in from a CSV file rather than parquet or Hive table. The animal rescue CSV has a column called `IncidentNotionalCost(£)`. You can't refer to the column using `rescue.IncidentNotionalCost(£)`, instead, use `F.col("IncidentNotionalCost(£)")`:
 ````{tabs}
 ```{code-tab} py
-rescue = spark.read.csv(rescue_path_csv, header=True).select("IncidentNumber", "IncidentNotionalCost(£)")
+rescue = (spark.read.csv(rescue_path_csv, header=True)
+          .select("IncidentNumber", "IncidentNotionalCost(£)"))
 rescue.filter(F.col("IncidentNotionalCost(£)") > 2500).show()
 ```
 ````
