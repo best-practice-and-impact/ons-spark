@@ -10,16 +10,18 @@ Some of our core **values** are:
 - Good coding practices
 - Efficiency and value for money
 
-This book is open to contributions from anyone across UK Govt and beyond.
+This book is open to contributions from anyone across UK Government and beyond.
 
 ONS staff should also look at our GitLab pages for organisation and platform-specific information.
 
 ## Further resources
 
-Some examples of other free resources:
+Here are some examples of other free resources we recommend:
 
 - [Learning Spark 2nd edition](https://pages.databricks.com/rs/094-YMS-629/images/LearningSpark2.0.pdf?utm_medium=email&utm_source=databricks&utm_campaign=7014N0000026tqzQAA)
 - [Spark official documentation](https://spark.apache.org/docs/latest/)
 - [PySpark documentation](https://spark.apache.org/docs/latest/api/python/)
 - [sparklyr documentation](https://spark.rstudio.com/)
-- [Spark by examples](https://sparkbyexamples.com/)
+- [Spark by Examples](https://sparkbyexamples.com/)
+- [Quality Assurange of Code for Analysis and Research](https://best-practice-and-impact.github.io/qa-of-code-guidance/intro.html) (a.k.a. the Duck Book)
+- [Coding for Economists](https://aeturrell.github.io/coding-for-economists/intro.html)
