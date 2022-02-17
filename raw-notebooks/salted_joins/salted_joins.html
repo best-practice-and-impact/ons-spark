@@ -1,0 +1,878 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Salted Joins &#8212; Spark at the ONS</title>
+    
+  <link href="../../_static/css/theme.css" rel="stylesheet">
+  <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script>
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Spark at the ONS</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../intro.html">
+   Introduction
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Template pages
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../templates/markdown.html">
+   Markdown Files
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../templates/notebooks.html">
+   Content with notebooks
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Spark overview
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-overview/spark-session-guidance.html">
+   Spark Sessions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-overview/example-spark-sessions.html">
+   Example Spark Sessions
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to PySpark
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../pyspark-intro/f-col.html">
+   Reference columns by name:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     F.col()
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to sparklyr
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../sparklyr-intro/sparklyr_functions.html">
+   Using Spark functions in sparklyr
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Spark functions
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-functions/union_dataframes_with_different_columns.html">
+   Union two DataFrames with different columns
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-functions/padding.html">
+   Add leading zeros with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     lpad()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-functions/sampling.html">
+   Sampling:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .sample()
+    </span>
+   </code>
+   and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     sdf_sample()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-functions/cross_joins.html">
+   Cross Joins
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Spark Concepts
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-concepts/join_concepts.html">
+   Optimising Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-concepts/salted_joins.html">
+   Salted Joins
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Ancillary Topics
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../ancillary-topics/visualisation.html">
+   Spark and Visualisation
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../../_sources/raw-notebooks/salted_joins/salted_joins.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/robertswh/Spark at the ONS"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/robertswh/Spark at the ONS/issues/new?title=Issue%20on%20page%20%2Fraw-notebooks/salted_joins/salted_joins.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+    <div class="dropdown-buttons">
+        
+        <a class="binder-button" href="https://mybinder.org/v2/gh/robertswh/Spark at the ONS/main?urlpath=tree/docs/raw-notebooks/salted_joins/salted_joins.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="../../_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
+        
+        
+        
+        
+    </div>
+</div>
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#salted-join-example">
+   Salted Join Example
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#salting-alternatives">
+   Salting Alternatives
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="salted-joins">
+<h1>Salted Joins<a class="headerlink" href="#salted-joins" title="Permalink to this headline">¶</a></h1>
+<p>When joining DataFrames in Spark with a Sort Merge Join, all the data with the same join keys will be moved to the same partition. Spark works best when partitions are of roughly equal size. If the data are skewed so that some partitions are much larger than others, then a disproportionate amount of time will be spent on dealing with data in one partition.</p>
+<p>Attempting to force a repartition of the DataFrame with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.repartition.html"><code class="docutils literal notranslate"><span class="pre">.repartition()</span></code></a> (PySpark) or <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_repartition.html"><code class="docutils literal notranslate"><span class="pre">sdf_repartition()</span></code></a> (sparklyr) will not work, as a Sort Merge Join will then automatically shuffle the data based on join keys. Note that this issue will not occur if the smaller DataFrame is able to be broadcast, since that does not force a shuffle of the DataFrames.</p>
+<p>To resolve this issue, we can change the join keys manually, so that the larger partitions get split into smaller ones. This is called <em>salting</em>.</p>
+<div class="section" id="salted-join-example">
+<h2>Salted Join Example<a class="headerlink" href="#salted-join-example" title="Permalink to this headline">¶</a></h2>
+<p>First, create a Spark session. This example may not work on a local session as the DataFrame is artificially created and is ten million rows long. Note that broadcast joins are being disabled by default.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
+
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;joins&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.executor.memory&quot;</span><span class="p">,</span> <span class="s2">&quot;1500m&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.executor.cores&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.dynamicAllocation.enabled&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.dynamicAllocation.maxExecutors&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+         <span class="c1"># Disable Broadcast join by default</span>
+         <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.sql.autoBroadcastJoinThreshold&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+
+<span class="n">small_config</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">()</span>
+
+<span class="n">small_config</span><span class="o">$</span><span class="n">spark.executor.memory</span> <span class="o">&lt;-</span> <span class="s">&quot;1500m&quot;</span>
+<span class="n">small_config</span><span class="o">$</span><span class="n">spark.executor.cores</span> <span class="o">&lt;-</span> <span class="m">2</span>
+<span class="n">small_config</span><span class="o">$</span><span class="n">spark.dynamicAllocation.enabled</span> <span class="o">&lt;-</span> <span class="s">&quot;true&quot;</span>
+<span class="n">small_config</span><span class="o">$</span><span class="n">spark.dynamicAllocation.maxExecutors</span> <span class="o">&lt;-</span> <span class="m">4</span>
+<span class="c1"># Disable Broadcast join by default</span>
+<span class="n">small_config</span><span class="o">$</span><span class="n">spark.sql.autoBroadcastJoinThreshold</span> <span class="o">&lt;-</span> <span class="m">-1</span>
+
+<span class="n">sc</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
+  <span class="n">master</span> <span class="o">=</span> <span class="s">&quot;yarn-client&quot;</span><span class="p">,</span>
+  <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;joins&quot;</span><span class="p">,</span>
+  <span class="n">config</span> <span class="o">=</span> <span class="n">small_config</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Create a DataFrame with excessive skew by using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.range.html"><code class="docutils literal notranslate"><span class="pre">spark.range()</span></code></a>/<a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_seq.html"><code class="docutils literal notranslate"><span class="pre">sdf_seq()</span></code></a> to create a one column DF with an <code class="docutils literal notranslate"><span class="pre">id</span></code> column, then assigning an arbitrary letter from <code class="docutils literal notranslate"><span class="pre">A</span></code> to <code class="docutils literal notranslate"><span class="pre">E</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">row_ct</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="mi">7</span>
+<span class="n">skewed_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="n">row_ct</span><span class="p">)</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;join_col&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">)</span>
+                               <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">)</span>
+                               <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10000</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
+                               <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100000</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">)</span>
+                               <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">row_ct</span> <span class="o">&lt;-</span> <span class="m">10</span> <span class="o">**</span> <span class="m">7</span>
+<span class="n">skewed_df</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_seq</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="n">row_ct</span> <span class="o">-</span> <span class="m">1</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">join_col</span> <span class="o">=</span> <span class="n">dplyr</span><span class="o">::</span><span class="nf">case_when</span><span class="p">(</span>
+        <span class="n">id</span> <span class="o">&lt;</span> <span class="m">100</span> <span class="o">~</span> <span class="s">&quot;A&quot;</span><span class="p">,</span>
+        <span class="n">id</span> <span class="o">&lt;</span> <span class="m">1000</span> <span class="o">~</span> <span class="s">&quot;B&quot;</span><span class="p">,</span>
+        <span class="n">id</span> <span class="o">&lt;</span> <span class="m">10000</span> <span class="o">~</span> <span class="s">&quot;C&quot;</span><span class="p">,</span>
+        <span class="n">id</span> <span class="o">&lt;</span> <span class="m">100000</span> <span class="o">~</span> <span class="s">&quot;D&quot;</span><span class="p">,</span>
+        <span class="kc">TRUE</span> <span class="o">~</span> <span class="s">&quot;E&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>To show just how skewed this DF is, group the data by <code class="docutils literal notranslate"><span class="pre">join_col</span></code> and get the row count; 99% of the values of <code class="docutils literal notranslate"><span class="pre">join_col</span></code> are <code class="docutils literal notranslate"><span class="pre">&quot;E&quot;</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">skewed_df</span>
+    <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;join_col&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">count</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;pct_of_data&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">round</span><span class="p">((</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;count&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="n">row_ct</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="o">.</span><span class="n">show</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+--------+-------+-----------+
+|join_col|  count|pct_of_data|
++--------+-------+-----------+
+|       E|9900000|       99.0|
+|       B|    900|      0.009|
+|       D|  90000|        0.9|
+|       C|   9000|       0.09|
+|       A|    100|      0.001|
++--------+-------+-----------+
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">skewed_df</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">join_col</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">summarise</span><span class="p">(</span><span class="n">count</span> <span class="o">=</span> <span class="nf">n</span><span class="p">())</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">pct_of_data</span> <span class="o">=</span> <span class="nf">round</span><span class="p">((</span><span class="n">count</span> <span class="o">/</span> <span class="n">row_ct</span><span class="p">)</span> <span class="o">*</span> <span class="m">100</span><span class="p">,</span> <span class="m">3</span><span class="p">))</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
+    <span class="nf">print</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Create another DF, <code class="docutils literal notranslate"><span class="pre">small_df</span></code> that will be joined to <code class="docutils literal notranslate"><span class="pre">skewed_df</span></code>. This is a simple mapping of letters to numbers.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">small_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">([</span>
+    <span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="p">],</span> <span class="p">[</span><span class="s2">&quot;join_col&quot;</span><span class="p">,</span> <span class="s2">&quot;number_col&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">small_df</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_copy_to</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="nf">data.frame</span><span class="p">(</span>
+    <span class="n">join_col</span> <span class="o">=</span> <span class="kc">LETTERS</span><span class="p">[</span><span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">],</span>
+    <span class="n">number_col</span> <span class="o">=</span> <span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Now join, using the default Sort Merge Join:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">joined_df</span> <span class="o">=</span> <span class="n">skewed_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">small_df</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;join_col&quot;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">joined_df</span> <span class="o">&lt;-</span> <span class="n">skewed_df</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">left_join</span><span class="p">(</span><span class="n">small_df</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s">&quot;join_col&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We want to see how the DataFrame is processed on the cluster using the Spark UI, so use <code class="docutils literal notranslate"><span class="pre">.count()</span></code> and set the job description with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.SparkContext.setJobDescription.html"><code class="docutils literal notranslate"><span class="pre">.setJobDescription()</span></code></a>/<a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/invoke.html"><code class="docutils literal notranslate"><span class="pre">invoke(&quot;setJobDescription&quot;,</span> <span class="pre">...)</span></code></a>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">setJobDescription</span><span class="p">(</span><span class="s2">&quot;Row Count&quot;</span><span class="p">)</span>
+<span class="n">joined_df</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10000000
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_context</span><span class="p">()</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">invoke</span><span class="p">(</span><span class="s">&quot;setJobDescription&quot;</span><span class="p">,</span> <span class="s">&quot;Row Count&quot;</span><span class="p">)</span>
+
+<span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">(</span><span class="n">joined_df</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Group the data to verify the result of the join:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">setJobDescription</span><span class="p">(</span><span class="s2">&quot;Show Grouped Data&quot;</span><span class="p">)</span>
+<span class="n">joined_df</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;join_col&quot;</span><span class="p">,</span> <span class="s2">&quot;number_col&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+--------+----------+-------+
+|join_col|number_col|  count|
++--------+----------+-------+
+|       E|         5|9900000|
+|       B|         2|    900|
+|       D|         4|  90000|
+|       C|         3|   9000|
+|       A|         1|    100|
++--------+----------+-------+
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_context</span><span class="p">()</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">invoke</span><span class="p">(</span><span class="s">&quot;setJobDescription&quot;</span><span class="p">,</span> <span class="s">&quot;Show Grouped Data&quot;</span><span class="p">)</span>
+
+<span class="n">joined_df</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">join_col</span><span class="p">,</span> <span class="n">number_col</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">summarise</span><span class="p">(</span><span class="n">count</span> <span class="o">=</span> <span class="nf">n</span><span class="p">())</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
+    <span class="nf">print</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Looking at the Spark UI for the <code class="docutils literal notranslate"><span class="pre">Row</span> <span class="pre">Count</span></code> job, we can see that one partition is taking much longer than the rest to process:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spark_ui_url</span> <span class="o">=</span> <span class="s2">&quot;spark-</span><span class="si">%s</span><span class="s2">.</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;CDSW_ENGINE_ID&quot;</span><span class="p">],</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;CDSW_DOMAIN&quot;</span><span class="p">])</span>
+<span class="n">spark_ui_url</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&#39;spark-eh9rfvaqfb5opghz.cdswmn-d01-01.ons.statistics.gov.uk&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">spark_ui_url</span> <span class="o">&lt;-</span> <span class="nf">paste0</span><span class="p">(</span>
+    <span class="s">&quot;http://&quot;</span><span class="p">,</span>
+    <span class="s">&quot;spark-&quot;</span><span class="p">,</span>
+    <span class="nf">Sys.getenv</span><span class="p">(</span><span class="s">&quot;CDSW_ENGINE_ID&quot;</span><span class="p">),</span>
+    <span class="s">&quot;.&quot;</span><span class="p">,</span>
+    <span class="nf">Sys.getenv</span><span class="p">(</span><span class="s">&quot;CDSW_DOMAIN&quot;</span><span class="p">))</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="n">spark_ui_url</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><img alt="Spark UI demonstrating inefficient processing of a skewed DF" src="raw-notebooks/images/presalt_ui.png" /></p>
+<p>This is because all of the data with the same join key will be on the same partition. To split this up, we can <em>salt</em> the keys. Salting is the process of artificially creating new join keys. For instance, the <code class="docutils literal notranslate"><span class="pre">E</span></code> key could be split into ten new keys, called <code class="docutils literal notranslate"><span class="pre">E-0</span></code>, <code class="docutils literal notranslate"><span class="pre">E-1</span></code> … <code class="docutils literal notranslate"><span class="pre">E-9</span></code>. Provided the salting is identical in both DataFrames the result of the join will be correct. As with any similar process, ensure that your code is fully tested.</p>
+<p>The easiest way to do this is by concatenating a random number to the key in both DataFrames. We are using a seed here for reproducibility.</p>
+<p>In this example we will salt every key as we do not have many unique values in our key column, but you can also use <code class="docutils literal notranslate"><span class="pre">F.when()</span></code> to salt only specified values if you wish.</p>
+<p>We could change <code class="docutils literal notranslate"><span class="pre">salt_count</span></code> here; 10 is used as an example but you can change this depending on just how skewed your data are. Our example of 99% of the join keys being the same value is deliberately extreme and a higher <code class="docutils literal notranslate"><span class="pre">salt_count</span></code> would likely improve the efficiency. As with a lot of Spark issues, it is good to experiment and see what works best for your own situation.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">setJobDescription</span><span class="p">(</span><span class="s2">&quot;Salted Join&quot;</span><span class="p">)</span>
+<span class="n">salt_count</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">seed_no</span> <span class="o">=</span> <span class="mi">123</span>
+<span class="n">skewed_df</span> <span class="o">=</span> <span class="n">skewed_df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;salted_col&quot;</span><span class="p">,</span>
+                                 <span class="n">F</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+                                     <span class="c1"># Salted column will be in the format A-0, A-1...E-9</span>
+                                     <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;join_col&quot;</span><span class="p">),</span>
+                                     <span class="n">F</span><span class="o">.</span><span class="n">lit</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">),</span>
+                                     <span class="n">F</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">seed_no</span><span class="p">)</span> <span class="o">*</span> <span class="n">salt_count</span><span class="p">)))</span>
+<span class="n">skewed_df</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+---+--------+----------+
+| id|join_col|salted_col|
++---+--------+----------+
+|  0|       A|       A-5|
+|  1|       A|       A-9|
+|  2|       A|       A-8|
+|  3|       A|       A-8|
+|  4|       A|       A-3|
+|  5|       A|       A-4|
+|  6|       A|       A-1|
+|  7|       A|       A-5|
+|  8|       A|       A-9|
+|  9|       A|       A-1|
+| 10|       A|       A-8|
+| 11|       A|       A-2|
+| 12|       A|       A-2|
+| 13|       A|       A-0|
+| 14|       A|       A-4|
+| 15|       A|       A-7|
+| 16|       A|       A-9|
+| 17|       A|       A-7|
+| 18|       A|       A-4|
+| 19|       A|       A-1|
++---+--------+----------+
+only showing top 20 rows
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_context</span><span class="p">()</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">invoke</span><span class="p">(</span><span class="s">&quot;setJobDescription&quot;</span><span class="p">,</span> <span class="s">&quot;Salted Join&quot;</span><span class="p">)</span>
+
+<span class="n">salt_count</span> <span class="o">&lt;-</span> <span class="m">10</span>
+<span class="n">seed_no</span> <span class="o">&lt;-</span> <span class="m">123L</span>
+<span class="n">skewed_df</span> <span class="o">&lt;-</span> <span class="n">skewed_df</span> <span class="o">%&gt;%</span>
+    <span class="c1"># Salted column will be in the format A-0, A-1...E-9</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">salted_col</span> <span class="o">=</span> <span class="nf">concat_ws</span><span class="p">(</span><span class="s">&quot;-&quot;</span><span class="p">,</span> <span class="n">join_col</span><span class="p">,</span> <span class="nf">floor</span><span class="p">(</span><span class="nf">rand</span><span class="p">(</span><span class="n">seed_no</span><span class="p">)</span> <span class="o">*</span> <span class="n">salt_count</span><span class="p">)))</span>
+
+<span class="n">skewed_df</span> <span class="o">%&gt;%</span>
+    <span class="nf">head</span><span class="p">(</span><span class="m">20</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
+    <span class="nf">print</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>We now need to join on <code class="docutils literal notranslate"><span class="pre">salted_col</span></code>, so obviously need to create this column in <code class="docutils literal notranslate"><span class="pre">skewed_df</span></code> too. We can achieve this with a cross join (also sometimes called the cartesian product), to generate all the combinations of the salted values. Be careful when using cross joins as the number of rows returned will be the product of the row count in the two DataFrames.</p>
+<p>Create a DataFrame of the numbers 0 to 9:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">salt_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="n">salt_count</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">salt_df</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_seq</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="n">salt_count</span> <span class="o">-</span> <span class="m">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Cross join this to <code class="docutils literal notranslate"><span class="pre">small_df</span></code> to generate every combination, then concatenate it in the same way as previously:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">small_df_salted</span> <span class="o">=</span> <span class="p">(</span><span class="n">small_df</span>
+                   <span class="o">.</span><span class="n">crossJoin</span><span class="p">(</span><span class="n">salt_df</span><span class="p">)</span>
+                   <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;salted_col&quot;</span><span class="p">,</span>
+                               <span class="n">F</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+                                   <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;join_col&quot;</span><span class="p">),</span>
+                                   <span class="n">F</span><span class="o">.</span><span class="n">lit</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">),</span>
+                                   <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
+                               <span class="p">))</span>
+                   <span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;join_col&quot;</span><span class="p">))</span>
+<span class="n">small_df_salted</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+----------+----------+
+|number_col|salted_col|
++----------+----------+
+|         1|       A-0|
+|         1|       A-1|
+|         2|       B-0|
+|         2|       B-1|
+|         1|       A-2|
+|         1|       A-3|
+|         1|       A-4|
+|         2|       B-2|
+|         2|       B-3|
+|         2|       B-4|
+|         1|       A-5|
+|         1|       A-6|
+|         2|       B-5|
+|         2|       B-6|
+|         1|       A-7|
+|         1|       A-8|
+|         1|       A-9|
+|         2|       B-7|
+|         2|       B-8|
+|         2|       B-9|
++----------+----------+
+only showing top 20 rows
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">small_df_salted</span> <span class="o">&lt;-</span> <span class="n">small_df</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">full_join</span><span class="p">(</span><span class="n">salt_df</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="nf">character</span><span class="p">())</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">salted_col</span> <span class="o">=</span> <span class="nf">concat_ws</span><span class="p">(</span><span class="s">&quot;-&quot;</span><span class="p">,</span> <span class="n">join_col</span><span class="p">,</span> <span class="n">id</span><span class="p">))</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="o">-</span><span class="n">id</span><span class="p">,</span> <span class="o">-</span><span class="n">join_col</span><span class="p">)</span>
+
+<span class="n">small_df_salted</span> <span class="o">%&gt;%</span>
+    <span class="nf">head</span><span class="p">(</span><span class="m">20</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
+    <span class="nf">print</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Now join on <code class="docutils literal notranslate"><span class="pre">salted_col</span></code> and <code class="docutils literal notranslate"><span class="pre">.count()</span></code> the DataFrame, once again setting the job description first:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">salted_join_df</span> <span class="o">=</span> <span class="n">skewed_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">small_df_salted</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;salted_col&quot;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">setJobDescription</span><span class="p">(</span><span class="s2">&quot;Salted Join Row Count&quot;</span><span class="p">)</span>
+<span class="n">salted_join_df</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10000000
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">salted_join_df</span> <span class="o">&lt;-</span> <span class="n">skewed_df</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">left_join</span><span class="p">(</span><span class="n">small_df_salted</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s">&quot;salted_col&quot;</span><span class="p">)</span>
+
+<span class="n">sc</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_context</span><span class="p">()</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">invoke</span><span class="p">(</span><span class="s">&quot;setJobDescription&quot;</span><span class="p">,</span> <span class="s">&quot;Salted Join Row Count&quot;</span><span class="p">)</span>
+
+<span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">(</span><span class="n">salted_join_df</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Verify that the result was the same as before:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">setJobDescription</span><span class="p">(</span><span class="s2">&quot;Salted Join Show Grouped Data&quot;</span><span class="p">)</span>
+<span class="n">salted_join_df</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;join_col&quot;</span><span class="p">,</span> <span class="s2">&quot;number_col&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+--------+----------+-------+
+|join_col|number_col|  count|
++--------+----------+-------+
+|       D|         4|  90000|
+|       A|         1|    100|
+|       E|         5|9900000|
+|       C|         3|   9000|
+|       B|         2|    900|
++--------+----------+-------+
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_context</span><span class="p">()</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">invoke</span><span class="p">(</span><span class="s">&quot;setJobDescription&quot;</span><span class="p">,</span> <span class="s">&quot;Salted Join Show Grouped Data&quot;</span><span class="p">)</span>
+
+<span class="n">joined_df</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">join_col</span><span class="p">,</span> <span class="n">number_col</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">summarise</span><span class="p">(</span><span class="n">count</span> <span class="o">=</span> <span class="nf">n</span><span class="p">())</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
+    <span class="nf">print</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Finally, look at the Spark UI for <code class="docutils literal notranslate"><span class="pre">Salted</span> <span class="pre">Join</span> <span class="pre">Row</span> <span class="pre">Count</span></code> to see that the parallelism is improved:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spark_ui_url</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&#39;spark-eh9rfvaqfb5opghz.cdswmn-d01-01.ons.statistics.gov.uk&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">spark_ui_url</span>
+</pre></div>
+</div>
+<p><img alt="Spark UI demonstrating efficient processing of a salted DF" src="raw-notebooks/images/salt_ui.png" /></p>
+<p>The key metric here is not the overall time, but how the work is distributed. It is shared more equally and there is no longer one long green bar taking far longer than the other processes. In real life examples where salting is essential you will find that the Spark UI looks much more efficient; obviously this is only a minimal example.</p>
+</div>
+<div class="section" id="salting-alternatives">
+<h2>Salting Alternatives<a class="headerlink" href="#salting-alternatives" title="Permalink to this headline">¶</a></h2>
+<p>Salting is not the only option for dealing with skewed DataFrames:</p>
+<ul class="simple">
+<li><p>Broadcasting the smaller DataFrame removes the need for a shuffle of the larger DF, and so the partitioning will remain the same. A broadcast join should also be more efficient than salting.</p></li>
+<li><p>Some parts of the join could be achieved with conditional statements, e.g. split the DF into two and use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.when.html"><code class="docutils literal notranslate"><span class="pre">F.when()</span></code></a>/<a class="reference external" href="https://dplyr.tidyverse.org/reference/case_when.html"><code class="docutils literal notranslate"><span class="pre">case_when()</span></code></a> for the larger join keys then a regular join for the rest.</p></li>
+<li><p>Reducing the size of the larger DataFrame may be possible in some circumstances, e.g. by grouping or filtering earlier in the process.</p></li>
+<li><p>If salting only leads to minor improvements in efficiency you may prefer not to salt and just use a regular sort merge join; you may feel that the benefits of the code being more readable and requiring less testing are worth a small sacrifice of efficiency</p></li>
+</ul>
+</div>
+<div class="section" id="further-resources">
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
+<p>PySpark Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.repartition.html"><code class="docutils literal notranslate"><span class="pre">.repartition()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.range.html"><code class="docutils literal notranslate"><span class="pre">spark.range()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.when.html"><code class="docutils literal notranslate"><span class="pre">F.when()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.SparkContext.setJobDescription.html"><code class="docutils literal notranslate"><span class="pre">.setJobDescription()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.rand.html"><code class="docutils literal notranslate"><span class="pre">F.rand()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.concat.html"><code class="docutils literal notranslate"><span class="pre">F.concat()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.floor.html"><code class="docutils literal notranslate"><span class="pre">F.floor()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.crossJoin.html"><code class="docutils literal notranslate"><span class="pre">.crossJoin()</span></code></a></p></li>
+</ul>
+<p>sparklyr/dplyr Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_repartition.html"><code class="docutils literal notranslate"><span class="pre">sdf_repartition()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_seq.html"><code class="docutils literal notranslate"><span class="pre">sdf_seq()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://dplyr.tidyverse.org/reference/case_when.html"><code class="docutils literal notranslate"><span class="pre">case_when()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/invoke.html"><code class="docutils literal notranslate"><span class="pre">invoke()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/join.tbl_spark.html"><code class="docutils literal notranslate"><span class="pre">full_join()</span></code></a>: there is no native cross join function in sparklyr; the documentation recommends using <code class="docutils literal notranslate"><span class="pre">by=character()</span></code></p></li>
+</ul>
+<p>Spark SQL Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#case_when"><code class="docutils literal notranslate"><span class="pre">case_when</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#rand"><code class="docutils literal notranslate"><span class="pre">rand</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#concat_ws"><code class="docutils literal notranslate"><span class="pre">concat_ws</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#floor"><code class="docutils literal notranslate"><span class="pre">floor</span></code></a></p></li>
+</ul>
+<p>Spark in ONS material:</p>
+<ul class="simple">
+<li><p>Join Concepts: explains shuffle hash joins and broadcast joins</p></li>
+<li><p>Spark Application and UI</p></li>
+<li><p>Cross Joins</p></li>
+<li><p>Spark SQL Functions in sparklyr</p></li>
+</ul>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./raw-notebooks\salted_joins"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        
+            <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+        
+        </div>
+    </div>
+    <footer class="footer">
+    <div class="container">
+      <p>
+        
+          By Wil Roberts & Adrian Prince<br/>
+        
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>
