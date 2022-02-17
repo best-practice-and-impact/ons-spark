@@ -4,7 +4,8 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Add leading zeros with lpad() &#8212; Spark at the ONS</title>
     
   <link href="../../_static/css/theme.css" rel="stylesheet">
@@ -38,16 +39,13 @@
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/togglebutton.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
-    <script>let toggleHintShow = 'Click to show';</script>
-    <script>let toggleHintHide = 'Click to hide';</script>
-    <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script src="../../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
     <script>
         const thebe_selector = ".thebe"
@@ -263,7 +261,7 @@
                 data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -314,7 +312,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+        <div class="d-none d-md-block col-md-2 bd-toc show">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -361,65 +359,15 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Add leading zeros with lpad()</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#">
-   Add leading zeros with
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     lpad()
-    </span>
-   </code>
-  </a>
-  <ul class="visible nav section-nav flex-column">
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#example-incident-numbers">
-     Example: Incident Numbers
-    </a>
-   </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#padding-on-the-right-rpad">
-     Padding on the right:
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       rpad()
-      </span>
-     </code>
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#further-resources">
-   Further Resources
-  </a>
- </li>
-</ul>
-
-                        </nav>
-                    </div>
-                </div>
-            </div>
-            
+        
               <div>
                 
-  <div class="section" id="add-leading-zeros-with-lpad">
+  <section id="add-leading-zeros-with-lpad">
 <h1>Add leading zeros with <code class="docutils literal notranslate"><span class="pre">lpad()</span></code><a class="headerlink" href="#add-leading-zeros-with-lpad" title="Permalink to this headline">¶</a></h1>
 <p>There are some datasets that consist of code columns, which are fixed width and are stored as strings even though they look like numbers. For instance, the data might have values such as <code class="docutils literal notranslate"><span class="pre">&quot;000123&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;456789&quot;</span></code>.</p>
 <p>However, sometimes these can appear as integers which will lose the initial zeros. So <code class="docutils literal notranslate"><span class="pre">&quot;000123&quot;</span></code> becomes <code class="docutils literal notranslate"><span class="pre">123</span></code>. Commonly this can happen if at some point the data is manipulated in Excel and later read in a CSV file; it can also happen if the column is converted to a numeric type. An ONS example is <a class="reference external" href="https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities/uksic2007">Standard Industrial Classification (SIC)</a>. SIC codes are five digits, but some begin with <span class="math notranslate nohighlight">\(0\)</span>.</p>
 <p>There is an easy way to change this back into the correct format: <a class="reference external" href="https://spark.apache.org/docs/latest/api/python//reference/api/pyspark.sql.functions.lpad.html"><code class="docutils literal notranslate"><span class="pre">F.lpad()</span></code></a> from the <code class="docutils literal notranslate"><span class="pre">functions</span></code> package in PySpark and <a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#lpad"><code class="docutils literal notranslate"><span class="pre">lpad()</span></code></a> inside <code class="docutils literal notranslate"><span class="pre">mutate()</span></code> in sparklyr. This will add a string that you specify to the start, making every value a fixed width string. For instance, <code class="docutils literal notranslate"><span class="pre">&quot;123&quot;</span></code> becomes <code class="docutils literal notranslate"><span class="pre">&quot;000123&quot;</span></code> but <code class="docutils literal notranslate"><span class="pre">&quot;456789&quot;</span></code> remains the same.</p>
-<div class="section" id="example-incident-numbers">
+<section id="example-incident-numbers">
 <h2>Example: Incident Numbers<a class="headerlink" href="#example-incident-numbers" title="Permalink to this headline">¶</a></h2>
 <p>The Animal Rescue data has an <code class="docutils literal notranslate"><span class="pre">incident_number</span></code> column, which is unique and of variable length. We will add leading zeros to this column to make it of a consistent length.</p>
 <p>First, start a Spark session and read in the Animal Rescue data, filter on <code class="docutils literal notranslate"><span class="pre">Police</span></code> and select the relevant columns (note that the output displayed is for PySpark; the sparklyr output may be formatted slightly differently).</p>
@@ -648,8 +596,8 @@ only showing top 5 rows
     <span class="nf">print</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="padding-on-the-right-rpad">
+</section>
+<section id="padding-on-the-right-rpad">
 <h2>Padding on the right: <code class="docutils literal notranslate"><span class="pre">rpad()</span></code><a class="headerlink" href="#padding-on-the-right-rpad" title="Permalink to this headline">¶</a></h2>
 <p>There is also a similar function, <a class="reference external" href="https://spark.apache.org/docs/latest/api/python//reference/api/pyspark.sql.functions.rpad.html"><code class="docutils literal notranslate"><span class="pre">F.rpad()</span></code></a>, that works in the same way with identical arguments, just padding to the right instead:</p>
 <div class="cell docutils container">
@@ -685,9 +633,9 @@ only showing top 5 rows
     <span class="nf">print</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="further-resources">
+</section>
+</section>
+<section id="further-resources">
 <h1>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h1>
 <p>PySpark Documentation:</p>
 <ul class="simple">
@@ -709,7 +657,7 @@ only showing top 5 rows
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities/uksic2007">ONS Standard Industrial Classification (SIC)</a></p></li>
 </ul>
-</div>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -724,7 +672,7 @@ only showing top 5 rows
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./raw-notebooks/padding"
+            path: "./raw-notebooks\padding"
         },
         predefinedOutput: true
     }
@@ -733,20 +681,22 @@ only showing top 5 rows
 
               </div>
               
-            
-                <!-- Previous / next buttons -->
+        
+            <!-- Previous / next buttons -->
 <div class='prev-next-area'>
 </div>
-            
+        
         </div>
     </div>
     <footer class="footer">
-  <p>
-    
-      By Wil Roberts & Adrian Prince<br/>
-    
-  </p>
-</footer>
+    <div class="container">
+      <p>
+        
+          By Wil Roberts & Adrian Prince<br/>
+        
+      </p>
+    </div>
+  </footer>
 </main>
 
 

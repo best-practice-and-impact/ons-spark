@@ -4,7 +4,8 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Cross Joins &#8212; Spark at the ONS</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
@@ -38,17 +39,14 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script>let toggleHintShow = 'Click to show';</script>
-    <script>let toggleHintHide = 'Click to hide';</script>
-    <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/tabs.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
     <script>
         const thebe_selector = ".thebe"
@@ -266,7 +264,7 @@
                 data-placement="left">.md</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -300,7 +298,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+        <div class="d-none d-md-block col-md-2 bd-toc show">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -335,54 +333,16 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Cross Joins</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#example-producing-all-combinations-of-results">
-   Example: producing all combinations of results
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#accidental-cross-joins">
-   Accidental Cross Joins
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#salted-joins">
-   Salted Joins
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#further-resources">
-   Further Resources
-  </a>
- </li>
-</ul>
-
-                        </nav>
-                    </div>
-                </div>
-            </div>
-            
+        
               <div>
                 
-  <div class="section" id="cross-joins">
+  <section id="cross-joins">
 <h1>Cross Joins<a class="headerlink" href="#cross-joins" title="Permalink to this headline">¶</a></h1>
 <p>A <em>cross join</em> is used to return every combination of the rows of two DataFrames. Cross joins are also referred to as the <em>cartesian product</em> of two DataFrames. It is different to other types of joins, which depend on matching values by using join keys.</p>
 <p>As a cross join will return every combination of the rows, the size of the returned DataFrame is equal to the product of the row count of both source DataFrames; this can quickly get large and overwhelm your Spark session. As such, use them carefully!</p>
 <p>The syntax for cross joins is different in PySpark and sparklyr. In PySpark, DataFrames have a <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.crossJoin.html"><code class="docutils literal notranslate"><span class="pre">.crossJoin()</span></code></a> method. In sparklyr, use <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/join.tbl_spark.html"><code class="docutils literal notranslate"><span class="pre">full_join()</span></code></a> with <code class="docutils literal notranslate"><span class="pre">by=character()</span></code>.</p>
 <p>One use case for cross joins is to return every combination when producing results that involve grouping and aggregation, even when some of these are zero. Cross joins are also commonly used in salted joins, used to improve the efficiency of a join when the join keys are skewed.</p>
-<div class="section" id="example-producing-all-combinations-of-results">
+<section id="example-producing-all-combinations-of-results">
 <h2>Example: producing all combinations of results<a class="headerlink" href="#example-producing-all-combinations-of-results" title="Permalink to this headline">¶</a></h2>
 <p>Note that the output displayed is for PySpark; the sparklyr output may be formatted slightly differently.</p>
 <p>First, start a Spark session (disabling broadcast joins by default) read in the Animal Rescue data, group by <code class="docutils literal notranslate"><span class="pre">animal_group</span></code> and <code class="docutils literal notranslate"><span class="pre">cal_year</span></code>, and then get the sum of <code class="docutils literal notranslate"><span class="pre">total_cost</span></code>:</p>
@@ -629,8 +589,8 @@ only showing top 10 rows
 +------------+--------+------+
 </pre></div>
 </div>
-</div>
-<div class="section" id="accidental-cross-joins">
+</section>
+<section id="accidental-cross-joins">
 <h2>Accidental Cross Joins<a class="headerlink" href="#accidental-cross-joins" title="Permalink to this headline">¶</a></h2>
 <p>Cross joins can be dangerous due to the size of DataFrame that they return. In PySpark, it is possible to create a cross join accidentally when using a regular join where the key column only has one distinct value in it. In these cases Spark will sometimes process the join as a cross join and return an error, depending on the lineage of the DataFrame. You can disable this error with <code class="docutils literal notranslate"><span class="pre">.config(&quot;spark.sql.crossJoin.enabled&quot;,</span> <span class="pre">&quot;true&quot;)</span></code>.</p>
 <p>Note that this error is specific to Spark 2; in Spark 3, <a class="reference external" href="https://github.com/apache/spark/pull/25520">this option is enabled by default</a> and so the error will only occur if you explicitly enable it.</p>
@@ -698,12 +658,12 @@ only showing top 10 rows
 </pre></div>
 </div>
 </div></div>
-</div>
-<div class="section" id="salted-joins">
+</section>
+<section id="salted-joins">
 <h2>Salted Joins<a class="headerlink" href="#salted-joins" title="Permalink to this headline">¶</a></h2>
 <p>Cross joins can also be used when <em>salting</em> a join. Salting improves the efficiency of a join by reducing the skew in the DataFrame, by introducing new join keys. See the article on salted joins for an example.</p>
-</div>
-<div class="section" id="further-resources">
+</section>
+<section id="further-resources">
 <h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
 <p>PySpark Documentation:</p>
 <ul class="simple">
@@ -727,8 +687,8 @@ only showing top 10 rows
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/apache/spark/pull/25520">GitHub: SPARK-28621</a>: pull request for setting <code class="docutils literal notranslate"><span class="pre">spark.sql.crossJoin.enabled</span></code> to be <code class="docutils literal notranslate"><span class="pre">true</span></code> by default in Spark 3</p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -752,8 +712,8 @@ only showing top 10 rows
 
               </div>
               
-            
-                <!-- Previous / next buttons -->
+        
+            <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="sampling.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -770,16 +730,18 @@ only showing top 10 rows
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-            
+        
         </div>
     </div>
     <footer class="footer">
-  <p>
-    
-      By Wil Roberts & Adrian Prince<br/>
-    
-  </p>
-</footer>
+    <div class="container">
+      <p>
+        
+          By Wil Roberts & Adrian Prince<br/>
+        
+      </p>
+    </div>
+  </footer>
 </main>
 
 
