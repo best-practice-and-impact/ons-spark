@@ -8,9 +8,7 @@ sc <- sparklyr::spark_connect(
     app_name = "spark-app-ui",
     config = default_config)
 
-library("cdsw")
-url = paste0("spark-", Sys.getenv("CDSW_ENGINE_ID"), ".", Sys.getenv("CDSW_DOMAIN"), sep="")
-html(paste0("<a href=http://", url, ">Spark UI</a>", sep=""))
+print("http://localhost:4040/jobs/")
 
 config <- yaml::yaml.load_file("ons-spark/config.yaml")
 
@@ -18,7 +16,7 @@ rescue <- sparklyr::spark_read_parquet(sc, config$rescue_path)
 
 print(paste0("Number of partitions: ", sparklyr::sdf_num_partitions(rescue)))
 
-rescue <- rescue %>% dplyr::mutate(
+rescue <- rescue %>% sparklyr::mutate(
     cost_group=dplyr::case_when(total_cost<300 ~ "small",
                                 total_cost>=300 & total_cost<900 ~ "medium",
                                 total_cost>=900 ~ "large",
@@ -27,8 +25,9 @@ rescue <- rescue %>% dplyr::mutate(
 
 
 rescue %>% 
-    dplyr::select("animal_group", "description", "total_cost", "cost_group") %>%
-    head(7)
+    sparklyr::select("animal_group", "description", "total_cost", "cost_group") %>%
+    head(7) %>%
+    sparklyr::collect()
 
 rescue %>% sparklyr::sdf_nrow()
 
