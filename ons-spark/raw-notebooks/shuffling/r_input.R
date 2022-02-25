@@ -15,15 +15,15 @@ sc <- sparklyr::spark_connect(
 
 seed_no <- 999L
 
-example_1 <- sparklyr::sdf_register(sparklyr::sdf_seq(sc, 0, 19, repartition=2), "example_1")
-sparklyr::tbl_cache(sc, "example_1")
+example_1 <- sparklyr::sdf_seq(sc, 0, 19, repartition=2)
+
 example_1 %>%
     sparklyr::collect() %>%
     print()
 
 example_1 <- example_1 %>%
     sparklyr::mutate(partition_id = spark_partition_id())
-sparklyr::tbl_cache(sc, "example_1")
+
 example_1 %>%
     sparklyr::collect() %>%
     print()
@@ -33,7 +33,6 @@ example_1 <- example_1 %>%
         rand1 = ceil(rand(seed_no) * 10),
         partition_id = spark_partition_id())
 
-sparklyr::tbl_cache(sc, "example_1")
 example_1 %>%
     sparklyr::collect() %>%
     print()
@@ -45,15 +44,6 @@ example_1 <- example_1 %>%
 example_1 %>%
     sparklyr::collect() %>%
     print()
-
-spark_ui_url <- paste0(
-    "http://",
-    "spark-",
-    Sys.getenv("CDSW_ENGINE_ID"),
-    ".",
-    Sys.getenv("CDSW_DOMAIN"))
-
-spark_ui_url
 
 sparklyr::spark_disconnect(sc)
 
@@ -92,8 +82,6 @@ print(head(collected_df, 5))
 print("Bottom 5 rows:")
 print(tail(collected_df, 5))
 
-spark_ui_url
-
 unsorted_df <- sparklyr::sdf_seq(sc, 0, 10**5 - 1) %>%
     sparklyr::mutate(rand1 = ceil(rand(seed_no) * 10),
                      # Create temporary column for sorting descending
@@ -115,8 +103,6 @@ print("Top 5 rows:")
 print(head(sorted_collected_df, 5))
 print("Bottom 5 rows:")
 print(tail(sorted_collected_df, 5))
-
-spark_ui_url
 
 sorted_df %>%
     sparklyr::spark_dataframe() %>%

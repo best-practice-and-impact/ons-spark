@@ -193,13 +193,10 @@ cell_no,execution_count,tidy_python_output,r_output
 19    18            1     9                1
 20     7            0    10                1
 "
-19,7,"'spark-hsqn6oivc2earsau.cdswmn-d01-01.ons.statistics.gov.uk'
-","[1] ""http://spark-4pc2aj0cx6vfyf9c.cdswmn-d01-01.ons.statistics.gov.uk""
-"
-22,8,,
-25,9,,
-28,10,,
-31,11,"Row count:  100
+19,8,,
+22,9,,
+25,10,,
+28,11,"Row count:  100
 
 Top 5 rows:
     rand1  rand2  row_count
@@ -237,10 +234,7 @@ Bottom 5 rows:
 4    10     9       989
 5    10    10       959
 "
-34,12,"'spark-hsqn6oivc2earsau.cdswmn-d01-01.ons.statistics.gov.uk'
-","[1] ""http://spark-4pc2aj0cx6vfyf9c.cdswmn-d01-01.ons.statistics.gov.uk""
-"
-37,13,"Row count:  100000
+32,13,"Row count:  100000
 
 Top 5 rows:
     id  rand1
@@ -278,60 +272,57 @@ Bottom 5 rows:
 4 99963     1
 5 99975     1
 "
-39,14,"'spark-hsqn6oivc2earsau.cdswmn-d01-01.ons.statistics.gov.uk'
-","[1] ""http://spark-4pc2aj0cx6vfyf9c.cdswmn-d01-01.ons.statistics.gov.uk""
-"
-42,15,"== Parsed Logical Plan ==
+35,15,"== Parsed Logical Plan ==
 'Sort ['rand1 DESC NULLS LAST], true
-+- Sort [rand1#167L ASC NULLS FIRST], true
-   +- Sort [rand1#167L DESC NULLS LAST], true
-      +- Sort [rand1#167L ASC NULLS FIRST], true
-         +- Project [id#165L, CEIL((rand(999) * cast(10 as double))) AS rand1#167L]
++- Sort [rand1#77L ASC NULLS FIRST], true
+   +- Sort [rand1#77L DESC NULLS LAST], true
+      +- Sort [rand1#77L ASC NULLS FIRST], true
+         +- Project [id#75L, CEIL((rand(999) * cast(10 as double))) AS rand1#77L]
             +- Range (0, 100000, step=1, splits=Some(2))
 
 == Analyzed Logical Plan ==
 id: bigint, rand1: bigint
-Sort [rand1#167L DESC NULLS LAST], true
-+- Sort [rand1#167L ASC NULLS FIRST], true
-   +- Sort [rand1#167L DESC NULLS LAST], true
-      +- Sort [rand1#167L ASC NULLS FIRST], true
-         +- Project [id#165L, CEIL((rand(999) * cast(10 as double))) AS rand1#167L]
+Sort [rand1#77L DESC NULLS LAST], true
++- Sort [rand1#77L ASC NULLS FIRST], true
+   +- Sort [rand1#77L DESC NULLS LAST], true
+      +- Sort [rand1#77L ASC NULLS FIRST], true
+         +- Project [id#75L, CEIL((rand(999) * cast(10 as double))) AS rand1#77L]
             +- Range (0, 100000, step=1, splits=Some(2))
 
 == Optimized Logical Plan ==
-Sort [rand1#167L DESC NULLS LAST], true
-+- Project [id#165L, CEIL((rand(999) * 10.0)) AS rand1#167L]
+Sort [rand1#77L DESC NULLS LAST], true
++- Project [id#75L, CEIL((rand(999) * 10.0)) AS rand1#77L]
    +- Range (0, 100000, step=1, splits=Some(2))
 
 == Physical Plan ==
-*(2) Sort [rand1#167L DESC NULLS LAST], true, 0
-+- Exchange rangepartitioning(rand1#167L DESC NULLS LAST, 100)
-   +- *(1) Project [id#165L, CEIL((rand(999) * 10.0)) AS rand1#167L]
+*(2) Sort [rand1#77L DESC NULLS LAST], true, 0
++- Exchange rangepartitioning(rand1#77L DESC NULLS LAST, 100)
+   +- *(1) Project [id#75L, CEIL((rand(999) * 10.0)) AS rand1#77L]
       +- *(1) Range (0, 100000, step=1, splits=2)
 ","<jobj[73]>
   org.apache.spark.sql.execution.QueryExecution
   == Parsed Logical Plan ==
 'Project ['id, 'rand1]
-+- 'UnresolvedRelation `sparklyr_tmp_26ee478d_a126_4d89_a54a_1d73dbbcdbf9`
++- 'UnresolvedRelation `sparklyr_tmp_8b6bcde2_597e_41a1_afea_a2c90539caa0`
 
 == Analyzed Logical Plan ==
 id: int, rand1: bigint
 Project [id#67, rand1#75L]
-+- SubqueryAlias `sparklyr_tmp_26ee478d_a126_4d89_a54a_1d73dbbcdbf9`
++- SubqueryAlias `sparklyr_tmp_8b6bcde2_597e_41a1_afea_a2c90539caa0`
    +- Sort [rand2#76 ASC NULLS FIRST], true
       +- Project [id#67, rand1#75L, rand2#76]
-         +- SubqueryAlias `sparklyr_tmp_0cf297c4_68fb_4b2e_acab_0a6359733a3c`
+         +- SubqueryAlias `sparklyr_tmp_3c476af7_38ac_4f93_ba79_f890f7612595`
             +- Sort [rand1#75L ASC NULLS FIRST], true
                +- Project [id#67, rand1#75L, rand2#76]
-                  +- SubqueryAlias `sparklyr_tmp_5de990d6_c5f5_4abe_b171_d58860c98770`
+                  +- SubqueryAlias `sparklyr_tmp_cf649a0a_9542_4b87_bd0c_5587d8ca5c9b`
                      +- Sort [rand2#76 ASC NULLS FIRST], true
                         +- Project [id#67, rand1#75L, rand2#76]
-                           +- SubqueryAlias `sparklyr_tmp_a2b199d1_5f63_404c_8fe7_23ee206fecbd`
+                           +- SubqueryAlias `sparklyr_tmp_04e46434_3727_4701_a902_1a899f335459`
                               +- Sort [rand1#75L ASC NULLS FIRST], true
                                  +- Project [id#67, rand1#75L, CheckOverflow((promote_precision(cast(cast(rand1#75L as decimal(20,0)) as decimal(21,1))) * promote_precision(cast(-1.0 as decimal(21,1)))), DecimalType(23,1)) AS rand2#76]
                                     +- SubqueryAlias `q01`
                                        +- Project [id#67, CEIL((rand(999) * cast(10.0 as double))) AS rand1#75L]
-                                          +- SubqueryAlias `sparklyr_tmp_3dd9105f_d553_454d_86d7_8927b16e47d7`
+                                          +- SubqueryAlias `sparklyr_tmp_fb1a6a63_ad59_4c65_a7a1_3b5c1fd9e7a8`
                                              +- LogicalRDD [id#67], false
 
 == Optimized Logical Plan ==
