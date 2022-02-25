@@ -84,7 +84,7 @@ sc <- sparklyr::spark_connect(
 
 ```
 ````
-As we will be using random numbers in this example we set the seed, so that the results can be replicated:
+As we will be using random numbers in this example we set the seed, so that that repeated runs of the code will not change the results.
 ````{tabs}
 ```{code-tab} py
 seed_no = 999
@@ -98,20 +98,17 @@ seed_no <- 999L
 ````
 For this example, create a DataFrame with one column, `id`, 20 rows and two partitions using [`spark.range()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.range.html)/[`sdf_seq()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_seq.html).
 
-We are caching the DataFrame after it is created with [`.cache()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.cache.html)/[`tbl_cache()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/tbl_cache.html), so that each action won't run the whole plan again from the start. This will make repeated actions faster and will not require recalculation of the random numbers. For more details on caching please see the article on Persisting.
-
 Now look at the DF:
 ````{tabs}
 ```{code-tab} py
 example_1 = spark.range(20, numPartitions=2)
-example_1.cache()
 example_1.show()
 ```
 
 ```{code-tab} r R
 
-example_1 <- sparklyr::sdf_register(sparklyr::sdf_seq(sc, 0, 19, repartition=2), "example_1")
-sparklyr::tbl_cache(sc, "example_1")
+example_1 <- sparklyr::sdf_seq(sc, 0, 19, repartition=2)
+
 example_1 %>%
     sparklyr::collect() %>%
     print()
@@ -151,7 +148,6 @@ To see how it is partitioned in Spark add another column using [`F.spark_partiti
 ````{tabs}
 ```{code-tab} py
 example_1 = example_1.withColumn("partition_id", F.spark_partition_id())
-example_1.cache()
 example_1.show()
 ```
 
@@ -159,7 +155,7 @@ example_1.show()
 
 example_1 <- example_1 %>%
     sparklyr::mutate(partition_id = spark_partition_id())
-sparklyr::tbl_cache(sc, "example_1")
+
 example_1 %>%
     sparklyr::collect() %>%
     print()
@@ -202,7 +198,6 @@ example_1 = (example_1
              .withColumn("rand1", F.ceil(F.rand(seed_no) * 10))
              .withColumn("partition_id", F.spark_partition_id()))
 
-example_1.cache()
 example_1.show()
 ```
 
@@ -213,7 +208,6 @@ example_1 <- example_1 %>%
         rand1 = ceil(rand(seed_no) * 10),
         partition_id = spark_partition_id())
 
-sparklyr::tbl_cache(sc, "example_1")
 example_1 %>%
     sparklyr::collect() %>%
     print()
@@ -302,32 +296,8 @@ We can see that some data has moved between the partitions. Specifically, any ro
 
 As we specified `spark.sql.shuffle.partitions` to be  `2` in the config, the shuffle has returned two partitions. In practical usage you will almost never only use two partitions, but this principle applies regardless of the size of the DF or number of partitions.
 
-Another way to see when a shuffle has occurred is to check the Spark UI, where a shuffle is referred to as an **Exchange**. This is covered in more detail in the Spark Application and UI article.
+Another way to see when a shuffle has occurred is to check the Spark UI, where a shuffle is referred to as an **Exchange**. This is covered in more detail in the Spark Application and UI article. In a local Spark session, the URL is http://localhost:4040/.
 
-Generate a link to the Spark UI:
-````{tabs}
-```{code-tab} py
-spark_ui_url = "spark-%s.%s" % (os.environ["CDSW_ENGINE_ID"], os.environ["CDSW_DOMAIN"])
-spark_ui_url
-```
-
-```{code-tab} r R
-
-spark_ui_url <- paste0(
-    "http://",
-    "spark-",
-    Sys.getenv("CDSW_ENGINE_ID"),
-    ".",
-    Sys.getenv("CDSW_DOMAIN"))
-
-spark_ui_url
-
-```
-````
-
-```plaintext
-'spark-hsqn6oivc2earsau.cdswmn-d01-01.ons.statistics.gov.uk'
-```
 There are different visualisations available in the Spark UI; here we will choose SQL. There should be four completed queries, which relate to the four actions we have called to this point in the Spark session.
 
 ![List of completed SQL queries in Spark UI](../images/shuffling_example1_ui_list.png)
@@ -417,7 +387,7 @@ joined_df <- example_2A %>%
 
 ```
 ````
-For the action, we are calling a `collect`-style operation (`.toPandas()`/`collect()`) rather than `.show(n)` (PySpark) or `head(n) %>% collect()` (sparklyr). The reason is `.show(n)`/`head(n)` will only do the minimum required to return `n` rows, whereas `.toPandas()`/`collect()` causes all the data to be collected to the driver from the Spark cluster, forcing a full calculation and filling the cache.
+For the action, we are calling a `collect`-style operation (`.toPandas()`/`collect()`) rather than `.show(n)` (PySpark) or `head(n) %>% collect()` (sparklyr). The reason is `.show(n)`/`head(n)` will only do the minimum required to return `n` rows, whereas `.toPandas()`/`collect()` causes all the data to be collected to the driver from the Spark cluster, forcing a full calculation.
 
 Then sanity check the result, by getting the row count and the top and bottom 5 rows:
 ````{tabs}
@@ -466,21 +436,7 @@ Bottom 5 rows:
 The result is as expected.
 
 Rather than try and print out the `partition_id` like we did in the first example, here the Spark UI is much more informative:
-````{tabs}
-```{code-tab} py
-spark_ui_url
-```
 
-```{code-tab} r R
-
-spark_ui_url
-
-```
-````
-
-```plaintext
-'spark-hsqn6oivc2earsau.cdswmn-d01-01.ons.statistics.gov.uk'
-```
 ![Spark UI showing exchanges when a DF is joined, grouped and sorted](../images/shuffling_example2_sql_ui.png)
 
 We can visually see where a shuffle takes place, in this case, on both DataFrames prior to the join, then when grouping, and finally one more when sorting at the end.
@@ -603,22 +559,6 @@ Bottom 5 rows:
 99998  99963      1
 99999  99975      1
 ```
-
-````{tabs}
-```{code-tab} py
-spark_ui_url
-```
-
-```{code-tab} r R
-
-spark_ui_url
-
-```
-````
-
-```plaintext
-'spark-hsqn6oivc2earsau.cdswmn-d01-01.ons.statistics.gov.uk'
-```
 ![Spark UI showing one exchange for multiple DF sorting operations](../images/shuffling_catalyst_ui.png)
 
 On the plan, we only have one exchange, but we gave it four operations which should cause a shuffle. What has happened is that Spark has optimised the plan to only include one shuffle. This is a feature of Spark called the *catalyst optimizer* and is explained further in the Persisting article.
@@ -642,30 +582,30 @@ sorted_df %>%
 ```plaintext
 == Parsed Logical Plan ==
 'Sort ['rand1 DESC NULLS LAST], true
-+- Sort [rand1#167L ASC NULLS FIRST], true
-   +- Sort [rand1#167L DESC NULLS LAST], true
-      +- Sort [rand1#167L ASC NULLS FIRST], true
-         +- Project [id#165L, CEIL((rand(999) * cast(10 as double))) AS rand1#167L]
++- Sort [rand1#77L ASC NULLS FIRST], true
+   +- Sort [rand1#77L DESC NULLS LAST], true
+      +- Sort [rand1#77L ASC NULLS FIRST], true
+         +- Project [id#75L, CEIL((rand(999) * cast(10 as double))) AS rand1#77L]
             +- Range (0, 100000, step=1, splits=Some(2))
 
 == Analyzed Logical Plan ==
 id: bigint, rand1: bigint
-Sort [rand1#167L DESC NULLS LAST], true
-+- Sort [rand1#167L ASC NULLS FIRST], true
-   +- Sort [rand1#167L DESC NULLS LAST], true
-      +- Sort [rand1#167L ASC NULLS FIRST], true
-         +- Project [id#165L, CEIL((rand(999) * cast(10 as double))) AS rand1#167L]
+Sort [rand1#77L DESC NULLS LAST], true
++- Sort [rand1#77L ASC NULLS FIRST], true
+   +- Sort [rand1#77L DESC NULLS LAST], true
+      +- Sort [rand1#77L ASC NULLS FIRST], true
+         +- Project [id#75L, CEIL((rand(999) * cast(10 as double))) AS rand1#77L]
             +- Range (0, 100000, step=1, splits=Some(2))
 
 == Optimized Logical Plan ==
-Sort [rand1#167L DESC NULLS LAST], true
-+- Project [id#165L, CEIL((rand(999) * 10.0)) AS rand1#167L]
+Sort [rand1#77L DESC NULLS LAST], true
++- Project [id#75L, CEIL((rand(999) * 10.0)) AS rand1#77L]
    +- Range (0, 100000, step=1, splits=Some(2))
 
 == Physical Plan ==
-*(2) Sort [rand1#167L DESC NULLS LAST], true, 0
-+- Exchange rangepartitioning(rand1#167L DESC NULLS LAST, 100)
-   +- *(1) Project [id#165L, CEIL((rand(999) * 10.0)) AS rand1#167L]
+*(2) Sort [rand1#77L DESC NULLS LAST], true, 0
++- Exchange rangepartitioning(rand1#77L DESC NULLS LAST, 100)
+   +- *(1) Project [id#75L, CEIL((rand(999) * 10.0)) AS rand1#77L]
       +- *(1) Range (0, 100000, step=1, splits=2)
 ```
 The key output here is the difference between the **Parsed** and **Analyzed Logical Plans**, and the **Optimized Logical Plan**. We can see in the first two that all our sorting operations are present, but in the **Optimized**, only the final sort is. Hence we only have one shuffle.
@@ -706,7 +646,6 @@ In this article we have demonstrated:
 PySpark Documentation:
 - [`.rdd.getNumPartitions()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.RDD.getNumPartitions.html) 
 - [`spark.range()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.range.html)
-- [`.cache()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.cache.html)
 - [`F.spark_partition_id()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.spark_partition_id.html)
 - [`F.rand()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.rand.html)
 - [`F.ceil()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.ceil.html)
@@ -721,7 +660,6 @@ PySpark Documentation:
 sparklyr Documentation:
 - [`sdf_num_partitions()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_num_partitions.html)
 - [`sdf_seq()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_seq.html)
-- [`tbl_cache()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/tbl_cache.html)
 - [`collect()`](https://dplyr.tidyverse.org/reference/compute.html)
 - [`sdf_broadcast()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_broadcast.html)
 - [`case_when()`](https://dplyr.tidyverse.org/reference/case_when.html)
