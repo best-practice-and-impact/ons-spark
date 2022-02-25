@@ -71,6 +71,7 @@ print("http://localhost:4040/jobs/")
 ````
 
 ```plaintext
+http://localhost:4040/jobs/
 ```
 If you are running the source notebook and follow the above link you will see something similar to the screenshot below, with the application name on the top right and various tabs along the top. 
 
@@ -303,6 +304,7 @@ ggplot2::ggplot(aggregated_r_plot, ggplot2::aes(cost_group, count)) +
 ```
 ````
 
+```
 ![Incident cost by cost group chart](../images/spark_app_incident_cost_chart.png)
 
 Now we have our chart, let's see how that translates to tasks in the Spark UI.
