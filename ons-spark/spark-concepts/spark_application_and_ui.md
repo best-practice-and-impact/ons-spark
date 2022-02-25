@@ -304,7 +304,6 @@ ggplot2::ggplot(aggregated_r_plot, ggplot2::aes(cost_group, count)) +
 ```
 ````
 
-```
 ![Incident cost by cost group chart](../images/spark_app_incident_cost_chart.png)
 
 Now we have our chart, let's see how that translates to tasks in the Spark UI.
@@ -342,8 +341,6 @@ aggregated_r <- aggregated_spark %>%
 ```
 ````
 
-```plaintext
-```
 Now navigate to the details of the latter stage of the latest job within the UI and you will see something similar to the screenshot below. Of course, the all important metric to compare is the time taken to complete the stage. Previously, using 200 partitions the stage time was 0.6 seconds, using 2 partitions the stage time was 0.3 seconds. Looking at this page we can see why.
 
 ![Task timeline for fewer tasks showing better performance](../images/spark_app_2_tasks.png)

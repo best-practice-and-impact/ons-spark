@@ -4,7 +4,7 @@
 
 There are many versions of the diagram below on the internet. This version illustrates how we interact with data on the Cloudera cluster within the Data Access Plaform using Spark. If ONS staff are looking for more information online, note that our cluster runs on YARN.
 
-```{figure} ../../../../images/spark_driver_executors.PNG
+```{figure} /images/spark_driver_executors.PNG
 ---
 width: 100%
 name: architecture
