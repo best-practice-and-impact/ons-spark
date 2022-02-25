@@ -8,8 +8,6 @@ sc <- sparklyr::spark_connect(
     app_name = "spark-app-ui",
     config = default_config)
 
-print("http://localhost:4040/jobs/")
-
 config <- yaml::yaml.load_file("ons-spark/config.yaml")
 
 rescue <- sparklyr::spark_read_parquet(sc, config$rescue_path)
