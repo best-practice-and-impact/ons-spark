@@ -40,9 +40,9 @@ We will create an application and execute some code to create jobs. Then we can 
 
 ### Create an application
 
-The first step is to create an application. Once we create a Spark application we can look at the Spark UI. If we stop the session using `spark.stop()`/`spark_disconnect()` or stopping the CDSW session, the Spark UI for our application can no longer be accessed.
+The first step is to create an application. Once we create a Spark application we can look at the Spark UI. If we stop the Spark session using `spark.stop()`/`spark_disconnect()` or disconnect from the notebook, the Spark UI for our application can no longer be accessed.
 
-Let's start with the necesarry imports and create an application. We then generate a link to the Spark UI. Note this address is used for a local Spark session, for more information on how to find the Spark UI see the [documentation on monitoring](https://spark.apache.org/docs/latest/monitoring.html).
+Let's start with the necesarry imports and create an application. 
 ````{tabs}
 ```{code-tab} py
 import os, IPython
@@ -50,8 +50,6 @@ import yaml
 from pyspark.sql import SparkSession, functions as F
 
 spark = SparkSession.builder.master("local[2]").appName("spark-app-ui").getOrCreate()
-
-print("http://localhost:4040/jobs/")
 ```
 
 ```{code-tab} r R
@@ -64,15 +62,11 @@ sc <- sparklyr::spark_connect(
     master = "local[2]",
     app_name = "spark-app-ui",
     config = default_config)
-
-print("http://localhost:4040/jobs/")
-
 ```
 ````
 
-```plaintext
-http://localhost:4040/jobs/
-```
+We can now look at the Spark UI using the URL  http://localhost:4040/jobs/. Note this address is used for a local Spark session, for more information on how to navigate to the Spark UI see the [documentation on monitoring](https://spark.apache.org/docs/latest/monitoring.html).
+
 If you are running the source notebook and follow the above link you will see something similar to the screenshot below, with the application name on the top right and various tabs along the top. 
 
 There is a lot of useful information in the Spark UI, but in this article we will only concentrate on the *Jobs* and *Stages* tabs. Note that we haven't executed any *Jobs* yet, so there isn't much to see at the moment.
