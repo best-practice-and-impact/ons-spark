@@ -17,7 +17,8 @@ class MarkdownFromNotebook():
         source_nb = nbf.read(input_path, nbf.NO_CONVERT)
         self.source_nb = source_nb
         self.nb = deepcopy(source_nb)
-        self.assign_cell_no()
+        self._assign_cell_no()
+        self._format_adjacent_markdown()
         self.tidy_python_cell_outputs()
         self.extract_r()
 
@@ -28,13 +29,36 @@ class MarkdownFromNotebook():
         if os.path.exists(r_path):
             os.remove(r_path)
     
-    def assign_cell_no(self):
+    def _assign_cell_no(self):
         """
         Assign cell numbers to each cell in the notebook
         """
         for cell_no, cell in enumerate(self.nb["cells"]):
-            cell["cell_no"] = cell_no        
-        
+            cell["cell_no"] = cell_no
+            
+    def _is_markdown(self, cell_type, cell_source):
+        """
+        Determine if a cell is pure markdown without R code
+        """
+        if cell_type == "markdown" and cell_source[:4] != "```r":
+            return True
+        else:
+            return False
+    
+    def _format_adjacent_markdown(self):
+        """
+        Adds two new lines to markdown cells if adjacent, to ensure output
+            matches the source notebook
+        """
+        # Use range rather than enumerate as do not want last item
+        for cell_no in range(len(self.nb["cells"]) - 1):
+            cell = self.nb["cells"][cell_no]
+            next_cell = self.nb["cells"][cell_no + 1]
+            if self._is_markdown(cell["cell_type"], cell["source"]):
+                if self._is_markdown(next_cell["cell_type"],
+                                     next_cell["source"]):
+                    cell["source"] = cell["source"] + "\n\n"
+            
     def extract_r(self):
         """
         Extract the code from the R cells. Attaches code to previous cell if
@@ -53,13 +77,34 @@ class MarkdownFromNotebook():
                 previous_cell["r_code"] = r_code
             else:
                 cell["r_code"] = r_code
+                
+    def _delete_checkpoint(self, checkpoint_path, stderr):
+        """
+        Delete checkpoint directory if it exists
+        
+        stdout should only display information, so the stderr is inherited from
+            the show_warnings value in run_r
+        """
+        if checkpoint_path != None:
+            if os.path.exists(checkpoint_path):
+                subprocess.run(f"hdfs dfs -rm -r -skipTrash {checkpoint_path}",
+                                shell=True, stdout=stderr)
+            # Remove checkpoints if running a local session
+            elif checkpoint_path[:8] == "file:///":
+                if os.path.exists(checkpoint_path[8:]):
+                    subprocess.run(
+                        f"hdfs dfs -rm -r -skipTrash {checkpoint_path}",
+                        shell=True, stdout=stderr)
 
-    def run_r(self, r_path, show_warnings):
+    def run_r(self, r_path, show_warnings, checkpoint_path=None):
         """
         Run the R code and attach results to cells
         
         The code is saved in r_path and ran with Rscript, optionally
             suppressing warnings in the R output
+        
+        Optionally clears checkpoint cache, which is needed when running some
+            R scripts
         """
         self._remove_r_path(r_path)
         
@@ -76,6 +121,10 @@ class MarkdownFromNotebook():
             stderr = None
                 
         for cell in r_cells:
+            # Delete old checkpoint files before running next cell
+            self._delete_checkpoint(checkpoint_path, stderr)
+            
+            # Append R code cell to previous input and run 
             r_code = cell["r_code"]
             with open(r_path, "a") as f:
                 f.write("".join(r_code))
@@ -144,9 +193,10 @@ class MarkdownFromNotebook():
             
             # add Python output
             if return_python == True and "outputs" in cell.keys():
-                output.append("\n```plaintext\n")
-                output.append(cell["tidy_python_output"])
-                output.append("```\n")
+                if len(cell["outputs"]) > 0:
+                    output.append("\n```plaintext\n")
+                    output.append(cell["tidy_python_output"])
+                    output.append("```\n")
             
             # add R output
             if return_r == True and "r_output" in cell.keys():
@@ -227,7 +277,8 @@ def markdown_from_notebook(notebook_path,
                            r_path,
                            output_csv,
                            show_warnings=True,
-                           output_type="python"):
+                           output_type="python",
+                           checkpoint_path=None):
     """
     Creates a Markdown file with code tabs for Python and R saved as
         output_path, from which a Jupyterbook can be created.
@@ -253,12 +304,14 @@ def markdown_from_notebook(notebook_path,
             * r: outputs only R code
             * all: outputs Python and R code
             * None: no outputs will be returned
+        checkpoint_path (string): clears checkpoints in this directory if
+            specified when running each R cell
         
     Returns:
         MarkdownFromNotebook
     """
     md_notebook = MarkdownFromNotebook(notebook_path)
-    md_notebook.run_r(r_path, show_warnings)
+    md_notebook.run_r(r_path, show_warnings, checkpoint_path)
     md_notebook.create_markdown_output(output_type)
     md_notebook.write_markdown_file(output_path)
     md_notebook.write_outputs_csv(output_csv)
