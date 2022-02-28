@@ -4,7 +4,8 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Spark Sessions &#8212; Spark at the ONS</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
@@ -38,20 +39,18 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script>let toggleHintShow = 'Click to show';</script>
-    <script>let toggleHintHide = 'Click to hide';</script>
-    <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/tabs.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script>
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -283,7 +282,7 @@ const thebe_selector_output = ".output, .cell_output"
                 data-placement="left">.md</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -317,7 +316,7 @@ const thebe_selector_output = ".output, .cell_output"
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+        <div class="d-none d-md-block col-md-2 bd-toc show">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -376,80 +375,20 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Spark Sessions</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#architecture">
-   Architecture
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#creating-a-spark-session">
-   Creating a Spark Session
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#using-default-parameters">
-     Using default parameters
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#specifying-configs">
-     Specifying configs
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#config-glossary">
-   Config Glossary
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#calculating-resource-allocation">
-   Calculating Resource Allocation
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#resource-allocation">
-     Resource allocation
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#reserving-resource">
-     Reserving resource
-    </a>
-   </li>
-  </ul>
- </li>
-</ul>
-
-                        </nav>
-                    </div>
-                </div>
-            </div>
-            
+        
               <div>
                 
-  <div class="tex2jax_ignore mathjax_ignore section" id="spark-sessions">
+  <section class="tex2jax_ignore mathjax_ignore" id="spark-sessions">
 <h1>Spark Sessions<a class="headerlink" href="#spark-sessions" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="architecture">
+<section id="architecture">
 <h2>Architecture<a class="headerlink" href="#architecture" title="Permalink to this headline">¶</a></h2>
 <p>There are many versions of the diagram below on the internet. This version illustrates how we interact with data on the Cloudera cluster within the Data Access Plaform using Spark. If ONS staff are looking for more information online, note that our cluster runs on YARN.</p>
-<div class="figure align-default" id="id1">
+<figure class="align-default" id="id1">
 <a class="reference internal image-reference" href="../_images/spark_driver_executors.PNG"><img alt="Diagram that shows a CDSW program on an edge node linking to a resource manager and multiple worker nodes containing executors." src="../_images/spark_driver_executors.PNG" style="width: 100%;" /></a>
-<p class="caption"><span class="caption-number">Fig. 1 </span><span class="caption-text">CDSW container running on YARN</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
-</div>
+<figcaption>
+<p><span class="caption-number">Fig. 1 </span><span class="caption-text">CDSW container running on YARN</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
 <p>Each machine in a cluster is referred to as a node. We start with the edge node, which is sometimes called a gateway node because it’s our gateway or interface to the cluster. There is also a resource manager and some worker nodes.</p>
 <ol class="simple">
 <li><p>Our first step is to launch a Python or R CDSW session, which runs on the edge node.</p></li>
@@ -461,11 +400,11 @@ const thebe_selector_output = ".output, .cell_output"
 job. It will also shut them down when they are not needed. This process of switching executors on and off is called dynamic allocation.</p>
 <p>Remember we should stop the Spark session when we are finished to free up the cluster resource for others. This is done automatically when we stop our CDSW
 session, or you can also do it by running <code class="docutils literal notranslate"><span class="pre">spark.stop()</span></code>.</p>
-</div>
-<div class="section" id="creating-a-spark-session">
+</section>
+<section id="creating-a-spark-session">
 <h2>Creating a Spark Session<a class="headerlink" href="#creating-a-spark-session" title="Permalink to this headline">¶</a></h2>
 <p>There are many options when it comes to creating a Spark session. We recommend using the default parameters when getting started, you can then start adding other parameters when you learn more about how Spark works and how to tune your session to your specific needs.</p>
-<div class="section" id="using-default-parameters">
+<section id="using-default-parameters">
 <h3>Using default parameters<a class="headerlink" href="#using-default-parameters" title="Permalink to this headline">¶</a></h3>
 <p>As a starting point you can create a Spark session with all the defaults. This is the bare minimum you need to create a Spark session and will work fine in most cases. Note you should give your session a sensible name, here we have called it <code class="docutils literal notranslate"><span class="pre">default-session</span></code>.</p>
 <div class="sphinx-tabs docutils container">
@@ -487,8 +426,8 @@ session, or you can also do it by running <code class="docutils literal notransl
 </pre></div>
 </div>
 </div></div>
-</div>
-<div class="section" id="specifying-configs">
+</section>
+<section id="specifying-configs">
 <h3>Specifying configs<a class="headerlink" href="#specifying-configs" title="Permalink to this headline">¶</a></h3>
 <p>When you have a good grasp of how Spark works, you understand what processing needs doing and most importantly the data, you can look to introduce some customised configurations to your Spark session. The session builder will look something like this,</p>
 <div class="sphinx-tabs docutils container">
@@ -512,9 +451,9 @@ session, or you can also do it by running <code class="docutils literal notransl
 <p>The most popular configs to set are listed and explained in the <a class="reference external" href="#config-glossary">Config glossary</a> section below. Some example Spark configurations are given in [example Spark configurations] section.</p>
 <p>See the page on <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code> for setting these properties in other ways.</p>
 <p>The <a class="reference external" href="https://spark.rstudio.com/guides/connections/">Configuring Spark Connections</a> page of the RStudio documentation gives a good introduction on this topic that builds on the guidance here.</p>
-</div>
-</div>
-<div class="section" id="config-glossary">
+</section>
+</section>
+<section id="config-glossary">
 <h2>Config Glossary<a class="headerlink" href="#config-glossary" title="Permalink to this headline">¶</a></h2>
 <p>Some commonly used Spark and YARN properties are listed in this section.</p>
 <p>For more details look at the official documentation for Spark configuration:
@@ -564,8 +503,8 @@ Sets the number of partitions to use for a DataFrame after a shuffle. The defaul
 <p><strong>Console Progress Bars</strong><br />
 <code class="docutils literal notranslate"><span class="pre">.config(&quot;spark.ui.showConsoleProgress&quot;,</span> <span class="pre">&quot;true&quot;)</span></code><br />
 This setting is set to true by default in DAP, but should be set to false in order to correctly display output in CDSW.</p>
-</div>
-<div class="section" id="calculating-resource-allocation">
+</section>
+<section id="calculating-resource-allocation">
 <h2>Calculating Resource Allocation<a class="headerlink" href="#calculating-resource-allocation" title="Permalink to this headline">¶</a></h2>
 <p>Let’s take the large session from the <a class="reference external" href="http://np2rvlapxx507/DAP_CATS/guidance/-/blob/master/spark_session_sizes.ipynb">Example Spark Sessions</a> and explain the allocation of resource in more detail.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span> <span class="o">=</span> <span class="p">(</span>
@@ -582,7 +521,7 @@ This setting is set to true by default in DAP, but should be set to false in ord
 <span class="p">)</span>
 </pre></div>
 </div>
-<div class="section" id="resource-allocation">
+<section id="resource-allocation">
 <h3>Resource allocation<a class="headerlink" href="#resource-allocation" title="Permalink to this headline">¶</a></h3>
 <p>How much resource is allocated to this application? Here we are asking how many cores and memory is this application using?</p>
 <p>Cores - We have requested 5 cores per executor using <code class="docutils literal notranslate"><span class="pre">spark.executor.cores</span></code> and 5 executors with <code class="docutils literal notranslate"><span class="pre">spark.dynamicAllocation.maxExecutors</span></code>. The sum is then:</p>
@@ -590,8 +529,8 @@ This setting is set to true by default in DAP, but should be set to false in ord
 <p>Memory - Using <code class="docutils literal notranslate"><span class="pre">spark.executor.memory</span></code> we requested 10 GiB of memory (also called  <em>on-heap</em> memory) per executor. Using <code class="docutils literal notranslate"><span class="pre">spark.yarn.executor.memoryOverhead</span></code> we
 requested 1 GiB of overhead memory (also called <em>off-heap</em> memory). As before, we requested 5 executors with <code class="docutils literal notranslate"><span class="pre">spark.dynamicAllocation.maxExecutors</span></code>. Now the sum is:</p>
 <p>( 10 GiB + 1 GiB ) per executor x 5 executors = 55 GiB of memory</p>
-</div>
-<div class="section" id="reserving-resource">
+</section>
+<section id="reserving-resource">
 <h3>Reserving resource<a class="headerlink" href="#reserving-resource" title="Permalink to this headline">¶</a></h3>
 <p>An important point to remember about setting the <code class="docutils literal notranslate"><span class="pre">spark.dynamicAllocation.maxExecutors</span></code> option is that <em>although</em> Spark will increase and decrease the number of executors
 we use at any point, the <em>maximum resource requested</em> will be reserved for the application.</p>
@@ -599,9 +538,9 @@ we use at any point, the <em>maximum resource requested</em> will be reserved fo
 of memory for this application for the entirety of its duration, no matter if we are only utilising a single executor. This is not an issue here as 25 cores and 55 GiB isn’t
 excessive for processing a large DataFrame. However, if <code class="docutils literal notranslate"><span class="pre">spark.dynamicAllocation.maxExecutors</span></code> was set to 500 requests from other DAP users might be rejected and the cluster
 would be under significant strain.</p>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -625,8 +564,8 @@ would be under significant strain.</p>
 
               </div>
               
-            
-                <!-- Previous / next buttons -->
+        
+            <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="../intro.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -643,16 +582,18 @@ would be under significant strain.</p>
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-            
+        
         </div>
     </div>
     <footer class="footer">
-  <p>
-    
-      By Wil Roberts & Adrian Prince<br/>
-    
-  </p>
-</footer>
+    <div class="container">
+      <p>
+        
+          By Wil Roberts & Adrian Prince<br/>
+        
+      </p>
+    </div>
+  </footer>
 </main>
 
 
