@@ -103,7 +103,7 @@ print(paste0('Number of rows per partition: ', rows_in_part))
 Number of partitions:		 2
 Number of rows per partition:	 [2500, 2500]
 ```
-Note that the size of the partitions is the same. We will see later, if there was skew in partition sizes we would always have to wait for the largest partition to finish processing before moving on to the next task, this is commonly reffered to as a bottleneck. So Spark understandably puts a similar number of rows in each partition.
+Note that the size of the partitions is the same. We will see later, if there was skew in partition sizes we would always have to wait for the largest partition to finish processing before moving on to the next task, this is commonly referred to as a bottleneck. So Spark understandably puts a similar number of rows in each partition.
 
 The number of partitions was set by default. The property that controls this number is `spark.default.parallelism`, and to modify the default we must override it in the Spark session. See the **Spark session guidance** for more information on how to do this. To see what the default is we can look at [the Spark documentation](https://spark.apache.org/docs/2.4.4/configuration.html#execution-behavior) (if you follow the link use Ctrl+F to search for the property name).
 
@@ -114,7 +114,7 @@ The number of partitions was set by default. The property that controls this num
 
 We're running Spark in local mode with 2 cores, hence without overriding this property it will default to 2.
 
-Modifying the `spark.default.parallelism` property will set the number of partitions for all newly created DataFrames in this session. But what if we want to create a DataFrame that is unusually large or small for our session? For this case we can pass an extra argument when creating the DataFrame.
+Modifying the `spark.default.parallelism` property will set the number of partitions for all newly created DataFrames in this session. But what if we want to create a DataFrame that is unusually large or small for our session? For this case we can specify how many partitions we want when creating the DataFrame, using an extra argument `numPartitions`/`repartition` for PySpark/sparklyr.
 ````{tabs}
 ```{code-tab} py
 small_rand = spark.range(0, 10, numPartitions=1) #just 10 rows, so we'll put them into one partition
@@ -272,7 +272,7 @@ Now let's group the data, which is a wide operation, by `PostcodeDistrict` and t
 *Note PySpark and sparklyr will give different results here, we will explain why later. PySpark results are shown in this article.*
 ````{tabs}
 ```{code-tab} py
-count_by_area = (rescue.groupby('PostcodeDistrict')
+count_by_area = (rescue.groupBy('PostcodeDistrict')
     .agg(F.count('IncidentNumber').alias('Count')))
 
 count_by_area.show(5)
@@ -463,11 +463,11 @@ It's also possible to use a column name in `.repartition()` or even a number and
 
 ## Intermediate partitions in wide operations
 
-Now onto a more complex topic of intermediate partitioing.
+Now onto a more complex topic of intermediate partitioining.
 
 We saw earlier that for narrow transformations the number of partitions of input and output DataFrames is the same. We also saw that for wide transformations the number of partitions of the output DataFrame is changed to the value of the `spark.sql.shuffle.partitions` property set in the Spark session. 
 
-But what is inside the partitions of the output DataFrame after a wide operation? This depends on the operation, so in this section we will look at three wide transformations: join, groupby and window functions. Understanding how these functions work is particularly useful when we deal with skewed data, or more specifically skew in the join key, group variable or windows. We will demonstrate this with some skewed data and show that knowing your data can help you make informed decisions on scaling jobs vertically or horizontally, or employing an alternative strategy like a **salted join**.
+But what is inside the partitions of the output DataFrame after a wide operation? This depends on the operation, so in this section we will look at three wide transformations: join, group by and window functions. Understanding how these functions work is particularly useful when we deal with skewed data, or more specifically skew in the join key, group variable or windows. We will demonstrate this with some skewed data and show that knowing your data can help you make informed decisions on scaling jobs vertically or horizontally, or employing an alternative strategy like a **salted join**.
 
 *Note: If R users would like more information about window functions, please see the [Window functions](https://dplyr.tidyverse.org/articles/window-functions.html) page in the `dplyr` documentation.*
 
@@ -525,19 +525,19 @@ skewed_df %>% head(5) %>% sparklyr::collect()
 +---+--------+--------+
 only showing top 5 rows
 ```
-To confirm the detilas of the partitioning we will add a column with the partition ID, then group that column and count how many rows are in each partition. This method of counting how many rows are in each partition is very useful and much quicker than the method shown earlier, but it will not show any empty partitions like the previous method. Therefore, we will also show the total number of partitions.
+To confirm the details of the partitioning we will add a column with the partition ID, then group that column and count how many rows are in each partition. This method of counting how many rows are in each partition is very useful and much quicker than the method shown earlier, but it will not show any empty partitions like the previous method. Therefore, we will also show the total number of partitions.
 
 We'll put this into a function so we can run it again on other DataFrames later.
 ````{tabs}
 ```{code-tab} py
-def get_partitioning_info(sdf):
+def print_partitioning_info(sdf):
     sdf.withColumn("part_id", F.spark_partition_id()).groupBy("part_id").count().show()
     print(f"Number of partitions: {sdf.rdd.getNumPartitions()}")
 ```
 
 ```{code-tab} r R
 
-get_partitioning_info <- function(sdf) {
+print_partitioning_info <- function(sdf) {
     sdf %>% sparklyr::mutate(
         part_id = spark_partition_id()) %>%
     dplyr::group_by(part_id) %>%
@@ -552,12 +552,12 @@ get_partitioning_info <- function(sdf) {
 
 ````{tabs}
 ```{code-tab} py
-get_partitioning_info(skewed_df)
+print_partitioning_info(skewed_df)
 ```
 
 ```{code-tab} r R
 
-get_partitioning_info(skewed_df)
+print_partitioning_info(skewed_df)
 
 ```
 ````
@@ -617,22 +617,8 @@ write_delete <- function(sdf) {
 
 ```
 ````
-We will need a link to the Spark UI to view the details of how Spark partitions the data.
-````{tabs}
-```{code-tab} py
-print("http://localhost:4040/jobs/")
-```
+We will need a link to the Spark UI to view the details of how Spark partitions the data. When using a local session we can access the Spark UI with this URL, http://localhost:4040/jobs/.
 
-```{code-tab} r R
-
-print("http://localhost:4040/jobs/")
-
-```
-````
-
-```plaintext
-http://localhost:4040/jobs/
-```
 ### Run the jobs and investigate UI
 
 Next we will carry out the wide transformations on the `skewed_df` and apply the above function to create jobs. We have also added custom job descriptions to make it easier to find the relevant stage details in the UI.
@@ -687,43 +673,43 @@ write_delete(window_df)
 ````
 Below are images of the task timeline for the above jobs containing the wide transformations. Note that the images might look slightly different if you are running the source notebook. The processing times will also vary.
 
-The main message in this set of images is that we see a clear bottleneck in the case of the join and window function, but there is no bottleneck in the groupby.
+The main message in this set of images is that we see a clear bottleneck in the case of the join and window function, but there is no bottleneck in the group by.
 
 **Join**
 
-[task timeline for skewed join](../images/partition_skew_join.png)
+![task timeline for skewed join](../images/partition_skew_join.PNG)
 
-**Groupby**
+**Group by**
 
-[task timeline for skewed groupby](../images/partition_skew_groupby.png)
+![task timeline for skewed groupby](../images/partition_skew_groupby.PNG)
 
 **Window**
 
-[task timeline for skewed windows](../images/partition_skew_window.png)
+![task timeline for skewed windows](../images/partition_skew_window.PNG)
 
 It's also useful to look at the Tasks table below the timeline to see how many records were processes in each of the 200 tasks. In the images below we have sorted the table by the *Output Size / Records* column (circled red) so that the largest tasks are at the top.
 
 **Join**
 
-[task details for skewed join](../images/partition_skew_join_table.png)
+![task details for skewed join](../images/partition_skew_join_table.PNG)
 
-**Groupby**
+**Group by**
 
-[task details for skewed groupby](../images/partition_skew_groupby_table.png)
+![task details for skewed groupby](../images/partition_skew_groupby_table.PNG)
 
 **Window**
 
-[task details for skewed windows](../images/partition_skew_window_table.png)
+![task details for skewed windows](../images/partition_skew_window_table.PNG)
 
-One last piece of information we will gather is the partitioning information of the output DataFrames using the `get_partitioning_info()` function we defined above.
+One last piece of information we will gather is the partitioning information of the output DataFrames using the `print_partitioning_info()` function we defined above.
 ````{tabs}
 ```{code-tab} py
-get_partitioning_info(joined_df)
+print_partitioning_info(joined_df)
 ```
 
 ```{code-tab} r R
 
-get_partitioning_info(joined_df)
+print_partitioning_info(joined_df)
 
 ```
 ````
@@ -744,12 +730,12 @@ Number of partitions: 200
 
 ````{tabs}
 ```{code-tab} py
-get_partitioning_info(grouped_df)
+print_partitioning_info(grouped_df)
 ```
 
 ```{code-tab} r R
 
-get_partitioning_info(grouped_df)
+print_partitioning_info(grouped_df)
 
 ```
 ````
@@ -770,12 +756,12 @@ Number of partitions: 200
 
 ````{tabs}
 ```{code-tab} py
-get_partitioning_info(window_df)
+print_partitioning_info(window_df)
 ```
 
 ```{code-tab} r R
 
-get_partitioning_info(window_df)
+print_partitioning_info(window_df)
 
 ```
 ````
@@ -800,9 +786,9 @@ All three operations involve an intermediate shuffle where the join key/grouped 
 
 There was much more work to be done on the larger partition than the smaller ones. The Spark UI shows there were more records to process on the large partition therefore the task takes much longer. Note the number of records processed in each task matches the number of rows in each join key. The output DataFrame is partitioned by the join key. 
 
-**Groupby**
+**Group by**
 
-In the case of the groupby the skewed variable isn't too much of an issue because the aggregation is quite simple and is optimised, therefore it is easy to process each partition whether there is skew or not. Again, the output DataFrame is partitioned by the grouped variable, this time there is one row on each partition.
+In the case of the group by the skewed variable isn't too much of an issue because the aggregation is quite simple and is optimised, therefore it is easy to process each partition whether there is skew or not. Again, the output DataFrame is partitioned by the grouped variable, this time there is one row on each partition.
 
 **Window**
 
@@ -810,13 +796,13 @@ Like the join, there is more work to do on the larger partitions. However, unlik
 
 ### What does this mean in practice?
 
-Highly skewed data is a common issue that causes slow processing with Spark. Above we have seen that skewed data causes skewed partitions when Spark processes wide transformations and can result in bottlenecks, where some tasks take much longer than others therefore not utilising the full potential of parallel processing. An even worse situation is where the skew causes spill, where the large partition cannot fit into it's allocated memory on an executor and overflows temporarily onto disk. We cannot recreate the issue of spill in a local session but they are easy to spot in the Stage details page in the Spark UI.
+Highly skewed data is a common issue that causes slow processing with Spark. Above we have seen that skewed data causes skewed partitions when Spark processes wide transformations and can result in bottlenecks, where some tasks take much longer than others therefore not utilising the full potential of parallel processing. An even worse situation is where the skew causes spill, where the large partition cannot fit into its allocated memory on an executor and overflows temporarily onto disk. We cannot recreate the issue of spill in a local session but they are easy to spot in the Stage details page in the Spark UI.
 
-This is where knowing your data can be useful. To help with the explanation we will refer to the join keys/groups/windows as groups. If a join/groupby/window function is causing you issues, try to work out how many groups there are and the sizes of these groups. If there are lots on smaller groups it might help to increase `spark.sql.shuffle.partitions` and aim for greater parallel power with lots of smaller executors. If there are fewer groups you might want to scale more vertically so decrease `spark.sql.shuffle.partitions` and aim for a smaller number of bulkier executors.
+This is where knowing your data can be useful. To help with the explanation we will refer to the join keys/groups/windows as groups. If a join/group by/window function is causing you issues, try to work out how many groups there are and the sizes of these groups. If there are lots on smaller groups it might help to increase `spark.sql.shuffle.partitions` and aim for greater parallel power with lots of smaller executors. If there are fewer groups you might want to scale more vertically so decrease `spark.sql.shuffle.partitions` and aim for a smaller number of bulkier executors.
 
-If you are doing a join on a highly skewed DataFrame you might want to try a **salted join**. Unfortunately there isn't a similar fix for applying a window function to a highly skewed DataFrame, but these tend to be less of an issue.
+If you are doing a join on a highly skewed DataFrame you might want to try a **salted join**. If you are dealing with skew in a window function you can apply a group by and join to achieve the same result. However, these are alternative solutions when dealing with highly skewed data and in most cases a regular join or window function are more efficient and makes the code more readable. 
 
-## Partition when writing data
+## Partitions when writing data
 
 As previously mentioned, we can also partition by a certain column when writing to disk. The reason why this is useful is we can choose which partitions we want to read in later. This is really useful for larger data sets. 
 
@@ -848,7 +834,7 @@ sparklyr::spark_write_parquet(rescue,
 ````
 This will create multiple directories in the `rescue_by_year.parquet` directory on the file system, one for each year in the data. 
 
-The easiest way to see this is by navigating to these directories using the file browser in HUE. Alternativly we can use the `subprocess` package to run lines of code through the terminal to return the contents of the `rescue_by_year.parquet` directory.
+The easiest way to see this is by navigating to these directories using the file browser in HUE. Alternatively we can use the `subprocess` package to run lines of code through the terminal to return the contents of the `rescue_by_year.parquet` directory.
 ````{tabs}
 ```{code-tab} py
 import subprocess
@@ -859,7 +845,7 @@ print(p.stdout)
 
 ```{code-tab} r R
 
-cmd <- paste0("hdfs dfs -rm -r -skipTrash ", repartition_path)
+cmd <- paste0("hdfs dfs -ls -C ", repartition_path)
 system(cmd)
 
 ```
@@ -884,8 +870,8 @@ On the right of the ouput above you will see there is one directory for each `Ca
 Finally, we will delete these files to clean up the file system.
 ````{tabs}
 ```{code-tab} py
-cmd = f"hdfs dfs -ls -C {repartition_path}"
-p = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, universal_newlines=True)
+cmd = f"hdfs dfs -rm -r -skipTrash {repartition_path}"
+p = subprocess.run(cmd, shell=True)
 ```
 
 ```{code-tab} r R
@@ -899,9 +885,9 @@ system(cmd)
 
 The short answer is- don't worry about it too much!
 
-Let's flip the question around. What are the consequences of getting the number of partitions "wrong"? Most of the time- nothing. You could spend hours trying to optimise the number of partitions and gain a $x2$ increase in processing speed, but it's likely there are other things you can do that will gain $x10$ or $x100$ increase in processing speed. 
+Let's flip the question around. What are the consequences of getting the number of partitions "wrong"? Most of the time- nothing. You could spend hours trying to optimise the number of partitions and perhaps speed up the processing time to be twice as quick, but sometimes there are simpler things you can do that might speed up the processing by ten times or a hundred times the processing speed. 
 
-As the computer scientist Donald Knuth once wrote, 
+As the computer scientist Donald Knuth once wrote: 
 
 >Premature optimization is the root of all evil (or at least most of it) in programming
 >
@@ -911,10 +897,10 @@ More importantly it's good practice to be aware of the size of the DataFrame and
 
 A more accurate answer depends on a variety of factors including: the size of the data, data types, distributions within the data, type of processing and other properties defined in the `SparkSession`. Here are some tips for quick wins:
 
-- as suggested above, the first step is getting the code right. Only look to optimise if you're running into performance issues
-- decreasing the `spark.sql.shuffle.partitions` parameter is sensible for smaller datasets
-- if you google it, you might find the optimum size for a Spark partitions is 100-200MB. In practice, this is impossible to keep track of in an analysis script, but it gives you an idea of what is considered big or small
-- it makes sense for the number of partitions to be some multiple of the number of cores in the Spark session. This will help to avoid redundant cores
+- As suggested above, the first step is getting the code right. Only look to optimise if you're running into performance issues.
+- Decreasing the `spark.sql.shuffle.partitions` parameter is sensible for smaller datasets.
+- If you search for an answer on the web, you might find the optimum size for a Spark partitions is 100-200MB. In practice, this is impossible to keep track of in an analysis script, but it gives you an idea of what is considered big or small.
+- It makes sense for the number of partitions to be some multiple of the number of cores in the Spark session. This will help to avoid redundant cores.
 
 Remember, it's only worth experimenting on the *optimum* number if you have a real performance issue. 
 
@@ -929,13 +915,10 @@ PySpark:
 - [`Window.partitionBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Window.partitionBy.html?highlight=partitionby#pyspark.sql.Window.partitionBy)
 - [`DataFrameWriter.partitionBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrameWriter.partitionBy.html?highlight=partitionby#pyspark.sql.DataFrameWriter.partitionBy)
 
-sparklyr:
+sparklyr and dplyr:
 
-- [`sdf_num_partitions()`](https://www.rdocumentation.org/packages/sparklyr/versions/0.8.2/topics/sdf_num_partitions)
-- [`spark_apply()`](https://www.rdocumentation.org/packages/sparklyr/versions/1.7.5/topics/spark_apply)
-- [`sdf_coalesce()`](https://www.rdocumentation.org/packages/sparklyr/versions/1.7.5/topics/sdf_coalesce)
-- [`sdf_repartition()`](https://www.rdocumentation.org/packages/sparklyr/versions/1.7.5/topics/sdf_repartition)
-
-dplyr:
-
+- [`sparklyr::sdf_num_partitions()`](https://www.rdocumentation.org/packages/sparklyr/versions/0.8.2/topics/sdf_num_partitions)
+- [`sparklyr::spark_apply()`](https://www.rdocumentation.org/packages/sparklyr/versions/1.7.5/topics/spark_apply)
+- [`sparklyr::sdf_coalesce()`](https://www.rdocumentation.org/packages/sparklyr/versions/1.7.5/topics/sdf_coalesce)
+- [`sparklyr::sdf_repartition()`](https://www.rdocumentation.org/packages/sparklyr/versions/1.7.5/topics/sdf_repartition)
 - [Window functions](https://dplyr.tidyverse.org/articles/window-functions.html)

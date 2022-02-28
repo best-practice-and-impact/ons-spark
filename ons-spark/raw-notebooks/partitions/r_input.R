@@ -91,7 +91,7 @@ skewed_df <- sparklyr::sdf_seq(sc, 0, row_ct - 1, repartition=2) %>%
 
 skewed_df %>% head(5) %>% sparklyr::collect()
 
-get_partitioning_info <- function(sdf) {
+print_partitioning_info <- function(sdf) {
     sdf %>% sparklyr::mutate(
         part_id = spark_partition_id()) %>%
     dplyr::group_by(part_id) %>%
@@ -101,7 +101,7 @@ get_partitioning_info <- function(sdf) {
     print(paste0("Number of partitions: ", sparklyr::sdf_num_partitions(sdf)))
 }
 
-get_partitioning_info(skewed_df)
+print_partitioning_info(skewed_df)
 
 small_df <- sparklyr::sdf_copy_to(sc, data.frame(
     "skew_col" = LETTERS[1:5], 
@@ -113,8 +113,6 @@ write_delete <- function(sdf) {
     cmd <- paste0("hdfs dfs -rm -r -skipTrash ", path)
     system(cmd)
 }
-
-print("http://localhost:4040/jobs/")
 
 sc %>%
     sparklyr::spark_context() %>%
@@ -144,11 +142,11 @@ window_df <- skewed_df %>%
 
 write_delete(window_df)
 
-get_partitioning_info(joined_df)
+print_partitioning_info(joined_df)
 
-get_partitioning_info(grouped_df)
+print_partitioning_info(grouped_df)
 
-get_partitioning_info(window_df)
+print_partitioning_info(window_df)
 
 repartition_path <- paste0(config$checkpoint_path, "/rescue_by_year.parquet")
 sparklyr::spark_write_parquet(rescue, 
@@ -156,7 +154,7 @@ sparklyr::spark_write_parquet(rescue,
                               mode='overwrite',
                               partition_by='CalYear')
 
-cmd <- paste0("hdfs dfs -rm -r -skipTrash ", repartition_path)
+cmd <- paste0("hdfs dfs -ls -C ", repartition_path)
 system(cmd)
 
 cmd <- paste0("hdfs dfs -rm -r -skipTrash ", repartition_path)
