@@ -1,0 +1,954 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spark Application and UI &#8212; Spark at the ONS</title>
+    
+  <link href="../../_static/css/theme.css" rel="stylesheet">
+  <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Spark at the ONS</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../intro.html">
+   Introduction
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Spark overview
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-overview/spark-session-guidance.html">
+   Spark Sessions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-overview/example-spark-sessions.html">
+   Example Spark Sessions
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to PySpark
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../pyspark-intro/pyspark-intro.html">
+   Introduction to PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../pyspark-intro/pyspark-intro-exercises.html">
+   Introduction to PySpark: Exercises
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../pyspark-intro/f-col.html">
+   Reference columns by name:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     F.col()
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to sparklyr
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../sparklyr-intro/sparklyr_functions.html">
+   Using Spark functions in sparklyr
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Spark functions
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-functions/union_dataframes_with_different_columns.html">
+   Union two DataFrames with different columns
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-functions/padding.html">
+   Add leading zeros with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     lpad()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-functions/sampling.html">
+   Sampling:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .sample()
+    </span>
+   </code>
+   and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     sdf_sample()
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Understanding and Optimising Spark
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-concepts/spark_application_and_ui.html">
+   Spark Application and UI
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-concepts/shuffling.html">
+   Shuffling
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-concepts/join_concepts.html">
+   Optimising Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-functions/cross_joins.html">
+   Cross Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-concepts/salted_joins.html">
+   Salted Joins
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Ancillary Topics
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../ancillary-topics/visualisation.html">
+   Spark and Visualisation
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../../_sources/raw-notebooks/spark-app/spark_application_and_ui.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/robertswh/Spark at the ONS"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/robertswh/Spark at the ONS/issues/new?title=Issue%20on%20page%20%2Fraw-notebooks/spark-app/spark_application_and_ui.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+    <div class="dropdown-buttons">
+        
+        <a class="binder-button" href="https://mybinder.org/v2/gh/robertswh/Spark at the ONS/main?urlpath=tree/docs/raw-notebooks/spark-app/spark_application_and_ui.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="../../_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
+        
+        
+        
+        
+    </div>
+</div>
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#spark-application-overview">
+   Spark Application Overview
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#investigate-the-spark-ui">
+   Investigate the Spark UI
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#create-an-application">
+     Create an application
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#jobs-page">
+     Jobs page
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#stages-page">
+     Stages page
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#task-event-timeline">
+       Task Event timeline
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#summary-metrics">
+       Summary Metrics
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#more-information">
+   More information
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#documentation">
+     Documentation
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#moving-data-outside-spark">
+     Moving data outside Spark
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#improving-performance">
+     Improving performance
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#summary">
+   Summary
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Spark Application and UI</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#spark-application-overview">
+   Spark Application Overview
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#investigate-the-spark-ui">
+   Investigate the Spark UI
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#create-an-application">
+     Create an application
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#jobs-page">
+     Jobs page
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#stages-page">
+     Stages page
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#task-event-timeline">
+       Task Event timeline
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#summary-metrics">
+       Summary Metrics
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#more-information">
+   More information
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#documentation">
+     Documentation
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#moving-data-outside-spark">
+     Moving data outside Spark
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#improving-performance">
+     Improving performance
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#summary">
+   Summary
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
+              <div>
+                
+  <div class="tex2jax_ignore mathjax_ignore section" id="spark-application-and-ui">
+<h1>Spark Application and UI<a class="headerlink" href="#spark-application-and-ui" title="Permalink to this headline">¶</a></h1>
+<p>This article introduces the structure of a Spark application and how the structure relates to the various pages within the application monitoring interface, the Spark UI.</p>
+<p>The Spark UI is used to monitor the status and resource consumption of your Spark cluster and is the main tool for troubleshooting slow Spark code.</p>
+<p>Understanding the structure of a Spark application helps to understand how Spark works so you can begin to think differently as you code to get the most out of Spark.</p>
+<div class="section" id="spark-application-overview">
+<h2>Spark Application Overview<a class="headerlink" href="#spark-application-overview" title="Permalink to this headline">¶</a></h2>
+<p>A Spark application has an underlining structure and learning about this structure will help us:</p>
+<ol class="simple">
+<li><p>understand the difference between a narrow transformation, wide transformation and an action</p></li>
+<li><p>navigate around the Spark UI</p></li>
+</ol>
+<p>Below is a diagram of the Spark application hierarchy:</p>
+<ul class="simple">
+<li><p><strong>Application</strong> - a set of jobs managed by a single driver, e.g. on a Cloudera platform that is the CDSW session. An application is created when we connect to Spark with a <code class="docutils literal notranslate"><span class="pre">SparkSession</span></code> in PySpark or <code class="docutils literal notranslate"><span class="pre">spark_connect()</span></code> in sparklyr.</p></li>
+<li><p><strong>Job</strong> - a set of stages executed as a result of an <em>action</em>, e.g. <code class="docutils literal notranslate"><span class="pre">.count()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_nrow()</span></code>. A job might consist of a number of <em>transformations</em>, but a job always finishes with an <em>action</em>.</p></li>
+<li><p><strong>Stage</strong> - a set of tasks that can be executed in parallel. Similar to how <em>actions</em> define a job boundary, a stage boundary is introduced by a <em>wide</em> transformation, such as <code class="docutils literal notranslate"><span class="pre">.groupby()</span></code>/<code class="docutils literal notranslate"><span class="pre">group_by()</span></code> or <code class="docutils literal notranslate"><span class="pre">.join()</span></code>/<code class="docutils literal notranslate"><span class="pre">left_join()</span></code>. A stage might consist of many <em>narrow</em> transformations, but a stage always finishes with a <em>wide</em> transformation or action.</p></li>
+<li><p><strong>Task</strong> - an individual unit of work assigned to a single core on an executor.</p></li>
+</ul>
+<p><img alt="Diagram of Spark application showing partitioned DataFrame going through narrow and wide operations" src="raw-notebooks/images/spark_app_diagram.png" /></p>
+<p>Note that Jobs, Stages and Tasks are numbered starting from zero.</p>
+<p>Now look more closely at the DataFrame. On the left there is a Spark DataFrame which is split up into four sections, called <em>partitions</em>. Spark puts our data into partitions automatically so we don’t have to decide how or when to do it. More details on exactly how Spark does this are in the <strong>Partitions Article</strong>.</p>
+<p>The first operation to be applied to this DataFrame is a <em>narrow</em> transformation, e.g. adding two columns to create a new column. The second operation is again a narrow transformation. These two operations can be run in parallel, because each child partition has only one parent, indicated by the golden arrows.</p>
+<p>Then we hit a stage boundary, which means the third operation is a <em>wide</em> transformation, e.g. aggregating the data or joining with another DataFrame. This is a wide operation because each child partition has multiple parent partitions. This is also an example of <em>shuffling</em> the data, which means to move data between partitions, more on shuffling in the <strong>Shuffling Article</strong>.</p>
+<p>Finally in the diagram above there is another narrow operation on the aggregated DataFrame before we run into an <em>action</em>, e.g. writing the data to HDFS or a simple count of the rows.</p>
+<p>As we execute the wide and narrow transformations nothing happens to the data at this point in time, Spark just builds up a plan of what to do with the DataFrame. This plan is a called the execution plan and is a set of instructions of how to transform the data from one state to another. More on the execution plan in the <strong>Persisting Article</strong>. An action initiates the execution plan and so this is when the DataFrame is processed. All the previous transformations, along with the action, are put into Spark <em>jobs</em> and deployed on the Spark cluster.</p>
+</div>
+<div class="section" id="investigate-the-spark-ui">
+<h2>Investigate the Spark UI<a class="headerlink" href="#investigate-the-spark-ui" title="Permalink to this headline">¶</a></h2>
+<p>We will create an application and execute some code to create jobs. Then we can drill down from Job to Stage to Task and investigate their performance. In most cases this is where we look first when trying to diagnose a slow Spark application.</p>
+<div class="section" id="create-an-application">
+<h3>Create an application<a class="headerlink" href="#create-an-application" title="Permalink to this headline">¶</a></h3>
+<p>The first step is to create an application. Once we create a Spark application we can look at the Spark UI. If we stop the Spark session using <code class="docutils literal notranslate"><span class="pre">spark.stop()</span></code>/<code class="docutils literal notranslate"><span class="pre">spark_disconnect()</span></code> or disconnect from the notebook, the Spark UI for our application can no longer be accessed.</p>
+<p>Let’s start with the necessary imports and create an application.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">IPython</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
+
+<span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;spark-app-ui&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
+
+<span class="n">default_config</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">()</span>
+
+<span class="n">sc</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
+    <span class="n">master</span> <span class="o">=</span> <span class="s">&quot;local[2]&quot;</span><span class="p">,</span>
+    <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;spark-app-ui&quot;</span><span class="p">,</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">default_config</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We can then look at the Spark UI using the URL  <a class="reference external" href="http://localhost:4040/jobs/">http://localhost:4040/jobs/</a>. Note this address is used for a local Spark session, for more information on how to navigate to the Spark UI see the <a class="reference external" href="https://spark.apache.org/docs/latest/monitoring.html">documentation on monitoring</a>.</p>
+<p>If you are running the source notebook and follow the above link you will see something similar to the screenshot below, with the application name on the top right and various tabs along the top.</p>
+<p>There is a lot of useful information in the Spark UI, but in this article we will only concentrate on the <em>Jobs</em> and <em>Stages</em> tabs. Note that we haven’t executed any <em>Jobs</em> yet, so there isn’t much to see at the moment.</p>
+<p><img alt="Empty Spark UI page" src="raw-notebooks/images/spark_app_empty_ui.png" /></p>
+<p>Let’s import the animal rescue data and find out the number of partitions in which our <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame is processed. The number of partitions will be useful later when we’re investigating our application’s tasks.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    
+<span class="n">rescue_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path&quot;</span><span class="p">]</span>
+<span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of partitions: &quot;</span><span class="p">,</span><span class="n">rescue</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of partitions:  2
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">config</span> <span class="o">&lt;-</span> <span class="n">yaml</span><span class="o">::</span><span class="nf">yaml.load_file</span><span class="p">(</span><span class="s">&quot;ons-spark/config.yaml&quot;</span><span class="p">)</span>
+
+<span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_parquet</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">config</span><span class="o">$</span><span class="n">rescue_path</span><span class="p">)</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;Number of partitions: &quot;</span><span class="p">,</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_num_partitions</span><span class="p">(</span><span class="n">rescue</span><span class="p">)))</span>
+</pre></div>
+</div>
+<p>Next we’ll carry out some basic processes to see how this translates into jobs, stages and tasks in the Spark UI. We will  group the incident costs by creating a new column called <code class="docutils literal notranslate"><span class="pre">cost_group</span></code> containing three groups <code class="docutils literal notranslate"><span class="pre">small</span></code>, <code class="docutils literal notranslate"><span class="pre">medium</span></code> and <code class="docutils literal notranslate"><span class="pre">large</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;cost_group&quot;</span><span class="p">,</span>
+                      <span class="n">F</span><span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;total_cost&quot;</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">300</span><span class="p">,</span> <span class="s2">&quot;small&quot;</span><span class="p">)</span>
+                      <span class="o">.</span><span class="n">when</span><span class="p">((</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;total_cost&quot;</span><span class="p">)</span><span class="o">&gt;=</span><span class="mi">300</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;total_cost&quot;</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">900</span><span class="p">),</span> <span class="s2">&quot;medium&quot;</span><span class="p">)</span>
+                      <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;total_cost&quot;</span><span class="p">)</span><span class="o">&gt;=</span><span class="mi">1000</span><span class="p">,</span> <span class="s2">&quot;large&quot;</span><span class="p">)</span>
+                      <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                     <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;cost_group&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+------------+----------------------------------------------------------------+----------+----------+
+|animal_group|                                                     description|total_cost|cost_group|
++------------+----------------------------------------------------------------+----------+----------+
+|         Cat|                                         CAT TRAPPED IN BASEMENT|     290.0|     small|
+|       Horse|                                           HORSE TRAPPED IN GATE|     590.0|    medium|
+|        Bird|PIGEON WITH WING IMAPLED ON SHARP IMPLEMENT  UNDER A BRIDGE NEAR|     326.0|    medium|
+|         Cat|                          ASSIST RSPCA WITH CAT STUCK ON CHIMNEY|     295.0|     small|
+|         Dog|                                       DOG FALLEN INTO THE CANAL|     260.0|     small|
+|        Deer|                                          DEER STUCK IN RAILINGS|     520.0|    medium|
+|        Deer|                                           DEER TRAPPED IN FENCE|     260.0|     small|
++------------+----------------------------------------------------------------+----------+----------+
+only showing top 7 rows
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span>
+    <span class="n">cost_group</span><span class="o">=</span><span class="n">dplyr</span><span class="o">::</span><span class="nf">case_when</span><span class="p">(</span><span class="n">total_cost</span><span class="o">&lt;</span><span class="m">300</span> <span class="o">~</span> <span class="s">&quot;small&quot;</span><span class="p">,</span>
+                                <span class="n">total_cost</span><span class="o">&gt;=</span><span class="m">300</span> <span class="o">&amp;</span> <span class="n">total_cost</span><span class="o">&lt;</span><span class="m">900</span> <span class="o">~</span> <span class="s">&quot;medium&quot;</span><span class="p">,</span>
+                                <span class="n">total_cost</span><span class="o">&gt;=</span><span class="m">900</span> <span class="o">~</span> <span class="s">&quot;large&quot;</span><span class="p">,</span>
+                                <span class="kc">TRUE</span> <span class="o">~</span> <span class="kc">NULL</span><span class="p">)</span>
+<span class="p">)</span>
+
+
+<span class="n">rescue</span> <span class="o">%&gt;%</span> 
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="s">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s">&quot;description&quot;</span><span class="p">,</span> <span class="s">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s">&quot;cost_group&quot;</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="nf">head</span><span class="p">(</span><span class="m">7</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>To produce the above output Spark didn’t need to process all of the partitions, there are enough rows on one partition to create the output so Spark only processed one partition. If we want Spark to process all of the partitions we need to call an action that involves all rows of the DataFrame, such as getting the row count.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5898
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="jobs-page">
+<h3>Jobs page<a class="headerlink" href="#jobs-page" title="Permalink to this headline">¶</a></h3>
+<p>Now that we’ve created some jobs let’s have a quick look at the application’s <em>Event timeline</em>. For those who are running this as a notebook:</p>
+<ol class="simple">
+<li><p>Go into the Spark UI</p></li>
+<li><p>Make sure you’re on the Jobs tab</p></li>
+<li><p>Open the <em>Event timeline</em> collapsable section using the blue arrow to see something similar to the below image.</p></li>
+</ol>
+<p>Note the images in this article were created using PySpark, the Spark UI will look slightly different when using sparklyr, but not very different.</p>
+<p>In the top section of the timeline you will see the executors being added and removed by the <em>dynamic allocation</em> feature of Spark. The <code class="docutils literal notranslate"><span class="pre">SparkSession</span></code> used in this case was a local session, so we will only see the driver here. The jobs are shown in the bottom section of the timeline. Hover over a job in the timeline and the corresponding job in the <em>Completed Jobs</em> table below will be highlighted.</p>
+<p><em>Tip:</em> You can tick the <em>Enable Zooming</em> button to zoom in and out of different sections of the timeline</p>
+<p><img alt="Event timeline within Spark UI showing executors being assigned and jobs being deployed" src="raw-notebooks/images/spark_app_event_timeline.png" /></p>
+<p>Let’s look at the <em>Completed Jobs</em> table. The description gives us a clue as to the action that initiated that job. The first job, <em>Job Id</em> 0, was to interact with HDFS, so it has the description <code class="docutils literal notranslate"><span class="pre">parquet</span> <span class="pre">at</span> <span class="pre">NativeMethodAccessorImpl.java:0</span></code>. Remember that executing transformations creates an execution plan, so Spark needs to know the DataFrame’s schema, i.e. column names and types, to validate our PySpark/sparklyr code. Reading from disk will always create a job, usually consisting of just one stage as shown in the <em>Stages</em> column.</p>
+<p>The second job was initiated by <code class="docutils literal notranslate"><span class="pre">.show()</span></code>/<code class="docutils literal notranslate"><span class="pre">collect()</span></code>, again it consists of one stage, which itself had one task as shown in the <em>Tasks</em> column. As mentioned in the previous section, Spark only needed to process one partition to produce the output so we therefore have one task in this job.</p>
+<p>The third job was the <code class="docutils literal notranslate"><span class="pre">.count()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_nrow()</span></code>. The job contains two stages, which themselves consist of 3 tasks. Let’s get more information on these stages and tasks. Within the <em>Completed Jobs</em> table click on the link in the <em>Description</em> column for the latest job that says <code class="docutils literal notranslate"><span class="pre">count</span> <span class="pre">at</span> <span class="pre">NativeMethodAccessorImpl.java:0</span></code>.</p>
+<p>Now we are on the <em>Job Details</em> page which show information about the job’s stages. The first stage had two tasks, one task to count the rows in each partition. The second stage had one task, which was to send the result to the driver for us to see. On this page you will see another type of diagram called a Directed Acyclic Graph or DAG, by opening the <em>DAG Vizualisation</em> collapsable section.</p>
+<p>The DAG shows the two stages. Here are some rough definitions of the terms inside the boxes</p>
+<ol class="simple">
+<li><p><em>WholeStageCodegen</em>- this is Spark creating an optimised version of our code</p></li>
+<li><p><em>Exchange</em> - another word for <em>shuffling</em> data, i.e. data is being moved between partitions</p></li>
+<li><p><em>mapPartitionsInternal</em> - bringing information from multiple partitions together</p></li>
+</ol>
+<p>There are more informative DAG diagrams on the SQL tab, which are explored in the <strong>Joins Article</strong> and <strong>Persisiting Article</strong>.</p>
+<p><img alt="Stage information in Spark UI showing DAG and stage table" src="raw-notebooks/images/spark_app_stages.png" /></p>
+</div>
+<div class="section" id="stages-page">
+<h3>Stages page<a class="headerlink" href="#stages-page" title="Permalink to this headline">¶</a></h3>
+<p>From the <em>Completed Stages</em> table on the <em>Job Details</em> page, when we click on the link in the <em>Description</em> column for the stage consisting of two tasks (<em>Stage Id</em> 2 in the example above), we get to the <em>Stage Details</em>.</p>
+<p>This page contains lots of detailed information about the individual tasks and it’s one of the more useful places to look for troubleshooting sluggish applications. We will just concentrate on two sections within this page, the <em>Event timeline</em> (for tasks) and the <em>Summary Metrics</em>.</p>
+<div class="section" id="task-event-timeline">
+<h4>Task Event timeline<a class="headerlink" href="#task-event-timeline" title="Permalink to this headline">¶</a></h4>
+<p>Opening the <em>Event timeline</em> collapseable menu will show a timeline like in the below image. This timeline has a single row, which means one executor (i.e. the driver in our case because we’re running a local session) was used to complete these tasks. This executor has two cores, we know this because the <em>Executor Computing Time</em> (shown in green) of the two task are overlapping. If there was just one core available to the driver the two tasks would not run in parallel.</p>
+<p><img alt="Task event timeline in Spark UI showing parallel processing on tasks" src="raw-notebooks/images/spark_app_task_timeline.png" /></p>
+<p>The colours also indicate what was going on while the task was being completed. In general- green is good, and is an indication that there is no need to spend time optimising the processing. Delays often occur when lots of data are moved around, because the process can involve some or all of the below:</p>
+<ol class="simple">
+<li><p>serialising data - preparing the data to be moved to disk</p></li>
+<li><p>shuffle write - writing data to disk to be read by a shuffle somewhere else</p></li>
+<li><p>shuffle read - reading a shuffle from disk onto an executor or driver</p></li>
+<li><p>deserialisation - preparing the data to be read in memory</p></li>
+</ol>
+<p>Sometimes when processing many small partitions more time is spent on moving small amounts of data around than useful processing time. This task event timeline will show evidence of this problem in the form of non-green colours. We’ll see this in action later.</p>
+</div>
+<div class="section" id="summary-metrics">
+<h4>Summary Metrics<a class="headerlink" href="#summary-metrics" title="Permalink to this headline">¶</a></h4>
+<p>Summary information about the tasks within a stage are given in the Summary Metrics table. Select the <em>(De)select All</em> option to view more metrics.</p>
+<p>This is a useful indication of the distribution of times taken for various components of task processing. It might not be the most useful part of the UI to look at with only two tasks, so we will revisit this later.</p>
+<p><img alt="Task metrics table in the Spark UI" src="raw-notebooks/images/spark_app_task_metrics.png" /></p>
+<p>We won’t discuss <em>GC time</em>, or garbage collection time, in this article. This is a topic that is covered in <strong>a separate article</strong>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="more-information">
+<h2>More information<a class="headerlink" href="#more-information" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="documentation">
+<h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h3>
+<p>There are tens of blogs available online that introduce some feature in the Spark UI, but most are not particularly useful and are generally rehashes of other blogs.</p>
+<p>Finally, since its release of version 3.0.0, Spark’s online documentation contains information about the <a class="reference external" href="https://spark.apache.org/docs/latest/web-ui.html">Spark web UI</a>. Note however that this is a later version of Spark than what is currently used in DAP at the ONS. Therefore there will be some small differences between what you see in your application’s UI and that documented in the above link.</p>
+<p>The documentation runs through the different pages of the Spark UI with screenshots and a brief description of the various elements. It’s a good place to start and useful for finding definitions. For example, if you want to know what <em>Scheduler delay</em> means, search for this term on the docs page and you will find</p>
+<blockquote>
+<div><p><strong>Scheduler delay</strong> is the time the task waits to be scheduled for execution</p>
+</div></blockquote>
+</div>
+<div class="section" id="moving-data-outside-spark">
+<h3>Moving data outside Spark<a class="headerlink" href="#moving-data-outside-spark" title="Permalink to this headline">¶</a></h3>
+<p>Note that in our case using the Data Access Platform (DAP) we could call the <em>driver</em> here <em>CDSW session</em>, but we’ll use driver to be consistent with other material in this book.</p>
+<p>What can the Spark UI tell us about the processing of Pandas/R DataFrames? Let’s investigate by</p>
+<ol class="simple">
+<li><p>aggregate the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame</p></li>
+<li><p>use <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code>/<code class="docutils literal notranslate"><span class="pre">collect()</span></code> to move the data to the driver</p></li>
+<li><p>make a plot of the aggregated data</p></li>
+<li><p>check the Spark UI</p></li>
+</ol>
+<p>First step is to aggregate the data, we’ll find the count of incidents in each <code class="docutils literal notranslate"><span class="pre">cost_group</span></code>. We will distinguish between the Spark and Pandas/R DataFrames using <code class="docutils literal notranslate"><span class="pre">_spark</span></code> or <code class="docutils literal notranslate"><span class="pre">_pandas</span></code>/<code class="docutils literal notranslate"><span class="pre">_r</span></code> as suffixes respectively.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">aggregated_spark</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;cost_group&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;count&quot;</span><span class="p">))</span>
+
+<span class="n">aggregated_pandas</span> <span class="o">=</span> <span class="n">aggregated_spark</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+
+<span class="n">aggregated_pandas</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>cost_group</th>
+      <th>count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>None</td>
+      <td>82</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>medium</td>
+      <td>2045</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>small</td>
+      <td>3691</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>large</td>
+      <td>80</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">aggregated_spark</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span> 
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">cost_group</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">summarise</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="nf">n</span><span class="p">())</span>
+
+<span class="n">aggregated_r</span> <span class="o">&lt;-</span> <span class="n">aggregated_spark</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span>
+
+<span class="n">aggregated_r</span>
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">aggregated_pandas_plot</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">aggregated_pandas</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s2">&quot;missing&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;cost_group&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">loc</span><span class="p">[[</span><span class="s2">&quot;large&quot;</span><span class="p">,</span> <span class="s2">&quot;medium&quot;</span><span class="p">,</span> <span class="s2">&quot;small&quot;</span><span class="p">,</span> <span class="s2">&quot;missing&quot;</span><span class="p">]]</span>
+<span class="p">)</span>
+
+<span class="n">aggregated_pandas_plot</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s2">&quot;bar&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7fc7dd4c2a58&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">aggregated_r_plot</span> <span class="o">&lt;-</span> <span class="n">aggregated_r</span> <span class="o">%&gt;%</span> <span class="n">dplyr</span><span class="o">::</span><span class="nf">arrange</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">cost_group</span><span class="p">))</span>
+
+<span class="n">ggplot2</span><span class="o">::</span><span class="nf">ggplot</span><span class="p">(</span><span class="n">aggregated_r_plot</span><span class="p">,</span> <span class="n">ggplot2</span><span class="o">::</span><span class="nf">aes</span><span class="p">(</span><span class="n">cost_group</span><span class="p">,</span> <span class="n">count</span><span class="p">))</span> <span class="o">+</span>
+    <span class="n">ggplot2</span><span class="o">::</span><span class="nf">geom_bar</span><span class="p">(</span><span class="n">stat</span><span class="o">=</span><span class="s">&quot;identity&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><img alt="Incident cost by cost group chart" src="raw-notebooks/images/spark_app_incident_cost_chart.png" /></p>
+<p>Now we have our chart, let’s see how that translates to tasks in the Spark UI.</p>
+<p>There is a job for <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code>/<code class="docutils literal notranslate"><span class="pre">collect()</span></code>, but nothing after that for the plot. Why?</p>
+<p>The plotting was done in Pandas/R and so Spark was not involved at all. We therefore don’t expect the Spark UI to show anything that represents those processes.</p>
+</div>
+<div class="section" id="improving-performance">
+<h3>Improving performance<a class="headerlink" href="#improving-performance" title="Permalink to this headline">¶</a></h3>
+<p>Finally, let’s take a look at the stages and tasks for the latest job in the Spark UI and have and see an example of identifying a performance issue, how to solving it, and finding evidence of improvement.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code>/<code class="docutils literal notranslate"><span class="pre">collect()</span></code> job has two stages because the <code class="docutils literal notranslate"><span class="pre">.groupBy().agg()</span></code>/<code class="docutils literal notranslate"><span class="pre">group_by()%&gt;%summarise()</span></code> command is a wide transformation. In the first stage the data is read in, a new column added and then the dataset is aggregated. This stage has 2 tasks because the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame has 2 partitions. The second stage in this job moves the data from the cluster to the CDSW session. This stage has 200 tasks, because <code class="docutils literal notranslate"><span class="pre">aggregated_spark</span></code> has 200 partitions, more on why this is the case in the <strong>Partitions article</strong>. A screenshot of the <em>Stage details</em> for these tasks is below.</p>
+<p><img alt="Task information for 200 tasks" src="raw-notebooks/images/spark_app_200_tasks.png" /></p>
+<p>As we’re running in local mode with 2 cores (or threads), the processing of these 200 tasks took place on the driver. The tasks seem to show relatively poor performance, which is indicated by the non-green colours in the timeline. Also by comparing the <em>Duration</em> (useful processing time) metrics with that of <em>Scheduler Delay</em> and <em>Task Deserialization Time</em> in the <em>Summary Metrics</em> table. Would we get better performance if the <code class="docutils literal notranslate"><span class="pre">aggregated_spark</span></code> DataFrame had fewer partitions? Let’s try to improve the performace by reducing the number of partitions from 200 to 2.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">aggregated_spark</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;cost_group&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;count&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">coalesce</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">aggregated_pandas</span> <span class="o">=</span> <span class="n">aggregated_spark</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">aggregated_spark</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span> 
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">cost_group</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">summarise</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="nf">n</span><span class="p">())</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_coalesce</span><span class="p">(</span><span class="m">2</span><span class="p">)</span>
+
+                                    
+<span class="n">aggregated_r</span> <span class="o">&lt;-</span> <span class="n">aggregated_spark</span> <span class="o">%&gt;%</span> 
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Now navigate to the details of the latter stage of the latest job within the UI and you will see something similar to the screenshot below. Of course, the all important metric to compare is the time taken to complete the stage. Previously, using 200 partitions the stage time was 0.6 seconds, using 2 partitions the stage time was 0.3 seconds. Looking at this page we can see why.</p>
+<p><img alt="Task timeline for fewer tasks showing better performance" src="raw-notebooks/images/spark_app_2_tasks.png" /></p>
+<p>Note that a 0.3s improvement is nothing to brag about, but a x2 processing speed isn’t bad.</p>
+<p>Again, the processing took place on the driver with 2 cores, but this time there was one task per core. There’s much more green visible in this timeline and comparing <em>Scheduler Delay</em> and <em>Task Deserialization Time</em> with <em>Duration</em> in the <em>Summary Metrics</em> tells a very different story.</p>
+<p>The important point is that we are processing a small amount of data and therefore should reduce the partitioning. With 200 partitions a lot of time was spent scheduling tasks and (de)serializing data. By putting our small DataFrame into fewer partitions we spent more time on useful processing and decreased the overall processing time.</p>
+</div>
+</div>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p><strong>Spark application hierarchy</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>- Application 
+    - Job 
+        - Stage 
+            - Task
+</pre></div>
+</div>
+<p><strong>Use the Spark UI to</strong></p>
+<ul class="simple">
+<li><p>debug slow or crashing applications</p></li>
+<li><p>investigate what Spark is doing “under the hood”</p></li>
+</ul>
+<p><strong>Tips</strong></p>
+<ul class="simple">
+<li><p>Look out for task colours, green is generally good</p></li>
+<li><p>Use online documentation for more information about the UI</p></li>
+<li><p>Lots of small partitions is an inefficient strategy to process data</p></li>
+<li><p>Matching up the executed code with the job number in the UI is difficult, the description starts with the action used to initiate that job. You can also customise the job description to track jobs easier. See <strong>Job Decription tip</strong> for more information.</p></li>
+</ul>
+</div>
+<div class="section" id="further-resources">
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
+<p>Spark at the ONS:</p>
+<ul class="simple">
+<li><p>Partitions</p></li>
+<li><p>Shuffling</p></li>
+<li><p>Persisting</p></li>
+<li><p>Joins</p></li>
+<li><p>Garbage Collection</p></li>
+<li><p>Job description</p></li>
+</ul>
+<p>Spark documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/web-ui.html">Spark Web UI</a></p></li>
+</ul>
+<p>PySpark documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.functions.coalesce"><code class="docutils literal notranslate"><span class="pre">.coalesce()</span></code></a></p></li>
+</ul>
+<p>sparklyr documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html#usage"><code class="docutils literal notranslate"><span class="pre">sdf_coalesce()</span></code></a></p></li>
+</ul>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./raw-notebooks/spark-app"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            
+        </div>
+    </div>
+    <footer class="footer">
+  <p>
+    
+      By Wil Roberts & Adrian Prince<br/>
+    
+  </p>
+</footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>
