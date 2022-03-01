@@ -92,12 +92,14 @@ skewed_df <- sparklyr::sdf_seq(sc, 0, row_ct - 1, repartition=2) %>%
 skewed_df %>% head(5) %>% sparklyr::collect()
 
 print_partitioning_info <- function(sdf) {
-    sdf %>% sparklyr::mutate(
-        part_id = spark_partition_id()) %>%
-    dplyr::group_by(part_id) %>%
-    dplyr::summarise(count=n()) %>%
-    sparklyr::collect() %>%
-    print()
+    sdf %>% 
+        sparklyr::mutate(
+            part_id = spark_partition_id()) %>%
+        dplyr::group_by(part_id) %>%
+        dplyr::summarise(count=n()) %>%
+        sparklyr::collect() %>%
+        print()
+
     print(paste0("Number of partitions: ", sparklyr::sdf_num_partitions(sdf)))
 }
 
