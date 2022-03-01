@@ -1,0 +1,1451 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Managing partitions &#8212; Spark at the ONS</title>
+    
+  <link href="../../_static/css/theme.css" rel="stylesheet">
+  <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Spark at the ONS</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../intro.html">
+   Introduction
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Spark overview
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-overview/spark-session-guidance.html">
+   Spark Sessions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-overview/example-spark-sessions.html">
+   Example Spark Sessions
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to PySpark
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../pyspark-intro/pyspark-intro.html">
+   Introduction to PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../pyspark-intro/pyspark-intro-exercises.html">
+   Introduction to PySpark: Exercises
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../pyspark-intro/f-col.html">
+   Reference columns by name:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     F.col()
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to sparklyr
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../sparklyr-intro/sparklyr_functions.html">
+   Using Spark functions in sparklyr
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Spark functions
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-functions/union_dataframes_with_different_columns.html">
+   Union two DataFrames with different columns
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-functions/padding.html">
+   Add leading zeros with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     lpad()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-functions/sampling.html">
+   Sampling:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .sample()
+    </span>
+   </code>
+   and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     sdf_sample()
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Understanding and Optimising Spark
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-concepts/spark_application_and_ui.html">
+   Spark Application and UI
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-concepts/shuffling.html">
+   Shuffling
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-concepts/join_concepts.html">
+   Optimising Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-functions/cross_joins.html">
+   Cross Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-concepts/salted_joins.html">
+   Salted Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-concepts/partitions.html">
+   Managing partitions
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Ancillary Topics
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../ancillary-topics/visualisation.html">
+   Spark and Visualisation
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../../_sources/raw-notebooks/partitions/partitions.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/robertswh/Spark at the ONS"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/robertswh/Spark at the ONS/issues/new?title=Issue%20on%20page%20%2Fraw-notebooks/partitions/partitions.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+    <div class="dropdown-buttons">
+        
+        <a class="binder-button" href="https://mybinder.org/v2/gh/robertswh/Spark at the ONS/main?urlpath=tree/docs/raw-notebooks/partitions/partitions.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="../../_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
+        
+        
+        
+        
+    </div>
+</div>
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#investigating-partitions">
+   Investigating partitions
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#newly-created-dataframe">
+     Newly created DataFrame
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#imported-dataframe">
+     Imported DataFrame
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#processed-dataframe">
+     Processed DataFrame
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#how-to-change-partitioning">
+   How to change partitioning
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#motivation">
+     Motivation
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#change-partitioning">
+     Change partitioning
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#intermediate-partitions-in-wide-operations">
+   Intermediate partitions in wide operations
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#set-up-the-problem">
+     Set up the problem
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#run-the-jobs-and-investigate-ui">
+     Run the jobs and investigate UI
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#discussion">
+     Discussion
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#what-does-this-mean-in-practice">
+     What does this mean in practice?
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#partitions-when-writing-data">
+   Partitions when writing data
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#how-should-i-partition-my-data">
+   How should I partition my data?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further resources
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Managing partitions</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#investigating-partitions">
+   Investigating partitions
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#newly-created-dataframe">
+     Newly created DataFrame
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#imported-dataframe">
+     Imported DataFrame
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#processed-dataframe">
+     Processed DataFrame
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#how-to-change-partitioning">
+   How to change partitioning
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#motivation">
+     Motivation
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#change-partitioning">
+     Change partitioning
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#intermediate-partitions-in-wide-operations">
+   Intermediate partitions in wide operations
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#set-up-the-problem">
+     Set up the problem
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#run-the-jobs-and-investigate-ui">
+     Run the jobs and investigate UI
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#discussion">
+     Discussion
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#what-does-this-mean-in-practice">
+     What does this mean in practice?
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#partitions-when-writing-data">
+   Partitions when writing data
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#how-should-i-partition-my-data">
+   How should I partition my data?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further resources
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
+              <div>
+                
+  <div class="tex2jax_ignore mathjax_ignore section" id="managing-partitions">
+<h1>Managing partitions<a class="headerlink" href="#managing-partitions" title="Permalink to this headline">¶</a></h1>
+<p>DataFrames in Spark are <em>distributed</em>, so although we treat them as one object they might be split up into multiple partitions over many machines on the cluster. The benefit of having multiple partitions is that some operations can be performed on the partitions in parallel.</p>
+<p>More partitions means greater <em>parallelisation</em>. However, there is a cost associated with multiple partitions, for example scheduling delay and data serialisation. In the <strong>Spark Application and UI</strong> article we saw that putting a small DataFrame into one or two partitions can lead to more efficient processing.</p>
+<p>In this notebook we will explore these partitions and how the partitioning of a DataFrame is affected by importing, processing and writing data in Spark. The goal is not to find the optimum number of partitions for a given DataFrame, the goal is to have greater awareness of partitioning so we can avoid the extreme cases of over-partitioning, under-partitioning and highly skewed partitioning.</p>
+<div class="section" id="investigating-partitions">
+<h2>Investigating partitions<a class="headerlink" href="#investigating-partitions" title="Permalink to this headline">¶</a></h2>
+<p>We will start by investigating the partitions of some DataFrames. We will look at the partitions of a newly created DataFrame, an imported DataFrame and a processed DataFrame. But first, we’ll need to do some imports and create a local application in the usual way.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">Window</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
+
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;partitions&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
+
+<span class="n">partitions_config</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">()</span>
+
+<span class="n">sc</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
+    <span class="n">master</span> <span class="o">=</span> <span class="s">&quot;local[2]&quot;</span><span class="p">,</span>
+    <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;partitions&quot;</span><span class="p">,</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">partitions_config</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="newly-created-dataframe">
+<h3>Newly created DataFrame<a class="headerlink" href="#newly-created-dataframe" title="Permalink to this headline">¶</a></h3>
+<p>Let’s create a DataFrame called <code class="docutils literal notranslate"><span class="pre">rand_df</span></code> with an <code class="docutils literal notranslate"><span class="pre">id</span></code> column from 0 to 4,999 and a <code class="docutils literal notranslate"><span class="pre">rand_val</span></code> column containing random numbers from 1 to 10.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">row_ct</span> <span class="o">=</span> <span class="mi">5000</span>
+<span class="n">seed_no</span> <span class="o">=</span> <span class="mi">42</span> <span class="c1">#this is used to create the pseudo-random numbers</span>
+
+<span class="n">rand_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">row_ct</span><span class="p">)</span>
+<span class="n">rand_df</span> <span class="o">=</span> <span class="n">rand_df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;rand_val&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed_no</span><span class="p">)</span><span class="o">*</span><span class="mi">10</span><span class="p">))</span>
+
+<span class="n">rand_df</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+---+--------+
+| id|rand_val|
++---+--------+
+|  0|       7|
+|  1|       9|
+|  2|      10|
+|  3|       9|
+|  4|       5|
+|  5|       6|
+|  6|       1|
+|  7|       2|
+|  8|       4|
+|  9|       7|
++---+--------+
+only showing top 10 rows
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">row_ct</span> <span class="o">&lt;-</span> <span class="m">5000</span>
+<span class="n">seed_no</span> <span class="o">&lt;-</span> <span class="m">42L</span> <span class="c1">#this is used to create the pseudo-random numbers</span>
+
+<span class="n">rand_df</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_seq</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="n">row_ct</span> <span class="o">-</span> <span class="m">1</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">rand_val</span> <span class="o">=</span> <span class="nf">ceiling</span><span class="p">(</span><span class="nf">rand</span><span class="p">(</span><span class="n">seed_no</span><span class="p">)</span><span class="o">*</span><span class="m">10</span><span class="p">))</span>
+
+<span class="n">rand_df</span> <span class="o">%&gt;%</span> <span class="nf">head</span><span class="p">(</span><span class="m">10</span><span class="p">)</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>To find the number of partitions of a DataFrame in PySpark we need to access the underlying RDD structures that make up the DataFrame by using <code class="docutils literal notranslate"><span class="pre">.rdd</span></code> after referencing the DataFrame. Then we can use the <code class="docutils literal notranslate"><span class="pre">.getNumPartitions()</span></code> method to return the number of partitions. In sparklyr we can just use the function <code class="docutils literal notranslate"><span class="pre">sdf_num_partitions()</span></code>.</p>
+<p>We can also find out how many rows are in each partition. There is more than one way of doing this, one method was introduced in the <strong>Shuffling article</strong> and will be used later in this article, a second method is shown below. Again, in PySpark we will need to access the underlying RDDs then map on a <code class="docutils literal notranslate"><span class="pre">lambda</span></code> function that will loop over the rows in each partition and return a count of these rows in a list. In sparklyr we can use <code class="docutils literal notranslate"><span class="pre">spark_apply()</span></code> to give us a row count for each partition.</p>
+<p>Don’t worry too much about understanding this line of code, it’s the result which is important here.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of partitions:</span><span class="se">\t\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">rand_df</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">())</span>
+
+<span class="n">rows_in_part</span> <span class="o">=</span> <span class="n">rand_df</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">mapPartitions</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">x</span><span class="p">)])</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of rows per partition:</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">rows_in_part</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of partitions:		 2
+Number of rows per partition:	 [2500, 2500]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&#39;Number of partitions: &#39;</span><span class="p">,</span> <span class="n">rand_df</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_num_partitions</span><span class="p">()))</span>
+
+<span class="n">rows_in_part</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_apply</span><span class="p">(</span><span class="n">rand_df</span><span class="p">,</span> <span class="nf">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="nf">nrow</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&#39;Number of rows per partition: &#39;</span><span class="p">,</span> <span class="n">rows_in_part</span><span class="p">))</span> 
+</pre></div>
+</div>
+<p>Note that the size of the partitions is the same. We will see later, if there was skew in partition sizes we would always have to wait for the largest partition to finish processing before moving on to the next task, this is commonly referred to as a bottleneck. So Spark understandably puts a similar number of rows in each partition.</p>
+<p>The number of partitions was set by default. The property that controls this number is <code class="docutils literal notranslate"><span class="pre">spark.default.parallelism</span></code>, and to modify the default we must override it in the Spark session. See the <strong>Spark session guidance</strong> for more information on how to do this. To see what the default is we can look at <a class="reference external" href="https://spark.apache.org/docs/2.4.4/configuration.html#execution-behavior">the Spark documentation</a> (if you follow the link use Ctrl+F to search for the property name).</p>
+<blockquote>
+<div><p>For operations like parallelize with no parent RDDs, it depends on the cluster manager:</p>
+<ul class="simple">
+<li><p>Local mode: number of cores on the local machine</p></li>
+<li><p>Mesos fine grained mode: 8</p></li>
+<li><p>Others: total number of cores on all executor nodes or 2, whichever is larger</p></li>
+</ul>
+</div></blockquote>
+<p>We’re running Spark in local mode with 2 cores, hence without overriding this property it will default to 2.</p>
+<p>Modifying the <code class="docutils literal notranslate"><span class="pre">spark.default.parallelism</span></code> property will set the number of partitions for all newly created DataFrames in this session. But what if we want to create a DataFrame that is unusually large or small for our session? For this case we can specify how many partitions we want when creating the DataFrame, using an extra argument <code class="docutils literal notranslate"><span class="pre">numPartitions</span></code>/<code class="docutils literal notranslate"><span class="pre">repartition</span></code> for PySpark/sparklyr.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">small_rand</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">numPartitions</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1">#just 10 rows, so we&#39;ll put them into one partition</span>
+<span class="n">small_rand</span> <span class="o">=</span> <span class="n">small_rand</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;rand_value&quot;</span><span class="p">,</span>  <span class="n">F</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed_no</span><span class="p">)</span><span class="o">*</span><span class="mi">10</span><span class="p">))</span>
+
+<span class="n">small_rand</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">small_rand</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+---+----------+
+| id|rand_value|
++---+----------+
+|  0|         7|
+|  1|         9|
+|  2|        10|
+|  3|         9|
+|  4|         5|
+|  5|         6|
+|  6|         1|
+|  7|         2|
+|  8|         4|
+|  9|         7|
++---+----------+
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">small_rand</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_seq</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="m">9</span><span class="p">,</span> <span class="n">repartition</span><span class="o">=</span><span class="m">1</span><span class="p">)</span> <span class="c1">#just 10 rows, so we&#39;ll put them into one partition</span>
+<span class="n">small_rand</span> <span class="o">&lt;-</span> <span class="n">small_rand</span> <span class="o">%&gt;%</span> 
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">rand_val</span> <span class="o">=</span> <span class="nf">ceiling</span><span class="p">(</span><span class="nf">rand</span><span class="p">(</span><span class="n">seed_no</span><span class="p">)</span><span class="o">*</span><span class="m">10</span><span class="p">))</span>
+    
+<span class="n">small_rand</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span>
+<span class="n">small_rand</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_num_partitions</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="imported-dataframe">
+<h3>Imported DataFrame<a class="headerlink" href="#imported-dataframe" title="Permalink to this headline">¶</a></h3>
+<p>Next, let’s import the <code class="docutils literal notranslate"><span class="pre">animal_rescue.csv</span></code> file and see how many partitions we have.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    
+<span class="n">rescue_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path_csv&quot;</span><span class="p">]</span>
+
+<span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">rescue</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">config</span> <span class="o">&lt;-</span> <span class="n">yaml</span><span class="o">::</span><span class="nf">yaml.load_file</span><span class="p">(</span><span class="s">&quot;ons-spark/config.yaml&quot;</span><span class="p">)</span>
+
+<span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_csv</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">config</span><span class="o">$</span><span class="n">rescue_path_csv</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span> 
+
+<span class="n">rescue</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_num_partitions</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Again, we didn’t set this number anywhere, and it obviously wasn’t set by <code class="docutils literal notranslate"><span class="pre">spark.default.parallelism</span></code> either.</p>
+<p>How many rows and columns do each DataFrame have?</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_rows</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<span class="n">rescue_columns</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rescue</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+
+<span class="n">rand_df_columns</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rand_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of rows in rescue DataFrame:</span><span class="se">\t\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">rescue_rows</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of columns in rescue DataFrame:</span><span class="se">\t\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">rescue_columns</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Total number of cells in rescue DataFrame:</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">rescue_rows</span><span class="o">*</span><span class="n">rescue_columns</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Number of rows in random_df DataFrame:</span><span class="se">\t\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">row_ct</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of columns in random_df DataFrame:</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">rand_df_columns</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Total number of cells in random_df DataFrame:</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">rand_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">*</span><span class="n">row_ct</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of rows in rescue DataFrame:		 5898
+Number of columns in rescue DataFrame:		 26
+Total number of cells in rescue DataFrame:	 153348
+
+Number of rows in random_df DataFrame:		 5000
+Number of columns in random_df DataFrame:	 2
+Total number of cells in random_df DataFrame:	 10000
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_rows</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">()</span>
+<span class="n">rescue_columns</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_ncol</span><span class="p">()</span>
+    
+<span class="n">rand_df_columns</span> <span class="o">&lt;-</span> <span class="n">rand_df</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_ncol</span><span class="p">()</span>
+ 
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&#39;Number of rows in rescue DataFrame: &#39;</span><span class="p">,</span> <span class="n">rescue_rows</span><span class="p">))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&#39;Number of columns in rescue DataFrame:&#39;</span><span class="p">,</span> <span class="n">rescue_columns</span><span class="p">))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&#39;Total number of cells in rescue DataFrame:&#39;</span><span class="p">,</span> <span class="n">rescue_rows</span><span class="o">*</span><span class="n">rescue_columns</span><span class="p">))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&#39;Number of rows in random_df DataFrame:&#39;</span><span class="p">,</span> <span class="n">row_ct</span><span class="p">))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&#39;Number of columns in random_df DataFrame:&#39;</span><span class="p">,</span> <span class="n">rand_df_columns</span><span class="p">))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&#39;Total number of cells in random_df DataFrame:&#39;</span><span class="p">,</span> <span class="n">rand_df_columns</span><span class="o">*</span><span class="n">row_ct</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>There are more cells in the rescue DataFrame, but Spark put it into just one partition.</p>
+<p>The reason for this is that the original csv file is stored as a single file on disk, which means that Spark will read it in as one partition. Data on HDFS can be stored in multiple files. In general, when a Spark DataFrame with <span class="math notranslate nohighlight">\(P\)</span> partitions is written onto disk, it will be stored in <span class="math notranslate nohighlight">\(P\)</span> files, and whenever we read that dataset into a Spark session it will again have <span class="math notranslate nohighlight">\(P\)</span> partitions. We will revisit writing partitions to disk later.</p>
+</div>
+<div class="section" id="processed-dataframe">
+<h3>Processed DataFrame<a class="headerlink" href="#processed-dataframe" title="Permalink to this headline">¶</a></h3>
+<p>Let’s see how applying <em>narrow</em> and <em>wide</em> transformations to the DataFrame affects the number of partitions. Firstly we’ll filter the data, which is a <em>narrow</em> operation.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">filtered_rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;AnimalGroupParent&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Cat&#39;</span><span class="p">)</span>
+<span class="n">filtered_rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;AnimalGroupParent&#39;</span><span class="p">,</span> <span class="s1">&#39;FinalDescription&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of partitions in filtered_rescue DataFrame:</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">filtered_rescue</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+-----------------+--------------------------------------------+
+|AnimalGroupParent|FinalDescription                            |
++-----------------+--------------------------------------------+
+|Cat              |TO ASSIST RSPCA WITH CAT TRAPPED UP TREE,B15|
+|Cat              |ASSIST RSPCA WITH CAT STUCK UP TREE, B15    |
+|Cat              |CAT STUCK UP TREE,B15                       |
++-----------------+--------------------------------------------+
+only showing top 3 rows
+
+Number of partitions in filtered_rescue DataFrame:	 1
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">filtered_rescue</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">AnimalGroupParent</span> <span class="o">==</span> <span class="s">&quot;Cat&quot;</span><span class="p">)</span>
+<span class="n">filtered_rescue</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">AnimalGroupParent</span><span class="p">,</span> <span class="n">FinalDescription</span><span class="p">)</span> <span class="o">%&gt;%</span> 
+    <span class="nf">head</span><span class="p">(</span><span class="m">3</span><span class="p">)</span> <span class="o">%&gt;%</span> 
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&#39;Number of partitions in filtered_rescue DataFrame: &#39;</span><span class="p">,</span><span class="n">filtered_rescue</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_num_partitions</span><span class="p">()))</span>
+</pre></div>
+</div>
+<p>No change. In general, for a narrow transformations the contents of the partitions will change according to the transformation applied, but no data will move from one partition to another and the total number of partitions will remain the same.</p>
+<p>Now let’s group the data, which is a wide operation, by <code class="docutils literal notranslate"><span class="pre">PostcodeDistrict</span></code> and then aggregate to find a count of incidents by area. How many partitions will we have in the new DataFrame?</p>
+<p><em>Note PySpark and sparklyr will give different results here, we will explain why later. PySpark results are shown in this article.</em></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">count_by_area</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s1">&#39;PostcodeDistrict&#39;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;IncidentNumber&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;Count&#39;</span><span class="p">)))</span>
+
+<span class="n">count_by_area</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of partitions in rescue_by_area DataFrame:</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">count_by_area</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+----------------+-----+
+|PostcodeDistrict|Count|
++----------------+-----+
+|            SE17|   20|
+|            EC1Y|    1|
+|             CR0|   98|
+|             EN3|   45|
+|            SW14|   12|
++----------------+-----+
+only showing top 5 rows
+
+Number of partitions in rescue_by_area DataFrame:	 200
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">count_by_area</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span> <span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">PostcodeDistrict</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">summarise</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="nf">n</span><span class="p">())</span>
+    
+<span class="n">count_by_area</span> <span class="o">%&gt;%</span> <span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&#39;Number of partitions in count_by_area DataFrame:&#39;</span><span class="p">,</span> <span class="n">count_by_area</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_num_partitions</span><span class="p">()))</span>
+</pre></div>
+</div>
+<p><strong>How many?!?</strong></p>
+<p><font size="6"> 😵 </font></p>
+<p>Let’s check how many rows are in each partition.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rows_in_part</span> <span class="o">=</span> <span class="n">count_by_area</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">mapPartitions</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">x</span><span class="p">)])</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of rows per partition:</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">rows_in_part</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of rows per partition:	 [1, 1, 1, 0, 0, 0, 1, 1, 2, 1, 2, 1, 0, 1, 1, 0, 1, 2, 2, 4, 1, 2, 1, 0, 2, 3, 2, 3, 1, 2, 0, 1, 1, 3, 0, 0, 2, 3, 0, 1, 1, 2, 1, 1, 3, 0, 2, 2, 1, 2, 1, 2, 0, 3, 5, 4, 1, 1, 1, 2, 0, 2, 2, 1, 0, 1, 1, 0, 0, 0, 1, 1, 4, 3, 1, 2, 3, 3, 1, 4, 0, 2, 2, 5, 1, 1, 0, 0, 3, 1, 3, 2, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 0, 2, 0, 1, 2, 2, 0, 1, 6, 0, 2, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 2, 2, 1, 3, 1, 3, 1, 3, 0, 0, 1, 4, 1, 4, 1, 0, 0, 0, 1, 1, 3, 1, 2, 3, 1, 0, 1, 0, 2, 1, 1, 2, 1, 0, 2, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 2, 4, 2, 0, 1, 0, 0, 1, 2, 3, 2, 1, 0, 1, 0, 3, 2, 0, 2, 1, 0, 4, 0, 2, 0, 0, 0, 3]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1">#rows_in_part &lt;- sparklyr::spark_apply(rand_df, function(x) nrow(x)) %&gt;% sparklyr::collect() #this takes a long time in sparklyr</span>
+<span class="c1">#print(paste0(&#39;Number of rows per partition: &#39;, rows_in_part)) </span>
+</pre></div>
+</div>
+<p>Quite a few empty partitions- this is a clear case of overpartitioning. In the <strong>Spark Applications and UI article</strong> it was shown that overpartitioning leads to slower processing as a larger proportion of time is spent on scheduling tasks and (de)serialising data instead of processing the task.</p>
+<p>Again, there is a property we can modify in the Spark session configuration to change this behaviour. The property to override is <code class="docutils literal notranslate"><span class="pre">spark.sql.shuffle.partitions</span></code>. <em>Shuffle partitions</em> means when a shuffle occurs, for example a <em>wide</em> operation. So this property says “give the resulting DataFrame this many partitions”. See the <strong>article on Shuffling</strong> for more information on shuffles.</p>
+<p>The <a class="reference external" href="https://spark.apache.org/docs/latest/configuration.html#runtime-sql-configuration">Spark documentation</a> shows that the default value for <code class="docutils literal notranslate"><span class="pre">spark.sql.shuffle.partitions</span></code> is 200. This default is obviously too high for our case of grouping a small dataset with a small number of groups i.e. <code class="docutils literal notranslate"><span class="pre">PostcodeDistrict</span></code>. This is one of the more useful properties to consider changing depending on the size of the data you want to process with Spark.</p>
+<p>We noted above that sparklyr would give different results. Using a local sparklyr session there is another property that is used for partitioning after a wide operation, <code class="docutils literal notranslate"><span class="pre">spark.sql.shuffle.partitions.local</span></code>, which is set to 16 by default.</p>
+</div>
+</div>
+<div class="section" id="how-to-change-partitioning">
+<h2>How to change partitioning<a class="headerlink" href="#how-to-change-partitioning" title="Permalink to this headline">¶</a></h2>
+<p>Before we look at how to modify DataFrame partitioning, let’s revisit the motivation for wanting to do this.</p>
+<div class="section" id="motivation">
+<h3>Motivation<a class="headerlink" href="#motivation" title="Permalink to this headline">¶</a></h3>
+<ol class="simple">
+<li><p>We can change the number of partitions of a DataFrame to achieve less or more parallelisation. More parallel processing is great for large DataFrames, but there are some scheduling and data serialisation overheads involved in processing multiple partitions. So for small DataFrames it’s best to have just a small number of partition because the overheads involved in organising and writing multiple partitions will result in slower processing. However, we don’t always get to choose the partitioning, e.g. to do a join Spark must first put rows with the same join keys on the same partition. More on this later.</p></li>
+<li><p>We can also partition by a specified column(s) in the DataFrame. This can be useful when writing to a Hive table or file becuase we can then read in single partitions. For example, say we had a DataFrame containing records from the past 20 years. We could partition this DataFrame by year when writing it to disk, then in future we could read in one year at a time or multiple years to speed up future tasks.</p></li>
+</ol>
+</div>
+<div class="section" id="change-partitioning">
+<h3>Change partitioning<a class="headerlink" href="#change-partitioning" title="Permalink to this headline">¶</a></h3>
+<p>Here are two ways of changing the number of partitions of a DataFrame. One is <code class="docutils literal notranslate"><span class="pre">.repartition()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_repartition()</span></code> and the other is <code class="docutils literal notranslate"><span class="pre">coalesce()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_coalesce()</span></code>.</p>
+<p>Let’s see how to use these functions.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rand_df</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rand_df</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_num_partitions</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rand_df</span> <span class="o">=</span> <span class="n">rand_df</span><span class="o">.</span><span class="n">coalesce</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">rand_df</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rand_df</span> <span class="o">&lt;-</span> <span class="n">rand_df</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_coalesce</span><span class="p">(</span><span class="m">1</span><span class="p">)</span>
+<span class="n">rand_df</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_num_partitions</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rand_df</span> <span class="o">=</span> <span class="n">rand_df</span><span class="o">.</span><span class="n">coalesce</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">rand_df</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rand_df</span> <span class="o">&lt;-</span> <span class="n">rand_df</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_coalesce</span><span class="p">(</span><span class="m">10</span><span class="p">)</span>
+<span class="n">rand_df</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_num_partitions</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Is that the answer we were expecting? Note that <code class="docutils literal notranslate"><span class="pre">.coalesce()</span></code> should only be used to <em>decrease</em> the number of partitions. When increasing it can only increase to a previous state.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rand_df</span> <span class="o">=</span> <span class="n">rand_df</span><span class="o">.</span><span class="n">repartition</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">rand_df</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rand_df</span> <span class="o">&lt;-</span> <span class="n">rand_df</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_repartition</span><span class="p">(</span><span class="m">1</span><span class="p">)</span>
+<span class="n">rand_df</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_num_partitions</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rand_df</span> <span class="o">=</span> <span class="n">rand_df</span><span class="o">.</span><span class="n">repartition</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">rand_df</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rand_df</span> <span class="o">&lt;-</span> <span class="n">rand_df</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_repartition</span><span class="p">(</span><span class="m">10</span><span class="p">)</span>
+<span class="n">rand_df</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_num_partitions</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Repartition can be used to increase parallelisation.</p>
+<p>The other important difference is that <code class="docutils literal notranslate"><span class="pre">.repartition()</span></code> incurs a <em>full</em> shuffle of the DataFrame, meaning it rewrites all the data into the new partitions. Shuffling takes time, especially for large amounts of data, so it’s best to avoid shuffling more data than needed. To learn more about shuffling have a look at the <strong>Shuffling article</strong></p>
+<p>On the other hand <code class="docutils literal notranslate"><span class="pre">.coalesce()</span></code> involves moving just some of the data. Let’s demonstrate by an example.</p>
+<p>Say we have a simple DataFrame where the partitions contain the following numbers:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Partition 1: 1, 2, 3
+Partition 2: 4, 5, 6
+Partition 3: 7, 8, 9
+Partition 4: 10, 11, 12
+</pre></div>
+</div>
+<p>We then decide we want two partitions as opposed to four so we apply <code class="docutils literal notranslate"><span class="pre">.coalesce(2)</span></code> to the DataFrame. The partitions would now contain the following:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Partition 1: 1, 2, 3 + (7, 8, 9)
+Partition 2: 4, 5, 6 + (10, 11, 12)
+</pre></div>
+</div>
+<p>So the data on Partitions 1 and 2 have not been shuffled. We have just moved the data on Partitions 3 to Partition 1 and Partition 4 to Partition 2, this is sometimes referred to as a partial shuffle. The gains from this simple example would be negligible, but scale this process up to millions of rows and then it becomes significant.</p>
+<p>It’s also possible to use a column name in <code class="docutils literal notranslate"><span class="pre">.repartition()</span></code> or even a number and column name, see documentation for more information.</p>
+</div>
+</div>
+<div class="section" id="intermediate-partitions-in-wide-operations">
+<h2>Intermediate partitions in wide operations<a class="headerlink" href="#intermediate-partitions-in-wide-operations" title="Permalink to this headline">¶</a></h2>
+<p>Now onto a more complex topic of intermediate partitioining.</p>
+<p>We saw earlier that for narrow transformations the number of partitions of input and output DataFrames is the same. We also saw that for wide transformations the number of partitions of the output DataFrame is changed to the value of the <code class="docutils literal notranslate"><span class="pre">spark.sql.shuffle.partitions</span></code> property set in the Spark session.</p>
+<p>But what is inside the partitions of the output DataFrame after a wide operation? This depends on the operation, so in this section we will look at three wide transformations: join, group by and window functions. Understanding how these functions work is particularly useful when we deal with skewed data, or more specifically skew in the join key, group variable or windows. We will demonstrate this with some skewed data and show that knowing your data can help you make informed decisions on scaling jobs vertically or horizontally, or employing an alternative strategy like a <strong>salted join</strong>.</p>
+<p><em>Note: If R users would like more information about window functions, please see the <a class="reference external" href="https://dplyr.tidyverse.org/articles/window-functions.html">Window functions</a> page in the <code class="docutils literal notranslate"><span class="pre">dplyr</span></code> documentation.</em></p>
+<div class="section" id="set-up-the-problem">
+<h3>Set up the problem<a class="headerlink" href="#set-up-the-problem" title="Permalink to this headline">¶</a></h3>
+<p>Let’s start with a DataFrame with a skewed variable <code class="docutils literal notranslate"><span class="pre">skew_col</span></code>, but uniform partition sizes. It also has a column <code class="docutils literal notranslate"><span class="pre">rand_val</span></code> containing some random numbers to perform some calculations.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">row_ct</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="mi">7</span>
+<span class="n">seed_no</span> <span class="o">=</span> <span class="mi">42</span>
+
+<span class="n">skewed_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="n">row_ct</span><span class="p">,</span> <span class="n">numPartitions</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">skewed_df</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">skewed_df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;skew_col&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">)</span>
+                               <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">)</span>
+                               <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10000</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
+                               <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100000</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">)</span>
+                               <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">))</span>
+              <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;rand_val&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">rint</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">seed_no</span><span class="p">)</span><span class="o">*</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;int&quot;</span><span class="p">))</span>
+<span class="p">)</span>
+
+<span class="n">skewed_df</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+---+--------+--------+
+| id|skew_col|rand_val|
++---+--------+--------+
+|  0|       A|       7|
+|  1|       A|       9|
+|  2|       A|       9|
+|  3|       A|       9|
+|  4|       A|       4|
++---+--------+--------+
+only showing top 5 rows
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">row_ct</span> <span class="o">&lt;-</span> <span class="m">10</span><span class="o">**</span><span class="m">7</span>
+<span class="n">seed_no</span> <span class="o">&lt;-</span> <span class="m">42L</span>
+
+<span class="n">skewed_df</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_seq</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="n">row_ct</span> <span class="o">-</span> <span class="m">1</span><span class="p">,</span> <span class="n">repartition</span><span class="o">=</span><span class="m">2</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span>
+        <span class="n">skew_col</span> <span class="o">=</span> <span class="n">dplyr</span><span class="o">::</span><span class="nf">case_when</span><span class="p">(</span>
+            <span class="n">id</span> <span class="o">&lt;</span> <span class="m">100</span> <span class="o">~</span> <span class="s">&quot;A&quot;</span><span class="p">,</span>
+            <span class="n">id</span> <span class="o">&lt;</span> <span class="m">1000</span> <span class="o">~</span> <span class="s">&quot;B&quot;</span><span class="p">,</span>
+            <span class="n">id</span> <span class="o">&lt;</span> <span class="m">10000</span> <span class="o">~</span> <span class="s">&quot;C&quot;</span><span class="p">,</span>
+            <span class="n">id</span> <span class="o">&lt;</span> <span class="m">100000</span> <span class="o">~</span> <span class="s">&quot;D&quot;</span><span class="p">,</span>
+            <span class="kc">TRUE</span> <span class="o">~</span> <span class="s">&quot;E&quot;</span><span class="p">),</span>
+        <span class="n">rand_val</span> <span class="o">=</span> <span class="nf">ceiling</span><span class="p">(</span><span class="nf">rand</span><span class="p">(</span><span class="n">seed_no</span><span class="p">)</span><span class="o">*</span><span class="m">10</span><span class="p">))</span>
+
+<span class="n">skewed_df</span> <span class="o">%&gt;%</span> <span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>To confirm the details of the partitioning we will add a column with the partition ID, then group that column and count how many rows are in each partition. This method of counting how many rows are in each partition is very useful and much quicker than the method shown earlier, but it will not show any empty partitions like the previous method. Therefore, we will also show the total number of partitions.</p>
+<p>We’ll put this into a function so we can run it again on other DataFrames later.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">print_partitioning_info</span><span class="p">(</span><span class="n">sdf</span><span class="p">):</span>
+    <span class="n">sdf</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;part_id&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">spark_partition_id</span><span class="p">())</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;part_id&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of partitions: </span><span class="si">{</span><span class="n">sdf</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">print_partitioning_info</span> <span class="o">&lt;-</span> <span class="nf">function</span><span class="p">(</span><span class="n">sdf</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">sdf</span> <span class="o">%&gt;%</span> 
+        <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span>
+            <span class="n">part_id</span> <span class="o">=</span> <span class="nf">spark_partition_id</span><span class="p">())</span> <span class="o">%&gt;%</span>
+        <span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">part_id</span><span class="p">)</span> <span class="o">%&gt;%</span>
+        <span class="n">dplyr</span><span class="o">::</span><span class="nf">summarise</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="nf">n</span><span class="p">())</span> <span class="o">%&gt;%</span>
+        <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
+        <span class="nf">print</span><span class="p">()</span>
+
+    <span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;Number of partitions: &quot;</span><span class="p">,</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_num_partitions</span><span class="p">(</span><span class="n">sdf</span><span class="p">)))</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">print_partitioning_info</span><span class="p">(</span><span class="n">skewed_df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+-------+-------+
+|part_id|  count|
++-------+-------+
+|      1|5000000|
+|      0|5000000|
++-------+-------+
+
+Number of partitions: 2
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">print_partitioning_info</span><span class="p">(</span><span class="n">skewed_df</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To perform the join we will also need a second DataFrame</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">small_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">([</span>
+    <span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="p">],</span> <span class="p">[</span><span class="s2">&quot;skew_col&quot;</span><span class="p">,</span> <span class="s2">&quot;number_col&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">small_df</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_copy_to</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="nf">data.frame</span><span class="p">(</span>
+    <span class="s">&quot;skew_col&quot;</span> <span class="o">=</span> <span class="kc">LETTERS</span><span class="p">[</span><span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">],</span> 
+    <span class="s">&quot;number_col&quot;</span> <span class="o">=</span> <span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">))</span> 
+</pre></div>
+</div>
+<p>To see how Spark executes each plan in full we will write the output DataFrames to disk to initiate the Spark job, then delete the file afterwards. Of course, the information on the Spark job will remain in the UI for us to inspect after deleting the file. In Spark 3 there is a nicer way of doing this by using the <code class="docutils literal notranslate"><span class="pre">noop</span></code> argument, meaning <em>no operation</em>.</p>
+<p>We will use the <code class="docutils literal notranslate"><span class="pre">checkpoint_path</span></code> from the config.yml file to write the data before deleting it. More on checkpoint in the <strong>Persisting article</strong>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">subprocess</span>
+
+<span class="k">def</span> <span class="nf">write_delete</span><span class="p">(</span><span class="n">sdf</span><span class="p">):</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;checkpoint_path&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;/temp.parquet&quot;</span>
+    <span class="n">sdf</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="s2">&quot;overwrite&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;rm -r -skipTrash </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">write_delete</span> <span class="o">&lt;-</span> <span class="nf">function</span><span class="p">(</span><span class="n">sdf</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">path</span> <span class="o">&lt;-</span> <span class="nf">paste0</span><span class="p">(</span><span class="n">config</span><span class="o">$</span><span class="n">checkpoint_path</span><span class="p">,</span> <span class="s">&quot;/temp.parquet&quot;</span><span class="p">)</span>
+    <span class="n">sdf</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_write_parquet</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&quot;overwrite&quot;</span><span class="p">)</span>
+    <span class="n">cmd</span> <span class="o">&lt;-</span> <span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;hdfs dfs -rm -r -skipTrash &quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+    <span class="nf">system</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>We will need a link to the Spark UI to view the details of how Spark partitions the data. When using a local session we can access the Spark UI with this URL, <a class="reference external" href="http://localhost:4040/jobs/">http://localhost:4040/jobs/</a>.</p>
+</div>
+<div class="section" id="run-the-jobs-and-investigate-ui">
+<h3>Run the jobs and investigate UI<a class="headerlink" href="#run-the-jobs-and-investigate-ui" title="Permalink to this headline">¶</a></h3>
+<p>Next we will carry out the wide transformations on the <code class="docutils literal notranslate"><span class="pre">skewed_df</span></code> and apply the above function to create jobs. We have also added custom job descriptions to make it easier to find the relevant stage details in the UI.</p>
+<p>Note that the join key, group variable and windows are all set on the <code class="docutils literal notranslate"><span class="pre">skew_col</span></code> variable.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">setJobDescription</span><span class="p">(</span><span class="s2">&quot;join&quot;</span><span class="p">)</span>
+<span class="n">joined_df</span> <span class="o">=</span> <span class="n">skewed_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">small_df</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;skew_col&quot;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+<span class="n">write_delete</span><span class="p">(</span><span class="n">joined_df</span><span class="p">)</span>
+
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">setJobDescription</span><span class="p">(</span><span class="s2">&quot;groupby&quot;</span><span class="p">)</span>
+<span class="n">grouped_df</span> <span class="o">=</span> <span class="n">skewed_df</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;skew_col&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="s2">&quot;rand_val&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;sum_rand&quot;</span><span class="p">))</span>
+<span class="n">write_delete</span><span class="p">(</span><span class="n">grouped_df</span><span class="p">)</span>
+
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">setJobDescription</span><span class="p">(</span><span class="s2">&quot;window&quot;</span><span class="p">)</span>
+<span class="n">window_df</span> <span class="o">=</span> <span class="n">skewed_df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;skew_window_sum&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="s2">&quot;rand_val&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">over</span><span class="p">(</span><span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s2">&quot;skew_col&quot;</span><span class="p">)))</span>
+<span class="n">write_delete</span><span class="p">(</span><span class="n">window_df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_context</span><span class="p">()</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">invoke</span><span class="p">(</span><span class="s">&quot;setJobDescription&quot;</span><span class="p">,</span> <span class="s">&quot;join&quot;</span><span class="p">)</span>
+
+<span class="n">joined_df</span> <span class="o">&lt;-</span> <span class="n">skewed_df</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">left_join</span><span class="p">(</span><span class="n">small_df</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s">&quot;skew_col&quot;</span><span class="p">)</span>
+<span class="nf">write_delete</span><span class="p">(</span><span class="n">joined_df</span><span class="p">)</span>
+
+<span class="n">sc</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_context</span><span class="p">()</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">invoke</span><span class="p">(</span><span class="s">&quot;setJobDescription&quot;</span><span class="p">,</span> <span class="s">&quot;groupby&quot;</span><span class="p">)</span>
+    
+<span class="n">grouped_df</span> <span class="o">&lt;-</span> <span class="n">skewed_df</span> <span class="o">%&gt;%</span> 
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">skew_col</span><span class="p">)</span> <span class="o">%&gt;%</span> 
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">summarise</span><span class="p">(</span><span class="n">sum_rand</span> <span class="o">=</span> <span class="nf">sum</span><span class="p">(</span><span class="n">rand_val</span><span class="p">))</span>
+
+<span class="nf">write_delete</span><span class="p">(</span><span class="n">grouped_df</span><span class="p">)</span>
+
+<span class="n">sc</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_context</span><span class="p">()</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">invoke</span><span class="p">(</span><span class="s">&quot;setJobDescription&quot;</span><span class="p">,</span> <span class="s">&quot;window&quot;</span><span class="p">)</span>
+
+<span class="n">window_df</span> <span class="o">&lt;-</span> <span class="n">skewed_df</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">skew_col</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">skew_window_sum</span> <span class="o">=</span> <span class="nf">sum</span><span class="p">(</span><span class="n">rand_val</span><span class="p">))</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">ungroup</span><span class="p">()</span>
+
+<span class="nf">write_delete</span><span class="p">(</span><span class="n">window_df</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Below are images of the task timeline for the above jobs containing the wide transformations. Note that the images might look slightly different if you are running the source notebook. The processing times will also vary.</p>
+<p>The main message in this set of images is that we see a clear bottleneck in the case of the join and window function, but there is no bottleneck in the group by.</p>
+<p><strong>Join</strong></p>
+<p><img alt="task timeline for skewed join" src="raw-notebooks/images/partition_skew_join.PNG" /></p>
+<p><strong>Group by</strong></p>
+<p><img alt="task timeline for skewed groupby" src="raw-notebooks/images/partition_skew_groupby.PNG" /></p>
+<p><strong>Window</strong></p>
+<p><img alt="task timeline for skewed windows" src="raw-notebooks/images/partition_skew_window.PNG" /></p>
+<p>It’s also useful to look at the Tasks table below the timeline to see how many records were processes in each of the 200 tasks. In the images below we have sorted the table by the <em>Output Size / Records</em> column (circled red) so that the largest tasks are at the top.</p>
+<p><strong>Join</strong></p>
+<p><img alt="task details for skewed join" src="raw-notebooks/images/partition_skew_join_table.PNG" /></p>
+<p><strong>Group by</strong></p>
+<p><img alt="task details for skewed groupby" src="raw-notebooks/images/partition_skew_groupby_table.PNG" /></p>
+<p><strong>Window</strong></p>
+<p><img alt="task details for skewed windows" src="raw-notebooks/images/partition_skew_window_table.PNG" /></p>
+<p>One last piece of information we will gather is the partitioning information of the output DataFrames using the <code class="docutils literal notranslate"><span class="pre">print_partitioning_info()</span></code> function we defined above.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">print_partitioning_info</span><span class="p">(</span><span class="n">joined_df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+-------+-------+
+|part_id|  count|
++-------+-------+
+|     78|  90000|
+|     43|9900000|
+|     49|    900|
+|    106|    100|
+|     89|   9000|
++-------+-------+
+
+Number of partitions: 200
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">print_partitioning_info</span><span class="p">(</span><span class="n">joined_df</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">print_partitioning_info</span><span class="p">(</span><span class="n">grouped_df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+-------+-----+
+|part_id|count|
++-------+-----+
+|     78|    1|
+|     43|    1|
+|     49|    1|
+|    106|    1|
+|     89|    1|
++-------+-----+
+
+Number of partitions: 200
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">print_partitioning_info</span><span class="p">(</span><span class="n">grouped_df</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">print_partitioning_info</span><span class="p">(</span><span class="n">window_df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+-------+-------+
+|part_id|  count|
++-------+-------+
+|      1|5000000|
+|      0|5000000|
++-------+-------+
+
+Number of partitions: 200
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">print_partitioning_info</span><span class="p">(</span><span class="n">window_df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="discussion">
+<h3>Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h3>
+<p>Now that we have all the information on how Spark performed these processes we can compare the three cases.</p>
+<p>All three operations involve an intermediate shuffle where the join key/grouped variable/windows are moved to the same partitions. This is called <code class="docutils literal notranslate"><span class="pre">hashpartitioning()</span></code> in the execution plan. As we mentioned previously, these are all wide transformations so the number of partitions of the output DataFrames are the same, 200. Listed below are the differences in processing and output DataFrames for the three operations.</p>
+<p><strong>Join</strong></p>
+<p>There was much more work to be done on the larger partition than the smaller ones. The Spark UI shows there were more records to process on the large partition therefore the task takes much longer. Note the number of records processed in each task matches the number of rows in each join key. The output DataFrame is partitioned by the join key.</p>
+<p><strong>Group by</strong></p>
+<p>In the case of the group by the skewed variable isn’t too much of an issue because the aggregation is quite simple and is optimised, therefore it is easy to process each partition whether there is skew or not. Again, the output DataFrame is partitioned by the grouped variable, this time there is one row on each partition.</p>
+<p><strong>Window</strong></p>
+<p>Like the join, there is more work to do on the larger partitions. However, unlike the join, the rows of the output DataFrame have the same partition IDs as the input DataFrame.</p>
+</div>
+<div class="section" id="what-does-this-mean-in-practice">
+<h3>What does this mean in practice?<a class="headerlink" href="#what-does-this-mean-in-practice" title="Permalink to this headline">¶</a></h3>
+<p>Highly skewed data is a common issue that causes slow processing with Spark. Above we have seen that skewed data causes skewed partitions when Spark processes wide transformations and can result in bottlenecks, where some tasks take much longer than others therefore not utilising the full potential of parallel processing. An even worse situation is where the skew causes spill, where the large partition cannot fit into its allocated memory on an executor and overflows temporarily onto disk. We cannot recreate the issue of spill in a local session but they are easy to spot in the Stage details page in the Spark UI.</p>
+<p>This is where knowing your data can be useful. To help with the explanation we will refer to the join keys/groups/windows as groups. If a join/group by/window function is causing you issues, try to work out how many groups there are and the sizes of these groups. If there are lots on smaller groups it might help to increase <code class="docutils literal notranslate"><span class="pre">spark.sql.shuffle.partitions</span></code> and aim for greater parallel power with lots of smaller executors. If there are fewer groups you might want to scale more vertically so decrease <code class="docutils literal notranslate"><span class="pre">spark.sql.shuffle.partitions</span></code> and aim for a smaller number of bulkier executors.</p>
+<p>If you are doing a join on a highly skewed DataFrame you might want to try a <strong>salted join</strong>. If you are dealing with skew in a window function you can apply a group by and join to achieve the same result. However, these are alternative solutions when dealing with highly skewed data and in most cases a regular join or window function are more efficient and makes the code more readable.</p>
+</div>
+</div>
+<div class="section" id="partitions-when-writing-data">
+<h2>Partitions when writing data<a class="headerlink" href="#partitions-when-writing-data" title="Permalink to this headline">¶</a></h2>
+<p>As previously mentioned, we can also partition by a certain column when writing to disk. The reason why this is useful is we can choose which partitions we want to read in later. This is really useful for larger data sets.</p>
+<p>Before we demonstrate this by writing the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame as parquet files, we need to remove the <code class="docutils literal notranslate"><span class="pre">£</span></code> signs from the column names as these are not supported by the parquet format. In sparklyr they are replaced automatically when reading in the csv file, so no need for this step.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">rescue</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s1">&#39;£&#39;</span> <span class="ow">in</span> <span class="n">col</span><span class="p">:</span>
+        <span class="n">new_name</span> <span class="o">=</span> <span class="n">col</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;(£)&#39;</span><span class="p">,</span><span class="s1">&#39;GBP&#39;</span><span class="p">)</span>
+        <span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">new_name</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Next let’s create a file path and write the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame to disk in parquet format by partitioning the data in terms of <code class="docutils literal notranslate"><span class="pre">CalYear</span></code></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">repartition_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;checkpoint_path&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;/rescue_by_year.parquet&quot;</span>
+<span class="n">rescue</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="s1">&#39;overwrite&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s1">&#39;CalYear&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">repartition_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">repartition_path</span> <span class="o">&lt;-</span> <span class="nf">paste0</span><span class="p">(</span><span class="n">config</span><span class="o">$</span><span class="n">checkpoint_path</span><span class="p">,</span> <span class="s">&quot;/rescue_by_year.parquet&quot;</span><span class="p">)</span>
+<span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_write_parquet</span><span class="p">(</span><span class="n">rescue</span><span class="p">,</span> 
+                              <span class="n">repartition_path</span><span class="p">,</span>
+                              <span class="n">mode</span><span class="o">=</span><span class="s">&#39;overwrite&#39;</span><span class="p">,</span>
+                              <span class="n">partition_by</span><span class="o">=</span><span class="s">&#39;CalYear&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This will create multiple directories in the <code class="docutils literal notranslate"><span class="pre">rescue_by_year.parquet</span></code> directory on the file system, one for each year in the data.</p>
+<p>The easiest way to see this is by navigating to these directories using the file browser in HUE. Alternatively we can use the <code class="docutils literal notranslate"><span class="pre">subprocess</span></code> package to run lines of code through the terminal to return the contents of the <code class="docutils literal notranslate"><span class="pre">rescue_by_year.parquet</span></code> directory.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;hdfs dfs -ls -C </span><span class="si">{</span><span class="n">repartition_path</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">universal_newlines</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2009
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2010
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2011
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2012
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2013
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2014
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2015
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2016
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2017
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2018
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2019
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/_SUCCESS
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">cmd</span> <span class="o">&lt;-</span> <span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;hdfs dfs -ls -C &quot;</span><span class="p">,</span> <span class="n">repartition_path</span><span class="p">)</span>
+<span class="nf">system</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>On the right of the ouput above you will see there is one directory for each <code class="docutils literal notranslate"><span class="pre">CalYear</span></code>. So to import a subset of the data we can use the specific path for that year or filter the data in Spark and let Spark work out which folders to look for.</p>
+<p>Finally, we will delete these files to clean up the file system.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;hdfs dfs -rm -r -skipTrash </span><span class="si">{</span><span class="n">repartition_path</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">cmd</span> <span class="o">&lt;-</span> <span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;hdfs dfs -rm -r -skipTrash &quot;</span><span class="p">,</span> <span class="n">repartition_path</span><span class="p">)</span>
+<span class="nf">system</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="how-should-i-partition-my-data">
+<h2>How should I partition my data?<a class="headerlink" href="#how-should-i-partition-my-data" title="Permalink to this headline">¶</a></h2>
+<p>The short answer is- don’t worry about it too much!</p>
+<p>Let’s flip the question around. What are the consequences of getting the number of partitions “wrong”? Most of the time- nothing. You could spend hours trying to optimise the number of partitions and perhaps speed up the processing time to be twice as quick, but sometimes there are simpler things you can do that might speed up the processing by ten times or a hundred times the processing speed.</p>
+<p>As the computer scientist Donald Knuth once wrote:</p>
+<blockquote>
+<div><p>Premature optimization is the root of all evil (or at least most of it) in programming</p>
+<p>-&gt; <em>Computer Programming as an Art (1974)</em></p>
+</div></blockquote>
+<p>More importantly it’s good practice to be aware of the size of the DataFrame and the number of partitions as this will help to avoid obvious issues or over-partitioning, under-partitioning and highly skewed processes.</p>
+<p>A more accurate answer depends on a variety of factors including: the size of the data, data types, distributions within the data, type of processing and other properties defined in the <code class="docutils literal notranslate"><span class="pre">SparkSession</span></code>. Here are some tips for quick wins:</p>
+<ul class="simple">
+<li><p>As suggested above, the first step is getting the code right. Only look to optimise if you’re running into performance issues.</p></li>
+<li><p>Decreasing the <code class="docutils literal notranslate"><span class="pre">spark.sql.shuffle.partitions</span></code> parameter is sensible for smaller datasets.</p></li>
+<li><p>If you search for an answer on the web, you might find the optimum size for a Spark partitions is 100-200MB. In practice, this is impossible to keep track of in an analysis script, but it gives you an idea of what is considered big or small.</p></li>
+<li><p>It makes sense for the number of partitions to be some multiple of the number of cores in the Spark session. This will help to avoid redundant cores.</p></li>
+</ul>
+<p>Remember, it’s only worth experimenting on the <em>optimum</em> number if you have a real performance issue.</p>
+</div>
+<div class="section" id="further-resources">
+<h2>Further resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
+<p>PySpark:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.RDD.getNumPartitions.html"><code class="docutils literal notranslate"><span class="pre">.rdd.getNumPartitions()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.RDD.mapPartitions.html?highlight=mappartitions"><code class="docutils literal notranslate"><span class="pre">.rdd.mapPartitions()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.coalesce.html?highlight=coalesce#pyspark.sql.DataFrame.coalesce"><code class="docutils literal notranslate"><span class="pre">.coalesce()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.repartition.html?highlight=repartition#pyspark.sql.DataFrame.repartition"><code class="docutils literal notranslate"><span class="pre">.repartition()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Window.partitionBy.html?highlight=partitionby#pyspark.sql.Window.partitionBy"><code class="docutils literal notranslate"><span class="pre">Window.partitionBy()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrameWriter.partitionBy.html?highlight=partitionby#pyspark.sql.DataFrameWriter.partitionBy"><code class="docutils literal notranslate"><span class="pre">DataFrameWriter.partitionBy()</span></code></a></p></li>
+</ul>
+<p>sparklyr and dplyr:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.rdocumentation.org/packages/sparklyr/versions/0.8.2/topics/sdf_num_partitions"><code class="docutils literal notranslate"><span class="pre">sparklyr::sdf_num_partitions()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://www.rdocumentation.org/packages/sparklyr/versions/1.7.5/topics/spark_apply"><code class="docutils literal notranslate"><span class="pre">sparklyr::spark_apply()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://www.rdocumentation.org/packages/sparklyr/versions/1.7.5/topics/sdf_coalesce"><code class="docutils literal notranslate"><span class="pre">sparklyr::sdf_coalesce()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://www.rdocumentation.org/packages/sparklyr/versions/1.7.5/topics/sdf_repartition"><code class="docutils literal notranslate"><span class="pre">sparklyr::sdf_repartition()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://dplyr.tidyverse.org/articles/window-functions.html">Window functions</a></p></li>
+</ul>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./raw-notebooks/partitions"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            
+        </div>
+    </div>
+    <footer class="footer">
+  <p>
+    
+      By Wil Roberts & Adrian Prince<br/>
+    
+  </p>
+</footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>
