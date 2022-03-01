@@ -4,8 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Shuffling &#8212; Spark at the ONS</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
@@ -39,21 +38,23 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/tabs.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Optimising Joins" href="join_concepts.html" />
@@ -284,7 +285,7 @@
                 data-placement="left">.md</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -318,7 +319,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -434,29 +435,148 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Shuffling</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#shuffling-concepts">
+   Shuffling Concepts
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#what-is-a-shuffle">
+     What is a shuffle?
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#what-is-a-partition">
+     What is a partition?
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#what-transformations-cause-a-shuffle">
+     What transformations cause a shuffle?
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#a-quick-note-on-rdds">
+     A quick note on RDDs
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#examples">
+   Examples
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#example-1-one-shuffle">
+     Example 1: One Shuffle
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#example-2-lots-of-shuffles">
+     Example 2: Lots of shuffles
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#optimising-and-avoiding-shuffles">
+   Optimising and Avoiding Shuffles
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#minimise-actions-and-caching">
+     Minimise actions and caching
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#converting-to-pandas-or-base-r-df">
+     Converting to pandas or base R DF
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#use-a-broadcast-join">
+     Use a broadcast join
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#replace-joins-with-conditional-statements">
+     Replace joins with conditional statements
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#avoiding-unnecessary-sorting">
+     Avoiding unnecessary sorting
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#use-window-functions">
+     Use Window functions
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#other-things-matter-too">
+     Other things matter too!
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#good-shuffles">
+   Good Shuffles
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#summary">
+   Summary
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
-  <section id="shuffling">
+  <div class="section" id="shuffling">
 <h1>Shuffling<a class="headerlink" href="#shuffling" title="Permalink to this headline">¶</a></h1>
 <p>This article introduces the concept of a <em>shuffle</em>, also referred to as an <em>exchange</em>. Shuffles occur when processing <em>wide transformations</em> such as joins and aggregations. Shuffles can be a bottleneck when processing, so it is good to understand when they occur and how to make them more efficient or minimise their use.</p>
 <p>It covers both the theory of shuffles and practical implementations. Several topics are explored in more detail elsewhere and is recommended to read this alongside the Spark Application and UI, Partitions, Optimising Joins and Persisting articles. Some practical suggestions to improve the efficiency of shuffles include broadcast joins, salted joins and window functions.</p>
-<section id="shuffling-concepts">
+<div class="section" id="shuffling-concepts">
 <h2>Shuffling Concepts<a class="headerlink" href="#shuffling-concepts" title="Permalink to this headline">¶</a></h2>
 <p>First, we will explain a few of the key concepts of shuffles, before moving on to some examples.</p>
-<section id="what-is-a-shuffle">
+<div class="section" id="what-is-a-shuffle">
 <h3>What is a shuffle?<a class="headerlink" href="#what-is-a-shuffle" title="Permalink to this headline">¶</a></h3>
 <p>Shuffles in Spark occur when data are moved between different partitions. This is a simultaneous read and write operation and has to be fully processed before parallel processing can resume.</p>
 <p>To fully understand this, we need to explore what we mean by <em>partitions</em>, and what <em>transformations</em> cause data to be moved between them.</p>
-</section>
-<section id="what-is-a-partition">
+</div>
+<div class="section" id="what-is-a-partition">
 <h3>What is a partition?<a class="headerlink" href="#what-is-a-partition" title="Permalink to this headline">¶</a></h3>
 <p>Partitions are just separate chunks of data. Whereas a pandas or base R DataFrame will be stored as one object in the driver memory, a Spark DataFrame will be distributed over many different partitions on the Spark cluster. These partitions are processed in parallel wherever possible. This structure is one of the reasons that Spark is so powerful for handling large data. The Partitions article explores this topic in more detail.</p>
 <p>In the diagram below, the solid boxes represent partitions and the arrows are transformations. If the data stays on the same partition that is referred to as as <em>narrow transformation</em>. Shuffles occur between the stages, where the data moves between partitions; this happens when a <em>wide transformation</em> is processed.</p>
 <p><img alt="Diagram showing wide and narrow transformations" src="../_images/application_and_ui.png" /></p>
 <p>This is covered in more detail in the Spark Application and UI article.</p>
-</section>
-<section id="what-transformations-cause-a-shuffle">
+</div>
+<div class="section" id="what-transformations-cause-a-shuffle">
 <h3>What transformations cause a shuffle?<a class="headerlink" href="#what-transformations-cause-a-shuffle" title="Permalink to this headline">¶</a></h3>
 <p><em>A shuffle takes place when the value of one row depends on another in a different partition</em>, as the partitions of the DataFrame cannot then be processed in parallel. All the previous operations need to have been completed on every partition before a shuffle can take place, and then the shuffle needs to finish before anything else can happen. A good example is sorting, since the data will need to move between partitions to be in the specified order. A few examples of <em>wide transformations</em>:</p>
 <ul class="simple">
@@ -466,19 +586,19 @@
 <li><p>Joining</p></li>
 <li><p>Repartitioning</p></li>
 </ul>
-</section>
-<section id="a-quick-note-on-rdds">
+</div>
+<div class="section" id="a-quick-note-on-rdds">
 <h3>A quick note on RDDs<a class="headerlink" href="#a-quick-note-on-rdds" title="Permalink to this headline">¶</a></h3>
 <p>Although in PySpark and sparklyr we work with DataFrames, they are actually stored in memory as a <a class="reference external" href="https://spark.apache.org/docs/latest/rdd-programming-guide.html">Resilient Distributed Dataset (RDD)</a> and this is what you will see in the Spark UI.</p>
 <p>In PySpark, a DataFrame is effectively an API built on top of the RDD, allowing it to be manipulated in a more user-friendly manner than the native RDD syntax. We can access RDD specific functionality with <code class="docutils literal notranslate"><span class="pre">df.rdd</span></code>; an example of this is <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.RDD.getNumPartitions.html"><code class="docutils literal notranslate"><span class="pre">df.rdd.getNumPartitions()</span></code></a> to get the number of partitions of the DataFrame.</p>
 <p>In sparklyr we simply have <code class="docutils literal notranslate"><span class="pre">tbl_spark</span></code> objects rather than two APIs, e.g. to get the number of partitions use <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_num_partitions.html"><code class="docutils literal notranslate"><span class="pre">sdf_num_partitions()</span></code></a> on your sparklyr DataFrame.</p>
 <p>From a practical perspective when coding, do not worry too much about RDDs, the concept of a shuffle works exactly the same way on a DataFrame.</p>
-</section>
-</section>
-<section id="examples">
+</div>
+</div>
+<div class="section" id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <p>To demonstrate shuffles we will run some Spark code, and see data being transferred between partitions.</p>
-<section id="example-1-one-shuffle">
+<div class="section" id="example-1-one-shuffle">
 <h3>Example 1: One Shuffle<a class="headerlink" href="#example-1-one-shuffle" title="Permalink to this headline">¶</a></h3>
 <p>Start with a small example to demonstrate the concept of shuffling and what actually happens to the data and partitions. First, create a Spark session. We are setting the number of partitions returned from a shuffled DataFrame to be just <code class="docutils literal notranslate"><span class="pre">2</span></code> with the <code class="docutils literal notranslate"><span class="pre">spark.sql.shuffle.partitions</span></code> option (the default is <code class="docutils literal notranslate"><span class="pre">200</span></code>).</p>
 <p>Note that in sparklyr with a local session <code class="docutils literal notranslate"><span class="pre">spark.sql.local.partitions</span></code> needs to be set; if running on a Spark cluster you can ignore this setting.</p>
@@ -704,8 +824,8 @@
 <p>Clicking on the link where <code class="docutils literal notranslate"><span class="pre">ID</span></code> is <code class="docutils literal notranslate"><span class="pre">3</span></code> displays the plan:</p>
 <p><img alt="Spark UI showing an exchange when DF is sorted" src="../_images/shuffling_example1_sql_ui.png" /></p>
 <p>We can see from this that the shuffle occurred when we sorted the DataFrame by <code class="docutils literal notranslate"><span class="pre">rand1</span></code>, as represented by <strong>Exchange</strong> in the diagram.</p>
-</section>
-<section id="example-2-lots-of-shuffles">
+</div>
+<div class="section" id="example-2-lots-of-shuffles">
 <h3>Example 2: Lots of shuffles<a class="headerlink" href="#example-2-lots-of-shuffles" title="Permalink to this headline">¶</a></h3>
 <p>The previous example just had one shuffle on a tiny DF; this one has several shuffles on a larger DF, although still small by Spark standards. We will close the existing Spark session and start a new one, as the previous session had <code class="docutils literal notranslate"><span class="pre">spark.sql.shuffle.partitions</span></code> set to <code class="docutils literal notranslate"><span class="pre">2</span></code>; here, we want <code class="docutils literal notranslate"><span class="pre">100</span></code>. Be careful when closing and starting Spark sessions as existing values will be used if not explicitly defined in the new configuration.</p>
 <p>Note that this only takes effect once we have shuffled the DataFrame, for more information on how newly created DataFrames are partitioned please refer to the Partitions article.</p>
@@ -819,42 +939,42 @@ Bottom 5 rows:
 <p><img alt="Spark UI showing exchanges when a DF is joined, grouped and sorted" src="../_images/shuffling_example2_sql_ui.png" /></p>
 <p>We can visually see where a shuffle takes place, in this case, on both DataFrames prior to the join, then when grouping, and finally one more when sorting at the end.</p>
 <p>A quick note on the shuffles prior to the join: Spark uses sort merge join, which requires a shuffle of the DataFrames before performing the join, hence the initial <strong>Exchange</strong> and <strong>Sort</strong> in the diagram. The other joining algorithm is the broadcast join, briefly covered later and in full in the Join Concepts article.</p>
-</section>
-</section>
-<section id="optimising-and-avoiding-shuffles">
+</div>
+</div>
+<div class="section" id="optimising-and-avoiding-shuffles">
 <h2>Optimising and Avoiding Shuffles<a class="headerlink" href="#optimising-and-avoiding-shuffles" title="Permalink to this headline">¶</a></h2>
 <p>Now we have seen some examples of shuffles, let us explain properly why we generally want to minimise unnecessary use of them.</p>
 <p>The shuffle itself is an expensive operation, by which we mean it takes a long time to run compared to most other operations. In addition, when the data are being shuffled, all prior operations have to complete first. This is why the steps in the Spark UI are referred to as <em>stages</em>; all the processing in one stage has to be completed before the next one can start.</p>
 <p>As such shuffles can cause bottlenecks in our code and slow it down.</p>
 <p>It is very unlikely that you will be able to avoid using shuffles completely. Grouping, aggregations, joining and ordering are almost essential when writing Spark codes. So the important thing is to <em>understand</em> shuffles and use them sensibly, rather than being afraid of them!</p>
-<section id="minimise-actions-and-caching">
+<div class="section" id="minimise-actions-and-caching">
 <h3>Minimise actions and caching<a class="headerlink" href="#minimise-actions-and-caching" title="Permalink to this headline">¶</a></h3>
 <p>Remember how Spark works: it is a set of transformations, which are triggered by an action. The action will process the entire Spark plan. You could have written your code very efficiently to minimise the number of shuffles, but if you are calling repeated actions then these shuffles will also be repeated.</p>
 <p>During development you may have actions to preview the data (e.g. <code class="docutils literal notranslate"><span class="pre">.show()</span></code>/<code class="docutils literal notranslate"><span class="pre">glimpse()</span></code>) or to get the row count (<code class="docutils literal notranslate"><span class="pre">.count()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_nrow()</span></code>) at interim parts of the code, to understand how your DataFrame is changing and to help debug the code. Before repeatedly running analysis or releasing production code you will want to eliminate any of these superfluous actions.</p>
 <p>You can make careful use of persisting in these situations, such as caching, checkpointing or using staging tables; see the persisting article for more detail.</p>
 <p>In addition, Spark does have some efficiencies in the way repeated actions are handled but in general, try and minimise the number of actions that you call if they are not needed.</p>
-</section>
-<section id="converting-to-pandas-or-base-r-df">
+</div>
+<div class="section" id="converting-to-pandas-or-base-r-df">
 <h3>Converting to pandas or base R DF<a class="headerlink" href="#converting-to-pandas-or-base-r-df" title="Permalink to this headline">¶</a></h3>
 <p>If your DataFrame is small, you can discard the concept of distributed computing and shuffling entirely by converting it into a pandas or base R DataFrame and process it in the driver memory rather than in Spark. Operations which would normally trigger a shuffle in Spark will be instead processed in the driver memory.</p>
 <p>Converting PySpark DataFrames to pandas is very easy as they have a <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.toPandas.html"><code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code></a> method. In sparklyr, use <a class="reference external" href="https://dplyr.tidyverse.org/reference/compute.html"><code class="docutils literal notranslate"><span class="pre">sparklyr::collect()</span></code></a>; this will convert to the standard dplyr-style tibble, which are mostly interchangeable with base R DFs.</p>
 <p>In PySpark you can even skip Spark entirely by reading in from HDFS to pandas with Pydoop.</p>
 <p>Be careful; if your DF is large, there may not be enough driver memory to process it and you will get an error. Choosing between Spark and pandas/base R is something that should be done at the start of a project and should be carefully considered; if you choose to use the driver memory and find that there is insufficient capacity then you will have to re-write your code in Spark, which is often not a trivial task.</p>
-</section>
-<section id="use-a-broadcast-join">
+</div>
+<div class="section" id="use-a-broadcast-join">
 <h3>Use a broadcast join<a class="headerlink" href="#use-a-broadcast-join" title="Permalink to this headline">¶</a></h3>
 <p>As we saw in the second example, a join will cause a shuffle on the DataFrames to be joined. We saw that this was referred to as a <strong>SortMergeJoin</strong> in the visualised plan. There is however another type of join: the broadcast join. A broadcast join can be used when one of your DataFrames in the join is small; a copy is created on each partition. This can then be processed separately on each partition in parallel, avoiding the need for a full shuffle.</p>
 <p>Broadcast joins are one of the easiest ways to improve the efficiency of your code, as you just have to wrap the second DF in <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.broadcast.html"><code class="docutils literal notranslate"><span class="pre">F.broadcast()</span></code></a> in PySpark or <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_broadcast.html"><code class="docutils literal notranslate"><span class="pre">sdf_broadcast()</span></code></a>
 in sparklyr.</p>
 <p>The Optimising Joins article has full details; this is an example of the Spark UI from that article, showing that there are fewer shuffles involved when broadcasting:</p>
 <p><img alt="Spark UI for broadcast join, showing a broadcast exchange" src="../_images/broadcast_join_ui.png" /></p>
-</section>
-<section id="replace-joins-with-conditional-statements">
+</div>
+<div class="section" id="replace-joins-with-conditional-statements">
 <h3>Replace joins with conditional statements<a class="headerlink" href="#replace-joins-with-conditional-statements" title="Permalink to this headline">¶</a></h3>
 <p>If you are joining a tiny DataFrame of only a few rows, a shuffle can potentially be avoided entirely be re-writing the join as a set of conditional statements with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.when.html"><code class="docutils literal notranslate"><span class="pre">F.when()</span></code></a> in PySpark or <a class="reference external" href="https://dplyr.tidyverse.org/reference/case_when.html"><code class="docutils literal notranslate"><span class="pre">case_when()</span></code></a>
 in sparklyr; although this method can be more prone to errors when coding and harder to maintain. See the Optimsing Joins article for more information.</p>
-</section>
-<section id="avoiding-unnecessary-sorting">
+</div>
+<div class="section" id="avoiding-unnecessary-sorting">
 <h3>Avoiding unnecessary sorting<a class="headerlink" href="#avoiding-unnecessary-sorting" title="Permalink to this headline">¶</a></h3>
 <p>There can be the temptation to put a lot of <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.orderBy.html"><code class="docutils literal notranslate"><span class="pre">.orderBy()</span></code></a>/<a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_sort.html"><code class="docutils literal notranslate"><span class="pre">sdf_sort()</span></code></a> statements in your code when developing, especially if you are previewing the data at various points (e.g. with <code class="docutils literal notranslate"><span class="pre">show(n)</span></code>/<code class="docutils literal notranslate"><span class="pre">head(n)</span> <span class="pre">%&gt;%</span> <span class="pre">collect()</span></code>). Remember that our Spark DataFrames are distributed into partitions and so the concept of order is different to when we have these stored as one object (e.g. a pandas or R DataFrame) in the driver memory. Generally the order of the rows in the DataFrame should not matter; you can often just sort the data once right at the end of the code before writing out the results if the order of the output is important.</p>
 <p>This does come with a caveat in that Spark sometimes can be cleverer than we expect, due to the <em>catalyst optimizer</em>. As we know, the Spark plan is only triggered when an action is called, such as <code class="docutils literal notranslate"><span class="pre">.show()</span></code>, <code class="docutils literal notranslate"><span class="pre">collect()</span></code> etc. Spark will sometimes however detect unnecessary sorting and optimise the plan. We can demonstrate this by sorting our DataFrame several times, then looking at the UI.</p>
@@ -961,26 +1081,26 @@ Sort [rand1#77L DESC NULLS LAST], true
 </pre></div>
 </div>
 <p>The key output here is the difference between the <strong>Parsed</strong> and <strong>Analyzed Logical Plans</strong>, and the <strong>Optimized Logical Plan</strong>. We can see in the first two that all our sorting operations are present, but in the <strong>Optimized</strong>, only the final sort is. Hence we only have one shuffle.</p>
-</section>
-<section id="use-window-functions">
+</div>
+<div class="section" id="use-window-functions">
 <h3>Use Window functions<a class="headerlink" href="#use-window-functions" title="Permalink to this headline">¶</a></h3>
 <p>One way to reduce the number of shuffles is to ensure that you are using window functions where possible. One example is deriving a new column which depends on the total of a group. One way is to create a new DataFrame with the group totals, then join that back to the original DataFrame, then use this in the calculation. This will involve shuffles for the grouping/aggregation and the join, whereas a window function will only need one.</p>
 <p>Another benefit is that the code is neater and easier to read with a window function. See the article on Window Functions for more information.</p>
-</section>
-<section id="other-things-matter-too">
+</div>
+<div class="section" id="other-things-matter-too">
 <h3>Other things matter too!<a class="headerlink" href="#other-things-matter-too" title="Permalink to this headline">¶</a></h3>
 <p>A final word on avoiding shuffles: do not let this distract you from everything else that you need to consider when writing good code! While it is important to understand shuffles and to try and implement the methods above where you can, it is better to have code which works, then optimise it afterwards. Also remember that with code there is a never a <em>final</em> version: provided it is well written, appropriately commented and has good unit tests, you or a colleague can always re-visit it to optimise it at a later date.</p>
 <p>Some shuffles can actually be relatively quick, depending on factors including the total size of the DataFrame, the number of partitions, and how it is partitioned. It can be worth checking the Spark UI to see exactly how much time your shuffle is taking.</p>
 <p>Although removing or optimising shuffles is one of the most obvious ways to improve the efficiency of your code, when looking at ways to improve the performance of your code make sure you look at other elements too.</p>
-</section>
-</section>
-<section id="good-shuffles">
+</div>
+</div>
+<div class="section" id="good-shuffles">
 <h2>Good Shuffles<a class="headerlink" href="#good-shuffles" title="Permalink to this headline">¶</a></h2>
 <p>We’ve seen how shuffles take time to process and can cause a bottleneck in performance. However, this is not always the case.</p>
 <p>Sometimes shuffling our data into more logical partitions can actually cause performance to increase. For instance, if our data are skewed so that one partition contains significantly more data than another, the parallelism will not be as efficient as it could be. By shuffling the data into partitions of similar sizes, the efficiency will actually increase. An example is using a salted join to reduce skew when joining DataFrames.</p>
 <p>You can also change the number of partitions. By default, this is <code class="docutils literal notranslate"><span class="pre">200</span></code>, but repartitioning into a greater or smaller number depending on your data and what you are doing with it can help performance. Note that when repartitioning a DataFrame, <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.repartition.html"><code class="docutils literal notranslate"><span class="pre">.repartition()</span></code></a>/<a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_repartition.html"><code class="docutils literal notranslate"><span class="pre">sdf_repartition()</span></code></a> will cause a full shuffle into roughly equal partition sizes, whereas <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.coalesce.html"><code class="docutils literal notranslate"><span class="pre">.coalesce()</span></code></a>/<a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html"><code class="docutils literal notranslate"><span class="pre">sdf_coalesce()</span></code></a>  will essentially combine partitions (and so they may vary in size), so the data will still move but be processed more efficiently. This topic is explored more in the Partitions article.</p>
-</section>
-<section id="summary">
+</div>
+<div class="section" id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
 <p>In this article we have demonstrated:</p>
 <ul class="simple">
@@ -990,8 +1110,8 @@ Sort [rand1#77L DESC NULLS LAST], true
 <li><p>How to optimise and minimise them in your code</p></li>
 <li><p>Why they can sometimes be beneficial</p></li>
 </ul>
-</section>
-<section id="further-resources">
+</div>
+<div class="section" id="further-resources">
 <h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
 <p>PySpark Documentation:</p>
 <ul class="simple">
@@ -1050,8 +1170,8 @@ Sort [rand1#77L DESC NULLS LAST], true
 <ul class="simple">
 <li><p><a class="reference external" href="https://best-practice-and-impact.github.io/qa-of-code-guidance/intro.html">QA of Code for Analysis and Research</a></p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
     <script type="text/x-thebe-config">
     {
@@ -1075,8 +1195,8 @@ Sort [rand1#77L DESC NULLS LAST], true
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="spark_application_and_ui.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -1093,18 +1213,16 @@ Sort [rand1#77L DESC NULLS LAST], true
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By Wil Roberts & Adrian Prince<br/>
-        
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By Wil Roberts & Adrian Prince<br/>
+    
+  </p>
+</footer>
 </main>
 
 

@@ -4,8 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sampling: .sample() and sdf_sample() &#8212; Spark at the ONS</title>
     
   <link href="../../_static/css/theme.css" rel="stylesheet">
@@ -39,20 +38,22 @@
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/togglebutton.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -281,7 +282,7 @@
                 data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -332,7 +333,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -423,14 +424,108 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Sampling: .sample() and sdf_sample()</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#example-sample-and-sdf-sample">
+   Example:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .sample()
+    </span>
+   </code>
+   and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     sdf_sample()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#more-details-on-sampling">
+   More details on sampling
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#returning-an-exact-sample">
+     Returning an exact sample
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#partitioning">
+     Partitioning
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#sampling-consistently-by-filtering-the-data">
+     Sampling consistently by filtering the data
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#other-sampling-functions">
+   Other sampling functions
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#splitting-a-df-randomsplit-and-sdf-random-split">
+     Splitting a DF:
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       .randomSplit()
+      </span>
+     </code>
+     and
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       sdf_random_split()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#stratified-samples-sampleby">
+     Stratified samples:
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       .sampleBy()
+      </span>
+     </code>
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
-  <section id="sampling-sample-and-sdf-sample">
+  <div class="section" id="sampling-sample-and-sdf-sample">
 <h1>Sampling: <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code><a class="headerlink" href="#sampling-sample-and-sdf-sample" title="Permalink to this headline">¶</a></h1>
 <p>You can take a sample of a DataFrame with <a class="reference external" href="https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrame.sample"><code class="docutils literal notranslate"><span class="pre">.sample()</span></code></a> in PySpark or <a class="reference external" href="https://spark.rstudio.com/reference/sdf_sample.html"><code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code></a> in sparklyr. This is something that you may want to do during development or initial analysis of data, as with a smaller amount of data your code will run faster and requires less memory to process.</p>
 <p>It is important to note that sampling in Spark returns an approximate fraction of the data, rather than an exact one. The reason for this is explained in the <a class="reference external" href="#returning-an-exact-sample">Returning an exact sample</a> section.</p>
-<section id="example-sample-and-sdf-sample">
+<div class="section" id="example-sample-and-sdf-sample">
 <h2>Example: <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code><a class="headerlink" href="#example-sample-and-sdf-sample" title="Permalink to this headline">¶</a></h2>
 <p>First, set up the Spark session, read the Animal Rescue data, and then get the row count:</p>
 <div class="cell docutils container">
@@ -525,11 +620,11 @@ Seed 2 count: 589
 </div>
 <p>We can see that both samples have returned the same number of rows due to the identical seed.</p>
 <p>Another way of replicating results is with persisting. Caching or checkpointing the DataFrame will avoid recalculation of the DF within the same Spark session. Writing out the DF to a Hive table or parquet enables it to be used in subsequent Spark sessions. See the chapter on persisting for more detail.</p>
-</section>
-<section id="more-details-on-sampling">
+</div>
+<div class="section" id="more-details-on-sampling">
 <h2>More details on sampling<a class="headerlink" href="#more-details-on-sampling" title="Permalink to this headline">¶</a></h2>
 <p>The following section gives more detail on sampling and how it is processed on the Spark cluster. is not compulsory reading, but may be of interest to some Spark users.</p>
-<section id="returning-an-exact-sample">
+<div class="section" id="returning-an-exact-sample">
 <h3>Returning an exact sample<a class="headerlink" href="#returning-an-exact-sample" title="Permalink to this headline">¶</a></h3>
 <p>We have demonstrated above that <code class="docutils literal notranslate"><span class="pre">.sample()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code> return an approximate fraction, not an exact one. This is because every row is independently assigned a probability equal to <code class="docutils literal notranslate"><span class="pre">fraction</span></code> of being included in the sample, e.g. with <code class="docutils literal notranslate"><span class="pre">fraction=0.2</span></code> every row has a <span class="math notranslate nohighlight">\(20\%\)</span> probability of being in the sample. The number of rows returned in the sample therefore follows the binomial distribution.</p>
 <p>The advantage of the sample being calculated in this way is that it is processed as a <em>narrow transformation</em>, which is more efficient than a <em>wide transformation</em>.</p>
@@ -573,12 +668,12 @@ Seed 2 count: 589
     <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">()</span>
 </pre></div>
 </div>
-</section>
-<section id="partitioning">
+</div>
+<div class="section" id="partitioning">
 <h3>Partitioning<a class="headerlink" href="#partitioning" title="Permalink to this headline">¶</a></h3>
 <p>The number of partitions will remain the same when sampling, even though the DataFrame will be smaller. If you are taking a small fraction of the data then your DataFrame may have too many partitions. You can use <a class="reference external" href="https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.functions.coalesce"><code class="docutils literal notranslate"><span class="pre">.coalesce()</span></code></a> in PySpark or <a class="reference external" href="https://spark.rstudio.com/reference/sdf_coalesce.html"><code class="docutils literal notranslate"><span class="pre">sdf_coalesce()</span></code></a> in sparklyr to reduce the number of partitions, e.g. if your original DF had <span class="math notranslate nohighlight">\(200\)</span> partitions and you take a <span class="math notranslate nohighlight">\(10\%\)</span> sample, you can reduce the number of partitions to <span class="math notranslate nohighlight">\(20\)</span> with <code class="docutils literal notranslate"><span class="pre">df.sample(fraction=0.1).coalesce(20)</span></code>.</p>
-</section>
-<section id="sampling-consistently-by-filtering-the-data">
+</div>
+<div class="section" id="sampling-consistently-by-filtering-the-data">
 <h3>Sampling consistently by filtering the data<a class="headerlink" href="#sampling-consistently-by-filtering-the-data" title="Permalink to this headline">¶</a></h3>
 <p>If the primary reason for using sampling is to process less data during development then an alternative is to filter the data and specify a condition which gives approximately the desired number of rows. This will give consistent results, which may or may not be desirable. For instance, in the Animal Rescue data we could use two years data:</p>
 <div class="cell docutils container">
@@ -599,12 +694,12 @@ Seed 2 count: 589
 </pre></div>
 </div>
 <p>The disadvantage of this method is that you may have data quality issues in the original DF that will not be encountered, whereas these may be discovered with <code class="docutils literal notranslate"><span class="pre">.sample()</span></code>. Using unit testing and test driven development can mitigate the risk of these issues.</p>
-</section>
-</section>
-<section id="other-sampling-functions">
+</div>
+</div>
+<div class="section" id="other-sampling-functions">
 <h2>Other sampling functions<a class="headerlink" href="#other-sampling-functions" title="Permalink to this headline">¶</a></h2>
 <p>This section briefly discusses similar functions to <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code>.</p>
-<section id="splitting-a-df-randomsplit-and-sdf-random-split">
+<div class="section" id="splitting-a-df-randomsplit-and-sdf-random-split">
 <h3>Splitting a DF: <code class="docutils literal notranslate"><span class="pre">.randomSplit()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_random_split()</span></code><a class="headerlink" href="#splitting-a-df-randomsplit-and-sdf-random-split" title="Permalink to this headline">¶</a></h3>
 <p>You can split a DF into two or more DFs with <a class="reference external" href="https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrame.randomSplit"><code class="docutils literal notranslate"><span class="pre">.randomSplit()</span></code></a> in PySpark and <a class="reference external" href="https://spark.rstudio.com/reference/sdf_random_split.html"><code class="docutils literal notranslate"><span class="pre">sdf_random_split()</span></code></a> in sparklyr. This is common when using machine learning, to generate training and test datasets.</p>
 <p>Every row in the DF will be allocated to one of the split DFs. In common with the other sampling methods the exact size of each split may vary. An optional seed can also be set.</p>
@@ -659,8 +754,8 @@ Split count total: 5898
              <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">(</span><span class="n">splits</span><span class="o">$</span><span class="n">split3</span><span class="p">)))</span>
 </pre></div>
 </div>
-</section>
-<section id="stratified-samples-sampleby">
+</div>
+<div class="section" id="stratified-samples-sampleby">
 <h3>Stratified samples: <code class="docutils literal notranslate"><span class="pre">.sampleBy()</span></code><a class="headerlink" href="#stratified-samples-sampleby" title="Permalink to this headline">¶</a></h3>
 <p>A stratified sample can be taken with <a class="reference external" href="https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrame.sampleBy"><code class="docutils literal notranslate"><span class="pre">.sampleBy()</span></code></a> in PySpark. This takes a column, <code class="docutils literal notranslate"><span class="pre">col</span></code>, to sample by, and a dictionary of weights, <code class="docutils literal notranslate"><span class="pre">fractions</span></code>.</p>
 <p>In common with other sampling methods this does not return an exact proportion and you can also optionally set a seed.</p>
@@ -718,9 +813,9 @@ Split count total: 5898
 </div>
 </div>
 </div>
-</section>
-</section>
-<section id="further-resources">
+</div>
+</div>
+<div class="section" id="further-resources">
 <h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
 <p>PySpark Documentation:</p>
 <ul class="simple">
@@ -743,8 +838,8 @@ Split count total: 5898
 <li><p>Filtering data</p></li>
 <li><p>Unit testing in Spark</p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
     <script type="text/x-thebe-config">
     {
@@ -759,7 +854,7 @@ Split count total: 5898
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./raw-notebooks\sampling"
+            path: "./raw-notebooks/sampling"
         },
         predefinedOutput: true
     }
@@ -768,22 +863,20 @@ Split count total: 5898
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By Wil Roberts & Adrian Prince<br/>
-        
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By Wil Roberts & Adrian Prince<br/>
+    
+  </p>
+</footer>
 </main>
 
 
