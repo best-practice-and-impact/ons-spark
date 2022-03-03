@@ -2,7 +2,7 @@
 
 ### Shuffling
 
-You have been assigned to review some code from an existing business as usual pipeline, written a couple of years ago. The code works as desired and passes all unit tests, but the business users are finding it slow to run and would like you to make it more efficient.
+You have been assigned to review some code from an existing business as usual pipeline, written a couple of years ago. The code works as desired and passes all unit tests, but the business users are finding it slow to run and would like you to make it more efficient. Although the example data supplied are small, it must also be able to work efficiently for large data.
 
 The objective of the code is to produce a DataFrame with the ten most expensive animal rescue incidents, consisting of `animal_group`, `postcode_district`, `incident_number`, `total_cost`, `population` and `animal_count`, where `animal_count` is the total number of each `animal_group` in the data. The row count should also be returned.
 
@@ -133,6 +133,7 @@ row_count <- rescue_with_pop %>% sparklyr::sdf_nrow()
 Using the ideas from the Optimising and Avoiding Shuffle chapter, we can:
 - Minimise actions: many of the `.show()`/`head(n) %>% collect` and `.count()`/`sdf_nrow()` actions are not needed. Just keep the ones at the end.
 - Caching: The two actions at the end are needed, so to avoid full recalculation of the DF, use a cache.
+- Reduce size of DataFrame: The filter and join can be moved earlier in the code without affecting the output.
 - Broadcast join: Change the join from a sort merge join to a broadcast join. Here the broadcast is forced with the hint `F.broadcast()`/`sdf_broadcast()`, but you could also turn on automatic broadcasting by setting the `spark.sql.autoBroadcastJoinThreshold` in the config, or removing it altogether to use the default.
 - Avoid unnecessary sorting: Many of the sorts are not needed; remove all apart from the last one.
 - Window functions: Change the group by and join to use a window function.
@@ -166,9 +167,6 @@ population = spark.read.parquet(population_path)
 
 rescue_with_pop = (
     rescue
-    # Join population data to rescue data, using a broadcast join
-    .join(F.broadcast(population), on="postcode_district", how="left")
-
     # Use a window function to get the count of each animal group
     .withColumn("animal_count",
                 F.count("incident_number")
@@ -177,6 +175,9 @@ rescue_with_pop = (
     # Filter out animals with small counts
     .filter(F.col("animal_count") >= 5)
 
+    # Join population data to rescue data, using a broadcast join
+    .join(F.broadcast(population), on="postcode_district", how="left")
+    
     # Sort the final data and cache
     .orderBy(F.desc("total_cost")).cache()
 )
@@ -206,10 +207,7 @@ rescue <- sparklyr::spark_read_parquet(sc, config$rescue_path) %>%
     sparklyr::select(incident_number, animal_group, total_cost, postcode_district)
 population <- sparklyr::spark_read_parquet(sc, config$population_path)
 
-rescue_with_pop <- rescue %>%
-    # Join population data to rescue data, using a broadcast join
-    sparklyr::left_join(sparklyr::sdf_broadcast(population), by="postcode_district") %>%
-    
+rescue_with_pop <- rescue %>%    
     # Use a window function to get the count of each animal group
     dplyr::group_by(animal_group) %>%
     sparklyr::mutate(animal_count = n()) %>%
@@ -218,6 +216,9 @@ rescue_with_pop <- rescue %>%
     # Filter out animals with small counts
     sparklyr::filter(animal_count >= 5) %>%
 
+    # Join population data to rescue data, using a broadcast join
+    sparklyr::left_join(sparklyr::sdf_broadcast(population), by="postcode_district") %>%
+    
     # Sort the final data
     dplyr::arrange(desc(total_cost))
 

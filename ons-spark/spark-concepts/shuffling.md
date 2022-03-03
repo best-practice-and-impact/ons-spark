@@ -473,6 +473,10 @@ In PySpark you can even skip Spark entirely by reading in from HDFS to pandas wi
 
 Be careful; if your DF is large, there may not be enough driver memory to process it and you will get an error. Choosing between Spark and pandas/base R is something that should be done at the start of a project and should be carefully considered; if you choose to use the driver memory and find that there is insufficient capacity then you will have to re-write your code in Spark, which is often not a trivial task.
 
+#### Reduce size of DataFrame
+
+The larger the DataFrame that is supplied to Spark the longer the Spark job will take. If it is possible to reduce the size of the DataFrame then most operations on the DF should be more efficient, including shuffling. An example could be moving a filter operation to earlier in the code. Note that Spark does have some optimisation in terms of orders of operations, but where possible try and work with smaller DFs if possible.
+
 #### Use a broadcast join
 
 As we saw in the second example, a join will cause a shuffle on the DataFrames to be joined. We saw that this was referred to as a **SortMergeJoin** in the visualised plan. There is however another type of join: the broadcast join. A broadcast join can be used when one of your DataFrames in the join is small; a copy is created on each partition. This can then be processed separately on each partition in parallel, avoiding the need for a full shuffle.
