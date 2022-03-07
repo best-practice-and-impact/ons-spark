@@ -232,6 +232,11 @@ const thebe_selector_output = ".output, .cell_output"
    Managing partitions
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="exercises.html">
+   Exercises
+  </a>
+ </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
@@ -391,6 +396,11 @@ const thebe_selector_output = ".output, .cell_output"
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#reduce-size-of-dataframe">
+     Reduce size of DataFrame
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#use-a-broadcast-join">
      Use a broadcast join
     </a>
@@ -509,6 +519,11 @@ const thebe_selector_output = ".output, .cell_output"
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#converting-to-pandas-or-base-r-df">
      Converting to pandas or base R DF
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#reduce-size-of-dataframe">
+     Reduce size of DataFrame
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
@@ -965,6 +980,10 @@ Bottom 5 rows:
 <p>Converting PySpark DataFrames to pandas is very easy as they have a <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.toPandas.html"><code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code></a> method. In sparklyr, use <a class="reference external" href="https://dplyr.tidyverse.org/reference/compute.html"><code class="docutils literal notranslate"><span class="pre">sparklyr::collect()</span></code></a>; this will convert to the standard dplyr-style tibble, which are mostly interchangeable with base R DFs.</p>
 <p>In PySpark you can even skip Spark entirely by reading in from HDFS to pandas with Pydoop.</p>
 <p>Be careful; if your DF is large, there may not be enough driver memory to process it and you will get an error. Choosing between Spark and pandas/base R is something that should be done at the start of a project and should be carefully considered; if you choose to use the driver memory and find that there is insufficient capacity then you will have to re-write your code in Spark, which is often not a trivial task.</p>
+</div>
+<div class="section" id="reduce-size-of-dataframe">
+<h3>Reduce size of DataFrame<a class="headerlink" href="#reduce-size-of-dataframe" title="Permalink to this headline">¶</a></h3>
+<p>The larger the DataFrame that is supplied to Spark the longer the Spark job will take. If it is possible to reduce the size of the DataFrame then most operations on the DF should be more efficient, including shuffling. An example could be moving a filter operation to earlier in the code. Note that Spark does have some optimisation in terms of orders of operations, but where possible try and work with smaller DFs if possible.</p>
 </div>
 <div class="section" id="use-a-broadcast-join">
 <h3>Use a broadcast join<a class="headerlink" href="#use-a-broadcast-join" title="Permalink to this headline">¶</a></h3>
