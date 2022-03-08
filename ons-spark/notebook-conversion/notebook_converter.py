@@ -169,10 +169,41 @@ class MarkdownFromNotebook():
         for cell in python_cells:
             cell["tidy_python_output"] = self.tidy_python_cell_output(cell)
     
-    def create_markdown_cell(self, cell, return_python, return_r):
+    def create_markdown_cell(self, cell, return_python, return_r, use_tabs):
         """
         Translates Jupyter notebook cells to Markdown
         """
+        # Set return_python to False if no Python output exists
+        if return_python == True and "outputs" in cell.keys():
+            if len(cell["outputs"]) > 0:
+                return_python = True
+            else:
+                return_python = False
+        else:
+            return_python = False
+        
+        # Set return_r to False if no R output exists
+        if return_r == True and "r_output" in cell.keys():
+            if len(cell["r_output"]) > 0:
+                return_r = True
+            else:
+                return_r = False
+        else:
+            return_r = False
+        
+        # Disable tabs if no output of either type
+        if return_python == False and return_r == False:
+            use_tabs = False
+                
+        # Set opening string of output to use tabs if needed
+        if use_tabs == True:
+            python_output_open = "\n```{code-tab} plaintext Python Output\n"
+            r_output_open = "\n```{code-tab} plaintext R Output\n"
+        else:
+            python_output_open = "\n```plaintext\n"
+            r_output_open = "\n```plaintext\n"
+            
+            
         if "r_output" in cell or cell["cell_type"] == "code":
             # Create code tab
             output = ["\n````{tabs}\n"]
@@ -191,21 +222,26 @@ class MarkdownFromNotebook():
             
             output.append("````\n")
             
+            if use_tabs == True:
+                output.append("\n````{tabs}\n")
+            
             # add Python output
-            if return_python == True and "outputs" in cell.keys():
-                if len(cell["outputs"]) > 0:
-                    output.append("\n```plaintext\n")
-                    output.append(cell["tidy_python_output"])
-                    output.append("```\n")
+            if return_python == True:
+                output.append(python_output_open)
+                output.append(cell["tidy_python_output"])
+                output.append("```\n")
             
             # add R output
-            if return_r == True and "r_output" in cell.keys():
-                if len(cell["r_output"]) > 0:
-                    output.append("\n```plaintext\n")
-                    output.append(cell["r_output"])
-                    output.append("```\n")           
+            if return_r == True:
+                output.append(r_output_open)
+                output.append(cell["r_output"])
+                output.append("```\n")
+
+            if use_tabs == True:
+                output.append("````\n")
 
             return "".join(output)
+        
         elif cell["source"][:4] == "```r":
             # Ignore input R cells
             return ""
@@ -220,21 +256,30 @@ class MarkdownFromNotebook():
         if output_type == "python":
             return_python = True
             return_r = False
+            use_tabs = False
         elif output_type == "r":
             return_python = False
             return_r = True
+            use_tabs = False
         elif output_type == "all":
             return_python = True
             return_r = True
+            use_tabs = False
+        elif output_type == "tabs":
+            return_python = True
+            return_r = True
+            use_tabs = True
         else:
             return_python = False
             return_r = False
+            use_tabs = False
         
         output = []
         for cell in self.nb["cells"]:
             output.append(self.create_markdown_cell(cell,
                                                     return_python,
-                                                    return_r))
+                                                    return_r,
+                                                    use_tabs))
             
         self.md_output = "".join(output)
     
@@ -299,10 +344,11 @@ def markdown_from_notebook(notebook_path,
         r_path (string): Path to save raw R code
         output_csv (string): Path to save Python and R output, for comparison
         show_warnings (boolean): Show or hide warnings in R output
-        output_type {"python", "r", "all", None}:
+        output_type {"python", "r", "all", "tabs", None}:
             * python: outputs only Python code
             * r: outputs only R code
             * all: outputs Python and R code
+            * tabs: outputs Python and R code with named tabs
             * None: no outputs will be returned
         checkpoint_path (string): clears checkpoints in this directory if
             specified when running each R cell
