@@ -1,0 +1,615 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Configuration Hierarchy and spark-defaults.conf &#8212; Spark at the ONS</title>
+    
+  <link href="../_static/css/theme.css" rel="stylesheet">
+  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/tabs.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Introduction to PySpark" href="../pyspark-intro/pyspark-intro.html" />
+    <link rel="prev" title="Example Spark Sessions" href="example-spark-sessions.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Spark at the ONS</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../intro.html">
+   Introduction
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Spark overview
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="spark-session-guidance.html">
+   Spark Sessions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="example-spark-sessions.html">
+   Example Spark Sessions
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Configuration Hierarchy and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     spark-defaults.conf
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to PySpark
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../pyspark-intro/pyspark-intro.html">
+   Introduction to PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../pyspark-intro/pyspark-intro-exercises.html">
+   Introduction to PySpark: Exercises
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../pyspark-intro/f-col.html">
+   Reference columns by name:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     F.col()
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to sparklyr
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../sparklyr-intro/sparklyr_functions.html">
+   Using Spark functions in sparklyr
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Spark functions
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/union_dataframes_with_different_columns.html">
+   Union two DataFrames with different columns
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/padding.html">
+   Add leading zeros with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     lpad()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/sampling.html">
+   Sampling:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .sample()
+    </span>
+   </code>
+   and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     sdf_sample()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/window-functions.html">
+   Window Functions in Spark
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Understanding and Optimising Spark
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/spark_application_and_ui.html">
+   Spark Application and UI
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/shuffling.html">
+   Shuffling
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/join_concepts.html">
+   Optimising Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/cross_joins.html">
+   Cross Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/salted_joins.html">
+   Salted Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/partitions.html">
+   Managing partitions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/exercises.html">
+   Exercises
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Ancillary Topics
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/visualisation.html">
+   Spark and Visualisation
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/spark-overview/spark-defaults.md"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.md</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/robertswh/Spark at the ONS"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/robertswh/Spark at the ONS/issues/new?title=Issue%20on%20page%20%2Fspark-overview/spark-defaults.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#default-global-settings">
+   Default global settings
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#spark-defaults-conf-configuration-file">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     spark-defaults.conf
+    </span>
+   </code>
+   configuration file
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#using-sparksession-builder-spark-connect">
+   Using
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     SparkSession.builder
+    </span>
+   </code>
+   /
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     spark_connect()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#legacy-configuration-options">
+   Legacy configuration options
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#scala-and-cdsw">
+   Scala and CDSW
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Configuration Hierarchy and spark-defaults.conf</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#default-global-settings">
+   Default global settings
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#spark-defaults-conf-configuration-file">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     spark-defaults.conf
+    </span>
+   </code>
+   configuration file
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#using-sparksession-builder-spark-connect">
+   Using
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     SparkSession.builder
+    </span>
+   </code>
+   /
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     spark_connect()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#legacy-configuration-options">
+   Legacy configuration options
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#scala-and-cdsw">
+   Scala and CDSW
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
+              <div>
+                
+  <div class="section" id="configuration-hierarchy-and-spark-defaults-conf">
+<h1>Configuration Hierarchy and <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code><a class="headerlink" href="#configuration-hierarchy-and-spark-defaults-conf" title="Permalink to this headline">¶</a></h1>
+<p>Every Spark session has a <em>configuration</em>, where important settings such as the amount of memory, number of executors and cores are defined. There are three places that can contain configuration settings for a Spark session:</p>
+<ul class="simple">
+<li><p>Directly in <code class="docutils literal notranslate"><span class="pre">SparkSession.builder</span></code> (PySpark) or <code class="docutils literal notranslate"><span class="pre">spark_connect()</span></code> (sparklyr)</p></li>
+<li><p>In a <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code> configuration file</p></li>
+<li><p>The default global setting</p></li>
+</ul>
+<p>These work on a hierarchy, first looking at the value in <code class="docutils literal notranslate"><span class="pre">SparkSession.builder</span></code> (for PySpark) or <code class="docutils literal notranslate"><span class="pre">spark_connect()</span></code> (for sparklyr), if this is not defined then the value in <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code>, and finally the default setting for that environment if not defined in either.</p>
+<p>Remember that when using the Spark cluster to only use the resource that you need. Depending on your organisations architecture, using excessive memory could cause cloud computing bills to be higher, or prevent other users from running Spark jobs. This is the most important point to remember, regardless of where the Spark session is defined.</p>
+<div class="section" id="default-global-settings">
+<h2>Default global settings<a class="headerlink" href="#default-global-settings" title="Permalink to this headline">¶</a></h2>
+<p>If no value is supplied in <code class="docutils literal notranslate"><span class="pre">SparkSession.builder</span></code>/<code class="docutils literal notranslate"><span class="pre">spark_connect()</span></code> or <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code>, then the default global settings will be used. These are ultimately derived either from the <a class="reference external" href="https://spark.apache.org/docs/latest/configuration.html#available-properties">Spark default value</a>, or in some cases the global setting specific to the environment. For instance, at the ONS, the <code class="docutils literal notranslate"><span class="pre">spark.dynamicAllocation.maxExecutors</span></code> is set to <code class="docutils literal notranslate"><span class="pre">3</span></code> in the Dev Test environment.</p>
+<p>To use the global default settings in Spark you use the Spark session builder with no config options apart from the application name:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-0-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-0-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;default-session&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">default_config</span> <span class="o">&lt;-</span> <span class="nf">spark_config</span><span class="p">()</span>
+
+<span class="n">sc</span> <span class="o">&lt;-</span> <span class="nf">spark_connect</span><span class="p">(</span>
+  <span class="n">master</span> <span class="o">=</span> <span class="s">&quot;yarn-client&quot;</span><span class="p">,</span>
+  <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;default-session&quot;</span><span class="p">,</span>
+  <span class="n">config</span> <span class="o">=</span> <span class="n">default_config</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<p>It is advised to use the default settings when you are not yet sure of your requirements, such as in the initial investigation of new data sources. See the section <em>Default/Blank Session</em> in the Sample Spark Session Sizes guidance for more details.</p>
+</div>
+<div class="section" id="spark-defaults-conf-configuration-file">
+<h2><code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code> configuration file<a class="headerlink" href="#spark-defaults-conf-configuration-file" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code> is an optional configuration file, located in the home directory of the project. If it exists, then it sits in the middle of the hierarchy; any values not specified in the <code class="docutils literal notranslate"><span class="pre">SparkSession.builder</span></code> will instead use the values in <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code>. If they are not defined in either then the default global settings will apply.</p>
+<p>The format of <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code> is one property per line, with the setting name and values separated by whitespace; these should <strong>not</strong> be given as strings. As an example, we can give the example small session in the <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code> format:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-c3BhcmstZGVmYXVsdHMuY29uZg==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-c3BhcmstZGVmYXVsdHMuY29uZg==" name="c3BhcmstZGVmYXVsdHMuY29uZg==" role="tab" tabindex="0">spark-defaults.conf</button></div><div aria-labelledby="tab-1-c3BhcmstZGVmYXVsdHMuY29uZg==" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-c3BhcmstZGVmYXVsdHMuY29uZg==" name="c3BhcmstZGVmYXVsdHMuY29uZg==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>spark.executor.memory                1g
+spark.executor.cores                 1
+spark.dynamicAllocation.enabled      true
+spark.dynamicAllocation.maxExecutors 3
+spark.sql.shuffle.partitions         12
+spark.shuffle.service.enabled        true
+spark.ui.showConsoleProgress         false
+</pre></div>
+</div>
+</div><p>There are advantages and disadvantages to using a <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code> file; they can be useful in some circumstances but often users prefer to define their Spark sessions from within the script. As with any coding practice, try and be consistent within your team.</p>
+<p>Advantages:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code> is a specific example of a configuration file; one particular advantage is allowing editing of the configuration without altering the main script, which can be useful when running the code in different environments or when the size of the source data varies considerably.</p></li>
+<li><p>It is language agnostic and the same configuration file can be used with Python and R (and also Scala).</p></li>
+<li><p>One use case for <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code> if using CDSW is setting <code class="docutils literal notranslate"><span class="pre">spark.ui.showConsoleProgress</span></code> to <code class="docutils literal notranslate"><span class="pre">false</span></code>; this disables the progress bar from obscuring some outputs in CDSW and is almost always a desired setting in any project.</p></li>
+<li><p>If the Git repo is cloned to the home directory rather than a subdirectory then it is easy to track it with Git.</p></li>
+</ul>
+<p>Disadvantages:</p>
+<ul class="simple">
+<li><p>The Spark session settings become less visible as they are contained in a different file. It is sensible to document in a docstring or comment that you are using the settings in <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code>.</p></li>
+<li><p>Depending on how the Git repositories in your container are set up, you may not be able to track <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code> with Git. If you use one repository per container, then it can be tracked; if several repositories are cloned in the same container as subdirectories then the <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code> will be outside the tracked repository.</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="using-sparksession-builder-spark-connect">
+<h2>Using <code class="docutils literal notranslate"><span class="pre">SparkSession.builder</span></code>/<code class="docutils literal notranslate"><span class="pre">spark_connect()</span></code><a class="headerlink" href="#using-sparksession-builder-spark-connect" title="Permalink to this headline">¶</a></h2>
+<p>The values in <code class="docutils literal notranslate"><span class="pre">SparkSession.builder</span></code>/<code class="docutils literal notranslate"><span class="pre">spark_connect()</span></code> will override any values set either globally or in
+<code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code>. This is the most commonly used option at the ONS.</p>
+<p>When starting a new project which requires Spark, think about your requirements and use the appropriate amount of memory; the Guidance on Spark Sessions and Sample Spark Session Sizes articles are a good starting point. If unsure, use a blank session which will use the global defaults. It is important not to copy and paste Spark session builders between projects as you may use far more memory than needed, or too little, which may case the code to run slowly or not at all.</p>
+</div>
+<div class="section" id="legacy-configuration-options">
+<h2>Legacy configuration options<a class="headerlink" href="#legacy-configuration-options" title="Permalink to this headline">¶</a></h2>
+<p>The values in <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code> are read once when the Python or R kernel is initiated, so if these values are altered you will need to restart the kernel to use them.</p>
+<p>The hierarchy of Spark session settings is more complicated once a Spark session has been started, as in the absence of a value specifically defined in <code class="docutils literal notranslate"><span class="pre">SparkSession.builder</span></code>/<code class="docutils literal notranslate"><span class="pre">spark_connect()</span></code>, the value from the previous Spark session will be used. For example, assume that you need to join two small DataFrames and so start a Spark session with <code class="docutils literal notranslate"><span class="pre">spark.sql.shuffle.partitions</span></code> set to <code class="docutils literal notranslate"><span class="pre">12</span></code>. You then want to process much larger data and so stop the current Spark session and create a new one with the default value for <code class="docutils literal notranslate"><span class="pre">spark.sql.shuffle.partitions</span></code>, which is <code class="docutils literal notranslate"><span class="pre">200</span></code>, and so do not include this in the builder. However, it will still start a session with the previous value, <code class="docutils literal notranslate"><span class="pre">12</span></code>. To avoid this issue, either explicitly specify any setting that has been previously defined, or stop and restart the kernel.</p>
+</div>
+<div class="section" id="scala-and-cdsw">
+<h2>Scala and CDSW<a class="headerlink" href="#scala-and-cdsw" title="Permalink to this headline">¶</a></h2>
+<p>If using Scala in CDSW, a Spark session will be automatically started when loading a CDSW session, so you will have to use <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code>, unless the default settings are appropriate for your project.</p>
+<p>At the ONS, we recommend that Spark code is written with Python or R, using the PySpark or sparklyr packages. Most users find writing Spark code with Python or R much easier than learning Scala. There are also more users of Python and R at the ONS, meaning it is easier to find people to peer review and maintain your code.</p>
+</div>
+<div class="section" id="further-resources">
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
+<p>TBC</p>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./spark-overview"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="example-spark-sessions.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Example Spark Sessions</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="../pyspark-intro/pyspark-intro.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Introduction to PySpark</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            
+        </div>
+    </div>
+    <footer class="footer">
+  <p>
+    
+      By Wil Roberts & Adrian Prince<br/>
+    
+  </p>
+</footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>
