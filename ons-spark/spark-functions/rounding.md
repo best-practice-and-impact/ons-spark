@@ -23,9 +23,8 @@ sdf.show()
 
 ```{code-tab} r R
 
-#library(sparklyr)
-#library(dplyr)
-library(magrittr)
+library(sparklyr)
+library(dplyr)
 
 sc <- sparklyr::spark_connect(
     master = "local[2]",
@@ -43,7 +42,9 @@ sdf %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +-------+
 |half_id|
 +-------+
@@ -58,7 +59,7 @@ sdf %>%
 +-------+
 ```
 
-```plaintext
+```{code-tab} plaintext R Output
 # A tibble: 8 × 1
   half_id
     <dbl>
@@ -71,6 +72,7 @@ sdf %>%
 7     2.5
 8     3.5
 ```
+````
 Round using Spark; this will round away from zero (up for positive numbers and down for negative):
 ````{tabs}
 ```{code-tab} py
@@ -90,7 +92,9 @@ sdf %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
    half_id  spark_round
 0     -3.5         -4.0
 1     -2.5         -3.0
@@ -102,7 +106,7 @@ sdf %>%
 7      3.5          4.0
 ```
 
-```plaintext
+```{code-tab} plaintext R Output
 # A tibble: 8 × 2
   half_id spark_round
     <dbl>       <dbl>
@@ -115,6 +119,7 @@ sdf %>%
 7     2.5           3
 8     3.5           4
 ```
+````
 Now try using Python/R; this will use the bankers method of rounding:
 ````{tabs}
 ```{code-tab} py
@@ -133,7 +138,9 @@ tdf <- sdf %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
    half_id  spark_round  python_round
 0     -3.5         -4.0          -4.0
 1     -2.5         -3.0          -2.0
@@ -145,7 +152,7 @@ tdf <- sdf %>%
 7      3.5          4.0           4.0
 ```
 
-```plaintext
+```{code-tab} plaintext R Output
 # A tibble: 8 × 3
   half_id spark_round r_round
     <dbl>       <dbl>   <dbl>
@@ -158,6 +165,7 @@ tdf <- sdf %>%
 7     2.5           3       2
 8     3.5           4       4
 ```
+````
 The two methods have returned different results, despite both using functions named `round()`.
 
 Just like in Python, pandas and numpy also use bankers rounding:
@@ -169,7 +177,9 @@ pdf
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
    half_id  spark_round  python_round  pd_round  np_round
 0     -3.5         -4.0          -4.0      -4.0      -4.0
 1     -2.5         -3.0          -2.0      -2.0      -2.0
@@ -180,6 +190,7 @@ pdf
 6      2.5          3.0           2.0       2.0       2.0
 7      3.5          4.0           4.0       4.0       4.0
 ```
+````
 You can use the Python and R style of bankers rounding in Spark with `bround()`:
 ````{tabs}
 ```{code-tab} py
@@ -199,7 +210,9 @@ sdf %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
    half_id  spark_round  spark_bround
 0     -3.5         -4.0          -4.0
 1     -2.5         -3.0          -2.0
@@ -211,7 +224,7 @@ sdf %>%
 7      3.5          4.0           4.0
 ```
 
-```plaintext
+```{code-tab} plaintext R Output
 # A tibble: 8 × 3
   half_id spark_round spark_bround
     <dbl>       <dbl>        <dbl>
@@ -224,6 +237,7 @@ sdf %>%
 7     2.5           3            2
 8     3.5           4            4
 ```
+````
 ### Other information on rounding
 
 #### UDFs and `spark_apply()`

@@ -1,7 +1,6 @@
-
-#library(sparklyr)
-#library(dplyr)
-library(magrittr)
+options(warn = -1)
+library(sparklyr)
+library(dplyr)
 
 sc <- sparklyr::spark_connect(
     master = "local[2]",
