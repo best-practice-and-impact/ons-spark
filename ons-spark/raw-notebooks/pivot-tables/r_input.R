@@ -1,4 +1,4 @@
-options(warn = -1)
+
 library(sparklyr)
 library(dplyr)
 options(pillar.print_max = Inf, pillar.width=Inf)
