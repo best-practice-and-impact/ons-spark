@@ -1,0 +1,721 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Creating DataFrames Manually &#8212; Spark at the ONS</title>
+    
+  <link href="../_static/css/theme.css" rel="stylesheet">
+  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/tabs.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Introduction to PySpark" href="../pyspark-intro/pyspark-intro.html" />
+    <link rel="prev" title="Configuration Hierarchy and spark-defaults.conf" href="spark-defaults.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Spark at the ONS</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../intro.html">
+   Introduction
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Spark overview
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="spark-session-guidance.html">
+   Spark Sessions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="example-spark-sessions.html">
+   Example Spark Sessions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="spark-defaults.html">
+   Configuration Hierarchy and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     spark-defaults.conf
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Creating DataFrames Manually
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to PySpark
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../pyspark-intro/pyspark-intro.html">
+   Introduction to PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../pyspark-intro/pyspark-intro-exercises.html">
+   Introduction to PySpark: Exercises
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../pyspark-intro/returning-data.html">
+   Returning Data from Cluster to Driver
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../pyspark-intro/f-col.html">
+   Reference columns by name:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     F.col()
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to sparklyr
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../sparklyr-intro/sparklyr_functions.html">
+   Using Spark functions in sparklyr
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Spark functions
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/union_dataframes_with_different_columns.html">
+   Union two DataFrames with different columns
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/padding.html">
+   Add leading zeros with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     lpad()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/sampling.html">
+   Sampling:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .sample()
+    </span>
+   </code>
+   and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     sdf_sample()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/pivot-tables.html">
+   Pivot tables in Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/rounding.html">
+   Rounding differences in Python, R and Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/window-functions.html">
+   Window Functions in Spark
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Understanding and Optimising Spark
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/spark_application_and_ui.html">
+   Spark Application and UI
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/shuffling.html">
+   Shuffling
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/join_concepts.html">
+   Optimising Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/cross_joins.html">
+   Cross Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/salted_joins.html">
+   Salted Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/partitions.html">
+   Managing partitions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/exercises.html">
+   Exercises
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Ancillary Topics
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/visualisation.html">
+   Spark and Visualisation
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/spark-overview/creating-dataframes.md"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.md</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/robertswh/Spark at the ONS"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/robertswh/Spark at the ONS/issues/new?title=Issue%20on%20page%20%2Fspark-overview/creating-dataframes.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#simple-one-column-dataframes">
+   Simple one column DataFrames
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#spark-df-from-pandas-r-df">
+   Spark DF from pandas/R DF
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#create-df-directly">
+   Create DF directly
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#partitions">
+   Partitions
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Creating DataFrames Manually</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#simple-one-column-dataframes">
+   Simple one column DataFrames
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#spark-df-from-pandas-r-df">
+   Spark DF from pandas/R DF
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#create-df-directly">
+   Create DF directly
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#partitions">
+   Partitions
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
+              <div>
+                
+  <div class="section" id="creating-dataframes-manually">
+<h1>Creating DataFrames Manually<a class="headerlink" href="#creating-dataframes-manually" title="Permalink to this headline">¶</a></h1>
+<p>Most Spark DataFrames are created by reading in data from another source, often a parquet file or Hive table, or a CSV file. It is also possible to manually create DataFrames without reading in from another source.</p>
+<p>One of the most common cases for manually creating DataFrames is for creating input data and expected output data while writing unit tests.</p>
+<p>Remember that Spark DataFrames are processed on the Spark cluster, regardless of if they were read in from another source or created manually.</p>
+<div class="section" id="simple-one-column-dataframes">
+<h2>Simple one column DataFrames<a class="headerlink" href="#simple-one-column-dataframes" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">spark.range()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_seq()</span></code> are functions which create a simple DataFrame with one column, <code class="docutils literal notranslate"><span class="pre">id</span></code>, with the specified number of rows. This can be useful as a starting point for creating synthetic or test data, or for generating a DataFrame containing random numbers.</p>
+<details>
+    <summary><b>PySpark Explanation</b></summary>
+<p>In PySpark, use <code class="docutils literal notranslate"><span class="pre">spark.range()</span></code>. There are two ways this function can be used:</p>
+<ul class="simple">
+<li><p>To create a DF with <code class="docutils literal notranslate"><span class="pre">id</span></code> starting from <code class="docutils literal notranslate"><span class="pre">0</span></code>, just specify the <code class="docutils literal notranslate"><span class="pre">end</span></code> value, e.g. <code class="docutils literal notranslate"><span class="pre">spark.range(5)</span></code>. In common with many other Python operations, the values start from <code class="docutils literal notranslate"><span class="pre">0</span></code> and the end number is not included in the results.</p></li>
+<li><p>To create a DF starting from a value other than <code class="docutils literal notranslate"><span class="pre">0</span></code>, then specify a <code class="docutils literal notranslate"><span class="pre">start</span></code> and <code class="docutils literal notranslate"><span class="pre">end</span></code> values, e.g. <code class="docutils literal notranslate"><span class="pre">spark.range(1,</span> <span class="pre">6)</span></code>.</p></li>
+</ul>
+<p>There is also an option for <code class="docutils literal notranslate"><span class="pre">step</span></code>, e.g <code class="docutils literal notranslate"><span class="pre">spark.range(start=1,</span> <span class="pre">end=10,</span> <span class="pre">step=2)</span></code> will return odd numbers.</p>
+</details>
+<details>
+    <summary><b>sparklyr Explanation</b></summary>
+<p>In sparklyr, use <code class="docutils literal notranslate"><span class="pre">sdf_seq()</span></code>. The first argument is always the Spark connection object <code class="docutils literal notranslate"><span class="pre">sc</span></code>. The range is supplied with <code class="docutils literal notranslate"><span class="pre">from</span></code> and <code class="docutils literal notranslate"><span class="pre">to</span></code>; note that both <code class="docutils literal notranslate"><span class="pre">from</span></code> and <code class="docutils literal notranslate"><span class="pre">to</span></code> values are included in the output. If <code class="docutils literal notranslate"><span class="pre">from</span></code> is not supplied then it will start from <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
+<p>There is also an option for the increment, <code class="docutils literal notranslate"><span class="pre">by</span></code>, e.g <code class="docutils literal notranslate"><span class="pre">sdf_seq(sc,</span> <span class="pre">from=1,</span> <span class="pre">to=9,</span> <span class="pre">by=2)</span></code> will return odd numbers.</p>
+</details>
+<p>As an example, start a Spark session then create a DataFrame with ten rows, and add a column of random numbers:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-0-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-0-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
+
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;create-DFs&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
+
+<span class="n">seed_no</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">random_numbers</span> <span class="o">=</span> <span class="p">(</span><span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+                  <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;rand_no&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">seed_no</span><span class="p">)))</span>
+
+<span class="n">random_numbers</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+
+<span class="n">sc</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
+    <span class="n">master</span> <span class="o">=</span> <span class="s">&quot;local[2]&quot;</span><span class="p">,</span>
+    <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;window-functions&quot;</span><span class="p">,</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">())</span>
+
+<span class="n">seed_no</span> <span class="o">&lt;-</span> <span class="m">100L</span>
+<span class="n">random_numbers</span> <span class="o">=</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_seq</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="m">4</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">rand_no</span> <span class="o">=</span> <span class="nf">rand</span><span class="p">(</span><span class="n">seed_no</span><span class="p">))</span>
+
+<span class="n">random_numbers</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
+    <span class="nf">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-1-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-1-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+---+-------------------+
+| id|            rand_no|
++---+-------------------+
+|  0| 0.6841403791584381|
+|  1|0.21180593775249568|
+|  2| 0.6121482044354868|
+|  3| 0.4561043858476006|
+|  4| 0.3728419130290753|
++---+-------------------+
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># A tibble: 5 × 2
+     id rand_no
+  &lt;int&gt;   &lt;dbl&gt;
+1     0   0.684
+2     1   0.212
+3     2   0.612
+4     3   0.456
+5     4   0.373
+</pre></div>
+</div>
+</div></div>
+</div>
+<div class="section" id="spark-df-from-pandas-r-df">
+<h2>Spark DF from pandas/R DF<a class="headerlink" href="#spark-df-from-pandas-r-df" title="Permalink to this headline">¶</a></h2>
+<p>You can also create Spark DataFrames from pandas or base R DataFrames. Spark DFs are processed in the Spark cluster, which means you have more memory when using Spark, and so some operations may be easier than in the driver, e.g. a join between two pandas/R DataFrames which results in a larger DF.</p>
+<p>Remember that there are key differences between pandas/R DFs and Spark DFs. Spark DFs are not ordered by default and also have no index, so converting to Spark and then back will not preserve the original row order. Some operations are also easier with pandas/R than they are with Spark. See the Choosing between pandas/R and Spark article for more information.</p>
+<p>In PySpark, use <code class="docutils literal notranslate"><span class="pre">spark.createDataFrame(pandas_df)</span></code>, where <code class="docutils literal notranslate"><span class="pre">pandas_df</span></code> is the pandas DataFrame. You can also specify the <code class="docutils literal notranslate"><span class="pre">schema</span></code> argument here, although generally you will not need to as pandas DFs already have data types assigned. Note that if your pandas version is earlier that <code class="docutils literal notranslate"><span class="pre">0.25.0</span></code> there may be a bug when creating the DataFrame due to the column ordering. It is recommended to update to a later version of pandas to solve this.</p>
+<p>In sparklyr, use <code class="docutils literal notranslate"><span class="pre">sdf_copy_to()</span></code>, with <code class="docutils literal notranslate"><span class="pre">sc</span></code> as the first argument and the base R DF as the second. You can also create a temporary table with the <code class="docutils literal notranslate"><span class="pre">name</span></code> option if desired.</p>
+<p>As an example, create a DataFrame of the five Grand National winners between 2017 and 2021 using pandas/R:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-2-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-2-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">winners_pd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2017</span><span class="p">,</span> <span class="mi">2022</span><span class="p">)),</span>
+     <span class="s2">&quot;winner&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Minella Times&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Tiger Roll&quot;</span><span class="p">,</span> <span class="s2">&quot;Tiger Roll&quot;</span><span class="p">,</span> <span class="s2">&quot;One For Arthur&quot;</span><span class="p">],</span>
+     <span class="s2">&quot;starting_price&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;11/1&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;4/1 F&quot;</span><span class="p">,</span> <span class="s2">&quot;10/1&quot;</span><span class="p">,</span> <span class="s2">&quot;14/1&quot;</span><span class="p">],</span>
+     <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span>
+     <span class="s2">&quot;jockey&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Rachael Blackmore&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Davy Russell&quot;</span><span class="p">,</span> <span class="s2">&quot;Davy Russell&quot;</span><span class="p">,</span> <span class="s2">&quot;Derek Fox&quot;</span><span class="p">]</span>
+<span class="p">})</span>
+
+<span class="n">winners_pd</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">winners_rdf</span> <span class="o">&lt;-</span> <span class="nf">data.frame</span><span class="p">(</span>
+    <span class="s">&quot;year&quot;</span> <span class="o">=</span> <span class="m">2017</span><span class="o">:</span><span class="m">2021</span><span class="p">,</span>
+    <span class="s">&quot;winner&quot;</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;Minella Times&quot;</span><span class="p">,</span> <span class="kc">NA</span><span class="p">,</span> <span class="s">&quot;Tiger Roll&quot;</span><span class="p">,</span> <span class="s">&quot;Tiger Roll&quot;</span><span class="p">,</span> <span class="s">&quot;One For Arthur&quot;</span><span class="p">),</span>
+    <span class="s">&quot;starting_price&quot;</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;11/1&quot;</span><span class="p">,</span> <span class="kc">NA</span><span class="p">,</span> <span class="s">&quot;4/1 F&quot;</span><span class="p">,</span> <span class="s">&quot;10/1&quot;</span><span class="p">,</span> <span class="s">&quot;14/1&quot;</span><span class="p">),</span>
+    <span class="s">&quot;age&quot;</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="m">8</span><span class="p">,</span> <span class="kc">NA</span><span class="p">,</span> <span class="m">9</span><span class="p">,</span> <span class="m">8</span><span class="p">,</span> <span class="m">8</span><span class="p">),</span>
+    <span class="s">&quot;jockey&quot;</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;Rachael Blackmore&quot;</span><span class="p">,</span> <span class="kc">NA</span><span class="p">,</span> <span class="s">&quot;Davy Russell&quot;</span><span class="p">,</span> <span class="s">&quot;Davy Russell&quot;</span><span class="p">,</span> <span class="s">&quot;Derek Fox&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">winners_rdf</span> <span class="o">%&gt;%</span>
+    <span class="nf">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-3-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-3-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>   year          winner starting_price  age             jockey
+0  2017   Minella Times           11/1  8.0  Rachael Blackmore
+1  2018            None           None  NaN               None
+2  2019      Tiger Roll          4/1 F  9.0       Davy Russell
+3  2020      Tiger Roll           10/1  8.0       Davy Russell
+4  2021  One For Arthur           14/1  8.0          Derek Fox
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>  year         winner starting_price age            jockey
+1 2017  Minella Times           11/1   8 Rachael Blackmore
+2 2018           &lt;NA&gt;           &lt;NA&gt;  NA              &lt;NA&gt;
+3 2019     Tiger Roll          4/1 F   9      Davy Russell
+4 2020     Tiger Roll           10/1   8      Davy Russell
+5 2021 One For Arthur           14/1   8         Derek Fox
+</pre></div>
+</div>
+</div></div>
+<p>Then convert this into a Spark DF and preview. Remember that previewing a DataFrame involves collecting data to the driver.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-4-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-4-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-4-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">winners_spark</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">winners_pd</span><span class="p">)</span>
+<span class="n">winners_spark</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">winners_spark</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_copy_to</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">winners_rdf</span><span class="p">)</span>
+
+<span class="n">winners_spark</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
+    <span class="nf">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-5-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-5-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-5-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+----+--------------+--------------+---+-----------------+
+|year|        winner|starting_price|age|           jockey|
++----+--------------+--------------+---+-----------------+
+|2017| Minella Times|          11/1|8.0|Rachael Blackmore|
+|2018|          null|          null|NaN|             null|
+|2019|    Tiger Roll|         4/1 F|9.0|     Davy Russell|
+|2020|    Tiger Roll|          10/1|8.0|     Davy Russell|
+|2021|One For Arthur|          14/1|8.0|        Derek Fox|
++----+--------------+--------------+---+-----------------+
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># A tibble: 5 × 5
+   year winner         starting_price   age jockey           
+  &lt;int&gt; &lt;chr&gt;          &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;            
+1  2017 Minella Times  11/1               8 Rachael Blackmore
+2  2018 &lt;NA&gt;           &lt;NA&gt;              NA &lt;NA&gt;             
+3  2019 Tiger Roll     4/1 F              9 Davy Russell     
+4  2020 Tiger Roll     10/1               8 Davy Russell     
+5  2021 One For Arthur 14/1               8 Derek Fox        
+</pre></div>
+</div>
+</div></div>
+<p>Another issue to be careful with when converting pandas DFs to Spark is the treatment of <code class="docutils literal notranslate"><span class="pre">null</span></code>/<code class="docutils literal notranslate"><span class="pre">NaN</span></code> values. See the article on <code class="docutils literal notranslate"><span class="pre">null</span></code> and <code class="docutils literal notranslate"><span class="pre">NaN</span></code> comparison for more information.</p>
+</div>
+<div class="section" id="create-df-directly">
+<h2>Create DF directly<a class="headerlink" href="#create-df-directly" title="Permalink to this headline">¶</a></h2>
+<p>In PySpark, as well as converting a pandas DF you can also create a DataFrame directly with <code class="docutils literal notranslate"><span class="pre">spark.createDataFrame()</span></code>. The first argument is <code class="docutils literal notranslate"><span class="pre">data</span></code>, generally as a regular Python list with each row containing another list. If using this method then you will also want to supply the <code class="docutils literal notranslate"><span class="pre">schema</span></code>, either a list of column names, or an object containing column names and types. See the article on Data Types for more information.</p>
+<p>You cannot create a DataFrame in sparklyr in this way; instead, create a base R DF or tibble and use <code class="docutils literal notranslate"><span class="pre">sdf_copy_to()</span></code>, as described above.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-6-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button></div><div aria-labelledby="tab-6-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">winners_spark</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[</span>
+    <span class="p">[</span><span class="mi">2021</span><span class="p">,</span> <span class="s2">&quot;Minella Times&quot;</span><span class="p">,</span> <span class="s2">&quot;11/1&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">&quot;Rachael Blackmore&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2020</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2019</span><span class="p">,</span> <span class="s2">&quot;Tiger Roll&quot;</span><span class="p">,</span> <span class="s2">&quot;4/1 F&quot;</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="s2">&quot;Davy Russell&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2018</span><span class="p">,</span> <span class="s2">&quot;Tiger Roll&quot;</span><span class="p">,</span> <span class="s2">&quot;10/1&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">&quot;Davy Russell&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2017</span><span class="p">,</span> <span class="s2">&quot;One For Arthur&quot;</span><span class="p">,</span> <span class="s2">&quot;14/1&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">&quot;Derek Fox&quot;</span><span class="p">]],</span>
+    <span class="n">schema</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">,</span> <span class="s2">&quot;winner&quot;</span><span class="p">,</span> <span class="s2">&quot;starting_price&quot;</span><span class="p">,</span> <span class="s2">&quot;age&quot;</span><span class="p">,</span> <span class="s2">&quot;jockey&quot;</span><span class="p">])</span>
+
+<span class="n">winners_spark</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-7-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button></div><div aria-labelledby="tab-7-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-7-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+----+--------------+--------------+----+-----------------+
+|year|        winner|starting_price| age|           jockey|
++----+--------------+--------------+----+-----------------+
+|2021| Minella Times|          11/1|   8|Rachael Blackmore|
+|2020|          null|          null|null|             null|
+|2019|    Tiger Roll|         4/1 F|   9|     Davy Russell|
+|2018|    Tiger Roll|          10/1|   8|     Davy Russell|
+|2017|One For Arthur|          14/1|   8|        Derek Fox|
++----+--------------+--------------+----+-----------------+
+</pre></div>
+</div>
+</div></div>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">age</span></code> column for the cancelled <code class="docutils literal notranslate"><span class="pre">2020</span></code> race is <code class="docutils literal notranslate"><span class="pre">null</span></code>, whereas it was <code class="docutils literal notranslate"><span class="pre">NaN</span></code> when converted from pandas.</p>
+</div>
+<div class="section" id="partitions">
+<h2>Partitions<a class="headerlink" href="#partitions" title="Permalink to this headline">¶</a></h2>
+<p>Although most manually created DataFrames are small, they are still partitioned on the Spark cluster. The number of partitions can be set with <code class="docutils literal notranslate"><span class="pre">numPartitions</span></code> in <code class="docutils literal notranslate"><span class="pre">spark.range()</span></code> and <code class="docutils literal notranslate"><span class="pre">repartition</span></code> in <code class="docutils literal notranslate"><span class="pre">sdf_seq()</span></code>. See the article on Managing Partitions for details of how newly created DataFrames are partitioned.</p>
+</div>
+<div class="section" id="further-resources">
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
+<p>TBC</p>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./spark-overview"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="spark-defaults.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Configuration Hierarchy and <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code></p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="../pyspark-intro/pyspark-intro.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Introduction to PySpark</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            
+        </div>
+    </div>
+    <footer class="footer">
+  <p>
+    
+      By Wil Roberts & Adrian Prince<br/>
+    
+  </p>
+</footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>
