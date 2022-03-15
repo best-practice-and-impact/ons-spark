@@ -164,7 +164,9 @@ In Spark 3, the fixed character width `CharType` and maximum character width `Va
 
 #### Datetime types
 
-The two datetime types are `DateType` and `TimestampType`. `DateType` is easier to read, but is not always supported when writing out data as a Hive table, so `TimestampType` is preferred for storage.
+The two datetime types are `DateType` and `TimestampType`. `DateType` is easier to read, but is not always supported when writing out data as a Hive table, so `TimestampType` is preferred for storage. See the section on Casting for details of how to convert between the two.
+
+Note that there are differences in how dates are handled in Spark 3 and Spark 2.4. See the [DataBricks blog](https://databricks.com/blog/2020/07/22/a-comprehensive-look-at-dates-and-timestamps-in-apache-spark-3-0.html) for more details.
 
 The defaults when creating a DataFrame in PySpark and sparklyr are also different, as can be seen from the examples:
 ````{tabs}
@@ -280,7 +282,7 @@ $ cal_year          <int> 2013, 2014, 2016, 2014, 2013, 2012, 2010, 2018, 2015â€
 $ fin_year          <chr> "2013/14", "2014/15", "2016/17", "2014/15", "2012/13â€¦
 ```
 ````
-CSV files do not have any schema attached to them. There are two options for determining the data types in a DataFrame when the source data is a CSV file: use `inferSchema`/`infer_schema`, or supply a schema directly with the `schema`/`columns` option when reading the data in.
+CSV files (and other text storage formats) do not have any schema attached to them. There are two options for determining the data types in a DataFrame when the source data is a CSV file: use `inferSchema`/`infer_schema`, or supply a schema directly with the `schema`/`columns` option when reading the data in.
 
 Inferring the schema means that Spark will scan the CSV file when reading in and try and automatically determine the data types. This may sometimes not be the exact data type that you want. Scanning the file in this way is also relatively slow, which is one of the reasons why parquet files are a better storage choice for Spark than CSVs.
 ````{tabs}
@@ -383,7 +385,7 @@ $ cal_year          <int> 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009â€
 $ fin_year          <chr> "2008/09", "2008/09", "2008/09", "2008/09", "2008/09â€¦
 ```
 ````
-In PySpark, using Data Definition Language (DDL) to define a schema is generally quicker and easier. You may be familiar with DDL when creating database tables with SQL. Just us the names of the columns followed by their data type and then separated with commas. For ease of reading it is better to use a multi-line string and put each entry on a new line. Remember that multi-line strings in Python need to be opened and closed with `"""`.
+In PySpark, using Data Definition Language (DDL) to define a schema is generally quicker and easier. You may be familiar with DDL when creating database tables with SQL. Just use the names of the columns followed by their data type and then separated with commas. For ease of reading it is better to use a multi-line string and put each entry on a new line. Remember that multi-line strings in Python need to be opened and closed with `"""`.
 ````{tabs}
 ```{code-tab} py
 rescue_schema_ddl = """
@@ -414,7 +416,7 @@ The process of changing data types is referred to as *casting*. For instance, if
 
 In PySpark, use the column methods `.cast()` or `.astype()`. These methods are identical and just aliases of each other. It is good to be consistent within your project as to which one you use.
 
-In sparklyr, casting can be done with either base R methods, e.g. `as.double()`, or Spark functions, e.g. `double()`. Spark functions are preferred as they are easier for Spark to compile.
+In sparklyr, casting can be done with either base R methods (when available), e.g. `as.double()`, or Spark functions, e.g. `double()`, `to_timestamp()`. Spark functions are preferred as they are easier for Spark to compile.
 
 Be careful when casting an existing column as this can make the code harder to read and amend. Instead you may want to create a new column to hold the casted value.
 ````{tabs}
