@@ -1,0 +1,1299 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Returning Data from Cluster to Driver &#8212; Spark at the ONS</title>
+    
+  <link href="../_static/css/theme.css" rel="stylesheet">
+  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Reference columns by name: F.col()" href="f-col.html" />
+    <link rel="prev" title="Introduction to PySpark: Exercises" href="pyspark-intro-exercises.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Spark at the ONS</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../intro.html">
+   Introduction
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Spark overview
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/spark-session-guidance.html">
+   Spark Sessions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/example-spark-sessions.html">
+   Example Spark Sessions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/spark-defaults.html">
+   Configuration Hierarchy and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     spark-defaults.conf
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to PySpark
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="pyspark-intro.html">
+   Introduction to PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="pyspark-intro-exercises.html">
+   Introduction to PySpark: Exercises
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Returning Data from Cluster to Driver
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="f-col.html">
+   Reference columns by name:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     F.col()
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to sparklyr
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../sparklyr-intro/sparklyr_functions.html">
+   Using Spark functions in sparklyr
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Spark functions
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/union_dataframes_with_different_columns.html">
+   Union two DataFrames with different columns
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/padding.html">
+   Add leading zeros with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     lpad()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/sampling.html">
+   Sampling:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .sample()
+    </span>
+   </code>
+   and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     sdf_sample()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/pivot-tables.html">
+   Pivot tables in Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/rounding.html">
+   Rounding differences in Python, R and Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/window-functions.html">
+   Window Functions in Spark
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Understanding and Optimising Spark
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/spark_application_and_ui.html">
+   Spark Application and UI
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/shuffling.html">
+   Shuffling
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/join_concepts.html">
+   Optimising Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/cross_joins.html">
+   Cross Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/salted_joins.html">
+   Salted Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/partitions.html">
+   Managing partitions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/exercises.html">
+   Exercises
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Ancillary Topics
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/visualisation.html">
+   Spark and Visualisation
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/pyspark-intro/returning-data.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/robertswh/Spark at the ONS"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/robertswh/Spark at the ONS/issues/new?title=Issue%20on%20page%20%2Fpyspark-intro/returning-data.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+    <div class="dropdown-buttons">
+        
+        <a class="binder-button" href="https://mybinder.org/v2/gh/robertswh/Spark at the ONS/main?urlpath=tree/docs/pyspark-intro/returning-data.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="../_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
+        
+        
+        
+        
+    </div>
+</div>
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#lazy-evaluation-and-printschema">
+   Lazy Evaluation and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .printSchema()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#show">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .show()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#topandas">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .toPandas()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#eager-evaluation">
+   Eager Evaluation
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#collect-and-variations">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .collect()
+    </span>
+   </code>
+   and variations
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#take-combine-limit-and-collect">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       .take()
+      </span>
+     </code>
+     : combine
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       .limit()
+      </span>
+     </code>
+     and
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       .collect()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#first-return-one-row">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       .first()
+      </span>
+     </code>
+     : return one row
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#head-a-confusing-function">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       .head()
+      </span>
+     </code>
+     : a confusing function
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#source-code">
+     Source Code
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Returning Data from Cluster to Driver</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#lazy-evaluation-and-printschema">
+   Lazy Evaluation and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .printSchema()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#show">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .show()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#topandas">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .toPandas()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#eager-evaluation">
+   Eager Evaluation
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#collect-and-variations">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .collect()
+    </span>
+   </code>
+   and variations
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#take-combine-limit-and-collect">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       .take()
+      </span>
+     </code>
+     : combine
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       .limit()
+      </span>
+     </code>
+     and
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       .collect()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#first-return-one-row">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       .first()
+      </span>
+     </code>
+     : return one row
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#head-a-confusing-function">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       .head()
+      </span>
+     </code>
+     : a confusing function
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#source-code">
+     Source Code
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
+              <div>
+                
+  <div class="section" id="returning-data-from-cluster-to-driver">
+<h1>Returning Data from Cluster to Driver<a class="headerlink" href="#returning-data-from-cluster-to-driver" title="Permalink to this headline">¶</a></h1>
+<p>This article explores different ways of moving small amounts of data from a PySpark DataFrame, which is lazily evaluated on the Spark <em>cluster</em>, into the <em>driver</em>. Remember that the Spark cluster will have more memory than the driver, so be careful about the amount of data that you are returning.</p>
+<p>There are lots of ways to do this; most users will use <code class="docutils literal notranslate"><span class="pre">.show()</span></code>, the <code class="docutils literal notranslate"><span class="pre">limit().toPandas()</span></code> combination or use eager evaluation. Several other methods are included for completeness, including the original method, <code class="docutils literal notranslate"><span class="pre">.collect()</span></code>:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.show.html">.show()</a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.toPandas.html">.toPandas()</a></p></li>
+<li><p>Eager Evaluation</p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.collect.html">.collect()</a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.take.html">.take()</a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.first.html">.first()</a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.head.html">.head()</a></p></li>
+</ul>
+<div class="section" id="lazy-evaluation-and-printschema">
+<h2>Lazy Evaluation and <code class="docutils literal notranslate"><span class="pre">.printSchema()</span></code><a class="headerlink" href="#lazy-evaluation-and-printschema" title="Permalink to this headline">¶</a></h2>
+<p>Before looking at each of the methods in turn, it is worth revisiting the concept of lazy evaluation. Spark DataFrames are not evaluated by default. An <em>action</em> has to be called in order for the cluster to process the Spark plan. <code class="docutils literal notranslate"><span class="pre">.show()</span></code>, <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code> and <code class="docutils literal notranslate"><span class="pre">.collect()</span></code> are all examples of <em>actions</em>.</p>
+<p>Note that if you implicitly try and print the DataFrame it will just return the schema, rather than evaluating the DataFrame. First, start a Spark session and load the Animal Rescue data:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;returning-data&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
+
+<span class="n">rescue_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path&quot;</span><span class="p">]</span>
+
+<span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Then type the name of the DataFrame; this will print the column names and types but will not evaluate the DataFrame:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DataFrame[incident_number: string, date_time_of_call: string, cal_year: int, fin_year: string, type_of_incident: string, engine_count: double, job_hours: double, hourly_cost: int, total_cost: double, description: string, animal_group: string, origin_of_call: string, property_type: string, property_category: string, special_service_type_category: string, special_service_type: string, ward_code: string, ward: string, borough_code: string, borough: string, stn_ground_name: string, postcode_district: string, easting_m: double, northing_m: double, easting_rounded: int, northing_rounded: int]
+</pre></div>
+</div>
+</div>
+</div>
+<p>A better way of getting the schema is with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.printSchema.html">.printSchema()</a>, which prints out in a much more readable manner. This is not an action as the DataFrame does not need to be evaluated to get this information.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>root
+ |-- incident_number: string (nullable = true)
+ |-- date_time_of_call: string (nullable = true)
+ |-- cal_year: integer (nullable = true)
+ |-- fin_year: string (nullable = true)
+ |-- type_of_incident: string (nullable = true)
+ |-- engine_count: double (nullable = true)
+ |-- job_hours: double (nullable = true)
+ |-- hourly_cost: integer (nullable = true)
+ |-- total_cost: double (nullable = true)
+ |-- description: string (nullable = true)
+ |-- animal_group: string (nullable = true)
+ |-- origin_of_call: string (nullable = true)
+ |-- property_type: string (nullable = true)
+ |-- property_category: string (nullable = true)
+ |-- special_service_type_category: string (nullable = true)
+ |-- special_service_type: string (nullable = true)
+ |-- ward_code: string (nullable = true)
+ |-- ward: string (nullable = true)
+ |-- borough_code: string (nullable = true)
+ |-- borough: string (nullable = true)
+ |-- stn_ground_name: string (nullable = true)
+ |-- postcode_district: string (nullable = true)
+ |-- easting_m: double (nullable = true)
+ |-- northing_m: double (nullable = true)
+ |-- easting_rounded: integer (nullable = true)
+ |-- northing_rounded: integer (nullable = true)
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="show">
+<h2><code class="docutils literal notranslate"><span class="pre">.show()</span></code><a class="headerlink" href="#show" title="Permalink to this headline">¶</a></h2>
+<p>Using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.show.html">.show()</a> is the easiest way to preview a PySpark DataFrame. By default it will print out <span class="math notranslate nohighlight">\(20\)</span> rows of the DataFrame.</p>
+<p>You cannot assign the results of <code class="docutils literal notranslate"><span class="pre">.show()</span></code> to a variable, so it is purely for information.</p>
+<p>By default Spark DataFrames are not ordered, due to the fact they are distributed on the cluster. This means that calling <code class="docutils literal notranslate"><span class="pre">.show()</span></code> on the same DataFrame several times can return different results.</p>
+<p>This can look ugly if there are many columns in the DataFrame, so often you will want to use <code class="docutils literal notranslate"><span class="pre">.select()</span></code> to only return the columns you are interested in.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">rescue</span>
+    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">show</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+---------------+--------------------+----------+--------------------+
+|incident_number|        animal_group|total_cost|         description|
++---------------+--------------------+----------+--------------------+
+|       80771131|                 Cat|     290.0|CAT TRAPPED IN BA...|
+|      141817141|               Horse|     590.0|HORSE TRAPPED IN ...|
+|143166-22102016|                Bird|     326.0|PIGEON WITH WING ...|
+|       43051141|                 Cat|     295.0|ASSIST RSPCA WITH...|
+|        9393131|                 Dog|     260.0|DOG FALLEN INTO T...|
+|       44345121|                Deer|     520.0|DEER STUCK IN RAI...|
+|       58835101|                Deer|     260.0|DEER TRAPPED IN F...|
+|126246-03092018|                 Cat|     333.0|KITTEN TRAPPED BE...|
+|       98474151|                 Fox|     298.0|ASSIST RSPCA WAS ...|
+|       17398141|                 Cat|    1160.0|CAT STUCK IN CAR ...|
+|       26486141|                Bird|     290.0|PEREGRINE FALCON ...|
+|      144750111|                 Dog|     260.0|DOG IN PRECARIOUS...|
+|129971-26092017|                 Cat|     328.0|KITTEN TRAPPED UN...|
+|      113396111|                 Cat|     260.0|ASSIST RSPCA WITH...|
+|      105429101|               Horse|     260.0|HORSE STUCK IN DITCH|
+|165278-09122017|Unknown - Domesti...|     328.0|CALLERS SMALL PET...|
+|      143598091|                 Cat|     260.0|         CAT UP TREE|
+|       38468151|                Bird|     298.0|BIRD TRAPPED IN C...|
+|052371-03052016|                 Cat|     326.0|ASSIST RSPCA INSP...|
+|      156017101|                Deer|     520.0|DEER TRAPPED IN R...|
++---------------+--------------------+----------+--------------------+
+only showing top 20 rows
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">.show()</span></code> has three arguments. <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of rows to return (default <code class="docutils literal notranslate"><span class="pre">20</span></code>), <code class="docutils literal notranslate"><span class="pre">truncate</span></code> will truncate long string entries (default <code class="docutils literal notranslate"><span class="pre">True</span></code>) and <code class="docutils literal notranslate"><span class="pre">vertical</span></code> will return one row per line (default <code class="docutils literal notranslate"><span class="pre">False</span></code>).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">rescue</span>
+    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">vertical</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-RECORD 0---------------------------------------------------------------------------
+ incident_number | 80771131                                                         
+ animal_group    | Cat                                                              
+ total_cost      | 290.0                                                            
+ description     | CAT TRAPPED IN BASEMENT                                          
+-RECORD 1---------------------------------------------------------------------------
+ incident_number | 141817141                                                        
+ animal_group    | Horse                                                            
+ total_cost      | 590.0                                                            
+ description     | HORSE TRAPPED IN GATE                                            
+-RECORD 2---------------------------------------------------------------------------
+ incident_number | 143166-22102016                                                  
+ animal_group    | Bird                                                             
+ total_cost      | 326.0                                                            
+ description     | PIGEON WITH WING IMAPLED ON SHARP IMPLEMENT  UNDER A BRIDGE NEAR 
+only showing top 3 rows
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="topandas">
+<h2><code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code><a class="headerlink" href="#topandas" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.toPandas.html">.toPandas()</a> converts a PySpark DataFrame into a pandas DataFrame. You can then use all the usual methods on a pandas DataFrame and it will have the standard pandas properties of being mutable, with a fixed row order.</p>
+<p>Be careful with <code class="docutils literal notranslate"><span class="pre">toPandas()</span></code> as it will convert the whole DF, which is an issue when you are dealing with large data on the Spark cluster. Calling <code class="docutils literal notranslate"><span class="pre">.limit()</span></code> before <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code> is a good way to ensure that you do not overload the driver.</p>
+<p>You can either print out the results of <code class="docutils literal notranslate"><span class="pre">toPandas()</span></code> immediately, or assign it to a variable:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_pandas</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+                 <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">)</span>
+                 <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+                 <span class="o">.</span><span class="n">toPandas</span><span class="p">())</span>
+<span class="n">rescue</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DataFrame[incident_number: string, date_time_of_call: string, cal_year: int, fin_year: string, type_of_incident: string, engine_count: double, job_hours: double, hourly_cost: int, total_cost: double, description: string, animal_group: string, origin_of_call: string, property_type: string, property_category: string, special_service_type_category: string, special_service_type: string, ward_code: string, ward: string, borough_code: string, borough: string, stn_ground_name: string, postcode_district: string, easting_m: double, northing_m: double, easting_rounded: int, northing_rounded: int]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">rescue</span>
+    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">toPandas</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>incident_number</th>
+      <th>animal_group</th>
+      <th>total_cost</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>80771131</td>
+      <td>Cat</td>
+      <td>290.0</td>
+      <td>CAT TRAPPED IN BASEMENT</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>141817141</td>
+      <td>Horse</td>
+      <td>590.0</td>
+      <td>HORSE TRAPPED IN GATE</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>143166-22102016</td>
+      <td>Bird</td>
+      <td>326.0</td>
+      <td>PIGEON WITH WING IMAPLED ON SHARP IMPLEMENT  U...</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>43051141</td>
+      <td>Cat</td>
+      <td>295.0</td>
+      <td>ASSIST RSPCA WITH CAT STUCK ON CHIMNEY</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>9393131</td>
+      <td>Dog</td>
+      <td>260.0</td>
+      <td>DOG FALLEN INTO THE CANAL</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>An alternative to using <code class="docutils literal notranslate"><span class="pre">.limit()</span></code> is to first check the size of the DataFrame. If it is small there is no need to call <code class="docutils literal notranslate"><span class="pre">.limit()</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lizards</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+           <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">)</span>
+           <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Lizard&quot;</span><span class="p">))</span>
+<span class="n">lizards</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lizards</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>incident_number</th>
+      <th>animal_group</th>
+      <th>total_cost</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>117580091</td>
+      <td>Lizard</td>
+      <td>260.0</td>
+      <td>PET LIZARD TRAPPED BEHIND RADIATOR</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>74480101</td>
+      <td>Lizard</td>
+      <td>260.0</td>
+      <td>IGUANA TRAPPED BEHIND HEATING PIPES</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>070849-04062018</td>
+      <td>Lizard</td>
+      <td>333.0</td>
+      <td>ASSIST RSPCA WITH IGUANA IN TREE (30 FEET HIGH)</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</div>
+<div class="section" id="eager-evaluation">
+<h2>Eager Evaluation<a class="headerlink" href="#eager-evaluation" title="Permalink to this headline">¶</a></h2>
+<p>By default, Spark does not display the contents of your DataFrame when you type the name of your DataFrame to implicitly print, instead returning the column name and type; we saw the output from printing <code class="docutils literal notranslate"><span class="pre">rescue</span></code> earlier.</p>
+<p>There is a way to change this behaviour so that typing the name of your DataFrame returns a nicely formatted preview of the results: add <code class="docutils literal notranslate"><span class="pre">.config(&quot;spark.sql.repl.eagerEval.enabled&quot;,</span> <span class="pre">'true')</span></code> to the Spark session builder. This will make the behaviour of typing the DF similar to <code class="docutils literal notranslate"><span class="pre">.show()</span></code>. The number of rows returned will be limited automatically so there is no need to apply the <code class="docutils literal notranslate"><span class="pre">.limit()</span></code> command to your DataFrame. You can set the number of rows to be returned with <code class="docutils literal notranslate"><span class="pre">.config(&quot;spark.sql.repl.eagerEval.maxNumRows&quot;,</span> <span class="pre">number_of_rows)</span></code>; by default this is <code class="docutils literal notranslate"><span class="pre">20</span></code>. Columns are truncated to <code class="docutils literal notranslate"><span class="pre">20</span></code> characters by default; this can be changed with <code class="docutils literal notranslate"><span class="pre">spark.sql.repl.eagerEval.truncate</span></code>.</p>
+<p>Before setting this property we need to stop the existing Spark session with <code class="docutils literal notranslate"><span class="pre">spark.stop()</span></code>.</p>
+<p>If this is something that you find desirable you may want to add these settings to a <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code> file, so they are applied automatically when starting a Spark session.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;returning-data&quot;</span><span class="p">)</span>
+         <span class="c1"># Enable eager evaluation of PySpark DFs</span>
+         <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.sql.repl.eagerEval.enabled&quot;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">)</span>
+         <span class="c1"># Maximum rows to return from the DF preview</span>
+         <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.sql.repl.eagerEval.maxNumRows&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+         <span class="c1"># Set number of characters to return per column</span>
+         <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.sql.repl.eagerEval.truncate&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
+
+<span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">)</span>
+
+<span class="n">rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table border='1'>
+<tr><th>incident_number</th><th>animal_group</th><th>total_cost</th><th>description</th></tr>
+<tr><td>80771131</td><td>Cat</td><td>290.0</td><td>CAT TRAPPED IN BASEMENT</td></tr>
+<tr><td>141817141</td><td>Horse</td><td>590.0</td><td>HORSE TRAPPED IN GATE</td></tr>
+<tr><td>143166-22102016</td><td>Bird</td><td>326.0</td><td>PIGEON WITH WING IMAPLED ON SHARP IMPLEMENT  UNDER A BRIDGE NEAR</td></tr>
+<tr><td>43051141</td><td>Cat</td><td>295.0</td><td>ASSIST RSPCA WITH CAT STUCK ON CHIMNEY</td></tr>
+<tr><td>9393131</td><td>Dog</td><td>260.0</td><td>DOG FALLEN INTO THE CANAL</td></tr>
+<tr><td>44345121</td><td>Deer</td><td>520.0</td><td>DEER STUCK IN RAILINGS</td></tr>
+<tr><td>58835101</td><td>Deer</td><td>260.0</td><td>DEER TRAPPED IN FENCE</td></tr>
+<tr><td>126246-03092018</td><td>Cat</td><td>333.0</td><td>KITTEN TRAPPED BEHIND BATH</td></tr>
+<tr><td>98474151</td><td>Fox</td><td>298.0</td><td>ASSIST RSPCA WAS FOX TRAPPED IN BARBED WIRE</td></tr>
+<tr><td>17398141</td><td>Cat</td><td>1160.0</td><td>CAT STUCK IN CAR ENGINE</td></tr>
+</table>
+only showing top 10 rows
+</div></div>
+</div>
+</div>
+<div class="section" id="collect-and-variations">
+<h2><code class="docutils literal notranslate"><span class="pre">.collect()</span></code> and variations<a class="headerlink" href="#collect-and-variations" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.collect.html">.collect()</a> is the original way of converting Spark DataFrames from the cluster to the driver and can also be used directly on RDDs (Resilient Distributed Datasets) as well as DataFrames. Like with <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code> this will bring back the whole DataFrame to the driver, so either combine with <code class="docutils literal notranslate"><span class="pre">.limit()</span></code> or verify that the DF is not too large with <code class="docutils literal notranslate"><span class="pre">.count()</span></code> first.</p>
+<p>Manipulating the output of <code class="docutils literal notranslate"><span class="pre">.collect()</span></code> is quite awkward, as it returns a list of <code class="docutils literal notranslate"><span class="pre">Row</span></code> objects. It is generally better to just use <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code>, as pandas DataFrames are easy to manipulate and have built in methods to convert to other data structures if desired.</p>
+<p>The output of <code class="docutils literal notranslate"><span class="pre">.collect()</span></code> can be assigned to variable or printed out directly:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_collected</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+                    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
+<span class="n">rescue_collected</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[Row(incident_number=&#39;80771131&#39;, animal_group=&#39;Cat&#39;, total_cost=290.0, description=&#39;CAT TRAPPED IN BASEMENT&#39;),
+ Row(incident_number=&#39;141817141&#39;, animal_group=&#39;Horse&#39;, total_cost=590.0, description=&#39;HORSE TRAPPED IN GATE&#39;),
+ Row(incident_number=&#39;143166-22102016&#39;, animal_group=&#39;Bird&#39;, total_cost=326.0, description=&#39;PIGEON WITH WING IMAPLED ON SHARP IMPLEMENT  UNDER A BRIDGE NEAR&#39;),
+ Row(incident_number=&#39;43051141&#39;, animal_group=&#39;Cat&#39;, total_cost=295.0, description=&#39;ASSIST RSPCA WITH CAT STUCK ON CHIMNEY&#39;),
+ Row(incident_number=&#39;9393131&#39;, animal_group=&#39;Dog&#39;, total_cost=260.0, description=&#39;DOG FALLEN INTO THE CANAL&#39;)]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">rescue</span>
+    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[Row(incident_number=&#39;80771131&#39;, animal_group=&#39;Cat&#39;, total_cost=290.0, description=&#39;CAT TRAPPED IN BASEMENT&#39;),
+ Row(incident_number=&#39;141817141&#39;, animal_group=&#39;Horse&#39;, total_cost=590.0, description=&#39;HORSE TRAPPED IN GATE&#39;),
+ Row(incident_number=&#39;143166-22102016&#39;, animal_group=&#39;Bird&#39;, total_cost=326.0, description=&#39;PIGEON WITH WING IMAPLED ON SHARP IMPLEMENT  UNDER A BRIDGE NEAR&#39;),
+ Row(incident_number=&#39;43051141&#39;, animal_group=&#39;Cat&#39;, total_cost=295.0, description=&#39;ASSIST RSPCA WITH CAT STUCK ON CHIMNEY&#39;),
+ Row(incident_number=&#39;9393131&#39;, animal_group=&#39;Dog&#39;, total_cost=260.0, description=&#39;DOG FALLEN INTO THE CANAL&#39;)]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Even just collecting one column still returns a list of <code class="docutils literal notranslate"><span class="pre">Row</span></code> objects. You can use an identity <code class="docutils literal notranslate"><span class="pre">.flatMap()</span></code> to return a normal Python list. Note that <code class="docutils literal notranslate"><span class="pre">.flatMap()</span></code> is an RDD method and so you need to convert the DF to an RDD first with <code class="docutils literal notranslate"><span class="pre">.rdd</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">flatMap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;80771131&#39;, &#39;141817141&#39;, &#39;143166-22102016&#39;, &#39;43051141&#39;, &#39;9393131&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Although it is much easier in pandas by converting the one column DataFrame into a series with <code class="docutils literal notranslate"><span class="pre">.squeeze()</span></code> (or by selecting the column name for implicit conversion) then using <code class="docutils literal notranslate"><span class="pre">.tolist()</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;80771131&#39;, &#39;141817141&#39;, &#39;143166-22102016&#39;, &#39;43051141&#39;, &#39;9393131&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()[</span><span class="s2">&quot;incident_number&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;80771131&#39;, &#39;141817141&#39;, &#39;143166-22102016&#39;, &#39;43051141&#39;, &#39;9393131&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<p>The main use case for <code class="docutils literal notranslate"><span class="pre">.collect()</span></code> is returning a value from a one row DataFrame as a scalar value and then assigning to a variable:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sum_cost</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+            <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="s2">&quot;total_cost&quot;</span><span class="p">))</span>
+            <span class="o">.</span><span class="n">collect</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">sum_cost</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2012231.0
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="take-combine-limit-and-collect">
+<h3><code class="docutils literal notranslate"><span class="pre">.take()</span></code>: combine <code class="docutils literal notranslate"><span class="pre">.limit()</span></code> and <code class="docutils literal notranslate"><span class="pre">.collect()</span></code><a class="headerlink" href="#take-combine-limit-and-collect" title="Permalink to this headline">¶</a></h3>
+<p>An alternative to <code class="docutils literal notranslate"><span class="pre">.collect()</span></code> is to use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.take.html">.take(num)</a> which will only return a maximum of <code class="docutils literal notranslate"><span class="pre">num</span></code> rows (or the whole DataFrame if the number of rows is less than <code class="docutils literal notranslate"><span class="pre">num</span></code>). This is equivalent to <code class="docutils literal notranslate"><span class="pre">.limit(num).collect()</span></code>. Remember that using <code class="docutils literal notranslate"><span class="pre">.collect()</span></code> will bring the entire DataFrame into the driver, so if it is large you need to reduce the size first. Using <code class="docutils literal notranslate"><span class="pre">.take()</span></code> removes this problem.</p>
+<p><code class="docutils literal notranslate"><span class="pre">.take()</span></code> has no default value, so you must supply <code class="docutils literal notranslate"><span class="pre">num</span></code> (unlike <code class="docutils literal notranslate"><span class="pre">.show()</span></code>, which has a default of <code class="docutils literal notranslate"><span class="pre">20</span></code>).</p>
+<p>Just like <code class="docutils literal notranslate"><span class="pre">.collect()</span></code> you can assign the output of <code class="docutils literal notranslate"><span class="pre">.take()</span></code> to a variable or print out directly:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_take</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">rescue_take</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[Row(incident_number=&#39;80771131&#39;, animal_group=&#39;Cat&#39;, total_cost=290.0, description=&#39;CAT TRAPPED IN BASEMENT&#39;),
+ Row(incident_number=&#39;141817141&#39;, animal_group=&#39;Horse&#39;, total_cost=590.0, description=&#39;HORSE TRAPPED IN GATE&#39;),
+ Row(incident_number=&#39;143166-22102016&#39;, animal_group=&#39;Bird&#39;, total_cost=326.0, description=&#39;PIGEON WITH WING IMAPLED ON SHARP IMPLEMENT  UNDER A BRIDGE NEAR&#39;),
+ Row(incident_number=&#39;43051141&#39;, animal_group=&#39;Cat&#39;, total_cost=295.0, description=&#39;ASSIST RSPCA WITH CAT STUCK ON CHIMNEY&#39;),
+ Row(incident_number=&#39;9393131&#39;, animal_group=&#39;Dog&#39;, total_cost=260.0, description=&#39;DOG FALLEN INTO THE CANAL&#39;)]
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="first-return-one-row">
+<h3><code class="docutils literal notranslate"><span class="pre">.first()</span></code>: return one row<a class="headerlink" href="#first-return-one-row" title="Permalink to this headline">¶</a></h3>
+<p>If you only want one row, use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.first.html">.first()</a>. The advantage of <code class="docutils literal notranslate"><span class="pre">.first()</span></code> over <code class="docutils literal notranslate"><span class="pre">.take(1)</span></code> or <code class="docutils literal notranslate"><span class="pre">.limit(1).collect()</span></code> is that a single <code class="docutils literal notranslate"><span class="pre">Row</span></code> object is returned, rather than a <code class="docutils literal notranslate"><span class="pre">Row</span></code> object within a list of length 1. This means the code looks neater if you only want to extract one value.</p>
+<p>As PySpark DataFrames are not ordered by default <code class="docutils literal notranslate"><span class="pre">.first()</span></code> is non-deterministic, and so it is generally combined with <code class="docutils literal notranslate"><span class="pre">.orderBy()</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_first</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+                <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">desc</span><span class="p">(</span><span class="s2">&quot;total_cost&quot;</span><span class="p">))</span>
+                <span class="o">.</span><span class="n">first</span><span class="p">())</span>
+<span class="n">rescue_first</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Row(incident_number=&#39;098141-28072016&#39;, animal_group=&#39;Cat&#39;, total_cost=3912.0, description=&#39;CAT STUCK WITHIN WALL SPACE  RSPCA IN ATTENDANCE&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<p>This <code class="docutils literal notranslate"><span class="pre">Row</span></code> object is not in a list, and so values can be referenced directly:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">top_cost</span> <span class="o">=</span> <span class="n">rescue_first</span><span class="p">[</span><span class="s2">&quot;total_cost&quot;</span><span class="p">]</span>
+<span class="n">top_cost</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3912.0
+</pre></div>
+</div>
+</div>
+</div>
+<p>Note that if the DataFrame is empty this will return <code class="docutils literal notranslate"><span class="pre">None</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">first_none</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+              <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Dragon&quot;</span><span class="p">)</span>
+              <span class="o">.</span><span class="n">first</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">first_none</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>None
+</pre></div>
+</div>
+</div>
+</div>
+<p>Whereas <code class="docutils literal notranslate"><span class="pre">.collect()</span></code> and <code class="docutils literal notranslate"><span class="pre">.take()</span></code> will return an empty list:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">collect_empty</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+                 <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Dragon&quot;</span><span class="p">)</span>
+                 <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
+<span class="n">collect_empty</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[]
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="head-a-confusing-function">
+<h3><code class="docutils literal notranslate"><span class="pre">.head()</span></code>: a confusing function<a class="headerlink" href="#head-a-confusing-function" title="Permalink to this headline">¶</a></h3>
+<p>Another method included for completeness is <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.head.html">.head()</a>. This works in the same way as <code class="docutils literal notranslate"><span class="pre">.take()</span></code> if you specify the number of rows (returns a list of <code class="docutils literal notranslate"><span class="pre">Row</span></code> objects, even if it only has one row), or <code class="docutils literal notranslate"><span class="pre">.first()</span></code> if not (returns a single <code class="docutils literal notranslate"><span class="pre">Row</span></code> object). This could potentially get confusing so it is better to just use <code class="docutils literal notranslate"><span class="pre">.take()</span></code> or <code class="docutils literal notranslate"><span class="pre">.first()</span></code> instead.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Same as .first()</span>
+<span class="n">rescue_blank</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+
+<span class="c1"># Returns a Row object</span>
+<span class="n">rescue_blank</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Row(incident_number=&#39;80771131&#39;, animal_group=&#39;Cat&#39;, total_cost=290.0, description=&#39;CAT TRAPPED IN BASEMENT&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Same as .take(1)</span>
+<span class="n">rescue_blank</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Returns a list of Row objects (only one item in this case)</span>
+<span class="n">rescue_blank</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[Row(incident_number=&#39;80771131&#39;, animal_group=&#39;Cat&#39;, total_cost=290.0, description=&#39;CAT TRAPPED IN BASEMENT&#39;)]
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="source-code">
+<h3>Source Code<a class="headerlink" href="#source-code" title="Permalink to this headline">¶</a></h3>
+<p>For these functions it is interesting to take a look at the PySpark source code; normally all you need is in the documentation, but here you can see how the methods actually work. For instance, <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/_modules/pyspark/sql/dataframe.html#DataFrame.take"><code class="docutils literal notranslate"><span class="pre">df.take(10)</span></code> is the same as <code class="docutils literal notranslate"><span class="pre">df.limit(10).collect()</span></code></a>.</p>
+</div>
+</div>
+<div class="section" id="further-resources">
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
+<p>PySpark Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.printSchema.html">.printSchema()</a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.show.html">.show()</a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.toPandas.html">.toPandas()</a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/configuration.html#runtime-sql-configuration">Spark Configuration</a>: details of <code class="docutils literal notranslate"><span class="pre">spark.sql.repl.eagerEval.enabled</span></code>, <code class="docutils literal notranslate"><span class="pre">spark.sql.repl.eagerEval.maxNumRows</span></code> and <code class="docutils literal notranslate"><span class="pre">spark.sql.repl.eagerEval.truncate</span></code></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.collect.html">.collect()</a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.take.html">.take()</a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.first.html">.first()</a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.head.html">.head()</a></p></li>
+</ul>
+<p>PySpark Source Code:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/_modules/pyspark/sql/dataframe.html#DataFrame.take">.take()</a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/_modules/pyspark/sql/dataframe.html#DataFrame.first">.first()</a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/_modules/pyspark/sql/dataframe.html#DataFrame.head">.head()</a></p></li>
+</ul>
+<p>Spark in ONS material:</p>
+<ul class="simple">
+<li><p>Spark configuration hierarchy</p></li>
+</ul>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./pyspark-intro"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="pyspark-intro-exercises.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Introduction to PySpark: Exercises</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="f-col.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Reference columns by name: <code class="docutils literal notranslate"><span class="pre">F.col()</span></code></p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            
+        </div>
+    </div>
+    <footer class="footer">
+  <p>
+    
+      By Wil Roberts & Adrian Prince<br/>
+    
+  </p>
+</footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>
