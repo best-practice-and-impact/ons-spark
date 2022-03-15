@@ -105,7 +105,7 @@ In PySpark, use `spark.createDataFrame(pandas_df)`, where `pandas_df` is the pan
 
 In sparklyr, use `sdf_copy_to()`, with `sc` as the first argument and the base R DF as the second. You can also create a temporary table with the `name` option if desired.
 
-As an example, create a DataFrame of the the five Grand National winners between 2017 and 2021 using pandas/R:
+As an example, create a DataFrame of the five Grand National winners between 2017 and 2021 using pandas/R:
 ````{tabs}
 ```{code-tab} py
 winners_pd = pd.DataFrame(
