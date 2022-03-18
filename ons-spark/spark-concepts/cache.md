@@ -7,14 +7,14 @@ Caching Spark DataFrames can be useful for two reasons:
 
 In this article we will firstly introduce caching to estimate the size of a DataFrame then see an example of where caching is useful to remove repeated runs of an execution plan.
 
-For a more detailed discussion on persistance in Spark please see the **Persistance article**.
+For a more detailed discussion on persistence in Spark please see the **Persistence article**.
 
-## How big is my data?
+## How big is my DataFrame?
 
 A simple use of persistence in Spark is to find out how much memory is used to store a DataFrame. This is a tricky subject because the amount of memory or disk space a data set uses depends on many factors, including:
 
 1. whether the data are on disk (in storage) or in memory (being used)
-2. format (e.g. csv or parquet on disk, Pandas or Spark DataFrame in memory)
+2. format (e.g. csv or parquet on disk, pandas or Spark DataFrame in memory)
 3. data types
 4. type of serialisation (compression)
 
@@ -45,9 +45,9 @@ sc <- sparklyr::spark_connect(
 ````
 Next we need some data. Here we're using a small amount of data because we're running a local session which has very imited resource. 
 
-Note that `cache()` n PySpark is a transformation, so to initiate moving the data into memory we need an action, hence the `.count()`.
+Note that `cache()` in PySpark is a transformation, so to initiate moving the data into memory we need an action, hence the `.count()`.
 
-In sparklyr there is a `force=TRUE` argument in the `tbl_cache()` function meaning there is no need to pipe this into a row count. Also note that the name of the DataFrame will appear in the Spark UI, which is a nice feature sparklyr. To do the same in PySpark we would need to register the DataFrame as a temporary table and give it a name.
+In sparklyr there is a `force=TRUE` argument in the `tbl_cache()` function meaning there is no need to pipe this into a row count. Also note that the name of the DataFrame will appear in the Spark UI, which is a nice feature in sparklyr. To do the same in PySpark we would need to register the DataFrame as a temporary table and give it a name.
 ````{tabs}
 ```{code-tab} py
 with open("../../../config.yaml") as f:
@@ -77,7 +77,7 @@ sparklyr::tbl_cache(sc, "population", force=TRUE)
 ```
 Now we can take a look in the Spark UI, which is reached using the URL http://localhost:4040/jobs/. Note this address is used for a local Spark session, for more information on how to navigate to the Spark UI see the [documentation on monitoring](https://spark.apache.org/docs/latest/monitoring.html).
 
-Within the Spark UI, if you were to head over to the *Storage* tab and you would see an RDD stored in memory, in two partitions and using 35.7 kB of executor memory.
+Within the Spark UI, if you were to head over to the *Storage* tab you would see an RDD stored in memory, in two partitions and using 35.7 KB of executor memory. More on RDDs in the [Shuffling](https://best-practice-and-impact.github.io/ons-spark/spark-concepts/shuffling.html#a-quick-note-on-rdds) article.
 
 ![cached DataFrame in memory](../images/cache_memory.png)
 
@@ -87,21 +87,16 @@ You can also click on the RDD name to get more information, such as how many exe
 
 ## Persist
 
-There is another function that can be used to persist DataFrames, `persist()`/`sdf_persist()` in PySpark/sparklyr is a general form of `cache()`/`tbl_cache()`. It is similar to doing a cache but we are able to specify where to store the data, e.g. use memory but allow spill over to executor disk if the executor memory is full. `persist()`/`sdf_persist()` takes a `StorageLevel` argument to specify where to cache the data. Options for storage levels are:  
+There is another function that can be used to persist DataFrames, `persist()`/`sdf_persist()` in PySpark/sparklyr. This is a general form of `cache()`/`tbl_cache()`. It is similar to doing a cache but we are able to specify where to store the data, e.g. use memory but allow spill over to executor disk if the executor memory is full. `persist()`/`sdf_persist()` takes a `StorageLevel` argument to specify where to cache the data. Options for storage levels are:  
 
-`MEMORY_ONLY`
+- `MEMORY_ONLY`
+- `MEMORY_AND_DISK`  
+- `MEMORY_ONLY_SER`   
+- `MEMORY_AND_DISK_SER`   
+- `DISK_ONLY`  
+- `OFF_HEAP`   
 
-`MEMORY_AND_DISK`  
-
-`MEMORY_ONLY_SER`   
-
-`MEMORY_AND_DISK_SER`   
-
-`DISK_ONLY`  
-
-`OFF_HEAP`   
-
-Using the `MEMORY_ONLY` option is equivalent to `cache()`/`tbl_cache()`. More information on  storage levels can be found in the [Apache Spark documentation](https://spark.apache.org/docs/latest/rdd-programming-guide.html#rdd-persistence)
+Using the `MEMORY_ONLY` option is equivalent to `cache()`/`tbl_cache()`. More information on storage levels can be found in the [Apache Spark documentation](https://spark.apache.org/docs/latest/rdd-programming-guide.html#rdd-persistence). The only detail we will add here is that `DISK` in this instance refers to the executor disk and not the file system.
 
 There's an example below to see how this is used, first we will unpersist the previous DataFrame so that we don't fill our cache memory with unused data. Note this time in sparklyr we need to add a row count.
 ````{tabs}
@@ -143,7 +138,7 @@ Before we move on, head back to the Spark UI and have a look at how much space t
 
 Is this what you expected? Why is this number different to persisting in memory? Because there is some compression involved in data written on disk.
 
-[Databricks](https://en.wikipedia.org/wiki/Databricks), a company founded by the creators of Apache Spark, suggest the use cases for `.persist()`/`sdf_persist()` are rare. The are aften cases where you might want to persist using `cache()`/`tbl_cache()`, write to disk, use `checkpoint()`/`sdf_checkpoint()` or staging tables, but the options that `.persist()`/`sdf_persist()` present are not as useful. For a more detailed discussion about these options see the **Persistance article**
+[Databricks](https://en.wikipedia.org/wiki/Databricks), a company founded by the creators of Apache Spark, suggest the use cases for `.persist()`/`sdf_persist()` are rare. The are often cases where you might want to persist using `cache()`/`tbl_cache()`, write to disk, use `checkpoint()`/`sdf_checkpoint()` or staging tables, but the options that `.persist()`/`sdf_persist()` present are not as useful. For a more detailed discussion about these options see the **Persistence article**
 ````{tabs}
 ```{code-tab} py
 population.unpersist()
@@ -259,7 +254,7 @@ rescue <- rescue  %>%
 
 ```
 ````
-Note that the above cells executed very quickly. Remember this is because they're all transformations, which means Spark hasn't executed the code yet, take a look at the Spark UI if need convincing. So far Spark has created an execution plan but is waiting for an action to implement the plan.
+Note that the above cells executed very quickly. Remember this is because they're all transformations, which means Spark hasn't executed the code yet; take a look at the Spark UI if you need convincing. So far Spark has created an execution plan but is waiting for an action to implement the plan.
 
 ## Analysis
 
@@ -272,22 +267,7 @@ def get_top_10_incidents(sdf):
         .sort("TotalCost", ascending=False)
         .limit(10)
     )
-```
 
-```{code-tab} r R
-
-get_top_10_incidents <- function(sdf) {
-        sdf %>% 
-            sparklyr::select(CalYear, PostcodeDistrict, AnimalGroup, IncidentDuration, TotalCost) %>%
-            dplyr::arrange(dplyr::desc(TotalCost)) %>%
-            head(10)
-}
-
-```
-````
-
-````{tabs}
-```{code-tab} py
 def get_mean_cost_by_animal(sdf):
     return (sdf
         .groupBy("AnimalGroup")
@@ -295,23 +275,7 @@ def get_mean_cost_by_animal(sdf):
         .sort("MeanCost", ascending=False)
         .limit(10)
     )
-```
 
-```{code-tab} r R
-
-get_mean_cost_by_animal <- function(sdf) {
-    sdf %>%
-        dplyr::group_by(AnimalGroup) %>%
-        dplyr::summarise(MeanCost = mean(TotalCost)) %>%
-        dplyr::arrange(desc(MeanCost)) %>%
-        head(10)
-}
-
-```
-````
-
-````{tabs}
-```{code-tab} py
 def get_summary_cost_by_animal(sdf):
     return (sdf.filter(
                 rescue.AnimalGroup.isin(
@@ -331,6 +295,23 @@ def get_summary_cost_by_animal(sdf):
 ```
 
 ```{code-tab} r R
+
+get_top_10_incidents <- function(sdf) {
+        sdf %>% 
+            sparklyr::select(CalYear, PostcodeDistrict, AnimalGroup, IncidentDuration, TotalCost) %>%
+            dplyr::arrange(dplyr::desc(TotalCost)) %>%
+            head(10)
+}
+
+
+get_mean_cost_by_animal <- function(sdf) {
+    sdf %>%
+        dplyr::group_by(AnimalGroup) %>%
+        dplyr::summarise(MeanCost = mean(TotalCost)) %>%
+        dplyr::arrange(desc(MeanCost)) %>%
+        head(10)
+}
+
 
 get_summary_cost_by_animal <- function(sdf) {
     sdf %>%
@@ -450,11 +431,11 @@ Great- we have our tables. Let's take a look at the individual steps Spark carri
 
 Go into the Spark UI and look at the *SQL* tab which lists the queries that are created from our PySpark code. Alternatively, we could use the *Jobs* tab, but the *SQL* tab has more detailed information for our needs here. 
 
-Click on the query with a description that starts with 'csv' and look at the DAG diagram. 
+Click on the query with a description that starts with 'csv' and look at the DAG diagram. DAG stands for Directed Acyclic Graph and is often used to describe a process.
 
 ![SQL DAG for csv file scan](../images/cache_file_scan.png)
 
-This query is glancing at the `animal_rescue.csv` file to get the schema so that following transformations can be validated before being added to the execution plan (it does this becuase we asked Spark to infer the schema). Doing this for large files can take several minutes, so for large data sets use parquet files or Hive tables, which store the schema for you.
+This query is glancing at the `animal_rescue.csv` file to get the schema so that following transformations can be validated before being added to the execution plan (it does this because we asked Spark to infer the schema). Doing this for large files can take several minutes, so for large data sets use parquet files or Hive tables, which store the schema for you.
 
 The next three queries (highlighted below) are the functions we have called above. Look at the DAG for each query by clicking on the descriptions, what are your observations?
 
@@ -586,6 +567,6 @@ The important point here is that we were doing repeated computations on a DataFr
 
 There are many factors that contribute towards the time taken for each query that make benchmarking in Spark complex. When running the source notebook, sometimes the processing will be faster after the cache, but sometimes it will be slower. If we run the last three code cells above once more and look at the times we see that the processing after the cache was generally quicker. 
 
-Each function is colour coded in the image below. The first run was without caching, the second was with caching and the third was a second run with cached data. 
+Each function is labelled in the image below. The first run was without caching, the second was with caching and the third was a second run with cached data. 
 
 ![comparison of query times using cache](../images/cache_sql_compare.png)

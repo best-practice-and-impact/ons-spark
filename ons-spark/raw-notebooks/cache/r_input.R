@@ -67,6 +67,7 @@ get_top_10_incidents <- function(sdf) {
             head(10)
 }
 
+
 get_mean_cost_by_animal <- function(sdf) {
     sdf %>%
         dplyr::group_by(AnimalGroup) %>%
@@ -74,6 +75,7 @@ get_mean_cost_by_animal <- function(sdf) {
         dplyr::arrange(desc(MeanCost)) %>%
         head(10)
 }
+
 
 get_summary_cost_by_animal <- function(sdf) {
     sdf %>%
