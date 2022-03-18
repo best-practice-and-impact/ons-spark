@@ -4,7 +4,8 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Managing partitions &#8212; Spark at the ONS</title>
     
   <link href="../../_static/css/theme.css" rel="stylesheet">
@@ -38,22 +39,20 @@
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/togglebutton.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
-    <script>let toggleHintShow = 'Click to show';</script>
-    <script>let toggleHintHide = 'Click to hide';</script>
-    <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
-    <script async="async" src="../../_static/sphinx-thebe.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script src="../../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script>
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -347,7 +346,7 @@ const thebe_selector_output = ".output, .cell_output"
                 data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -398,7 +397,7 @@ const thebe_selector_output = ".output, .cell_output"
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+        <div class="d-none d-md-block col-md-2 bd-toc show">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -494,114 +493,15 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Managing partitions</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#investigating-partitions">
-   Investigating partitions
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#newly-created-dataframe">
-     Newly created DataFrame
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#imported-dataframe">
-     Imported DataFrame
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#processed-dataframe">
-     Processed DataFrame
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#how-to-change-partitioning">
-   How to change partitioning
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#motivation">
-     Motivation
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#change-partitioning">
-     Change partitioning
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#intermediate-partitions-in-wide-operations">
-   Intermediate partitions in wide operations
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#set-up-the-problem">
-     Set up the problem
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#run-the-jobs-and-investigate-ui">
-     Run the jobs and investigate UI
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#discussion">
-     Discussion
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#what-does-this-mean-in-practice">
-     What does this mean in practice?
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#partitions-when-writing-data">
-   Partitions when writing data
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#how-should-i-partition-my-data">
-   How should I partition my data?
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#further-resources">
-   Further resources
-  </a>
- </li>
-</ul>
-
-                        </nav>
-                    </div>
-                </div>
-            </div>
-            
+        
               <div>
                 
-  <div class="tex2jax_ignore mathjax_ignore section" id="managing-partitions">
+  <section class="tex2jax_ignore mathjax_ignore" id="managing-partitions">
 <h1>Managing partitions<a class="headerlink" href="#managing-partitions" title="Permalink to this headline">¶</a></h1>
 <p>DataFrames in Spark are <em>distributed</em>, so although we treat them as one object they might be split up into multiple partitions over many machines on the cluster. The benefit of having multiple partitions is that some operations can be performed on the partitions in parallel.</p>
 <p>More partitions means greater <em>parallelisation</em>. However, there is a cost associated with multiple partitions, for example scheduling delay and data serialisation. In the <strong>Spark Application and UI</strong> article we saw that putting a small DataFrame into one or two partitions can lead to more efficient processing.</p>
 <p>In this notebook we will explore these partitions and how the partitioning of a DataFrame is affected by importing, processing and writing data in Spark. The goal is not to find the optimum number of partitions for a given DataFrame, the goal is to have greater awareness of partitioning so we can avoid the extreme cases of over-partitioning, under-partitioning and highly skewed partitioning.</p>
-<div class="section" id="investigating-partitions">
+<section id="investigating-partitions">
 <h2>Investigating partitions<a class="headerlink" href="#investigating-partitions" title="Permalink to this headline">¶</a></h2>
 <p>We will start by investigating the partitions of some DataFrames. We will look at the partitions of a newly created DataFrame, an imported DataFrame and a processed DataFrame. But first, we’ll need to do some imports and create a local application in the usual way.</p>
 <div class="cell docutils container">
@@ -626,7 +526,7 @@ const thebe_selector_output = ".output, .cell_output"
     <span class="n">config</span> <span class="o">=</span> <span class="n">partitions_config</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="section" id="newly-created-dataframe">
+<section id="newly-created-dataframe">
 <h3>Newly created DataFrame<a class="headerlink" href="#newly-created-dataframe" title="Permalink to this headline">¶</a></h3>
 <p>Let’s create a DataFrame called <code class="docutils literal notranslate"><span class="pre">rand_df</span></code> with an <code class="docutils literal notranslate"><span class="pre">id</span></code> column from 0 to 4,999 and a <code class="docutils literal notranslate"><span class="pre">rand_val</span></code> column containing random numbers from 1 to 10.</p>
 <div class="cell docutils container">
@@ -747,8 +647,8 @@ Number of rows per partition:	 [2500, 2500]
 <span class="n">small_rand</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_num_partitions</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="imported-dataframe">
+</section>
+<section id="imported-dataframe">
 <h3>Imported DataFrame<a class="headerlink" href="#imported-dataframe" title="Permalink to this headline">¶</a></h3>
 <p>Next, let’s import the <code class="docutils literal notranslate"><span class="pre">animal_rescue.csv</span></code> file and see how many partitions we have.</p>
 <div class="cell docutils container">
@@ -822,8 +722,8 @@ Total number of cells in random_df DataFrame:	 10000
 </div>
 <p>There are more cells in the rescue DataFrame, but Spark put it into just one partition.</p>
 <p>The reason for this is that the original csv file is stored as a single file on disk, which means that Spark will read it in as one partition. Data on HDFS can be stored in multiple files. In general, when a Spark DataFrame with <span class="math notranslate nohighlight">\(P\)</span> partitions is written onto disk, it will be stored in <span class="math notranslate nohighlight">\(P\)</span> files, and whenever we read that dataset into a Spark session it will again have <span class="math notranslate nohighlight">\(P\)</span> partitions. We will revisit writing partitions to disk later.</p>
-</div>
-<div class="section" id="processed-dataframe">
+</section>
+<section id="processed-dataframe">
 <h3>Processed DataFrame<a class="headerlink" href="#processed-dataframe" title="Permalink to this headline">¶</a></h3>
 <p>Let’s see how applying <em>narrow</em> and <em>wide</em> transformations to the DataFrame affects the number of partitions. Firstly we’ll filter the data, which is a <em>narrow</em> operation.</p>
 <div class="cell docutils container">
@@ -919,19 +819,19 @@ Number of partitions in rescue_by_area DataFrame:	 200
 <p>Again, there is a property we can modify in the Spark session configuration to change this behaviour. The property to override is <code class="docutils literal notranslate"><span class="pre">spark.sql.shuffle.partitions</span></code>. <em>Shuffle partitions</em> means when a shuffle occurs, for example a <em>wide</em> operation. So this property says “give the resulting DataFrame this many partitions”. See the <strong>article on Shuffling</strong> for more information on shuffles.</p>
 <p>The <a class="reference external" href="https://spark.apache.org/docs/latest/configuration.html#runtime-sql-configuration">Spark documentation</a> shows that the default value for <code class="docutils literal notranslate"><span class="pre">spark.sql.shuffle.partitions</span></code> is 200. This default is obviously too high for our case of grouping a small dataset with a small number of groups i.e. <code class="docutils literal notranslate"><span class="pre">PostcodeDistrict</span></code>. This is one of the more useful properties to consider changing depending on the size of the data you want to process with Spark.</p>
 <p>We noted above that sparklyr would give different results. Using a local sparklyr session there is another property that is used for partitioning after a wide operation, <code class="docutils literal notranslate"><span class="pre">spark.sql.shuffle.partitions.local</span></code>, which is set to 16 by default.</p>
-</div>
-</div>
-<div class="section" id="how-to-change-partitioning">
+</section>
+</section>
+<section id="how-to-change-partitioning">
 <h2>How to change partitioning<a class="headerlink" href="#how-to-change-partitioning" title="Permalink to this headline">¶</a></h2>
 <p>Before we look at how to modify DataFrame partitioning, let’s revisit the motivation for wanting to do this.</p>
-<div class="section" id="motivation">
+<section id="motivation">
 <h3>Motivation<a class="headerlink" href="#motivation" title="Permalink to this headline">¶</a></h3>
 <ol class="simple">
 <li><p>We can change the number of partitions of a DataFrame to achieve less or more parallelisation. More parallel processing is great for large DataFrames, but there are some scheduling and data serialisation overheads involved in processing multiple partitions. So for small DataFrames it’s best to have just a small number of partition because the overheads involved in organising and writing multiple partitions will result in slower processing. However, we don’t always get to choose the partitioning, e.g. to do a join Spark must first put rows with the same join keys on the same partition. More on this later.</p></li>
 <li><p>We can also partition by a specified column(s) in the DataFrame. This can be useful when writing to a Hive table or file becuase we can then read in single partitions. For example, say we had a DataFrame containing records from the past 20 years. We could partition this DataFrame by year when writing it to disk, then in future we could read in one year at a time or multiple years to speed up future tasks.</p></li>
 </ol>
-</div>
-<div class="section" id="change-partitioning">
+</section>
+<section id="change-partitioning">
 <h3>Change partitioning<a class="headerlink" href="#change-partitioning" title="Permalink to this headline">¶</a></h3>
 <p>Here are two ways of changing the number of partitions of a DataFrame. One is <code class="docutils literal notranslate"><span class="pre">.repartition()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_repartition()</span></code> and the other is <code class="docutils literal notranslate"><span class="pre">coalesce()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_coalesce()</span></code>.</p>
 <p>Let’s see how to use these functions.</p>
@@ -1036,15 +936,15 @@ Partition 2: 4, 5, 6 + (10, 11, 12)
 </div>
 <p>So the data on Partitions 1 and 2 have not been shuffled. We have just moved the data on Partitions 3 to Partition 1 and Partition 4 to Partition 2, this is sometimes referred to as a partial shuffle. The gains from this simple example would be negligible, but scale this process up to millions of rows and then it becomes significant.</p>
 <p>It’s also possible to use a column name in <code class="docutils literal notranslate"><span class="pre">.repartition()</span></code> or even a number and column name, see documentation for more information.</p>
-</div>
-</div>
-<div class="section" id="intermediate-partitions-in-wide-operations">
+</section>
+</section>
+<section id="intermediate-partitions-in-wide-operations">
 <h2>Intermediate partitions in wide operations<a class="headerlink" href="#intermediate-partitions-in-wide-operations" title="Permalink to this headline">¶</a></h2>
 <p>Now onto a more complex topic of intermediate partitioining.</p>
 <p>We saw earlier that for narrow transformations the number of partitions of input and output DataFrames is the same. We also saw that for wide transformations the number of partitions of the output DataFrame is changed to the value of the <code class="docutils literal notranslate"><span class="pre">spark.sql.shuffle.partitions</span></code> property set in the Spark session.</p>
 <p>But what is inside the partitions of the output DataFrame after a wide operation? This depends on the operation, so in this section we will look at three wide transformations: join, group by and window functions. Understanding how these functions work is particularly useful when we deal with skewed data, or more specifically skew in the join key, group variable or windows. We will demonstrate this with some skewed data and show that knowing your data can help you make informed decisions on scaling jobs vertically or horizontally, or employing an alternative strategy like a <strong>salted join</strong>.</p>
 <p><em>Note: If R users would like more information about window functions, please see the <a class="reference external" href="https://dplyr.tidyverse.org/articles/window-functions.html">Window functions</a> page in the <code class="docutils literal notranslate"><span class="pre">dplyr</span></code> documentation.</em></p>
-<div class="section" id="set-up-the-problem">
+<section id="set-up-the-problem">
 <h3>Set up the problem<a class="headerlink" href="#set-up-the-problem" title="Permalink to this headline">¶</a></h3>
 <p>Let’s start with a DataFrame with a skewed variable <code class="docutils literal notranslate"><span class="pre">skew_col</span></code>, but uniform partition sizes. It also has a column <code class="docutils literal notranslate"><span class="pre">rand_val</span></code> containing some random numbers to perform some calculations.</p>
 <div class="cell docutils container">
@@ -1187,8 +1087,8 @@ Number of partitions: 2
 </pre></div>
 </div>
 <p>We will need a link to the Spark UI to view the details of how Spark partitions the data. When using a local session we can access the Spark UI with this URL, <a class="reference external" href="http://localhost:4040/jobs/">http://localhost:4040/jobs/</a>.</p>
-</div>
-<div class="section" id="run-the-jobs-and-investigate-ui">
+</section>
+<section id="run-the-jobs-and-investigate-ui">
 <h3>Run the jobs and investigate UI<a class="headerlink" href="#run-the-jobs-and-investigate-ui" title="Permalink to this headline">¶</a></h3>
 <p>Next we will carry out the wide transformations on the <code class="docutils literal notranslate"><span class="pre">skewed_df</span></code> and apply the above function to create jobs. We have also added custom job descriptions to make it easier to find the relevant stage details in the UI.</p>
 <p>Note that the join key, group variable and windows are all set on the <code class="docutils literal notranslate"><span class="pre">skew_col</span></code> variable.</p>
@@ -1326,8 +1226,8 @@ Number of partitions: 200
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">print_partitioning_info</span><span class="p">(</span><span class="n">window_df</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="discussion">
+</section>
+<section id="discussion">
 <h3>Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h3>
 <p>Now that we have all the information on how Spark performed these processes we can compare the three cases.</p>
 <p>All three operations involve an intermediate shuffle where the join key/grouped variable/windows are moved to the same partitions. This is called <code class="docutils literal notranslate"><span class="pre">hashpartitioning()</span></code> in the execution plan. As we mentioned previously, these are all wide transformations so the number of partitions of the output DataFrames are the same, 200. Listed below are the differences in processing and output DataFrames for the three operations.</p>
@@ -1337,15 +1237,15 @@ Number of partitions: 200
 <p>In the case of the group by the skewed variable isn’t too much of an issue because the aggregation is quite simple and is optimised, therefore it is easy to process each partition whether there is skew or not. Again, the output DataFrame is partitioned by the grouped variable, this time there is one row on each partition.</p>
 <p><strong>Window</strong></p>
 <p>Like the join, there is more work to do on the larger partitions. However, unlike the join, the rows of the output DataFrame have the same partition IDs as the input DataFrame.</p>
-</div>
-<div class="section" id="what-does-this-mean-in-practice">
+</section>
+<section id="what-does-this-mean-in-practice">
 <h3>What does this mean in practice?<a class="headerlink" href="#what-does-this-mean-in-practice" title="Permalink to this headline">¶</a></h3>
 <p>Highly skewed data is a common issue that causes slow processing with Spark. Above we have seen that skewed data causes skewed partitions when Spark processes wide transformations and can result in bottlenecks, where some tasks take much longer than others therefore not utilising the full potential of parallel processing. An even worse situation is where the skew causes spill, where the large partition cannot fit into its allocated memory on an executor and overflows temporarily onto disk. We cannot recreate the issue of spill in a local session but they are easy to spot in the Stage details page in the Spark UI.</p>
 <p>This is where knowing your data can be useful. To help with the explanation we will refer to the join keys/groups/windows as groups. If a join/group by/window function is causing you issues, try to work out how many groups there are and the sizes of these groups. If there are lots on smaller groups it might help to increase <code class="docutils literal notranslate"><span class="pre">spark.sql.shuffle.partitions</span></code> and aim for greater parallel power with lots of smaller executors. If there are fewer groups you might want to scale more vertically so decrease <code class="docutils literal notranslate"><span class="pre">spark.sql.shuffle.partitions</span></code> and aim for a smaller number of bulkier executors.</p>
 <p>If you are doing a join on a highly skewed DataFrame you might want to try a <strong>salted join</strong>. If you are dealing with skew in a window function you can apply a group by and join to achieve the same result. However, these are alternative solutions when dealing with highly skewed data and in most cases a regular join or window function are more efficient and makes the code more readable.</p>
-</div>
-</div>
-<div class="section" id="partitions-when-writing-data">
+</section>
+</section>
+<section id="partitions-when-writing-data">
 <h2>Partitions when writing data<a class="headerlink" href="#partitions-when-writing-data" title="Permalink to this headline">¶</a></h2>
 <p>As previously mentioned, we can also partition by a certain column when writing to disk. The reason why this is useful is we can choose which partitions we want to read in later. This is really useful for larger data sets.</p>
 <p>Before we demonstrate this by writing the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame as parquet files, we need to remove the <code class="docutils literal notranslate"><span class="pre">£</span></code> signs from the column names as these are not supported by the parquet format. In sparklyr they are replaced automatically when reading in the csv file, so no need for this step.</p>
@@ -1421,8 +1321,8 @@ file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/_SUCCESS
 <span class="nf">system</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="how-should-i-partition-my-data">
+</section>
+<section id="how-should-i-partition-my-data">
 <h2>How should I partition my data?<a class="headerlink" href="#how-should-i-partition-my-data" title="Permalink to this headline">¶</a></h2>
 <p>The short answer is- don’t worry about it too much!</p>
 <p>Let’s flip the question around. What are the consequences of getting the number of partitions “wrong”? Most of the time- nothing. You could spend hours trying to optimise the number of partitions and perhaps speed up the processing time to be twice as quick, but sometimes there are simpler things you can do that might speed up the processing by ten times or a hundred times the processing speed.</p>
@@ -1440,8 +1340,8 @@ file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/_SUCCESS
 <li><p>It makes sense for the number of partitions to be some multiple of the number of cores in the Spark session. This will help to avoid redundant cores.</p></li>
 </ul>
 <p>Remember, it’s only worth experimenting on the <em>optimum</em> number if you have a real performance issue.</p>
-</div>
-<div class="section" id="further-resources">
+</section>
+<section id="further-resources">
 <h2>Further resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
 <p>PySpark:</p>
 <ul class="simple">
@@ -1460,8 +1360,8 @@ file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/_SUCCESS
 <li><p><a class="reference external" href="https://www.rdocumentation.org/packages/sparklyr/versions/1.7.5/topics/sdf_repartition"><code class="docutils literal notranslate"><span class="pre">sparklyr::sdf_repartition()</span></code></a></p></li>
 <li><p><a class="reference external" href="https://dplyr.tidyverse.org/articles/window-functions.html">Window functions</a></p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -1476,7 +1376,7 @@ file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/_SUCCESS
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./raw-notebooks/partitions"
+            path: "./raw-notebooks\partitions"
         },
         predefinedOutput: true
     }
@@ -1485,20 +1385,22 @@ file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/_SUCCESS
 
               </div>
               
-            
-                <!-- Previous / next buttons -->
+        
+            <!-- Previous / next buttons -->
 <div class='prev-next-area'>
 </div>
-            
+        
         </div>
     </div>
     <footer class="footer">
-  <p>
-    
-      By Wil Roberts & Adrian Prince<br/>
-    
-  </p>
-</footer>
+    <div class="container">
+      <p>
+        
+          By Wil Roberts & Adrian Prince<br/>
+        
+      </p>
+    </div>
+  </footer>
 </main>
 
 

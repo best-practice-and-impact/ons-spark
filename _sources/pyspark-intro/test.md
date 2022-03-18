@@ -79,8 +79,6 @@ If the column only contains integers, then `IntegerType` or `LongType` will be t
 
 For decimals, you can use often use `DoubleType`. For larger numbers or those with a lot of decimal places, `DecimalType` gives greater precision as you can specify the `precision` and `scale`, e.g. `precision=5` and `scale=2` has values between $\pm 999.99$.
 
-The types given by `.printSchema()` are simpler than the full Spark type name, e.g. `IntegerType` is `integer`.
-
 As a quick example, we can see what happens when a value is too long for `IntegerType`, and also see that the `DecimalType` has a fixed width to the right of the decimal point:
 ```
 
@@ -90,7 +88,7 @@ If the column only contains integers, then `IntegerType` may be the most suitabl
 
 `DoubleType` is also used for decimals; there is no `DecimalType` in sparklyr.
 
-The types given by `glimpse()` are abbreviated, e.g. `IntegerType` is `<int>`. You can see the automatic conversion of data types in the example below:
+You can see the automatic conversion of data types in the example below:
 ```
 ````
 ````{tabs}
@@ -164,9 +162,7 @@ In Spark 3, the fixed character width `CharType` and maximum character width `Va
 
 #### Datetime types
 
-The two datetime types are `DateType` and `TimestampType`. `DateType` is easier to read, but is not always supported when writing out data as a Hive table, so `TimestampType` is preferred for storage. See the section on Casting for details of how to convert between the two.
-
-Note that there are differences in how dates are handled in Spark 3 and Spark 2.4. See the [DataBricks blog](https://databricks.com/blog/2020/07/22/a-comprehensive-look-at-dates-and-timestamps-in-apache-spark-3-0.html) for more details.
+The two datetime types are `DateType` and `TimestampType`. `DateType` is easier to read, but is not always supported when writing out data as a Hive table, so `TimestampType` is preferred for storage.
 
 The defaults when creating a DataFrame in PySpark and sparklyr are also different, as can be seen from the examples:
 ````{tabs}
@@ -256,7 +252,6 @@ rescue_from_parquet.printSchema()
 
 rescue_from_parquet <- sparklyr::spark_read_parquet(sc, config$rescue_path) %>%
     sparklyr::select(incident_number, date_time_of_call, cal_year, fin_year)
-
 pillar::glimpse(rescue_from_parquet)
 
 ```
@@ -282,9 +277,9 @@ $ cal_year          <int> 2013, 2014, 2016, 2014, 2013, 2012, 2010, 2018, 2015�
 $ fin_year          <chr> "2013/14", "2014/15", "2016/17", "2014/15", "2012/13…
 ```
 ````
-CSV files (and other text storage formats) do not have any schema attached to them. There are two options for determining the data types in a DataFrame when the source data is a CSV file: use `inferSchema`/`infer_schema`, or supply a schema directly with the `schema`/`columns` option when reading the data in.
+CSV files do not have any schema attached to them. There are two options for determining the data types in a DataFrame when the source data is a CSV file: use `inferSchema`, or supply a schema directly with the `schema` option when reading the data in.
 
-Inferring the schema means that Spark will scan the CSV file when reading in and try and automatically determine the data types. This may sometimes not be the exact data type that you want. Scanning the file in this way is also relatively slow, which is one of the reasons why parquet files are a better storage choice for Spark than CSVs.
+Using `inferSchema` means that Spark will scan the CSV file when reading in and try and automatically determine the data types. This may sometimes not be the exact data type that you want. Scanning the file in this way is also relatively slow, which is one of the reasons why parquet files are a better storage choice for Spark than CSVs.
 ````{tabs}
 ```{code-tab} py
 rescue_path_csv = config["rescue_path_csv"]
@@ -296,7 +291,7 @@ rescue_from_csv.printSchema()
 
 ```{code-tab} r R
 
-rescue_from_csv <- sparklyr::spark_read_csv(sc, config$rescue_path_csv, header=TRUE, infer_schema=TRUE) %>%
+rescue_from_csv <- sparklyr::spark_read_csv(sc, config$rescue_path_csv) %>%
     sparklyr::select(IncidentNumber, DateTimeOfCall, CalYear, FinYear)
     
 pillar::glimpse(rescue_from_csv)
@@ -324,11 +319,11 @@ $ CalYear        <int> 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2�
 $ FinYear        <chr> "2008/09", "2008/09", "2008/09", "2008/09", "2008/09", …
 ```
 ````
-The alternative is to use the `schema`/`columns` argument to supply a schema directly. This is done with a list of the column names and types. You can also use DDL notation if using PySpark.
+The alternative is to use the `schema` argument to supply a schema directly. This is done with a list of the column names and types. You can also use DDL notation if using PySpark.
 
-In PySpark, supply a list of `StructField` wrapped in `StructType` to `schema`. A `StructField` consists of a column name and type. The types need to be imported from `pyspark.sql.types` and end with brackets, e.g. `StructField("incident_number", StringType())`. 
+In PySpark, use a list of `StructField` wrapped in `StructType`. A `StructField` consists of a column name and type. The types need to be imported from `pyspark.sql.types` and end with brackets, e.g. `StructField("incident_number", StringType())`. 
 
-In sparklyr, use a standard named R list as an input to `columns`, with data types entered as strings.
+In sparklyr, use a standard named R list, with data types entered as strings.
 
 Note that we are not supplying an entry for every column in the raw data here, just the first four columns.
 ````{tabs}
@@ -357,8 +352,8 @@ rescue_schema <- list(
 
 rescue_from_csv_schema <- sparklyr::spark_read_csv(sc,
                                                    config$rescue_path_csv,
-                                                   columns=rescue_schema,
-                                                   infer_schema=FALSE)
+                                                   schema=rescue_schema,
+                                                   inferSchema=False)
 
 pillar::glimpse(rescue_from_csv_schema)
 
@@ -377,15 +372,37 @@ root
 
 ```{code-tab} plaintext R Output
 Rows: ??
-Columns: 4
+Columns: 26
 Database: spark_connection
-$ incident_number   <chr> "139091", "275091", "2075091", "2872091", "3553091",…
-$ date_time_of_call <chr> "01/01/2009 03:01", "01/01/2009 08:51", "04/01/2009 …
-$ cal_year          <int> 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009…
-$ fin_year          <chr> "2008/09", "2008/09", "2008/09", "2008/09", "2008/09…
+$ IncidentNumber             <chr> "139091", "275091", "2075091", "2872091", "…
+$ DateTimeOfCall             <chr> "01/01/2009 03:01", "01/01/2009 08:51", "04…
+$ CalYear                    <int> 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2…
+$ FinYear                    <chr> "2008/09", "2008/09", "2008/09", "2008/09",…
+$ TypeOfIncident             <chr> "Special Service", "Special Service", "Spec…
+$ PumpCount                  <dbl> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+$ PumpHoursTotal             <dbl> 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1…
+$ HourlyNotionalCostGBP      <int> 255, 255, 255, 255, 255, 255, 255, 255, 255…
+$ IncidentNotionalCostGBP    <dbl> 510, 255, 255, 255, 255, 255, 255, 255, 255…
+$ FinalDescription           <chr> "DOG WITH JAW TRAPPED IN MAGAZINE RACK,B15"…
+$ AnimalGroupParent          <chr> "Dog", "Fox", "Dog", "Horse", "Rabbit", "Un…
+$ OriginofCall               <chr> "Person (land line)", "Person (land line)",…
+$ PropertyType               <chr> "House - single occupancy ", "Railings", "P…
+$ PropertyCategory           <chr> "Dwelling", "Outdoor Structure", "Outdoor S…
+$ SpecialServiceTypeCategory <chr> "Other animal assistance", "Other animal as…
+$ SpecialServiceType         <chr> "Animal assistance involving livestock - Ot…
+$ WardCode                   <chr> "E05011467", "E05000169", "E05000558", "E05…
+$ Ward                       <chr> "Crystal Palace & Upper Norwood", "Woodside…
+$ BoroughCode                <chr> "E09000008", "E09000008", "E09000029", "E09…
+$ Borough                    <chr> "Croydon", "Croydon", "Sutton", "Hillingdon…
+$ StnGroundName              <chr> "Norbury", "Woodside", "Wallington", "Ruisl…
+$ PostcodeDistrict           <chr> "SE19", "SE25", "SM5", "UB9", "RM3", "RM10"…
+$ Easting_m                  <dbl> NA, 534785, 528041, 504689, NA, NA, 539013,…
+$ Northing_m                 <dbl> NA, 167546, 164923, 190685, NA, NA, 186162,…
+$ Easting_rounded            <int> 532350, 534750, 528050, 504650, 554650, 549…
+$ Northing_rounded           <int> 170050, 167550, 164950, 190650, 192350, 184…
 ```
 ````
-In PySpark, using Data Definition Language (DDL) to define a schema is generally quicker and easier. You may be familiar with DDL when creating database tables with SQL. Just use the names of the columns followed by their data type and then separated with commas. For ease of reading it is better to use a multi-line string and put each entry on a new line. Remember that multi-line strings in Python need to be opened and closed with `"""`.
+In PySpark, using Data Definition Language (DDL) to define a schema is generally quicker and easier. You may be familiar with DDL when creating database tables with SQL. Just us the names of the columns followed by their data type and then separated with commas, e.g. ````incident_number` string, ...```. For ease of reading it is better to use a multi-line string and put each entry on a new line. Remember that multi-line strings in Python need to be opened and closed with `"""`.
 ````{tabs}
 ```{code-tab} py
 rescue_schema_ddl = """
@@ -416,16 +433,12 @@ The process of changing data types is referred to as *casting*. For instance, if
 
 In PySpark, use the column methods `.cast()` or `.astype()`. These methods are identical and just aliases of each other. It is good to be consistent within your project as to which one you use.
 
-In sparklyr, casting can be done with either base R methods (when available), e.g. `as.double()`, or Spark functions, e.g. `double()`, `to_timestamp()`. Spark functions are preferred as they are easier for Spark to compile.
+In sparklyr, casting can be done with either base R methods, e.g. `as.double()`, or Spark functions, e.g. `double()`. Spark functions are preferred as they are easier for Spark to compile.
 
 Be careful when casting an existing column as this can make the code harder to read and amend. Instead you may want to create a new column to hold the casted value.
 ````{tabs}
 ```{code-tab} py
-casted_df = (spark.range(5)
-             .withColumn("id_double",
-                         F.col("id").cast(DoubleType())))
-casted_df.printSchema()
-casted_df.show()
+casted_df = spark.range(5).withColumn("id_double", F.col("id").cast(DoubleType()))
 ```
 
 ```{code-tab} r R
@@ -440,22 +453,6 @@ print(casted_df)
 ````
 
 ````{tabs}
-
-```{code-tab} plaintext Python Output
-root
- |-- id: long (nullable = false)
- |-- id_double: double (nullable = false)
-
-+---+---------+
-| id|id_double|
-+---+---------+
-|  0|      0.0|
-|  1|      1.0|
-|  2|      2.0|
-|  3|      3.0|
-|  4|      4.0|
-+---+---------+
-```
 
 ```{code-tab} plaintext R Output
 Rows: ??

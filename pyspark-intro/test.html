@@ -56,8 +56,6 @@
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Creating DataFrames Manually" href="creating-dataframes.html" />
-    <link rel="prev" title="Configuration Hierarchy and spark-defaults.conf" href="spark-defaults.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -106,19 +104,19 @@
   Spark overview
  </span>
 </p>
-<ul class="current nav bd-sidenav">
+<ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="spark-session-guidance.html">
+  <a class="reference internal" href="../spark-overview/spark-session-guidance.html">
    Spark Sessions
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="example-spark-sessions.html">
+  <a class="reference internal" href="../spark-overview/example-spark-sessions.html">
    Example Spark Sessions
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="spark-defaults.html">
+  <a class="reference internal" href="../spark-overview/spark-defaults.html">
    Configuration Hierarchy and
    <code class="docutils literal notranslate">
     <span class="pre">
@@ -127,13 +125,13 @@
    </code>
   </a>
  </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/data-types.html">
    Data Types in Spark
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="creating-dataframes.html">
+  <a class="reference internal" href="../spark-overview/creating-dataframes.html">
    Creating DataFrames Manually
   </a>
  </li>
@@ -145,22 +143,22 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../pyspark-intro/pyspark-intro.html">
+  <a class="reference internal" href="pyspark-intro.html">
    Introduction to PySpark
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../pyspark-intro/pyspark-intro-exercises.html">
+  <a class="reference internal" href="pyspark-intro-exercises.html">
    Introduction to PySpark: Exercises
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../pyspark-intro/returning-data.html">
+  <a class="reference internal" href="returning-data.html">
    Returning Data from Cluster to Driver
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../pyspark-intro/f-col.html">
+  <a class="reference internal" href="f-col.html">
    Reference columns by name:
    <code class="docutils literal notranslate">
     <span class="pre">
@@ -344,7 +342,7 @@
         <!-- ipynb file if we had a myst markdown file -->
         
         <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/spark-overview/data-types.md"><button type="button"
+        <a class="dropdown-buttons" href="../_sources/pyspark-intro/test.md"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
                 data-placement="left">.md</button></a>
         <!-- Download PDF via print -->
@@ -364,7 +362,7 @@
                 data-toggle="tooltip" data-placement="left" title="Source repository"><i
                     class="fab fa-github"></i>repository</button></a>
         <a class="issues-button"
-            href="https://github.com/robertswh/Spark at the ONS/issues/new?title=Issue%20on%20page%20%2Fspark-overview/data-types.html&body=Your%20issue%20content%20here."><button
+            href="https://github.com/robertswh/Spark at the ONS/issues/new?title=Issue%20on%20page%20%2Fpyspark-intro/test.html&body=Your%20issue%20content%20here."><button
                 type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
                 title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
         
@@ -519,11 +517,10 @@
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-2-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-2-2-0" name="2-0" role="tab" tabindex="0">Python Explanation</button><button aria-controls="panel-2-2-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-1" name="2-1" role="tab" tabindex="-1">R Explanation</button></div><div aria-labelledby="tab-2-2-0" class="sphinx-tabs-panel" id="panel-2-2-0" name="2-0" role="tabpanel" tabindex="0"><p>If the column only contains integers, then <code class="docutils literal notranslate"><span class="pre">IntegerType</span></code> or <code class="docutils literal notranslate"><span class="pre">LongType</span></code> will be the most suitable. <code class="docutils literal notranslate"><span class="pre">IntegerType</span></code> has a maximum range of approximately <span class="math notranslate nohighlight">\(\pm 2.1 \times 10^9\)</span>, so if there is any possibility of the values exceeding this, use <code class="docutils literal notranslate"><span class="pre">LongType</span></code>.</p>
 <p>For decimals, you can use often use <code class="docutils literal notranslate"><span class="pre">DoubleType</span></code>. For larger numbers or those with a lot of decimal places, <code class="docutils literal notranslate"><span class="pre">DecimalType</span></code> gives greater precision as you can specify the <code class="docutils literal notranslate"><span class="pre">precision</span></code> and <code class="docutils literal notranslate"><span class="pre">scale</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">precision=5</span></code> and <code class="docutils literal notranslate"><span class="pre">scale=2</span></code> has values between <span class="math notranslate nohighlight">\(\pm 999.99\)</span>.</p>
-<p>The types given by <code class="docutils literal notranslate"><span class="pre">.printSchema()</span></code> are simpler than the full Spark type name, e.g. <code class="docutils literal notranslate"><span class="pre">IntegerType</span></code> is <code class="docutils literal notranslate"><span class="pre">integer</span></code>.</p>
 <p>As a quick example, we can see what happens when a value is too long for <code class="docutils literal notranslate"><span class="pre">IntegerType</span></code>, and also see that the <code class="docutils literal notranslate"><span class="pre">DecimalType</span></code> has a fixed width to the right of the decimal point:</p>
 </div><div aria-labelledby="tab-2-2-1" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-1" name="2-1" role="tabpanel" tabindex="0"><p>If the column only contains integers, then <code class="docutils literal notranslate"><span class="pre">IntegerType</span></code> may be the most suitable. <code class="docutils literal notranslate"><span class="pre">IntegerType</span></code> has a maximum range of approximately <span class="math notranslate nohighlight">\(\pm 2.1 \times 10^9\)</span>, so if there is any possibility of the values exceeding this, use <code class="docutils literal notranslate"><span class="pre">DoubleType</span></code>. Note that <code class="docutils literal notranslate"><span class="pre">LongType</span></code> does not exist in sparklyr; instead, <code class="docutils literal notranslate"><span class="pre">DoubleType</span></code> is used.</p>
 <p><code class="docutils literal notranslate"><span class="pre">DoubleType</span></code> is also used for decimals; there is no <code class="docutils literal notranslate"><span class="pre">DecimalType</span></code> in sparklyr.</p>
-<p>The types given by <code class="docutils literal notranslate"><span class="pre">glimpse()</span></code> are abbreviated, e.g. <code class="docutils literal notranslate"><span class="pre">IntegerType</span></code> is <code class="docutils literal notranslate"><span class="pre">&lt;int&gt;</span></code>. You can see the automatic conversion of data types in the example below:</p>
+<p>You can see the automatic conversion of data types in the example below:</p>
 </div></div>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-3-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-3-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">numeric_df</span> <span class="o">=</span> <span class="p">(</span><span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
@@ -590,8 +587,7 @@ $ small_number_double      &lt;dbl&gt; 0.0, 0.1, 0.2, 0.3, 0.4
 </section>
 <section id="datetime-types">
 <h3>Datetime types<a class="headerlink" href="#datetime-types" title="Permalink to this headline">¶</a></h3>
-<p>The two datetime types are <code class="docutils literal notranslate"><span class="pre">DateType</span></code> and <code class="docutils literal notranslate"><span class="pre">TimestampType</span></code>. <code class="docutils literal notranslate"><span class="pre">DateType</span></code> is easier to read, but is not always supported when writing out data as a Hive table, so <code class="docutils literal notranslate"><span class="pre">TimestampType</span></code> is preferred for storage. See the section on Casting for details of how to convert between the two.</p>
-<p>Note that there are differences in how dates are handled in Spark 3 and Spark 2.4. See the <a class="reference external" href="https://databricks.com/blog/2020/07/22/a-comprehensive-look-at-dates-and-timestamps-in-apache-spark-3-0.html">DataBricks blog</a> for more details.</p>
+<p>The two datetime types are <code class="docutils literal notranslate"><span class="pre">DateType</span></code> and <code class="docutils literal notranslate"><span class="pre">TimestampType</span></code>. <code class="docutils literal notranslate"><span class="pre">DateType</span></code> is easier to read, but is not always supported when writing out data as a Hive table, so <code class="docutils literal notranslate"><span class="pre">TimestampType</span></code> is preferred for storage.</p>
 <p>The defaults when creating a DataFrame in PySpark and sparklyr are also different, as can be seen from the examples:</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-5-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-5-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-5-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
@@ -671,7 +667,6 @@ $ example_timestamp &lt;dttm&gt; 2022-03-01, 2022-04-01, 2022-05-01
 </div>
 </div><div aria-labelledby="tab-7-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-7-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_from_parquet</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_parquet</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">config</span><span class="o">$</span><span class="n">rescue_path</span><span class="p">)</span> <span class="o">%&gt;%</span>
     <span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">incident_number</span><span class="p">,</span> <span class="n">date_time_of_call</span><span class="p">,</span> <span class="n">cal_year</span><span class="p">,</span> <span class="n">fin_year</span><span class="p">)</span>
-
 <span class="n">pillar</span><span class="o">::</span><span class="nf">glimpse</span><span class="p">(</span><span class="n">rescue_from_parquet</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -694,8 +689,8 @@ $ fin_year          &lt;chr&gt; &quot;2013/14&quot;, &quot;2014/15&quot;, &quot;
 </pre></div>
 </div>
 </div></div>
-<p>CSV files (and other text storage formats) do not have any schema attached to them. There are two options for determining the data types in a DataFrame when the source data is a CSV file: use <code class="docutils literal notranslate"><span class="pre">inferSchema</span></code>/<code class="docutils literal notranslate"><span class="pre">infer_schema</span></code>, or supply a schema directly with the <code class="docutils literal notranslate"><span class="pre">schema</span></code>/<code class="docutils literal notranslate"><span class="pre">columns</span></code> option when reading the data in.</p>
-<p>Inferring the schema means that Spark will scan the CSV file when reading in and try and automatically determine the data types. This may sometimes not be the exact data type that you want. Scanning the file in this way is also relatively slow, which is one of the reasons why parquet files are a better storage choice for Spark than CSVs.</p>
+<p>CSV files do not have any schema attached to them. There are two options for determining the data types in a DataFrame when the source data is a CSV file: use <code class="docutils literal notranslate"><span class="pre">inferSchema</span></code>, or supply a schema directly with the <code class="docutils literal notranslate"><span class="pre">schema</span></code> option when reading the data in.</p>
+<p>Using <code class="docutils literal notranslate"><span class="pre">inferSchema</span></code> means that Spark will scan the CSV file when reading in and try and automatically determine the data types. This may sometimes not be the exact data type that you want. Scanning the file in this way is also relatively slow, which is one of the reasons why parquet files are a better storage choice for Spark than CSVs.</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-9-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-9-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-9-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-9-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_path_csv</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path_csv&quot;</span><span class="p">]</span>
 <span class="n">rescue_from_csv</span> <span class="o">=</span> <span class="p">(</span><span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">rescue_path_csv</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -704,7 +699,7 @@ $ fin_year          &lt;chr&gt; &quot;2013/14&quot;, &quot;2014/15&quot;, &quot;
 <span class="n">rescue_from_csv</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-9-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-9-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_from_csv</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_csv</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">config</span><span class="o">$</span><span class="n">rescue_path_csv</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span> <span class="n">infer_schema</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span> <span class="o">%&gt;%</span>
+</div><div aria-labelledby="tab-9-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-9-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_from_csv</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_csv</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">config</span><span class="o">$</span><span class="n">rescue_path_csv</span><span class="p">)</span> <span class="o">%&gt;%</span>
     <span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">IncidentNumber</span><span class="p">,</span> <span class="n">DateTimeOfCall</span><span class="p">,</span> <span class="n">CalYear</span><span class="p">,</span> <span class="n">FinYear</span><span class="p">)</span>
     
 <span class="n">pillar</span><span class="o">::</span><span class="nf">glimpse</span><span class="p">(</span><span class="n">rescue_from_csv</span><span class="p">)</span>
@@ -729,9 +724,9 @@ $ FinYear        &lt;chr&gt; &quot;2008/09&quot;, &quot;2008/09&quot;, &quot;200
 </pre></div>
 </div>
 </div></div>
-<p>The alternative is to use the <code class="docutils literal notranslate"><span class="pre">schema</span></code>/<code class="docutils literal notranslate"><span class="pre">columns</span></code> argument to supply a schema directly. This is done with a list of the column names and types. You can also use DDL notation if using PySpark.</p>
-<p>In PySpark, supply a list of <code class="docutils literal notranslate"><span class="pre">StructField</span></code> wrapped in <code class="docutils literal notranslate"><span class="pre">StructType</span></code> to <code class="docutils literal notranslate"><span class="pre">schema</span></code>. A <code class="docutils literal notranslate"><span class="pre">StructField</span></code> consists of a column name and type. The types need to be imported from <code class="docutils literal notranslate"><span class="pre">pyspark.sql.types</span></code> and end with brackets, e.g. <code class="docutils literal notranslate"><span class="pre">StructField(&quot;incident_number&quot;,</span> <span class="pre">StringType())</span></code>.</p>
-<p>In sparklyr, use a standard named R list as an input to <code class="docutils literal notranslate"><span class="pre">columns</span></code>, with data types entered as strings.</p>
+<p>The alternative is to use the <code class="docutils literal notranslate"><span class="pre">schema</span></code> argument to supply a schema directly. This is done with a list of the column names and types. You can also use DDL notation if using PySpark.</p>
+<p>In PySpark, use a list of <code class="docutils literal notranslate"><span class="pre">StructField</span></code> wrapped in <code class="docutils literal notranslate"><span class="pre">StructType</span></code>. A <code class="docutils literal notranslate"><span class="pre">StructField</span></code> consists of a column name and type. The types need to be imported from <code class="docutils literal notranslate"><span class="pre">pyspark.sql.types</span></code> and end with brackets, e.g. <code class="docutils literal notranslate"><span class="pre">StructField(&quot;incident_number&quot;,</span> <span class="pre">StringType())</span></code>.</p>
+<p>In sparklyr, use a standard named R list, with data types entered as strings.</p>
 <p>Note that we are not supplying an entry for every column in the raw data here, just the first four columns.</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-11-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-11-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-11-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-11-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.types</span> <span class="kn">import</span> <span class="n">StructType</span><span class="p">,</span> <span class="n">StructField</span><span class="p">,</span> <span class="n">StringType</span><span class="p">,</span> <span class="n">IntegerType</span>
@@ -756,8 +751,8 @@ $ FinYear        &lt;chr&gt; &quot;2008/09&quot;, &quot;2008/09&quot;, &quot;200
 
 <span class="n">rescue_from_csv_schema</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_csv</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span>
                                                    <span class="n">config</span><span class="o">$</span><span class="n">rescue_path_csv</span><span class="p">,</span>
-                                                   <span class="n">columns</span><span class="o">=</span><span class="n">rescue_schema</span><span class="p">,</span>
-                                                   <span class="n">infer_schema</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span>
+                                                   <span class="n">schema</span><span class="o">=</span><span class="n">rescue_schema</span><span class="p">,</span>
+                                                   <span class="n">inferSchema</span><span class="o">=</span><span class="n">False</span><span class="p">)</span>
 
 <span class="n">pillar</span><span class="o">::</span><span class="nf">glimpse</span><span class="p">(</span><span class="n">rescue_from_csv_schema</span><span class="p">)</span>
 </pre></div>
@@ -772,16 +767,38 @@ $ FinYear        &lt;chr&gt; &quot;2008/09&quot;, &quot;2008/09&quot;, &quot;200
 </pre></div>
 </div>
 </div><div aria-labelledby="tab-12-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-12-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Rows: ??
-Columns: 4
+Columns: 26
 Database: spark_connection
-$ incident_number   &lt;chr&gt; &quot;139091&quot;, &quot;275091&quot;, &quot;2075091&quot;, &quot;2872091&quot;, &quot;3553091&quot;,…
-$ date_time_of_call &lt;chr&gt; &quot;01/01/2009 03:01&quot;, &quot;01/01/2009 08:51&quot;, &quot;04/01/2009 …
-$ cal_year          &lt;int&gt; 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009…
-$ fin_year          &lt;chr&gt; &quot;2008/09&quot;, &quot;2008/09&quot;, &quot;2008/09&quot;, &quot;2008/09&quot;, &quot;2008/09…
+$ IncidentNumber             &lt;chr&gt; &quot;139091&quot;, &quot;275091&quot;, &quot;2075091&quot;, &quot;2872091&quot;, &quot;…
+$ DateTimeOfCall             &lt;chr&gt; &quot;01/01/2009 03:01&quot;, &quot;01/01/2009 08:51&quot;, &quot;04…
+$ CalYear                    &lt;int&gt; 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2…
+$ FinYear                    &lt;chr&gt; &quot;2008/09&quot;, &quot;2008/09&quot;, &quot;2008/09&quot;, &quot;2008/09&quot;,…
+$ TypeOfIncident             &lt;chr&gt; &quot;Special Service&quot;, &quot;Special Service&quot;, &quot;Spec…
+$ PumpCount                  &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+$ PumpHoursTotal             &lt;dbl&gt; 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1…
+$ HourlyNotionalCostGBP      &lt;int&gt; 255, 255, 255, 255, 255, 255, 255, 255, 255…
+$ IncidentNotionalCostGBP    &lt;dbl&gt; 510, 255, 255, 255, 255, 255, 255, 255, 255…
+$ FinalDescription           &lt;chr&gt; &quot;DOG WITH JAW TRAPPED IN MAGAZINE RACK,B15&quot;…
+$ AnimalGroupParent          &lt;chr&gt; &quot;Dog&quot;, &quot;Fox&quot;, &quot;Dog&quot;, &quot;Horse&quot;, &quot;Rabbit&quot;, &quot;Un…
+$ OriginofCall               &lt;chr&gt; &quot;Person (land line)&quot;, &quot;Person (land line)&quot;,…
+$ PropertyType               &lt;chr&gt; &quot;House - single occupancy &quot;, &quot;Railings&quot;, &quot;P…
+$ PropertyCategory           &lt;chr&gt; &quot;Dwelling&quot;, &quot;Outdoor Structure&quot;, &quot;Outdoor S…
+$ SpecialServiceTypeCategory &lt;chr&gt; &quot;Other animal assistance&quot;, &quot;Other animal as…
+$ SpecialServiceType         &lt;chr&gt; &quot;Animal assistance involving livestock - Ot…
+$ WardCode                   &lt;chr&gt; &quot;E05011467&quot;, &quot;E05000169&quot;, &quot;E05000558&quot;, &quot;E05…
+$ Ward                       &lt;chr&gt; &quot;Crystal Palace &amp; Upper Norwood&quot;, &quot;Woodside…
+$ BoroughCode                &lt;chr&gt; &quot;E09000008&quot;, &quot;E09000008&quot;, &quot;E09000029&quot;, &quot;E09…
+$ Borough                    &lt;chr&gt; &quot;Croydon&quot;, &quot;Croydon&quot;, &quot;Sutton&quot;, &quot;Hillingdon…
+$ StnGroundName              &lt;chr&gt; &quot;Norbury&quot;, &quot;Woodside&quot;, &quot;Wallington&quot;, &quot;Ruisl…
+$ PostcodeDistrict           &lt;chr&gt; &quot;SE19&quot;, &quot;SE25&quot;, &quot;SM5&quot;, &quot;UB9&quot;, &quot;RM3&quot;, &quot;RM10&quot;…
+$ Easting_m                  &lt;dbl&gt; NA, 534785, 528041, 504689, NA, NA, 539013,…
+$ Northing_m                 &lt;dbl&gt; NA, 167546, 164923, 190685, NA, NA, 186162,…
+$ Easting_rounded            &lt;int&gt; 532350, 534750, 528050, 504650, 554650, 549…
+$ Northing_rounded           &lt;int&gt; 170050, 167550, 164950, 190650, 192350, 184…
 </pre></div>
 </div>
 </div></div>
-<p>In PySpark, using Data Definition Language (DDL) to define a schema is generally quicker and easier. You may be familiar with DDL when creating database tables with SQL. Just use the names of the columns followed by their data type and then separated with commas. For ease of reading it is better to use a multi-line string and put each entry on a new line. Remember that multi-line strings in Python need to be opened and closed with <code class="docutils literal notranslate"><span class="pre">&quot;&quot;&quot;</span></code>.</p>
+<p>In PySpark, using Data Definition Language (DDL) to define a schema is generally quicker and easier. You may be familiar with DDL when creating database tables with SQL. Just us the names of the columns followed by their data type and then separated with commas, e.g. ````incident_number<code class="docutils literal notranslate"><span class="pre">string,</span> <span class="pre">...```.</span> <span class="pre">For</span> <span class="pre">ease</span> <span class="pre">of</span> <span class="pre">reading</span> <span class="pre">it</span> <span class="pre">is</span> <span class="pre">better</span> <span class="pre">to</span> <span class="pre">use</span> <span class="pre">a</span> <span class="pre">multi-line</span> <span class="pre">string</span> <span class="pre">and</span> <span class="pre">put</span> <span class="pre">each</span> <span class="pre">entry</span> <span class="pre">on</span> <span class="pre">a</span> <span class="pre">new</span> <span class="pre">line.</span> <span class="pre">Remember</span> <span class="pre">that</span> <span class="pre">multi-line</span> <span class="pre">strings</span> <span class="pre">in</span> <span class="pre">Python</span> <span class="pre">need</span> <span class="pre">to</span> <span class="pre">be</span> <span class="pre">opened</span> <span class="pre">and</span> <span class="pre">closed</span> <span class="pre">with</span></code>”””`.</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-13-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button></div><div aria-labelledby="tab-13-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-13-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_schema_ddl</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">    `incident_number` string,</span>
@@ -809,14 +826,10 @@ $ fin_year          &lt;chr&gt; &quot;2008/09&quot;, &quot;2008/09&quot;, &quot;
 <h2><em>Casting</em>: Changing Data Types<a class="headerlink" href="#casting-changing-data-types" title="Permalink to this headline">¶</a></h2>
 <p>The process of changing data types is referred to as <em>casting</em>. For instance, if a string column contains numbers you may want to cast this as an integer.</p>
 <p>In PySpark, use the column methods <code class="docutils literal notranslate"><span class="pre">.cast()</span></code> or <code class="docutils literal notranslate"><span class="pre">.astype()</span></code>. These methods are identical and just aliases of each other. It is good to be consistent within your project as to which one you use.</p>
-<p>In sparklyr, casting can be done with either base R methods (when available), e.g. <code class="docutils literal notranslate"><span class="pre">as.double()</span></code>, or Spark functions, e.g. <code class="docutils literal notranslate"><span class="pre">double()</span></code>, <code class="docutils literal notranslate"><span class="pre">to_timestamp()</span></code>. Spark functions are preferred as they are easier for Spark to compile.</p>
+<p>In sparklyr, casting can be done with either base R methods, e.g. <code class="docutils literal notranslate"><span class="pre">as.double()</span></code>, or Spark functions, e.g. <code class="docutils literal notranslate"><span class="pre">double()</span></code>. Spark functions are preferred as they are easier for Spark to compile.</p>
 <p>Be careful when casting an existing column as this can make the code harder to read and amend. Instead you may want to create a new column to hold the casted value.</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-15-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-15-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-15-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-15-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-15-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-15-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">casted_df</span> <span class="o">=</span> <span class="p">(</span><span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-             <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;id_double&quot;</span><span class="p">,</span>
-                         <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">DoubleType</span><span class="p">())))</span>
-<span class="n">casted_df</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
-<span class="n">casted_df</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-15-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-15-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-15-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-15-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-15-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-15-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">casted_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;id_double&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">DoubleType</span><span class="p">()))</span>
 </pre></div>
 </div>
 </div><div aria-labelledby="tab-15-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-15-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">casted_df</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_seq</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="m">4</span><span class="p">)</span> <span class="o">%&gt;%</span>
@@ -828,22 +841,7 @@ $ fin_year          &lt;chr&gt; &quot;2008/09&quot;, &quot;2008/09&quot;, &quot;
 </div>
 </div></div>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-16-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-16-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-16-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-16-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-16-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-16-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>root
- |-- id: long (nullable = false)
- |-- id_double: double (nullable = false)
-
-+---+---------+
-| id|id_double|
-+---+---------+
-|  0|      0.0|
-|  1|      1.0|
-|  2|      2.0|
-|  3|      3.0|
-|  4|      4.0|
-+---+---------+
-</pre></div>
-</div>
-</div><div aria-labelledby="tab-16-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-16-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Rows: ??
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-16-UiBPdXRwdXQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-16-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="0">R Output</button></div><div aria-labelledby="tab-16-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-16-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Rows: ??
 Columns: 2
 Database: spark_connection
 $ id        &lt;int&gt; 0, 1, 2, 3, 4
@@ -883,7 +881,7 @@ $ id_double &lt;dbl&gt; 0, 1, 2, 3, 4
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./spark-overview"
+            path: "./pyspark-intro"
         },
         predefinedOutput: true
     }
@@ -894,21 +892,7 @@ $ id_double &lt;dbl&gt; 0, 1, 2, 3, 4
               
         
             <!-- Previous / next buttons -->
-<div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="spark-defaults.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Configuration Hierarchy and <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code></p>
-        </div>
-    </a>
-    <a class='right-next' id="next-link" href="creating-dataframes.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Creating DataFrames Manually</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
+<div class='prev-next-area'>
 </div>
         
         </div>
