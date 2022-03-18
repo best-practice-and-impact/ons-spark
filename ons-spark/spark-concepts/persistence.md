@@ -1,20 +1,20 @@
 <!-- #region -->
 # Persisting in Spark
 
-Persisting Spark DataFrames is done to improve efficiency. There are two different cases where persisting can be useful:
+Persisting Spark DataFrames is done for a number of reasons, a common reason is creating intermediate outputs in a pipeline for quality assurance purposes. In this article we are mainly interested in using [persistence](https://en.wikipedia.org/wiki/Persistence_(computer_science)) to improve performance, i.e. reduce processing time. There are two different cases where persisting DataFrames can be useful in this context:
 
-1. Remove unnecessary repetitions of the same processing
-2. Lineage of the DataFrame is long and complex
+1. To remove unnecessary repetitions of the same processing
+2. If the DataFrame lineage is long and complex
 
 In this article we discuss why persisting is useful with Spark, introduce the different methods of persisting data and discuss their use cases. Examples are given in the **Cache** and **Checkpoint and Staging tables** articles.
 
 ## Theory: lineage, execution plan and the catalyst optimiser
 
-Before we discuss persistance we should discuss lineage, the execution plan and the catalyst optimiser.
+Before we discuss persistence we should discuss lineage, the execution plan and the catalyst optimiser.
 
-We know that Spark uses lazy evaluation, meaning it doesn't process data until it has to e.g. infering the schema of a file, a row count, returning some data using `.show()`/`head() %>% collect()` or writing data to disk. As we execute DataFrame transformations Spark tracks the lineage of the DataFrame and creates an execution plan. When we execute an action Spark executes the plan. This is quite different to how regular Python, pandas or R works. Why does Spark work in this way?  Because Spark will find more efficient ways to process the data than just following our commands one after the other, and when it comes to processing big data, this is really useful. 
+We know that Spark uses lazy evaluation, meaning it doesn't process data until it has to e.g. inferring the schema of a file, a row count, returning some data using `.show()`/`head() %>% collect()` or writing data to disk. As we execute DataFrame transformations Spark tracks the lineage of the DataFrame and creates an execution plan. When we execute an action Spark executes the plan. This is quite different to how regular Python, pandas or R works. Why does Spark work in this way? One reason is that Spark wont have to store intermediate objects in memory, which makes it more efficient for processing big data. Another reason is that Spark will find more efficient ways to process the data than just following our commands one after the other, and again, this is really useful when processing big data. 
 
-The way Spark optimises our jobs is using the [catalyst optimiser](https://databricks.com/glossary/catalyst-optimizer) and the [tungsten optimiser](https://databricks.com/glossary/tungsten). The former uses a list of rules to change our code into a more efficient strategy, whereas the latter performs optimisations on the hardware. If we want to see how Spark will or has processed a DataFrame we can look at the execution plan. For a quick view you can apply the `.explain()`/`explain` functions to DataFrames in PySpark/sparklyr. The `full` argument can be set to true to see how the catalyst optimiser has taken the original Spark code and optimised it to reach the final version, called the Physical Plan. Examples are given in the **Checkpoint and Staging table** article on how to read the output of the `explain` function. The execution plan is also given in the form of a DAG diagram within the SQL tab in the Spark UI. Examples are given in the **Cache** article on understanding these diagrams.
+The way Spark optimises our jobs is using the [catalyst optimiser](https://databricks.com/glossary/catalyst-optimizer) and the [tungsten optimiser](https://databricks.com/glossary/tungsten). The former uses a list of rules to change our code into a more efficient strategy, whereas the latter performs optimisations on the hardware. If we want to see how Spark will or has processed a DataFrame we can look at the execution plan. For a quick view you can apply the `.explain()`/`explain` functions to DataFrames in PySpark/sparklyr. The `full` argument can be set to `true` to see how the catalyst optimiser has taken the original Spark code and optimised it to reach the final version, called the Physical Plan. Examples are given in the **Checkpoint and Staging table** article on how to read the output of the `explain` function. The execution plan is also given in the form of a DAG diagram within the SQL tab in the Spark UI. Examples are given in the **Cache** article on understanding these diagrams.
 
 ## Remove repeated processing
 
@@ -26,11 +26,11 @@ An example of using cache to remove repeated processing is given in the cache ar
 
 ## Breaking DataFrame lineage
 
-As we apply more transformations to our DataFrames the lineage grows and so does the execution plan. If the lineage is long and complex Spark will struggle to optimise the plan and take a long time to process the DataFrame. 
+As we apply more transformations to our DataFrames the lineage grows and so does the execution plan. If the lineage is long and complex Spark will struggle to optimise the plan and take a long time to process the DataFrame. Hence, in a data pipeline we might write intermediate tables at sensible points that can be used for quality assurance purposes, but also this process breaks the DataFrame lineage.
 
-Let's say we are executing an interative algorithm on a DataFrame, for example we apply some calculation to a column to create a new column and use this new column as the input to the calculation in the next iteration. We notice that Spark struggles to execute the code after 10 iterations. What we can try to solve this issue is every few iterations we write the DataFrame out to disk and read it back in for the next iteration. Writing the data out to disk is a form of [persistance](https://en.wikipedia.org/wiki/Persistence_(computer_science)), and so this is an example where persistance is used in Spark to break the lineage of a DataFrame.
+Let's say we are executing an iterative algorithm on a DataFrame, for example we apply some calculation to a column to create a new column and use this new column as the input to the calculation in the next iteration. We notice that Spark struggles to execute the code after many iterations. What we can try to solve this issue is every few iterations we write the DataFrame out to disk and read it back in for the next iteration. Writing the data out to disk is a form of persistence, and so this is an example where persistence is used in Spark to break the lineage of a DataFrame.
 
-An example of persistance in an iterative process is given in the article on checkpoints and staging tables.
+An example of persistence in an iterative process is given in the article on checkpoints and staging tables.
 
 
 ## Different types of persisting
@@ -51,7 +51,7 @@ Persisting data in Spark is no *silver bullet*. Some data platform support teams
 
 ### Predicate pushdown
 
-As explained above, Spark uses the catalyst optimiser to improve performance by optimising the whole execution plan. However, when we persist the data the plan is made shorter. This is sometimes a good thing if the plan is too complex, but in general we want the catalyst optimiser to take all our transformations to find the optimum execution plan. For example, in the Cache article we saw that the catalyst optimiser will move a filter as early as possible in the execution plan so Spark has to process fewer rows of data later on, this is called a predicate pushdown. If we cached at the wrong point in the code, the optimiser would not be able to push the filter to the beginning of the execution plan.
+As explained above, Spark uses the catalyst optimiser to improve performance by optimising the whole execution plan. However, when we persist the data the plan is made shorter. This is sometimes a good thing if the plan is too complex, but in general we want the catalyst optimiser to take all our transformations to find the optimum execution plan. For example, in the Cache article we saw that the catalyst optimiser will move a filter as early as possible in the execution plan so Spark has to process fewer rows of data later on; this is called a predicate pushdown. If we cached at the wrong point in the code, the optimiser would not be able to push the filter to the beginning of the execution plan.
 
 ### Writing and reading is not free
 
@@ -59,7 +59,7 @@ The process of writing and reading data for checkpoints and staging tables, as w
 
 ### Filling up cache/file system with persisted data
 
-There is a limited amount of memory on the executors of the Spark cluster and if you fill it up with cached data Spark will start to spill data onto disk or return an out of memory error. Spark will prioritise recent caches and run more expecsive processes to manage the low priority data. Remember to empty the cache when you've stopped using a DataFrame and don't cache too many DataFrames at one time. Memory management in a Spark cluster is a complex topic, a good introduction is given in [this blog](https://0x0fff.com/spark-memory-management).
+There is a limited amount of memory on the executors of the Spark cluster and if you fill it up with cached data Spark will start to spill data onto disk or return an out of memory error. Spark will prioritise recent caches and run more expensive processes to manage the low priority data. Remember to empty the cache when you've stopped using a DataFrame and don't cache too many DataFrames at one time. Memory management in a Spark cluster is a complex topic, a good introduction is given in [this blog](https://0x0fff.com/spark-memory-management).
 
 The same is true for the file system, although there is much more space to store data of course. It's good practice to delete a checkpoint directory after use within a Spark script. The same is true for staging tables, unless you want to view the data at a later date.
 
@@ -82,8 +82,9 @@ The same is true for the file system, although there is much more space to store
 **Staging tables**
 
 - The same table can be overwritten, meaning there is no need to clean up old checkpointed directories
-- It is stored in a location that is easier to access, rather than the checkpointing folder, which can help with debugging and testing changes to the codeThey can be re-used elsewhere
-- If .insertInto() is used, you can take advantage of the table schema, as an exception will be raised if the DataFrame and table schemas do not match
+- It is stored in a location that is easier to access, rather than the checkpointing folder, which can help with debugging and testing changes to the code
+- They can be re-used elsewhere, whereas checkpoint files are given arbitrary names
+- If inserting into an existing table, you can take advantage of the table schema, as an exception will be raised if the DataFrame and table schemas do not match
 - It is more efficient for Spark to read Hive tables than text/CSV files as the underlying format is Parquet, so if your data are delivered as text/CSV files you may want to stage them as Hive tables first.
 
 <!-- #endregion -->
