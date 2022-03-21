@@ -4,7 +4,7 @@ library(dplyr)
 
 sc <- sparklyr::spark_connect(
     master = "local[2]",
-    app_name = "window-functions",
+    app_name = "create-DFs",
     config = sparklyr::spark_config())
 
 seed_no <- 100L
