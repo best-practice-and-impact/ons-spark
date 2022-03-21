@@ -51,7 +51,7 @@ cats.select("incident_number", "animal_group").show(5)
 +---------------+------------+
 only showing top 5 rows
 ```
-This can't be done using `cats.animal_group` as we haven't defined `cats` when referencing the DataFrame. To use the other notation we need to define `rescue` then filter on `cats.animal_group`:
+This cannot be done using `cats.animal_group` as we have not defined `cats` when referencing the DataFrame. To use the other notation we need to define `rescue` then filter on `cats.animal_group`:
 ````{tabs}
 ```{code-tab} py
 rescue = spark.read.parquet(rescue_path)
@@ -80,9 +80,9 @@ Read in the animal rescue data:
 rescue = spark.read.parquet(rescue_path).select("incident_number", "animal_group")
 ```
 ````
-Let's create a new column, `animal_group_upper`, which consists of the `animal_group` in uppercase.
+Create a new column, `animal_group_upper`, which consists of the `animal_group` in uppercase.
 
-If we try and immediately filter on this column using `rescue.animal_group_upper`, it won't work. This is because we have yet to define the column in `rescue`.
+If we try and immediately filter on this column using `rescue.animal_group_upper`, it will not work. This is because we have yet to define the column in `rescue`. Error handling is being used here; for more information see the article on [Handling Errors in PySpark](../testing-debugging/handling-errors-pyspark).
 ````{tabs}
 ```{code-tab} py
 try:
@@ -185,7 +185,7 @@ only showing top 5 rows
 (f-col:example-4)=
 ### Example 4: Columns with special characters or spaces
 
-One final use case for this method is when your source data has column names with spaces or special characters in them. This can happen if reading in from a CSV file rather than parquet or Hive table. The animal rescue CSV has a column called `IncidentNotionalCost(£)`. You can't refer to the column using `rescue.IncidentNotionalCost(£)`, instead, use `F.col("IncidentNotionalCost(£)")`:
+One final use case for this method is when your source data has column names with spaces or special characters in them. This can happen if reading in from a CSV file rather than parquet or Hive table. The animal rescue CSV has a column called `IncidentNotionalCost(£)`. You cannot refer to the column using `rescue.IncidentNotionalCost(£)`, instead, use `F.col("IncidentNotionalCost(£)")`:
 ````{tabs}
 ```{code-tab} py
 rescue = (spark.read.csv(rescue_path_csv, header=True)
@@ -205,7 +205,7 @@ rescue.filter(F.col("IncidentNotionalCost(£)") > 2500).show()
 |092389-09072018|                 2664.0|
 +---------------+-----------------------+
 ```
-You can use the pandas style `rescue["IncidentNotionalCost(£)"]` but this notation isn't encouraged in PySpark:
+You can use the pandas style `rescue["IncidentNotionalCost(£)"]` but this notation is not encouraged in PySpark:
 ````{tabs}
 ```{code-tab} py
 rescue.filter(rescue["IncidentNotionalCost(£)"] > 2500).show()
@@ -244,14 +244,15 @@ rescue.filter(F.col("notional_cost") > 2500).show()
 |092389-09072018|       2664.0|
 +---------------+-------------+
 ```
-If your data is stored as CSV with non-standard column names you may want to create a data cleansing stage, which reads in the CSV and renames the columns, then write this out as a parquet file or Hive table. Parquet files and Hive tables also have the advantage of being far quicker for Spark to process
+If your data is stored as CSV with non-standard column names you may want to create a data cleansing stage, which reads in the CSV and renames the columns, then write this out as a [parquet file](../spark-functions/parquet) or [Hive table](../spark-functions/table). Parquet files and Hive tables also have the advantage of being far quicker for Spark to process
 
 ### Further Resources
+
+Spark at the ONS Articles:
+- [Handling Errors in PySpark](../testing-debugging/handling-errors-pyspark)
+- [Writing Data to a Parquet File](../spark-functions/parquet)
+- [Writing Data to a Hive table](../spark-functions/table)
 
 PySpark Documentation:
 - [`.filter()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.filter.html)
 - [`F.col()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.col.html)
-
-Spark in ONS material:
-- Error handling in PySpark
-- Storing data as parquet file
