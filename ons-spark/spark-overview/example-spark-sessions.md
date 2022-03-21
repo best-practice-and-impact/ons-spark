@@ -1,9 +1,9 @@
 ## Example Spark Sessions
 
-This document gives some example Spark sessions. For more information on Spark sessions and why you need to be careful with memory usage, please consult the [Guidance on Spark Sessions](http://np2rvlapxx507/DAP_CATS/guidance/-/blob/master/Spark%20session%20guidance.md).
+This document gives some example Spark sessions. For more information on Spark sessions and why you need to be careful with memory usage, please consult the [Guidance on Spark Sessions](../spark-overview/spark-session-guidance) and [Configuration Hierarchy and `spark-defaults.conf`](../spark-overview/spark-defaults).
 
-Remember to only use a Spark session for as long as you need. It's good etiquette to use `spark.stop()` (for PySpark) or `spark_disconnect(sc)` (for sparklyr) in your scripts. Stopping the CDSW or Jupyter Notebook session will also close the Spark session if one is running.
 
+Remember to only use a Spark session for as long as you need. It's good etiquette to use [`spark.stop()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.stop.html) (for PySpark) or [`spark_disconnect(sc)`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html) (for sparklyr) in your scripts. Stopping the CDSW or Jupyter Notebook session will also close the Spark session if one is running.
 
 ### Default/Blank Session
 
@@ -36,9 +36,9 @@ spark = (
 ```{code-tab} r R
 library(sparklyr)
 
-default_config <- spark_config()
+default_config <- sparklyr::spark_config()
 
-sc <- spark_connect(
+sc <- sparklyr::spark_connect(
   master = "yarn-client",
   app_name = "default-session",
   config = default_config)
@@ -81,7 +81,7 @@ spark = (
 ```{code-tab} r R
 library(sparklyr)
 
-small_config <- spark_config()
+small_config <- sparklyr::spark_config()
 small_config$spark.executor.memory <- "1g"
 small_config$spark.executor.cores <- 1
 small_config$spark.dynamicAllocation.enabled <- "true"
@@ -89,7 +89,7 @@ small_config$spark.dynamicAllocation.maxExecutors <- 3
 small_config$spark.sql.shuffle.partitions <- 12
 small_config$spark.shuffle.service.enabled <- "true"
 
-sc <- spark_connect(
+sc <- sparklyr::spark_connect(
   master = "yarn-client",
   app_name = "small-session",
   config = small_config)
@@ -133,7 +133,7 @@ spark = (
  ```{code-tab} r R
  library(sparklyr)
 
-medium_config <- spark_config()
+medium_config <- sparklyr::spark_config()
 medium_config$spark.executor.memory <- "6g"
 medium_config$spark.executor.cores <- 3
 medium_config$spark.dynamicAllocation.enabled <- "true"
@@ -141,7 +141,7 @@ medium_config$spark.dynamicAllocation.maxExecutors <- 3
 medium_config$spark.sql.shuffle.partitions <- 18
 medium_config$spark.shuffle.service.enabled <- "true"
 
-sc <- spark_connect(
+sc <- sparklyr::spark_connect(
   master = "yarn-client",
   app_name = "medium-session",
   config = medium_config)
@@ -187,7 +187,7 @@ spark = (
 ```{code-tab} r R
 library(sparklyr)
 
-large_config <- spark_config()
+large_config <- sparklyr::spark_config()
 large_config$spark.executor.memory <- "10g"
 large_config$spark.yarn.executor.memoryOverhead <- "1g"
 large_config$spark.executor.cores <- 5
@@ -196,7 +196,7 @@ large_config$spark.dynamicAllocation.maxExecutors <- 5
 large_config$spark.sql.shuffle.partitions <- 200
 large_config$spark.shuffle.service.enabled <- "true"
 
-sc <- spark_connect(
+sc <- sparklyr::spark_connect(
   master = "yarn-client",
   app_name = "large-session",
   config = large_config)
@@ -244,7 +244,7 @@ spark = (
 ```{code-tab} r R
 library(sparklyr)
 
-xl_config <- spark_config()
+xl_config <- sparklyr::spark_config()
 xl_config$spark.executor.memory <- "20g"
 xl_config$spark.yarn.executor.memoryOverhead <- "2g"
 xl_config$spark.executor.cores <- 5
@@ -253,7 +253,7 @@ xl_config$spark.dynamicAllocation.maxExecutors <- 12
 xl_config$spark.sql.shuffle.partitions <- 240
 xl_config$spark.shuffle.service.enabled <- "true"
 
-sc <- spark_connect(
+sc <- sparklyr::spark_connect(
   master = "yarn-client",
   app_name = "xl-session",
   config = xl_config)
@@ -269,6 +269,19 @@ Remember to close your sessions once finished, so that the memory can be re-allo
 spark.stop()
 ```
 ```{code-tab} r R
-spark-disconnect(sc)
+sparklyr::spark_disconnect(sc)
 ```
 ````
+
+### Further Resources
+
+Spark at the ONS links:
+- [Guidance on Spark Sessions](../spark-overview/spark-session-guidance)
+- [Configuration Hierarchy and `spark-defaults.conf`](../spark-overview/spark-defaults)
+
+PySpark Documentation:
+- [`SparkSession.builder`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html#pyspark.sql.SparkSession.builder)
+- [`spark.stop()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.stop.html)
+
+sparklyr and tidyverse Documentation:
+- [`spark_connect`/`spark_disconnect()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html)
