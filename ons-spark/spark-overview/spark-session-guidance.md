@@ -1,6 +1,6 @@
-# Spark Sessions
+## Guidance on Spark Sessions
 
-## Architecture
+### Architecture
 
 There are many versions of the diagram below on the internet. This version illustrates how we interact with data on the Cloudera cluster within the Data Access Plaform using Spark. If ONS staff are looking for more information online, note that our cluster runs on YARN.
 
@@ -27,15 +27,15 @@ One of the great features of Spark is that we’re able to scale up our resource
 job. It will also shut them down when they are not needed. This process of switching executors on and off is called dynamic allocation.
 
 Remember we should stop the Spark session when we are finished to free up the cluster resource for others. This is done automatically when we stop our CDSW
-session, or you can also do it by running `spark.stop()`.
+session, or you can also do it by running [`spark.stop()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.stop.html)/[`spark_disconnect()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html).
 
-## Creating a Spark Session
+### Creating a Spark Session
 
 There are many options when it comes to creating a Spark session. We recommend using the default parameters when getting started, you can then start adding other parameters when you learn more about how Spark works and how to tune your session to your specific needs.
 
 ### Using default parameters
 
-As a starting point you can create a Spark session with all the defaults. This is the bare minimum you need to create a Spark session and will work fine in most cases. Note you should give your session a sensible name, here we have called it `default-session`.
+As a starting point you can create a Spark session with all the defaults, by leaving the optional properties blank in [`SparkSession.builder`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html#pyspark.sql.SparkSession.builder)/[`spark_connect()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html). This is the bare minimum you need to create a Spark session and will work fine in most cases. Note you should give your session a sensible name, here we have called it `default-session`.
 
 ````{tabs}
 ```{code-tab} py
@@ -58,7 +58,7 @@ sc <- spark_connect(
 ````
 ### Specifying configs
 
-When you have a good grasp of how Spark works, you understand what processing needs doing and most importantly the data, you can look to introduce some customised configurations to your Spark session. The session builder will look something like this,
+When you have a good grasp of how Spark works, you understand what processing needs doing and most importantly the data, you can look to introduce some customised configurations to your Spark session. The session builder will look something like this:
 
 ````{tabs}
 
@@ -81,27 +81,23 @@ sc <- spark_connect(
 ```
 
 ````
-The most popular configs to set are listed and explained in the [Config glossary](#config-glossary) section below. Some example Spark configurations are given in [example Spark configurations] section. 
+The most popular configs to set are listed and explained in the [Config glossary](#config-glossary) section below. Some example Spark configurations are given in the [Example Spark Sessions](../spark-overview/example-spark-sessions) article. 
 
-See the page on `spark-defaults.conf` for setting these properties in other ways.
+See the page on [Configuration Hierarchy and `spark-defaults.conf`](../spark-overview/spark-defaults) for setting these properties in other ways.
 
 The [Configuring Spark Connections](https://spark.rstudio.com/guides/connections/) page of the RStudio documentation gives a good introduction on this topic that builds on the guidance here. 
 
-## Config Glossary
+### Config Glossary
 
 Some commonly used Spark and YARN properties are listed in this section.  
 
-For more details look at the official documentation for Spark configuration:
-https://spark.apache.org/docs/2.4.0/configuration.html 
+For more details look at the official documentation for [Spark configuration](https://spark.apache.org/docs/latest/configuration.html)
 
-ONS runs Spark on YARN, that entails another set of configuration options documented here:
-https://spark.apache.org/docs/2.4.0/running-on-yarn.html
+ONS runs Spark on YARN, that entails another [set of configuration options](https://spark.apache.org/docs/latest/running-on-yarn.html) documented here.
 
-To view all of the parameters, both default and custom, associated with your Spark session use
-```
-spark.sparkContext.getConf().getAll()
-```
-Note that `sparkContext` is created automatically when calling `SparkSession`
+To view all of the parameters, both default and custom, associated with your Spark session use [`spark.sparkContext.getConf().getAll()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.SparkConf.getAll.html).
+
+Note that [`sparkContext`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.SparkContext.html) is created automatically when calling [`SparkSession`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html)
 
 
 *Note that the values shown in brackets are the default values* 
@@ -154,9 +150,9 @@ Sets the number of partitions to use for a DataFrame after a shuffle. The defaul
 `.config("spark.ui.showConsoleProgress", "true")`  
 This setting is set to true by default in DAP, but should be set to false in order to correctly display output in CDSW.
 
-## Calculating Resource Allocation
+### Calculating Resource Allocation
 
-Let's take the large session from the [Example Spark Sessions](http://np2rvlapxx507/DAP_CATS/guidance/-/blob/master/spark_session_sizes.ipynb) and explain the allocation of resource in more detail.
+Let's take the large session from the [Example Spark Sessions](../spark-overview/example-spark-sessions) and explain the allocation of resource in more detail.
 
 ```
 spark = (
@@ -174,6 +170,7 @@ spark = (
 ```
 
 ### Resource allocation
+
 How much resource is allocated to this application? Here we are asking how many cores and memory is this application using?
 
 Cores - We have requested 5 cores per executor using `spark.executor.cores` and 5 executors with `spark.dynamicAllocation.maxExecutors`. The sum is then:
@@ -186,10 +183,32 @@ requested 1 GiB of overhead memory (also called *off-heap* memory). As before, w
 ( 10 GiB + 1 GiB ) per executor x 5 executors = 55 GiB of memory
 
 ### Reserving resource
+
 An important point to remember about setting the `spark.dynamicAllocation.maxExecutors` option is that *although* Spark will increase and decrease the number of executors
 we use at any point, the *maximum resource requested* will be reserved for the application. 
 
 That means that in the above example Spark will reserve 25 cores and 55 GiB 
 of memory for this application for the entirety of its duration, no matter if we are only utilising a single executor. This is not an issue here as 25 cores and 55 GiB isn't
-excessive for processing a large DataFrame. However, if `spark.dynamicAllocation.maxExecutors` was set to 500 requests from other DAP users might be rejected and the cluster
+excessive for processing a large DataFrame. However, if `spark.dynamicAllocation.maxExecutors` was set to 500 requests from other users on the same cluster might be rejected and the cluster
 would be under significant strain.
+
+### Further Resources
+
+Spark at the ONS links:
+- [Example Spark Sessions](../spark-overview/example-spark-sessions)
+- [Configuration Hierarchy and `spark-defaults.conf`](../spark-overview/spark-defaults)
+
+PySpark Documentation:
+- [`SparkSession`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html)
+- [`SparkSession.builder`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html#pyspark.sql.SparkSession.builder)
+- [`spark.stop()`](https://spark.apache.org/docs/3.1.1/api/python/reference/api/pyspark.sql.SparkSession.stop.html)
+- [`spark.sparkContext`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.SparkContext.html)
+- [`spark.sparkContext.getConf().getAll()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.SparkConf.getAll.html)
+
+sparklyr and tidyverse Documentation:
+- [`spark_connect`/`spark_disconnect()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html)
+- [Configuring Spark Connections](https://spark.rstudio.com/guides/connections/)
+
+Spark Documentation:
+- [Spark Configuration](https://spark.apache.org/docs/latest/configuration.html)
+- [Running Spark on YARN](https://spark.apache.org/docs/latest/running-on-yarn.html)
