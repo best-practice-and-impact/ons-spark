@@ -2,7 +2,7 @@
 
 The sparklyr package allows you to use the dplyr style functions when working on the cluster with sparklyr DataFrames. The key difference to working with tibbles or base R DataFrames is that the Spark cluster will be used for processing, rather than the CDSW session. This means that you can handle much larger data.
 
-You can also make use of [Spark functions](https://spark.apache.org/docs/latest/api/sql/index.html) directly when using sparklyr. To do this, wrap them in a relevant `dplyr` command, for instance, `mutate()` or `filter()`. Note that these functions are not part of an actual R package and so you can't prefix them with the package name with `::`.
+You can also make use of [Spark functions](https://spark.apache.org/docs/latest/api/sql/index.html) directly when using sparklyr. For instance, you can use Spark functions to [change data types](../spark-overview/data-types.html#casting-changing-data-types) Examples of Spark functions are [`to_date()`](https://spark.apache.org/docs/latest/api/sql/index.html#to_date). To do this, wrap them in a relevant `dplyr` command, for instance, [`mutate()`](https://dplyr.tidyverse.org/reference/mutate.html) or [`filter()`](https://dplyr.tidyverse.org/reference/filter.html). Note that these functions are not part of an actual R package and so you can't prefix them with the package name with `::`.
 
 There are a large number of Spark functions and the authors of this article have not verified them all; versioning and implementation differences mean that not all might be available.
 
@@ -33,7 +33,9 @@ pillar::glimpse(rescue)
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext R Output
 Rows: ??
 Columns: 3
 Database: spark_connection
@@ -41,9 +43,10 @@ $ date_time_of_call <chr> "25/06/2013 07:47", "22/10/2014 17:39", "22/10/2016 �
 $ animal_group      <chr> "Cat", "Horse", "Bird", "Cat", "Dog", "Deer", "Deer"…
 $ property_category <chr> "Dwelling", "Outdoor", "Outdoor Structure", "Dwellin…
 ```
+````
 #### Cast to date: `to_date()`
 
-`to_date()` changes the column type to date with the chosen format. This must be wrapped in a valid `dplyr` command, such as `mutate()`:
+[`to_date()`](https://spark.apache.org/docs/latest/api/sql/index.html#to_date) changes the column type to date with the chosen format. This must be wrapped in a valid `dplyr` command, such as `mutate()`:
 ````{tabs}
 
 ```{code-tab} r R
@@ -59,7 +62,9 @@ rescue %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext R Output
 # A tibble: 5 × 2
   date_time_of_call date_of_call
   <chr>             <date>      
@@ -69,9 +74,10 @@ rescue %>%
 4 09/04/2014 13:37  2014-04-09  
 5 22/01/2013 19:16  2013-01-22  
 ```
+````
 #### Capitalise first letter of each word: `initcap()`
 
-`initcap()` capitalises the first letter of each word, and can be useful when data cleansing.
+[`initcap()`](https://spark.apache.org/docs/latest/api/sql/index.html#initcap) capitalises the first letter of each word, and can be useful when data cleansing.
 
 In the Animal Rescue data the values in the `animal_group` column do not always begin with a capital letter. In this example, `initcap()` can be combined with `filter()` to return all cats, regardless of case:
 ````{tabs}
@@ -94,16 +100,19 @@ cats %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext R Output
 # Source: spark<?> [?? x 2]
   animal_group `n()`
   <chr>        <dbl>
 1 cat             15
 2 Cat           2909
 ```
+````
 #### `concat_ws()`: a Spark version of `paste()`
 
-`concat_ws()` works in a similar way to the base R function `paste()`; the separator is the first argument:
+[`concat_ws()`](https://spark.apache.org/docs/latest/api/sql/index.html#concat_ws) works in a similar way to the base R function [`paste()`](https://stat.ethz.ch/R-manual/R-devel/library/base/html/paste.html); the separator is the first argument:
 ````{tabs}
 
 ```{code-tab} r R
@@ -118,7 +127,9 @@ rescue %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext R Output
 # A tibble: 5 × 3
   animal_group property_category animal_property        
   <chr>        <chr>             <chr>                  
@@ -128,7 +139,18 @@ rescue %>%
 4 Cat          Dwelling          Cat: Dwelling          
 5 Dog          Outdoor           Dog: Outdoor           
 ```
+````
 ## Further Resources
+
+Spark at the ONS Articles:
+- [Data Types in Spark](../spark-overview/data-types.html#casting-changing-data-types): A common use case for using Spark functions in sparklyr
+
+sparklyr and tidyverse Documentation:
+- [`mutate()`](https://dplyr.tidyverse.org/reference/mutate.html)
+- [`filter()`](https://dplyr.tidyverse.org/reference/filter.html)
+
+R Documentation:
+- [`paste()`](https://stat.ethz.ch/R-manual/R-devel/library/base/html/paste.html)
 
 Spark SQL Documentation:
 - [`to_date`](https://spark.apache.org/docs/latest/api/sql/index.html#to_date)
