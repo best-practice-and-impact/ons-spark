@@ -4,13 +4,13 @@ There are some datasets that consist of code columns, which are fixed width and 
 
 However, sometimes these can appear as integers which will lose the initial zeros. So `"000123"` becomes `123`. Commonly this can happen if at some point the data is manipulated in Excel and later read in a CSV file; it can also happen if the column is converted to a numeric type. An ONS example is [Standard Industrial Classification (SIC)](https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities/uksic2007). SIC codes are five digits, but some begin with $0$.
 
-There is an easy way to change this back into the correct format: [`F.lpad()`](https://spark.apache.org/docs/latest/api/python//reference/api/pyspark.sql.functions.lpad.html) from the `functions` package in PySpark and [`lpad()`](https://spark.apache.org/docs/latest/api/sql/index.html#lpad) inside `mutate()` in sparklyr. This will add a string that you specify to the start, making every value a fixed width string. For instance, `"123"` becomes `"000123"` but `"456789"` remains the same.
+There is an easy way to change this back into the correct format: [`F.lpad()`](https://spark.apache.org/docs/latest/api/python//reference/api/pyspark.sql.functions.lpad.html) from the `functions` package in PySpark and the [Spark function](../sparklyr-intro/sparklyr-functions) [`lpad()`](https://spark.apache.org/docs/latest/api/sql/index.html#lpad) inside `mutate()` in sparklyr. This will add a string that you specify to the start, making every value a fixed width string. For instance, `"123"` becomes `"000123"` but `"456789"` remains the same.
 
 ### Example: Incident Numbers
 
 The Animal Rescue data has an `incident_number` column, which is unique and of variable length. We will add leading zeros to this column to make it of a consistent length.
 
-First, start a Spark session and read in the Animal Rescue data, filter on `Police` and select the relevant columns (note that the output displayed is for PySpark; the sparklyr output may be formatted slightly differently).
+First, start a Spark session and read in the Animal Rescue data, filter on `"Police"` and select the relevant columns:
 ````{tabs}
 ```{code-tab} py
 import yaml
@@ -53,7 +53,9 @@ rescue %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +---------------+--------------+
 |incident_number|origin_of_call|
 +---------------+--------------+
@@ -65,6 +67,18 @@ rescue %>%
 +---------------+--------------+
 only showing top 5 rows
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 5 × 2
+  incident_number origin_of_call
+  <chr>           <chr>         
+1 146647151       Police        
+2 66969111        Police        
+3 103407111       Police        
+4 137525091       Police        
+5 158794091       Police        
+```
+````
 The input to `lpad()` will most often be either a string or an integer. In this example, `incident_number` is a string:
 ````{tabs}
 ```{code-tab} py
@@ -78,12 +92,24 @@ pillar::glimpse(rescue)
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 root
  |-- incident_number: string (nullable = true)
  |-- origin_of_call: string (nullable = true)
 ```
-Use [`length()`](https://spark.apache.org/docs/latest/api/python//reference/api/pyspark.sql.functions.length.html) to demonstrate that the `incident_number` column is not always the same size:
+
+```{code-tab} plaintext R Output
+Rows: ??
+Columns: 2
+Database: spark_connection
+Ordered by: date_time_of_call
+$ incident_number <chr> "146647151", "66969111", "103407111", "137525091", "15…
+$ origin_of_call  <chr> "Police", "Police", "Police", "Police", "Police", "Pol…
+```
+````
+Use [`F.length()`](https://spark.apache.org/docs/latest/api/python//reference/api/pyspark.sql.functions.length.html)/[`length()`](https://spark.apache.org/docs/latest/api/sql/index.html#length) to demonstrate that the `incident_number` column is not always the same size:
 ````{tabs}
 ```{code-tab} py
 rescue = rescue.withColumn("incident_no_length", F.length("incident_number"))
@@ -105,7 +131,9 @@ rescue %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +------------------+-----+
 |incident_no_length|count|
 +------------------+-----+
@@ -115,6 +143,17 @@ rescue %>%
 |                 9|   65|
 +------------------+-----+
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 4 × 3
+  incident_no_length origin_of_call count
+               <int> <chr>          <dbl>
+1                  6 Police             1
+2                  8 Police            57
+3                  7 Police             6
+4                  9 Police            65
+```
+````
 We want the `incident_number` column to be a string with a fixed width of $9$, with zeros at the start if the length is shorter than this.
 
 `lpad()` takes three arguments. The first argument, `col` is the column name, the second, `len` is the fixed width of the string, and the third, `pad`, the value to pad it with if it is too short, often `"0"`. The data type returned from `lpad()` will always be a string.
@@ -145,7 +184,9 @@ rescue %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +---------------+--------------+------------------+------------------+
 |incident_number|origin_of_call|incident_no_length|padded_incident_no|
 +---------------+--------------+------------------+------------------+
@@ -168,6 +209,26 @@ only showing top 5 rows
 +---------------+--------------+------------------+------------------+
 only showing top 5 rows
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 5 × 4
+  incident_number origin_of_call incident_no_length padded_incident_no
+  <chr>           <chr>                       <int> <chr>             
+1 955141          Police                          6 000955141         
+2 3215101         Police                          7 003215101         
+3 3223101         Police                          7 003223101         
+4 7003121         Police                          7 007003121         
+5 6311101         Police                          7 006311101         
+# A tibble: 5 × 4
+  incident_number origin_of_call incident_no_length padded_incident_no
+  <chr>           <chr>                       <int> <chr>             
+1 163121101       Police                          9 163121101         
+2 103225141       Police                          9 103225141         
+3 114153091       Police                          9 114153091         
+4 101172091       Police                          9 101172091         
+5 110211101       Police                          9 110211101         
+```
+````
 Be careful; if you set the fixed width to be too short you can lose data:
 ````{tabs}
 ```{code-tab} py
@@ -189,7 +250,9 @@ rescue %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +---------------+--------------+------------------+------------------+----------------+
 |incident_number|origin_of_call|incident_no_length|padded_incident_no|too_short_inc_no|
 +---------------+--------------+------------------+------------------+----------------+
@@ -201,6 +264,19 @@ rescue %>%
 +---------------+--------------+------------------+------------------+----------------+
 only showing top 5 rows
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 5 × 5
+  incident_number origin_of_call incident_no_length padded_incident_no
+  <chr>           <chr>                       <int> <chr>             
+1 163121101       Police                          9 163121101         
+2 103225141       Police                          9 103225141         
+3 114153091       Police                          9 114153091         
+4 101172091       Police                          9 101172091         
+5 110211101       Police                          9 110211101         
+# … with 1 more variable: too_short_inc_no <chr>
+```
+````
 You can have values other than zero for the last argument and they do not have to be width 1, although there are fewer use cases for this. For example:
 ````{tabs}
 ```{code-tab} py
@@ -222,7 +298,9 @@ rescue %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +---------------+--------------+------------------+------------------+----------------+--------------+
 |incident_number|origin_of_call|incident_no_length|padded_incident_no|too_short_inc_no| silly_example|
 +---------------+--------------+------------------+------------------+----------------+--------------+
@@ -234,9 +312,22 @@ rescue %>%
 +---------------+--------------+------------------+------------------+----------------+--------------+
 only showing top 5 rows
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 5 × 6
+  incident_number origin_of_call incident_no_length padded_incident_no
+  <chr>           <chr>                       <int> <chr>             
+1 955141          Police                          6 000955141         
+2 3215101         Police                          7 003215101         
+3 3223101         Police                          7 003223101         
+4 7003121         Police                          7 007003121         
+5 6311101         Police                          7 006311101         
+# … with 2 more variables: too_short_inc_no <chr>, silly_example <chr>
+```
+````
 ### Padding on the right: `rpad()`
 
-There is also a similar function, [`F.rpad()`](https://spark.apache.org/docs/latest/api/python//reference/api/pyspark.sql.functions.rpad.html), that works in the same way with identical arguments, just padding to the right instead:
+There is also a similar function, [`F.rpad()`](https://spark.apache.org/docs/latest/api/python//reference/api/pyspark.sql.functions.rpad.html)/[`rpad`](https://spark.apache.org/docs/latest/api/sql/index.html#rpad), that works in the same way with identical arguments, just padding to the right instead:
 ````{tabs}
 ```{code-tab} py
 rescue = rescue.withColumn("right_padded_inc_no", F.rpad(F.col("incident_number"), 9, "0"))
@@ -258,7 +349,9 @@ rescue %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +---------------+-------------------+
 |incident_number|right_padded_inc_no|
 +---------------+-------------------+
@@ -270,7 +363,22 @@ rescue %>%
 +---------------+-------------------+
 only showing top 5 rows
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 5 × 2
+  incident_number right_padded_inc_no
+  <chr>           <chr>              
+1 53242091        532420910          
+2 45531111        455311110          
+3 19747141        197471410          
+4 21512131        215121310          
+5 220308091       220308091          
+```
+````
 ## Further Resources
+
+Spark at the ONS Articles:
+- [Using Spark Functions in sparklyr](../sparklyr-intro/sparklyr-functions): note that `lpad`/`rpad` are inherited directly from Spark SQL and need to be used inside `mutate()`, rather than imported from the sparklyr package as standalone functions
 
 PySpark Documentation:
 - [`F.lpad()`](https://spark.apache.org/docs/latest/api/python//reference/api/pyspark.sql.functions.lpad.html)
@@ -281,9 +389,6 @@ Spark SQL Documentation:
 - [`lpad`](https://spark.apache.org/docs/latest/api/sql/index.html#lpad)
 - [`rpad`](https://spark.apache.org/docs/latest/api/sql/index.html#rpad)
 - [`length`](https://spark.apache.org/docs/latest/api/sql/index.html#length)
-
-Spark in ONS material:
-- Spark SQL Functions in sparklyr: note that `lpad`/`rpad` are inherited directly from Spark SQL and need to be used inside `mutate()`, rather than imported from the sparklyr package as standalone functions
 
 Other links:
 - [ONS Standard Industrial Classification (SIC)](https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities/uksic2007)
