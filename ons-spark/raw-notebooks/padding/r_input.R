@@ -20,8 +20,6 @@ rescue %>%
 
 pillar::glimpse(rescue)
 
-
-
 rescue <- rescue %>%
     sparklyr::mutate(incident_no_length = length(incident_number))
 
