@@ -15,9 +15,9 @@ You can create pivot tables in PySpark by using [`.pivot()`](https://spark.apach
 <details>
 <summary><b>R Explanation</b></summary>
 
-You can create pivot tables in sparklyr with [`sdf_pivot()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_pivot.html). This is a sparklyr specific function and so it cannot be used on base R DataFrames or tibbles. An example of pivoting on a tibble is given at the end for comparison.
+You can create pivot tables in sparklyr with [`sdf_pivot()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_pivot.html). This is a sparklyr specific function and so it cannot be used on base R DataFrames or tibbles. An example of [pivoting on a tibble](#comparison-with-pivot-wider) is given at the end for comparison.
 
-`sdf_pivot(x, formula, fun.aggregate)` has three arguments. The first, `x` is the sparklyr DataFrame, the second, formula is an R formula with grouped columns on the left and pivot column on the right, separated by a tilde (e.g. `col1 + col2 ~ pivot_col`), and the third, `fun.aggregate`, is the functions used for aggregation; by default it will count the rows if left blank. Be careful with pivoting data where your pivot column has a large number of distinct values; it will return a very wide DataFrame that will be untidy to view. It is recommended to `filter()` the data first to only include the values you want in the output columns. The second example uses `filter()`.
+`sdf_pivot(x, formula, fun.aggregate)` has three arguments. The first, `x` is the sparklyr DataFrame, the second, formula is an R formula with grouped columns on the left and pivot column on the right, separated by a tilde (e.g. `col1 + col2 ~ pivot_col`), and the third, `fun.aggregate`, is the functions used for aggregation; by default it will count the rows if left blank. Be careful with pivoting data where your pivot column has a large number of distinct values; it will return a very wide DataFrame that will be untidy to view. It is recommended to [`filter()`](https://dplyr.tidyverse.org/reference/filter.html) the data first to only include the values you want in the output columns. The second example uses `filter()`.
 </details>
 
 ### Example 1: Group by one column and count
@@ -28,7 +28,9 @@ Create a new Spark session and read the Animal Rescue data. To make the example 
 import yaml
 from pyspark.sql import SparkSession, functions as F
 
-spark = SparkSession.builder.master("local[2]").appName("sampling").getOrCreate()
+spark = (SparkSession.builder.master("local[2]")
+         .appName("pivot")
+         .getOrCreate())
 
 with open("../../../config.yaml") as f:
     config = yaml.safe_load(f)
@@ -47,7 +49,7 @@ options(pillar.print_max = Inf, pillar.width=Inf)
 
 sc <- sparklyr::spark_connect(
     master = "local[2]",
-    app_name = "sampling",
+    app_name = "pivot",
     config = sparklyr::spark_config())
 
 config <- yaml::yaml.load_file("ons-spark/config.yaml")
@@ -63,7 +65,7 @@ The minimal example is grouping by just one column, pivoting on another, just co
 <details>
 <summary><b>Python Example</b></summary>
 
-In PySpark, use `.groupBy()` and `.count()` as you normally would when grouping and getting the row count, but add `.pivot()` between the two functions.
+In PySpark, use `.groupBy()` and [`.count()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.count.html) as you normally would when grouping and getting the row count, but add `.pivot()` between the two functions.
 ````{tabs}
 ```{code-tab} py
 rescue_pivot = (rescue
@@ -269,6 +271,7 @@ rescue_pivot.show()
     
 <details>
 <summary><b>R Example</b></summary>
+
 To group by several columns express this on the left side of the `formula` argument, concatenating them with `+`, in this example `AnimalGroup + OriginOfCall ~ CalYear`.
 
 To only look at a certain subset of the pivot column you can just use `filter()` before pivoting. This is a good idea if your pivot column has a large number of distinct values. As an example, we just look at three years.
@@ -305,11 +308,11 @@ rescue_pivot %>%
 <details>
 <summary><b>Python Example</b></summary>
 
-You can only supply one column to `.pivot()`, but you can have multiple aggregations. Adding an `.alias()` makes the result easier to read.
+You can only supply one column to `.pivot()`, but you can have multiple aggregations. Adding an [`.alias()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Column.alias.html) makes the result easier to read.
 
-Any missing combinations of the grouping and pivot will be returned as `null`, e.g. there are no incidents with `Hamster`, `Person (land line)` and `2009`. To set this to zero, use `.fillna()`.
+Any missing combinations of the grouping and pivot will be returned as `null`, e.g. there are no incidents with `Hamster`, `Person (land line)` and `2009`. To set this to zero, use [`.fillna()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.fillna.html).
 
-If grouping by multiple columns you may also want to add `.orderBy()`.
+If grouping by multiple columns you may also want to add [`.orderBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.orderBy.html).
 ````{tabs}
 ```{code-tab} py
 rescue_pivot = (rescue
@@ -355,7 +358,7 @@ rescue_pivot.show()
 
 Any missing combinations of the grouping and pivot will be returned as `NA`, e.g. there are no incidents with `Hamster`, `Person (land line)` and `2009`. To set this to zero, use `na.replace()`.
 
-If grouping by multiple columns you may also want to add `sdf_sort()`.
+If grouping by multiple columns you may also want to add [`sdf_sort()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_sort.html).
 ````{tabs}
 
 ```{code-tab} r R
@@ -487,9 +490,15 @@ tibble_pivot %>%
 PySpark Documentation:
 - [`.pivot()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.GroupedData.pivot.html)
 - [`.groupBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.groupBy.html)
-- [`.agg()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.GroupedData.agg.html) 
+- [`.count()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.count.html) 
+- [`.agg()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.GroupedData.agg.html)
+- [`.alias()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Column.alias.html)
+- [`.fillna()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.fillna.html)
+- [`.orderBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.orderBy.html)
 
 sparklyr and tidyverse Documentation:
 - [`sdf_pivot()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_pivot.html)
+- [`filter()`](https://dplyr.tidyverse.org/reference/filter.html) 
 - [`pivot_wider()`](https://tidyr.tidyverse.org/reference/pivot_wider.html)
 - [`rename_with()`](https://dplyr.tidyverse.org/reference/rename.html)
+- [`sdf_sort()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_sort.html)
