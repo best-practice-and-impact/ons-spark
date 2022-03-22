@@ -85,6 +85,10 @@ At the ONS, we recommend that Spark code is written with Python or R, using the 
 
 ### Further Resources
 
+Spark at the ONS Articles:
+- [Guidance on Spark Sessions](../spark-overview/spark-session-guidance)
+- [Example Spark Sessions](../spark-overview/example-spark-sessions)
+
 PySpark Documentation:
 - [`SparkSession.builder`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html#pyspark.sql.SparkSession.builder)
 

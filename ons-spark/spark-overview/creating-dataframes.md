@@ -241,7 +241,7 @@ Although most manually created DataFrames are small, they are still partitioned 
 
 ### Further Resources
 
-Spark at the ONS Links:
+Spark at the ONS Articles:
 - [Unit Testing in PySpark](../unit-testing/unit-testing-pyspark)
 - [Unit Testing in sparklyr](../unit-testing/unit-testing-sparklyr)
 
