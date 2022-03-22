@@ -275,7 +275,7 @@ sparklyr::spark_disconnect(sc)
 
 ### Further Resources
 
-Spark at the ONS links:
+Spark at the ONS Articles:
 - [Guidance on Spark Sessions](../spark-overview/spark-session-guidance)
 - [Configuration Hierarchy and `spark-defaults.conf`](../spark-overview/spark-defaults)
 

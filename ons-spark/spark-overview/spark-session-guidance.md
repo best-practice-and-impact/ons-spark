@@ -194,7 +194,7 @@ would be under significant strain.
 
 ### Further Resources
 
-Spark at the ONS links:
+Spark at the ONS Articles:
 - [Example Spark Sessions](../spark-overview/example-spark-sessions)
 - [Configuration Hierarchy and `spark-defaults.conf`](../spark-overview/spark-defaults)
 

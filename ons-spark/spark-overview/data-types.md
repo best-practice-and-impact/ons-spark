@@ -475,7 +475,7 @@ $ id_double <dbl> 0, 1, 2, 3, 4
 ````
 ### Further Resources
 
-Spark at the ONS links:
+Spark at the ONS Articles:
 - [Avoiding Module Import Conflicts](../ancillary-topics/module-imports)
 - [Arrays in PySpark](../spark-functions/arrays.md)
 - [Using Spark Functions in sparklyr](../sparklyr-intro/sparklyr-functions)
