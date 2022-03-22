@@ -5,7 +5,7 @@ options(pillar.print_max = Inf, pillar.width=Inf)
 
 sc <- sparklyr::spark_connect(
     master = "local[2]",
-    app_name = "sampling",
+    app_name = "pivot",
     config = sparklyr::spark_config())
 
 config <- yaml::yaml.load_file("ons-spark/config.yaml")
