@@ -44,9 +44,16 @@ rescue %>% sparklyr::sdf_nrow()
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 5898
 ```
+
+```{code-tab} plaintext R Output
+[1] 5898
+```
+````
 To use `.sample()`, set the `fraction`, which is between 0 and 1. So if we want a $20\%$ sample, use `fraction=0.2`. Note that this will give an *approximate* sample and so you will likely get slightly more or fewer rows than you expect.
 
 You can select to sample with replacement by setting `withReplacement=True` in PySpark or `replacement=TRUE` in sparklyr, which is set to `False` by default.
@@ -66,9 +73,16 @@ rescue_sample %>% sparklyr::sdf_nrow()
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 588
 ```
+
+```{code-tab} plaintext R Output
+[1] 573
+```
+````
 You can also set a seed, in a similar way to how random numbers generators work. This enables replication, which is useful in Spark given that the DataFrame will be otherwise be re-sampled every time an action is called.
 ````{tabs}
 ```{code-tab} py
@@ -96,13 +110,21 @@ print(paste0("Seed 2 count: ", rescue_sample_seed_2 %>% sparklyr::sdf_nrow()))
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 Seed 1 count: 589
 Seed 2 count: 589
 ```
+
+```{code-tab} plaintext R Output
+[1] "Seed 1 count: 563"
+[1] "Seed 2 count: 563"
+```
+````
 We can see that both samples have returned the same number of rows due to the identical seed.
 
-Another way of replicating results is with persisting. Caching or checkpointing the DataFrame will avoid recalculation of the DF within the same Spark session. Writing out the DF to a Hive table or parquet enables it to be used in subsequent Spark sessions. See the chapter on persisting for more detail.
+Another way of replicating results is with [persisting](../spark-concepts/persistence). [Caching](../spark-concepts/cache) or [checkpointing](../raw-notebooks/checkpoint-staging/checkpoint-staging) the DataFrame will avoid recalculation of the DF within the same Spark session. Writing out the DF to a Hive table or parquet enables it to be used in subsequent Spark sessions. See the chapter on persisting for more detail.
 
 ### More details on sampling
 
@@ -114,7 +136,7 @@ We have demonstrated above that `.sample()`/`sdf_sample()` return an approximate
 
 The advantage of the sample being calculated in this way is that it is processed as a *narrow transformation*, which is more efficient than a *wide transformation*.
 
-To return an exact sample, one method is to calculate how many rows are required in the sample, create a new column of random numbers and sort by it, and use `.limit()` in PySpark or `head()` in sparklyr. This requires an action and a wide transformation, and so will take longer to process than using `.sample()`.
+To return an exact sample, one method is to calculate how many rows are required in the sample, create a new column of random numbers and sort by it, and use [`.limit()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.limit.html) in PySpark or [`head()`](https://stat.ethz.ch/R-manual/R-devel/library/utils/html/head.html) in sparklyr. This requires an action and a wide transformation, and so will take longer to process than using `.sample()`.
 ````{tabs}
 ```{code-tab} py
 fraction = 0.1
@@ -131,9 +153,16 @@ row_count
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 590
 ```
+
+```{code-tab} plaintext R Output
+[1] 590
+```
+````
 
 ````{tabs}
 ```{code-tab} py
@@ -152,9 +181,16 @@ rescue %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 590
 ```
+
+```{code-tab} plaintext R Output
+[1] 590
+```
+````
 #### Partitioning
 
 The number of partitions will remain the same when sampling, even though the DataFrame will be smaller. If you are taking a small fraction of the data then your DataFrame may have too many partitions. You can use [`.coalesce()`](https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.functions.coalesce) in PySpark or [`sdf_coalesce()`](https://spark.rstudio.com/reference/sdf_coalesce.html) in sparklyr to reduce the number of partitions, e.g. if your original DF had $200$ partitions and you take a $10\%$ sample, you can reduce the number of partitions to $20$ with `df.sample(fraction=0.1).coalesce(20)`.
@@ -176,9 +212,16 @@ rescue %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 1142
 ```
+
+```{code-tab} plaintext R Output
+[1] 1142
+```
+````
 The disadvantage of this method is that you may have data quality issues in the original DF that will not be encountered, whereas these may be discovered with `.sample()`. Using unit testing and test driven development can mitigate the risk of these issues.
 
 ### Other sampling functions
@@ -215,11 +258,20 @@ print(paste0("Split3: ", sparklyr::sdf_nrow(splits$split3)))
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 Split1: 2970
 Split2: 2328
 Split3: 600
 ```
+
+```{code-tab} plaintext R Output
+[1] "Split1: 2996"
+[1] "Split2: 2333"
+[1] "Split3: 569"
+```
+````
 Check that the count of the splits equals the total row count:
 ````{tabs}
 ```{code-tab} py
@@ -238,10 +290,18 @@ print(paste0("Split count total: ",
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 DF count: 5898
 Split count total: 5898
 ```
+
+```{code-tab} plaintext R Output
+[1] "DF count: 5898"
+[1] "Split count total: 5898"
+```
+````
 #### Stratified samples: `.sampleBy()`
 
 A stratified sample can be taken with [`.sampleBy()`](https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrame.sampleBy) in PySpark. This takes a column, `col`, to sample by, and a dictionary of weights, `fractions`.
@@ -263,7 +323,9 @@ stratified_sample_count.show()
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +------------+---------+
 |animal_group|row_count|
 +------------+---------+
@@ -272,6 +334,7 @@ stratified_sample_count.show()
 |     Hamster|        9|
 +------------+---------+
 ```
+````
 We can quickly compare the number of rows for each animal to the expected to confirm that they are approximately equal:
 ````{tabs}
 ```{code-tab} py
@@ -288,7 +351,9 @@ weights_df = spark.createDataFrame(list(weights.items()), schema=["animal_group"
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +------------+-----+------+-------------+---------+
 |animal_group|count|weight|expected_rows|row_count|
 +------------+-----+------+-------------+---------+
@@ -297,10 +362,17 @@ weights_df = spark.createDataFrame(list(weights.items()), schema=["animal_group"
 |     Hamster|   14|   0.5|          7.0|        9|
 +------------+-----+------+-------------+---------+
 ```
+````
 ### Further Resources
+
+Spark at the ONS Articles:
+- [Persisting in Spark](../spark-concepts/persistence)
+- [Caching](../spark-concepts/cache)
+- [Checkpoint](../raw-notebooks/checkpoint-staging/checkpoint-staging)
 
 PySpark Documentation:
 - [`.sample()`](https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrame.sample)
+- [`.limit()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.limit.html)
 - [`.coalesce()`](https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.functions.coalesce)
 - [`.randomSplit()`](https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrame.randomSplit)
 - [`.sampleBy()`](https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrame.sampleBy)
@@ -311,8 +383,5 @@ sparklyr Documentation:
 - [`sdf_random_split()`](https://spark.rstudio.com/reference/sdf_random_split.html)
 - [`sdf_weighted_sample()`](https://spark.rstudio.com/reference/sdf_weighted_sample.html)
 
-Spark in ONS material:
-- Wide and narrow transformations
-- Persisting in Spark
-- Filtering data
-- Unit testing in Spark
+R Documentation:
+- [`head()`](https://stat.ethz.ch/R-manual/R-devel/library/utils/html/head.html)
