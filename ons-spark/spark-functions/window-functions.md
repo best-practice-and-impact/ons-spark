@@ -1,6 +1,6 @@
 ## Window Functions in Spark
 
-Window functions use values from other rows within the same group, or *window*, and return a value in a new column for every row. This can be in the form of aggregations (similar to a `.groupBy()`/`group_by()` but preserving the original DataFrame), ranking rows within groups, or returning values from previous rows. If you're familiar with SQL then a window function in PySpark works in the same way.
+Window functions use values from other rows within the same group, or *window*, and return a value in a new column for every row. This can be in the form of aggregations (similar to a [`.groupBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.groupBy.html)/[`group_by()`](https://dplyr.tidyverse.org/reference/group_by.html) but preserving the original DataFrame), ranking rows within groups, or returning values from previous rows. If you're familiar with SQL then a window function in PySpark works in the same way.
 
 This article explains how to use window functions in three ways: for aggregation, ranking, and referencing the previous row. An SQL example is also given.
 
@@ -10,7 +10,7 @@ You can use a window function for aggregations. Rather than returning an aggrega
 
 One example of where this is useful is for deriving a total to be used as the denominator for another calculation. For instance, in the Animal Rescue data we may want to work out what percentage of animals rescued each year are dogs. We can do this by getting the total of all animals by year, then dividing each animal group count by this. 
 
-First, import the relevant packages and start a Spark session. To use window functions in PySpark, we need to import `Window` from `pyspark.sql.window`. No extra packages are needed for sparklyr, as Spark functions are referenced inside `mutate()`.
+First, import the relevant packages and start a Spark session. To use window functions in PySpark, we need to import [`Window`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Window.html) from `pyspark.sql.window`. No extra packages are needed for sparklyr, as Spark functions are referenced inside [`mutate()`](https://dplyr.tidyverse.org/reference/mutate.html).
 ````{tabs}
 ```{code-tab} py
 from pyspark.sql import SparkSession, functions as F
@@ -69,7 +69,9 @@ rescue_agg %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +------------------------------------------------+--------+------------+
 |animal_group                                    |cal_year|animal_count|
 +------------------------------------------------+--------+------------+
@@ -81,19 +83,31 @@ rescue_agg %>%
 +------------------------------------------------+--------+------------+
 only showing top 5 rows
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 5 × 3
+  animal_group                     cal_year animal_count
+  <chr>                               <int>        <dbl>
+1 Dog                                  2018           91
+2 Horse                                2013           16
+3 Squirrel                             2011            4
+4 Fox                                  2017           33
+5 Unknown - Domestic Animal Or Pet     2015           29
+```
+````
 We want to calculate the percentage of animals rescued each year that are dogs. To do this, we first need to calculate the annual totals, and can then divide the number of dogs in each year by this.
 
 We could create a new DataFrame by grouping and aggregating and then joining back to the original DF; this would get the correct result, but a window function is much more efficient as it will reduce the number of shuffles required, as well as making the code more succinct and readable.
 
 The syntax is quite different between PySpark and sparklyr, although the principle is identical in each, and Spark will process them in the same way. The process for using a window function for aggregation in PySpark is as follows:
-- First, use `.withColumn()`, as the result is stored in a new column in the DataFrame.
-- Then do the aggregation: `F.sum("animal_count")`.
-- Then perform this over a window with `.over(Window.partitionBy("cal_year"))`. Note that this uses `.partitionBy()` rather than `.groupBy()` (for some window functions you will also use `.orderBy()`, but we do not need to here).
+- First, use [`.withColumn()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.withColumn.html), as the result is stored in a new column in the DataFrame.
+- Then do the aggregation: [`F.sum("animal_count")`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.sum.html).
+- Then perform this [over](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Column.over.html) a window with `.over(Window.partitionBy("cal_year"))`. Note that this uses [`.partitionBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Window.partitionBy.html) rather than `.groupBy()` (for some window functions you will also use [`.orderBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.orderBy.html), but we do not need to here).
 
 In sparklyr:
 - Use `group_by(cal_year)` to partition the data.
-- Then define a new column, `annual_count`, as `sum(animal_count)` inside `mutate()` (rather than `summarise()`, which is used for regular aggregations).
-- `ungroup()` to remove the grouping from the DataFrame.
+- Then define a new column, `annual_count`, as [`sum(animal_count)`](https://spark.apache.org/docs/latest/api/sql/index.html#sum)) inside `mutate()` (rather than [`summarise()`](https://dplyr.tidyverse.org/reference/summarise.html), which is used for regular aggregations).
+- Finally, [`ungroup()`](https://dplyr.tidyverse.org/reference/group_by.html) to remove the grouping from the DataFrame.
 ````{tabs}
 ```{code-tab} py
 rescue_annual = (rescue_agg
@@ -134,7 +148,9 @@ rescue_annual %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +------------+--------+------------+------------+
 |animal_group|cal_year|animal_count|annual_count|
 +------------+--------+------------+------------+
@@ -148,6 +164,21 @@ rescue_annual %>%
 |     Hamster|    2014|           1|         583|
 +------------+--------+------------+------------+
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 8 × 4
+  animal_group cal_year animal_count annual_count
+  <chr>           <int>        <dbl>        <dbl>
+1 Cat              2012          305          603
+2 Dog              2012          100          603
+3 Cat              2013          313          585
+4 Dog              2013           93          585
+5 Hamster          2013            3          585
+6 Cat              2014          298          583
+7 Dog              2014           90          583
+8 Hamster          2014            1          583
+```
+````
 The values in `annual_count` are repeated in every year, as the original rows in the DF have been preserved. Had we aggregated this in the usual way we would have lost the `animal_group` and `animal_count` columns, and only returned one `annual_count` for each `cal_year`.
 
 Once we have the `annual_count` column we can complete our calculation with a simple narrow transformation to get the percentage and filter on `"Dog"`:
@@ -175,7 +206,9 @@ rescue_annual %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +------------+--------+------------+------------+----------+
 |animal_group|cal_year|animal_count|annual_count|animal_pct|
 +------------+--------+------------+------------+----------+
@@ -192,7 +225,25 @@ rescue_annual %>%
 |         Dog|    2019|           1|          36|      2.78|
 +------------+--------+------------+------------+----------+
 ```
-This example used `sum()` but other aggregations are possible too, e.g. `mean()`, `max()`. In PySpark, use multiple `.withColumn()` statements; in sparklyr, you can combine them in `mutate()`. In this example we filter on `Snake`:
+
+```{code-tab} plaintext R Output
+# A tibble: 11 × 5
+   animal_group cal_year animal_count annual_count animal_pct
+   <chr>           <int>        <dbl>        <dbl>      <dbl>
+ 1 Dog              2009          132          568      23.2 
+ 2 Dog              2011          103          620      16.6 
+ 3 Dog              2014           90          583      15.4 
+ 4 Dog              2015           88          540      16.3 
+ 5 Dog              2019            1           36       2.78
+ 6 Dog              2010          122          611      20.0 
+ 7 Dog              2016          107          604      17.7 
+ 8 Dog              2017           81          539      15.0 
+ 9 Dog              2012          100          603      16.6 
+10 Dog              2013           93          585      15.9 
+11 Dog              2018           91          609      14.9 
+```
+````
+This example used `F.sum()`/`sum()` but other aggregations are possible too, e.g. [`F.mean()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.mean.html)/[`mean()`](https://spark.apache.org/docs/latest/api/sql/index.html#mean), [`F.max()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.max.html)/[`max()`](https://spark.apache.org/docs/latest/api/sql/index.html#max). In PySpark, use multiple `.withColumn()` statements; in sparklyr, you can combine them in `mutate()`. In this example we filter on `"Snake"`:
 ````{tabs}
 ```{code-tab} py
 rescue_annual = (rescue_annual
@@ -223,7 +274,9 @@ rescue_annual %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +------------+--------+------------+------------+----------+------------------+---------+
 |animal_group|cal_year|animal_count|annual_count|animal_pct|         avg_count|max_count|
 +------------+--------+------------+------------+----------+------------------+---------+
@@ -234,6 +287,18 @@ rescue_annual %>%
 |       Snake|    2017|           1|         539|      0.19|              49.0|      258|
 +------------+--------+------------+------------+----------+------------------+---------+
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 5 × 7
+  animal_group cal_year animal_count annual_count animal_pct avg_count max_count
+  <chr>           <int>        <dbl>        <dbl>      <dbl>     <dbl>     <dbl>
+1 Snake            2009            3          568       0.53      37.9       263
+2 Snake            2016            1          604       0.17      43.1       297
+3 Snake            2017            1          539       0.19      49         258
+4 Snake            2013            2          585       0.34      45         313
+5 Snake            2018            1          609       0.16      38.1       305
+```
+````
 The alternative to window functions is creating a new grouped and aggregated DF, then joining it back to the original one. As well as being less efficient, the code will also be harder to read. For example:
 ````{tabs}
 ```{code-tab} py
@@ -259,7 +324,9 @@ rescue_annual_alternative %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +--------+------------+------------+------------+
 |cal_year|animal_group|animal_count|annual_count|
 +--------+------------+------------+------------+
@@ -276,11 +343,29 @@ rescue_annual_alternative %>%
 |    2019|         Dog|           1|          36|
 +--------+------------+------------+------------+
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 11 × 4
+   animal_group cal_year animal_count annual_count
+   <chr>           <int>        <dbl>        <dbl>
+ 1 Dog              2018           91          609
+ 2 Dog              2016          107          604
+ 3 Dog              2014           90          583
+ 4 Dog              2017           81          539
+ 5 Dog              2019            1           36
+ 6 Dog              2013           93          585
+ 7 Dog              2009          132          568
+ 8 Dog              2012          100          603
+ 9 Dog              2015           88          540
+10 Dog              2010          122          611
+11 Dog              2011          103          620
+```
+````
 ### Using Window Functions for Ranking
 
-Window functions can also be ordered as well as grouped. This can be combined with `rank()` or `row_number()` to get ranks within groups. For instance, we can get the ranking of the most commonly rescued animals by year, then filter on the top three.
+Window functions can also be ordered as well as grouped. This can be combined with [`F.rank()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.rank.html)/[`rank()`](https://spark.apache.org/docs/latest/api/sql/index.html#rank) or [`F.row_number()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.row_number.html)/[`row_number()`](https://spark.apache.org/docs/latest/api/sql/index.html#rank) to get ranks within groups. For instance, we can get the ranking of the most commonly rescued animals by year, then filter on the top three.
 
-The syntax is again different between PySpark and sparklyr. In PySpark, use the same method as described above for aggregations, but replace `F.sum()` with `F.rank()` (or another ordered function), and add `orderBy()`. In this example, use `F.desc("animal_count")` to sort descending. The `.partitionBy()` step is optional; without a `.partitionBy()` it will treat the whole DataFrame as one group.
+The syntax is again different between PySpark and sparklyr. In PySpark, use the same method as described above for aggregations, but replace `F.sum()` with `F.rank()` (or another ordered function), and add `orderBy()`. In this example, use [`F.desc("animal_count")`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.desc.html) to sort descending. The `.partitionBy()` step is optional; without a `.partitionBy()` it will treat the whole DataFrame as one group.
 
 In sparklyr, the method is also almost the same as using aggregations. The ordering is done directly with the `rank()` function. `desc(animal_count)` is used to sort descending.
 ````{tabs}
@@ -319,7 +404,9 @@ rescue_rank %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +------------+--------+------------+----+
 |animal_group|cal_year|animal_count|rank|
 +------------+--------+------------+----+
@@ -338,6 +425,25 @@ rescue_rank %>%
 +------------+--------+------------+----+
 only showing top 12 rows
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 12 × 4
+   animal_group cal_year animal_count  rank
+   <chr>           <int>        <dbl> <int>
+ 1 Cat              2009          263     1
+ 2 Dog              2009          132     2
+ 3 Bird             2009           89     3
+ 4 Cat              2010          297     1
+ 5 Dog              2010          122     2
+ 6 Bird             2010           99     3
+ 7 Cat              2011          309     1
+ 8 Bird             2011          120     2
+ 9 Dog              2011          103     3
+10 Cat              2012          305     1
+11 Bird             2012          112     2
+12 Dog              2012          100     3
+```
+````
 Another common use case is getting just the top row from each group:
 ````{tabs}
 ```{code-tab} py
@@ -355,7 +461,9 @@ rescue_rank %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +------------+--------+------------+----+
 |animal_group|cal_year|animal_count|rank|
 +------------+--------+------------+----+
@@ -372,13 +480,31 @@ rescue_rank %>%
 |Cat         |2019    |16          |1   |
 +------------+--------+------------+----+
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 11 × 4
+   animal_group cal_year animal_count  rank
+   <chr>           <int>        <dbl> <int>
+ 1 Cat              2009          263     1
+ 2 Cat              2010          297     1
+ 3 Cat              2011          309     1
+ 4 Cat              2012          305     1
+ 5 Cat              2013          313     1
+ 6 Cat              2014          298     1
+ 7 Cat              2015          263     1
+ 8 Cat              2016          297     1
+ 9 Cat              2017          258     1
+10 Cat              2018          305     1
+11 Cat              2019           16     1
+```
+````
 #### Comparison of ranking methods
 
 Note that you can have duplicate ranks within each group when using `rank()`; if this is not desirable then one method is to partition by more columns to break ties. There are also alternatives to `rank()` depending on your use case:
 
-- `rank()` will assign the same value to ties.
-- `dense_rank()` will not skip a rank after ties.
-- `row_number()` will give a unique number to each row within the grouping specified. Note that this can be non-deterministic if there are duplicate rows for the ordering condition specified. This can be avoided by specifying extra columns to essentially use as a tiebreaker.
+- `F.rank()`/`rank()` will assign the same value to ties.
+- [`F.dense_rank()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.dense_rank.html)/[`dense_rank()`](https://spark.apache.org/docs/latest/api/sql/index.html#dense_rank) will not skip a rank after ties.
+- `F.row_number()`/`row_number()` will give a unique number to each row within the grouping specified. Note that this can be non-deterministic if there are duplicate rows for the ordering condition specified. This can be avoided by specifying extra columns to essentially use as a tiebreaker.
 
 We can see the difference by comparing the three methods:
 ````{tabs}
@@ -426,7 +552,9 @@ rank_comparison %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +------------------------------------------------+--------+------------+----+----------+----------+
 |animal_group                                    |cal_year|animal_count|rank|dense_rank|row_number|
 +------------------------------------------------+--------+------------+----+----------+----------+
@@ -447,6 +575,28 @@ rank_comparison %>%
 |Unknown - Animal Rescue From Water - Farm Animal|2012    |1           |12  |10        |15        |
 +------------------------------------------------+--------+------------+----+----------+----------+
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 15 × 6
+   animal_group                cal_year animal_count  rank dense_rank row_number
+   <chr>                          <int>        <dbl> <int>      <int>      <int>
+ 1 Cat                             2012          305     1          1          1
+ 2 Bird                            2012          112     2          2          2
+ 3 Dog                             2012          100     3          3          3
+ 4 Horse                           2012           28     4          4          4
+ 5 Unknown - Domestic Animal …     2012           18     5          5          5
+ 6 Fox                             2012           14     6          6          6
+ 7 Deer                            2012            7     7          7          7
+ 8 Unknown - Wild Animal           2012            4     8          8          8
+ 9 Squirrel                        2012            4     8          8          9
+10 Unknown - Heavy Livestock …     2012            4     8          8         10
+11 Cow                             2012            3    11          9         11
+12 Sheep                           2012            1    12         10         12
+13 Unknown - Animal Rescue Fr…     2012            1    12         10         13
+14 Lamb                            2012            1    12         10         14
+15 Ferret                          2012            1    12         10         15
+```
+````
 For all the values where `animal_count` is `4`, `rank` and `dense_rank` have `8`, whereas `row_number` gives a unique number from `8` to `10`. As no other sorting columns were specified, these three rows could be assigned differently on subsequent runs of the code.
 
 For `animal_count` less than  `4`, `dense_rank` has left no gap in the ranking sequence, whereas `rank` will leave gaps.
@@ -481,7 +631,9 @@ rescue_agg %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +--------------------------------+--------+------------+----------+
 |animal_group                    |cal_year|animal_count|row_number|
 +--------------------------------+--------+------------+----------+
@@ -498,9 +650,26 @@ rescue_agg %>%
 +--------------------------------+--------+------------+----------+
 only showing top 10 rows
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 10 × 4
+   animal_group                     cal_year animal_count row_number
+   <chr>                               <int>        <dbl>      <int>
+ 1 Hedgehog                             2009            1          1
+ 2 Dog                                  2009          132          2
+ 3 Squirrel                             2009            4          3
+ 4 Fox                                  2009           16          4
+ 5 Cat                                  2009          263          5
+ 6 Unknown - Domestic Animal Or Pet     2009           10          6
+ 7 Bird                                 2009           89          7
+ 8 Unknown - Heavy Livestock Animal     2009           14          8
+ 9 Unknown - Wild Animal                2009            6          9
+10 Sheep                                2009            1         10
+```
+````
 ### Reference other rows with `lag()` and `lead()`
 
-The window function `lag()` allows you to reference the values of previous rows within a group, and `lead()` will do the same for subsequent rows. You can specify how many previous rows you want to reference with the `count` argument. By default this is `1`. Note that `count` can be negative, so `lag(col, count=1)` is the same as `lead(col, count=-1)`.
+The window function [`F.lag()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.lag.html)/[`lag()`](https://spark.apache.org/docs/latest/api/sql/index.html#lag)  allows you to reference the values of previous rows within a group, and [`F.lead()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.lead.html)/[`lead()`](https://spark.apache.org/docs/latest/api/sql/index.html#lead) will do the same for subsequent rows. You can specify how many previous rows you want to reference with the `count` argument. By default this is `1`. Note that `count` can be negative, so `lag(col, count=1)` is the same as `lead(col, count=-1)`.
 
 The first or last row within the window partition will be null values, as they do not have a previous or subsequent row to reference. This can be changed by setting the `default` parameter, which by default is `None`.
 
@@ -529,7 +698,9 @@ rescue_agg %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +------------------------------------------------+--------+------------+--------------+
 |animal_group                                    |cal_year|animal_count|previous_count|
 +------------------------------------------------+--------+------------+--------------+
@@ -546,9 +717,26 @@ rescue_agg %>%
 +------------------------------------------------+--------+------------+--------------+
 only showing top 10 rows
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 10 × 4
+   animal_group cal_year animal_count previous_count
+   <chr>           <int>        <dbl>          <dbl>
+ 1 Bird             2009           89             NA
+ 2 Bird             2010           99             89
+ 3 Bird             2011          120             99
+ 4 Bird             2012          112            120
+ 5 Bird             2013           85            112
+ 6 Bird             2014          110             85
+ 7 Bird             2015          106            110
+ 8 Bird             2016          120            106
+ 9 Bird             2017          124            120
+10 Bird             2018          126            124
+```
+````
 Be careful if using `lag()` with incomplete data: where there were no animals rescued in a year the `previous_count` will not be correct.
 
-There are several ways to resolve this; one method is using a cross join to get all the combinations of `animal_group` and `cal_year`, join the `rescue_agg` to this, fill the null values with `0`, and then do the window calculation:
+There are several ways to resolve this; one method is using a [cross join](../spark-functions/cross-join) to get all the combinations of `animal_group` and `cal_year`, join the `rescue_agg` to this, fill the null values with `0`, and then do the window calculation:
 ````{tabs}
 ```{code-tab} py
 # Create a DF of all combinations of animal_group and cal_year
@@ -604,7 +792,9 @@ rescue_agg_prev %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +------------+--------+------------+--------------+
 |animal_group|cal_year|animal_count|previous_count|
 +------------+--------+------------+--------------+
@@ -631,9 +821,36 @@ rescue_agg_prev %>%
 +------------+--------+------------+--------------+
 only showing top 20 rows
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 20 × 4
+   animal_group cal_year animal_count previous_count
+   <chr>           <int>        <dbl>          <dbl>
+ 1 Bird             2009           89             NA
+ 2 Bird             2010           99             89
+ 3 Bird             2011          120             99
+ 4 Bird             2012          112            120
+ 5 Bird             2013           85            112
+ 6 Bird             2014          110             85
+ 7 Bird             2015          106            110
+ 8 Bird             2016          120            106
+ 9 Bird             2017          124            120
+10 Bird             2018          126            124
+11 Bird             2019            9            126
+12 Budgie           2009            0             NA
+13 Budgie           2010            0              0
+14 Budgie           2011            1              0
+15 Budgie           2012            0              1
+16 Budgie           2013            0              0
+17 Budgie           2014            0              0
+18 Budgie           2015            0              0
+19 Budgie           2016            0              0
+20 Budgie           2017            0              0
+```
+````
 ### Window Functions in SQL
 
-You can also use the regular SQL syntax for window functions when using Spark, `OVER(PARTITION BY...GROUP BY)`. This needs an SQL wrapper to be processed in Spark, `spark.sql()` in PySpark and `tbl(sc, sql())` in sparklyr. Remember that SQL works on tables rather than DataFrames, so register the DataFrame first.
+You can also use the regular SQL syntax for window functions when using Spark, `OVER(PARTITION BY...GROUP BY)`. This needs an SQL wrapper to be processed in Spark, [`spark.sql()`](https://spark.apache.org/docs/latest/sql-getting-started.html#running-sql-queries-programmatically) in PySpark and [`tbl(sc, sql())`](https://dplyr.tidyverse.org/reference/tbl.html) in sparklyr. Remember that SQL works on tables rather than DataFrames, so register the DataFrame first.
 ````{tabs}
 ```{code-tab} py
 rescue_agg.registerTempTable("rescue_agg")
@@ -674,7 +891,9 @@ sql_window %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +--------+------------+------------+------------+
 |cal_year|animal_group|animal_count|annual_count|
 +--------+------------+------------+------------+
@@ -685,6 +904,67 @@ sql_window %>%
 |    2017|       Snake|           1|         539|
 +--------+------------+------------+------------+
 ```
+
+```{code-tab} plaintext R Output
+# Source: spark<rescue_agg> [?? x 3]
+   animal_group                                     cal_year animal_count
+   <chr>                                               <int>        <dbl>
+ 1 Dog                                                  2018           91
+ 2 Horse                                                2013           16
+ 3 Squirrel                                             2011            4
+ 4 Fox                                                  2017           33
+ 5 Unknown - Domestic Animal Or Pet                     2015           29
+ 6 Fox                                                  2018           33
+ 7 Sheep                                                2012            1
+ 8 Unknown - Wild Animal                                2010            2
+ 9 Unknown - Animal Rescue From Water - Farm Animal     2019            1
+10 Ferret                                               2018            1
+# … with more rows
+# A tibble: 5 × 4
+  cal_year animal_group animal_count annual_count
+     <int> <chr>               <dbl>        <dbl>
+1     2009 Snake                   3          568
+2     2016 Snake                   1          604
+3     2017 Snake                   1          539
+4     2013 Snake                   2          585
+5     2018 Snake                   1          609
+```
+````
 ### Further Resources
 
-TBC
+Spark at the ONS Articles:
+- [Cross Joins](../spark-functions/cross-join)
+
+PySpark Documentation:
+- [`.groupBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.groupBy.html)
+- [`Window`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Window.html)
+- [`.withColumn()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.withColumn.html)
+- [`F.sum()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.sum.html)
+- [`.over()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Column.over.html)
+- [`.partitionBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Window.partitionBy.html)
+- [`.orderBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.orderBy.html)
+- [`F.mean()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.mean.html)
+- [`F.max()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.max.html)
+- [`F.rank()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.rank.html)
+- [`F.row_number()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.row_number.html)
+- [`F.desc()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.desc.html)
+- [`F.dense_rank()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.dense_rank.html)
+- [`F.lag()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.lag.html)
+- [`F.lead()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.lead.html)
+- [`spark.sql()`](https://spark.apache.org/docs/latest/sql-getting-started.html#running-sql-queries-programmatically)
+
+sparklyr and tidyverse Documentation:
+- [`group_by()` and `ungroup()`](https://dplyr.tidyverse.org/reference/group_by.html)
+- [`mutate()`](https://dplyr.tidyverse.org/reference/mutate.html)
+- [`summarise()`](https://dplyr.tidyverse.org/reference/summarise.html)
+- [`tbl()`](https://dplyr.tidyverse.org/reference/tbl.html)
+
+Spark SQL Functions Documentation:
+- [`sum`](https://spark.apache.org/docs/latest/api/sql/index.html#sum)
+- [`mean`](https://spark.apache.org/docs/latest/api/sql/index.html#mean)
+- [`max`](https://spark.apache.org/docs/latest/api/sql/index.html#max)
+- [`rank`](https://spark.apache.org/docs/latest/api/sql/index.html#rank)
+- [`row_number`](https://spark.apache.org/docs/latest/api/sql/index.html#rank)
+- [`dense_rank`](https://spark.apache.org/docs/latest/api/sql/index.html#dense_rank)
+- [`lag`](https://spark.apache.org/docs/latest/api/sql/index.html#lag)
+- [`lead`](https://spark.apache.org/docs/latest/api/sql/index.html#lead)
