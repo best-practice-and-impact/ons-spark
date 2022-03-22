@@ -6,7 +6,7 @@ This can be confusing when using PySpark and sparklyr if you are used to the beh
 
 ### Comparison of rounding methods
 
-Create a DataFrame with numbers all ending in `.5`, both positive and negative:
+Create a DataFrame with numbers all ending in `.5`, both positive and negative, using [`spark.range()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.range.html)/[`sdf_seq()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_seq.html) and then dividing the `id` column by `2`:
 ````{tabs}
 ```{code-tab} py
 from pyspark.sql import SparkSession, functions as F
@@ -28,7 +28,7 @@ library(dplyr)
 
 sc <- sparklyr::spark_connect(
     master = "local[2]",
-    app_name = "window-functions",
+    app_name = "rounding",
     config = sparklyr::spark_config())
 
 sdf <- sparklyr:::sdf_seq(sc, -7, 8, 2) %>%
@@ -73,7 +73,7 @@ sdf %>%
 8     3.5
 ```
 ````
-Round using Spark; this will round away from zero (up for positive numbers and down for negative):
+Round using Spark with [`F.round()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.round.html)/[`round()`](https://spark.apache.org/docs/latest/api/sql/index.html#round); this will round away from zero (up for positive numbers and down for negative):
 ````{tabs}
 ```{code-tab} py
 sdf = sdf.withColumn("spark_round", F.round("half_id"))
@@ -191,7 +191,7 @@ pdf
 7      3.5          4.0           4.0       4.0       4.0
 ```
 ````
-You can use the Python and R style of bankers rounding in Spark with `bround()`:
+You can use the Python and R style of bankers rounding in Spark with [`F.bround()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.bround.html)/[`bround()`](https://spark.apache.org/docs/latest/api/sql/index.html#bround):
 ````{tabs}
 ```{code-tab} py
 sdf = sdf.withColumn("spark_bround", F.bround("half_id"))
@@ -242,7 +242,7 @@ sdf %>%
 
 #### UDFs and `spark_apply()`
 
-User Defined Functions (UDFs) in Python, and R code ran on the Spark cluster with `spark_apply()` will use bankers rounding, in common with Python and R.
+[User Defined Functions](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.udf.html) (UDFs) in Python, and R code ran on the Spark cluster with [`spark_apply()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_apply.html) will use bankers rounding, in common with Python and R.
 
 #### Python 2
  
@@ -254,8 +254,24 @@ Both Excel and SPSS Statistics use the Spark method of rounding away from zero. 
 
 #### Testing
 
-Given that there are different ways of rounding depending on the language used, it is a good idea to thoroughly unit test your functions to ensure that they behave as expected.
+Given that there are different ways of rounding depending on the language used, it is a good idea to thoroughly unit test your functions with [Pytest](../testing-debugging/unit-testing-pyspark) or [testthat](../testing-debugging/unit-testing-sparklyr) to ensure that they behave as expected.
 
 ### Further Resources
 
-TBC
+Spark at the ONS Articles:
+- [Unit Testing in PySpark](../testing-debugging/unit-testing-pyspark)
+- [Unit Testing in sparklyr](../testing-debugging/unit-testing-sparklyr)
+
+PySpark Documentation:
+- [`spark.range()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.range.html)
+- [`F.round()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.round.html)
+- [`F.bround()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.bround.html)
+- [User Defined Functions](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.udf.html) 
+
+sparklyr Documentation:
+- [`sdf_seq()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_seq.html)
+- [`spark_apply()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_apply.html)
+
+Spark SQL Documentation:
+- [`round`](https://spark.apache.org/docs/latest/api/sql/index.html#round)
+- [`bround`](https://spark.apache.org/docs/latest/api/sql/index.html#bround)

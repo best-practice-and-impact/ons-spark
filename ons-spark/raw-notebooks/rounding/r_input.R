@@ -4,7 +4,7 @@ library(dplyr)
 
 sc <- sparklyr::spark_connect(
     master = "local[2]",
-    app_name = "window-functions",
+    app_name = "rounding",
     config = sparklyr::spark_config())
 
 sdf <- sparklyr:::sdf_seq(sc, -7, 8, 2) %>%
