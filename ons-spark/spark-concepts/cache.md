@@ -1,4 +1,4 @@
-# Caching
+## Caching
 
 Caching Spark DataFrames can be useful for two reasons:
 
@@ -7,9 +7,9 @@ Caching Spark DataFrames can be useful for two reasons:
 
 In this article we will firstly introduce caching to estimate the size of a DataFrame then see an example of where caching is useful to remove repeated runs of an execution plan.
 
-For a more detailed discussion on persistence in Spark please see the **Persistence article**.
+For a more detailed discussion on persistence in Spark please see the [Persisting](../spark-concepts/persistence) article.
 
-## How big is my DataFrame?
+### How big is my DataFrame?
 
 A simple use of persistence in Spark is to find out how much memory is used to store a DataFrame. This is a tricky subject because the amount of memory or disk space a data set uses depends on many factors, including:
 
@@ -20,7 +20,7 @@ A simple use of persistence in Spark is to find out how much memory is used to s
 
 Most of this list is beyond the scope of this article, but it's useful to know that these factors effect the exact size of a data set.
 
-As usual we'll start with some imports and creating a `SparkSession`.
+As usual we'll start with some imports and creating a Spark session.
 ````{tabs}
 ```{code-tab} py
 from pyspark.sql import SparkSession, functions as F
@@ -43,11 +43,11 @@ sc <- sparklyr::spark_connect(
 
 ```
 ````
-Next we need some data. Here we're using a small amount of data because we're running a local session which has very imited resource. 
+Next we need some data. Here we're using a small amount of data because we're running a local session which has very limited resource. 
 
-Note that `cache()` in PySpark is a transformation, so to initiate moving the data into memory we need an action, hence the `.count()`.
+Note that [`.cache()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.cache.html) in PySpark is a transformation, so to initiate moving the data into memory we need an action, hence the [`.count()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.count.html).
 
-In sparklyr there is a `force=TRUE` argument in the `tbl_cache()` function meaning there is no need to pipe this into a row count. Also note that the name of the DataFrame will appear in the Spark UI, which is a nice feature in sparklyr. To do the same in PySpark we would need to register the DataFrame as a temporary table and give it a name.
+In sparklyr there is a `force=TRUE` argument in the [`tbl_cache()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/tbl_cache.html) function meaning there is no need to pipe this into a row count. Also note that the name of the DataFrame will appear in the Spark UI, which is a nice feature in sparklyr. To do the same in PySpark we would need to register the DataFrame as a temporary table and give it a name.
 ````{tabs}
 ```{code-tab} py
 with open("../../../config.yaml") as f:
@@ -72,12 +72,15 @@ sparklyr::tbl_cache(sc, "population", force=TRUE)
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 2297
 ```
-Now we can take a look in the Spark UI, which is reached using the URL http://localhost:4040/jobs/. Note this address is used for a local Spark session, for more information on how to navigate to the Spark UI see the [documentation on monitoring](https://spark.apache.org/docs/latest/monitoring.html).
+````
+Now we can take a look in the [Spark UI](../spark-concepts/spark-application-and-ui), which is reached using the URL http://localhost:4040/jobs/. Note this address is used for a local Spark session, for more information on how to navigate to the Spark UI see the [documentation on monitoring](https://spark.apache.org/docs/latest/monitoring.html).
 
-Within the Spark UI, if you were to head over to the *Storage* tab you would see an RDD stored in memory, in two partitions and using 35.7 KB of executor memory. More on RDDs in the [Shuffling](https://best-practice-and-impact.github.io/ons-spark/spark-concepts/shuffling.html#a-quick-note-on-rdds) article.
+Within the Spark UI, if you were to head over to the *Storage* tab you would see an RDD stored in memory, in two partitions and using 35.7 KB of executor memory. More on RDDs in the [Shuffling](../spark-concepts/shuffling.html#a-quick-note-on-rdds) article.
 
 ![cached DataFrame in memory](../images/cache_memory.png)
 
@@ -85,9 +88,9 @@ You can also click on the RDD name to get more information, such as how many exe
 
 ![partition details of cached DataFrame](../images/cache_memory_partitions.png)
 
-## Persist
+### Persist
 
-There is another function that can be used to persist DataFrames, `persist()`/`sdf_persist()` in PySpark/sparklyr. This is a general form of `cache()`/`tbl_cache()`. It is similar to doing a cache but we are able to specify where to store the data, e.g. use memory but allow spill over to executor disk if the executor memory is full. `persist()`/`sdf_persist()` takes a `StorageLevel` argument to specify where to cache the data. Options for storage levels are:  
+There is another function that can be used to persist DataFrames, [`.persist()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.persist.html)/[`sdf_persist()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_persist.html) in PySpark/sparklyr. This is a general form of `.cache()`/`tbl_cache()`. It is similar to doing a cache but we are able to specify where to store the data, e.g. use memory but allow spill over to executor disk if the executor memory is full. `.persist()`/`sdf_persist()` takes a `StorageLevel` argument to specify where to cache the data. Options for storage levels are:  
 
 - `MEMORY_ONLY`
 - `MEMORY_AND_DISK`  
@@ -96,7 +99,7 @@ There is another function that can be used to persist DataFrames, `persist()`/`s
 - `DISK_ONLY`  
 - `OFF_HEAP`   
 
-Using the `MEMORY_ONLY` option is equivalent to `cache()`/`tbl_cache()`. More information on storage levels can be found in the [Apache Spark documentation](https://spark.apache.org/docs/latest/rdd-programming-guide.html#rdd-persistence). The only detail we will add here is that `DISK` in this instance refers to the executor disk and not the file system.
+Using the `MEMORY_ONLY` option is equivalent to `.cache()`/`tbl_cache()`. More information on storage levels can be found in the [Apache Spark documentation](https://spark.apache.org/docs/latest/rdd-programming-guide.html#rdd-persistence). The only detail we will add here is that `DISK` in this instance refers to the executor disk and not the file system.
 
 There's an example below to see how this is used, first we will unpersist the previous DataFrame so that we don't fill our cache memory with unused data. Note this time in sparklyr we need to add a row count.
 ````{tabs}
@@ -111,9 +114,12 @@ sparklyr::tbl_uncache(sc, "population")
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 DataFrame[postcode_district: string, population: bigint]
 ```
+````
 
 ````{tabs}
 ```{code-tab} py
@@ -129,16 +135,23 @@ sparklyr::sdf_persist(population, storage.level = "DISK_ONLY", name = "populatio
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 2297
 ```
+
+```{code-tab} plaintext R Output
+[1] 2297
+```
+````
 Before we move on, head back to the Spark UI and have a look at how much space the `population` DataFrame uses on disk.
 
 ![cached DataFrame on executor disk](../images/cache_disk.png)
 
 Is this what you expected? Why is this number different to persisting in memory? Because there is some compression involved in data written on disk.
 
-[Databricks](https://en.wikipedia.org/wiki/Databricks), a company founded by the creators of Apache Spark, suggest the use cases for `.persist()`/`sdf_persist()` are rare. The are often cases where you might want to persist using `cache()`/`tbl_cache()`, write to disk, use `checkpoint()`/`sdf_checkpoint()` or staging tables, but the options that `.persist()`/`sdf_persist()` present are not as useful. For a more detailed discussion about these options see the **Persistence article**
+[Databricks](https://databricks.com/), a company founded by the creators of Apache Spark, suggest the use cases for `.persist()`/`sdf_persist()` are rare. The are often cases where you might want to persist using `cache()`/`tbl_cache()`, write to disk, use [`.checkpoint()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.checkpoint.html)/[`sdf_checkpoint()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_checkpoint.html) or staging tables, but the options that `.persist()`/`sdf_persist()` present are not as useful. For a more detailed discussion about these options see the [Persisting](../spark-concepts/persistence) article.
 ````{tabs}
 ```{code-tab} py
 population.unpersist()
@@ -151,16 +164,19 @@ sparklyr::tbl_uncache(sc, "population")
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 DataFrame[postcode_district: string, population: bigint]
 ```
-# Using cache for more efficient coding
+````
+### Using cache for more efficient coding
 
 Let's take a look at caching to speed up some processing. The scenario is that we want to read in some data and apply some cleaning and preprocessing. Then using this *cleansed* DataFrame we want to produce three tables as outputs for a publication.
 
 The data we will use are the animal rescue data set collected by the London Fire Brigade.
 
-## Preparing the data
+#### Preparing the data
 ````{tabs}
 ```{code-tab} py
 rescue = spark.read.csv(
@@ -256,7 +272,7 @@ rescue <- rescue  %>%
 ````
 Note that the above cells executed very quickly. Remember this is because they're all transformations, which means Spark hasn't executed the code yet; take a look at the Spark UI if you need convincing. So far Spark has created an execution plan but is waiting for an action to implement the plan.
 
-## Analysis
+#### Analysis
 
 Now we have our cleansed DataFrame we can go on to produce some tables for our article on animal rescue costs for the London Fire Brigade. Here we will put the code into functions because we will rerun these snippets of code multiple times in this notebook.
 ````{tabs}
@@ -349,7 +365,9 @@ top_10_incidents %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +-------+----------------+---------------------+----------------+---------+
 |CalYear|PostcodeDistrict|AnimalGroup          |IncidentDuration|TotalCost|
 +-------+----------------+---------------------+----------------+---------+
@@ -365,6 +383,23 @@ top_10_incidents %>%
 |2017   |N19             |Cat                  |3.5             |2282.0   |
 +-------+----------------+---------------------+----------------+---------+
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 10 × 5
+   CalYear PostcodeDistrict AnimalGroup           IncidentDuration TotalCost
+     <int> <chr>            <chr>                            <dbl>     <dbl>
+ 1    2016 NW5              Cat                                4        3912
+ 2    2013 E4               Horse                              6        3480
+ 3    2015 TN14             Horse                              5        2980
+ 4    2018 UB4              Horse                              4        2664
+ 5    2014 TW4              Cat                                4.5      2655
+ 6    2011 E17              Horse                              3        2340
+ 7    2011 E17              Horse                              3        2340
+ 8    2011 E14              Deer                               3        2340
+ 9    2018 TN16             Unknown - Wild Animal              3.5      2296
+10    2017 N19              Cat                                3.5      2282
+```
+````
 
 ````{tabs}
 ```{code-tab} py
@@ -382,7 +417,9 @@ mean_cost_by_animal %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +------------------------------------------------+------------------+
 |AnimalGroup                                     |MeanCost          |
 +------------------------------------------------+------------------+
@@ -398,6 +435,23 @@ mean_cost_by_animal %>%
 |Unknown - Wild Animal                           |390.03636363636366|
 +------------------------------------------------+------------------+
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 10 × 2
+   AnimalGroup                                      MeanCost
+   <chr>                                               <dbl>
+ 1 Goat                                                1180 
+ 2 Fish                                                 780 
+ 3 Bull                                                 780 
+ 4 Horse                                                747.
+ 5 Unknown - Animal rescue from water - Farm animal     710.
+ 6 Cow                                                  624.
+ 7 Lamb                                                 520 
+ 8 Hedgehog                                             520 
+ 9 Deer                                                 424.
+10 Unknown - Wild Animal                                390.
+```
+````
 
 ````{tabs}
 ```{code-tab} py
@@ -415,7 +469,9 @@ summary_cost_by_animal %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +-----------+------+-----------------+------+-----+
 |AnimalGroup|   Min|             Mean|   Max|Count|
 +-----------+------+-----------------+------+-----+
@@ -425,11 +481,22 @@ summary_cost_by_animal %>%
 |      Horse| 255.0|747.4350649350649|3480.0|  154|
 +-----------+------+-----------------+------+-----+
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 4 × 5
+  AnimalGroup   Min  Mean   Max Count
+  <chr>       <dbl> <dbl> <dbl> <dbl>
+1 Goat         1180 1180   1180     1
+2 Fish          260  780   1300     2
+3 Bull          780  780    780     1
+4 Horse         255  747.  3480   154
+```
+````
 Great- we have our tables. Let's take a look at the individual steps Spark carried out to create our outputs.
 
-## Investigate the Spark UI
+### Investigate the Spark UI
 
-Go into the Spark UI and look at the *SQL* tab which lists the queries that are created from our PySpark code. Alternatively, we could use the *Jobs* tab, but the *SQL* tab has more detailed information for our needs here. 
+Go into the [Spark UI](../spark-concepts/spark-application-and-ui) and look at the *SQL* tab which lists the queries that are created from our PySpark code. Alternatively, we could use the *Jobs* tab, but the *SQL* tab has more detailed information for our needs here. 
 
 Click on the query with a description that starts with 'csv' and look at the DAG diagram. DAG stands for Directed Acyclic Graph and is often used to describe a process.
 
@@ -449,7 +516,7 @@ The next three queries (highlighted below) are the functions we have called abov
 The last point above means that Spark is reading in the file at the beginning of the job, and assuming there are no skipped stages, Spark is repeating the cleaning process for each output table.
 
 
-## Using a cache
+#### Using a cache
 
 What we need to do is to persist the `rescue` DataFrame so when we start our analysis functions Spark will use the cleansed and persisted DataFrame as the starting point.
 
@@ -467,9 +534,12 @@ sparklyr::tbl_cache(sc, "rescue", force=TRUE)
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 5860
 ```
+````
 
 ````{tabs}
 ```{code-tab} py
@@ -485,7 +555,9 @@ get_top_10_incidents(rescue) %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +-------+----------------+--------------------+----------------+---------+
 |CalYear|PostcodeDistrict|         AnimalGroup|IncidentDuration|TotalCost|
 +-------+----------------+--------------------+----------------+---------+
@@ -502,6 +574,23 @@ get_top_10_incidents(rescue) %>%
 +-------+----------------+--------------------+----------------+---------+
 ```
 
+```{code-tab} plaintext R Output
+# A tibble: 10 × 5
+   CalYear PostcodeDistrict AnimalGroup           IncidentDuration TotalCost
+     <int> <chr>            <chr>                            <dbl>     <dbl>
+ 1    2016 NW5              Cat                                4        3912
+ 2    2013 E4               Horse                              6        3480
+ 3    2015 TN14             Horse                              5        2980
+ 4    2018 UB4              Horse                              4        2664
+ 5    2014 TW4              Cat                                4.5      2655
+ 6    2011 E17              Horse                              3        2340
+ 7    2011 E17              Horse                              3        2340
+ 8    2011 E14              Deer                               3        2340
+ 9    2018 TN16             Unknown - Wild Animal              3.5      2296
+10    2017 N19              Cat                                3.5      2282
+```
+````
+
 ````{tabs}
 ```{code-tab} py
 get_mean_cost_by_animal(rescue).show()
@@ -516,7 +605,9 @@ get_mean_cost_by_animal(rescue) %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +--------------------+------------------+
 |         AnimalGroup|          MeanCost|
 +--------------------+------------------+
@@ -533,6 +624,23 @@ get_mean_cost_by_animal(rescue) %>%
 +--------------------+------------------+
 ```
 
+```{code-tab} plaintext R Output
+# A tibble: 10 × 2
+   AnimalGroup                                      MeanCost
+   <chr>                                               <dbl>
+ 1 Goat                                                1180 
+ 2 Fish                                                 780 
+ 3 Bull                                                 780 
+ 4 Horse                                                747.
+ 5 Unknown - Animal rescue from water - Farm animal     710.
+ 6 Cow                                                  624.
+ 7 Lamb                                                 520 
+ 8 Hedgehog                                             520 
+ 9 Deer                                                 424.
+10 Unknown - Wild Animal                                390.
+```
+````
+
 ````{tabs}
 ```{code-tab} py
 get_summary_cost_by_animal(rescue).show()
@@ -547,7 +655,9 @@ get_summary_cost_by_animal(rescue) %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +-----------+------+-----------------+------+-----+
 |AnimalGroup|   Min|             Mean|   Max|Count|
 +-----------+------+-----------------+------+-----+
@@ -557,6 +667,17 @@ get_summary_cost_by_animal(rescue) %>%
 |      Horse| 255.0|747.4350649350649|3480.0|  154|
 +-----------+------+-----------------+------+-----+
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 4 × 5
+  AnimalGroup   Min  Mean   Max Count
+  <chr>       <dbl> <dbl> <dbl> <dbl>
+1 Goat         1180 1180   1180     1
+2 Fish          260  780   1300     2
+3 Bull          780  780    780     1
+4 Horse         255  747.  3480   154
+```
+````
 Look at the Spark UI. Below is the DAG for the latest query.
 
 ![SQL DAG with cached data](../images/cache_dag_in_memory.png)
@@ -570,3 +691,29 @@ There are many factors that contribute towards the time taken for each query tha
 Each function is labelled in the image below. The first run was without caching, the second was with caching and the third was a second run with cached data. 
 
 ![comparison of query times using cache](../images/cache_sql_compare.png)
+
+### Further Resources
+
+Spark at the ONS Articles:
+- [Persisting](../spark-concepts/persistence)
+- [Shuffling](../spark-concepts/shuffling):
+    - [A Quick Note on RDDs](../spark-concepts/shuffling.html#a-quick-note-on-rdds)
+- [Spark Application and UI](../spark-concepts/spark-application-and-ui)
+
+PySpark Documentation:
+- [`.count()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.count.html)
+- [`.cache()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.cache.html)
+- [`.persist()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.persist.html)
+- [`.checkpoint()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.checkpoint.html)
+
+sparklyr and tidyverse Documentation:
+- [`tbl_cache()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/tbl_cache.html)
+- [`sdf_persist()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_persist.html)
+- [`sdf_checkpoint()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_checkpoint.html)
+
+Spark Documentation:
+- [Monitoring and Instrumentation](https://spark.apache.org/docs/latest/monitoring.html)
+- [RDD Persistence](https://spark.apache.org/docs/latest/rdd-programming-guide.html#rdd-persistence)
+
+Other Links:
+- [Databricks](https://databricks.com/)
