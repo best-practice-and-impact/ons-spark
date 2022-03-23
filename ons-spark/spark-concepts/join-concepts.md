@@ -2,13 +2,11 @@
 
 Joining DataFrames is a common and often essential operation in Spark. However, joins are one of the more expensive operations in terms of processing time. This is because by default both source DataFrames are first sorted, which is a *wide transformation*, causing a *shuffle* (or *exchange*). As such, it is worth paying extra attention to where joins occur in the code and trying to figure out which method to use to make them more efficient.
 
-This article describes the different join algorithms in Spark, explains how they work, when to use them, and shows examples of each. It also covers replacing joins entirely with narrow transformations, and gives a brief overview of *salted joins*, that can be used when the data are skewed.
+This article describes the different join algorithms in Spark, explains how they work, when to use them, and shows examples of each. It also covers replacing joins entirely with narrow transformations, and gives a brief overview of [*salted joins*](../spark-concepts/salted-joins), that can be used when the data are skewed.
 
-Before reading this article ensure that you understand how to join two DataFrames in Spark. Knowledge of shuffles and the difference between wide and narrow transformations will also help understanding of why some methods are faster than others, although not mandatory. Useful resources on this include the [DataBricks Transformations definition](https://databricks.com/glossary/what-are-transformations), and the Spark Application and UI, Shuffles and Partitions articles in this book.
+Before reading this article ensure that you understand how to join two DataFrames in Spark. Knowledge of [shuffles](../spark-concepts/shuffling) and the difference between wide and narrow transformations will also help understanding of why some methods are faster than others, although not mandatory. Useful resources on this include the [DataBricks Transformations definition](https://databricks.com/glossary/what-are-transformations), and the [Spark Application and UI](../spark-concepts/spark-application-and-ui), [Shuffling](../spark-concepts/shuffling) and [Partitions](../spark-concepts/partitions) articles in this book.
 
-It's important to note that in this notebook when we talk about different joins and the way they are processed we aren't talking about left, right, inner or outer joins, but how it is processed on the cluster. The result of the join will always be the same, regardless of which of the algorithms described in this article is used.
-
-This article uses both PySpark and sparklyr examples; note that the outputs from the cells are from Python, the R output may be formatted slightly differently.
+It is important to note that in this notebook when we talk about different joins and the way they are processed we are not talking about left, right, inner or outer joins, but how it is processed on the cluster. The result of the join will always be the same, regardless of which of the algorithms described in this article is used.
 
 ### The Join Algorithms in Spark
 
@@ -46,7 +44,7 @@ Both sort merge joins and shuffle hash joins use a shuffle; the difference is in
 
 #### Sort Merge Join Example
 
-Let's see an example of a sort merge join and then look at the plan and the Spark UI. The example uses the Animal Rescue (as CSV) and Population (as parquet) datasets, left joining on the `postcode_district`. Note that we are disabling automatic broadcast joins by setting `spark.sql.autoBroadcastJoinThreshold` to `-1`; broadcast joins are covered in the next section. First, start a Spark session, read the data and select and rename the relevant columns:
+Let us see an example of a sort merge join and then look at the plan and the Spark UI. The example uses the Animal Rescue (as CSV) and Population (as parquet) datasets, left joining on the `postcode_district`. Note that we are disabling automatic broadcast joins by setting `spark.sql.autoBroadcastJoinThreshold` to `-1`; broadcast joins are covered in the next section. First, start a Spark session, read the data and select and rename the relevant columns:
 ````{tabs}
 ```{code-tab} py
 import os
@@ -123,7 +121,9 @@ population %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +---------------+--------+------------+-----------------+
 |incident_number|cal_year|animal_group|postcode_district|
 +---------------+--------+------------+-----------------+
@@ -146,6 +146,26 @@ only showing top 5 rows
 +-----------------+----------+
 only showing top 5 rows
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 5 × 4
+  incident_number cal_year animal_group postcode_district
+  <chr>              <int> <chr>        <chr>            
+1 139091              2009 Dog          SE19             
+2 275091              2009 Fox          SE25             
+3 2075091             2009 Dog          SM5              
+4 2872091             2009 Horse        UB9              
+5 3553091             2009 Rabbit       RM3              
+# A tibble: 5 × 2
+  postcode_district population
+  <chr>                  <dbl>
+1 DH7                    41076
+2 NW3                    52376
+3 NR4                    22331
+4 SO31                   44742
+5 CT18                   14357
+```
+````
 We can now join these on `PostcodeDistrict`, using [`.join()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.join.html) with `how="left"` in PySpark or [`left_join()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/join.tbl_spark.html) in sparklyr, then preview:
 ````{tabs}
 ```{code-tab} py
@@ -172,7 +192,9 @@ rescue_with_pop %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +-----------------+---------------+--------+--------------------+----------+
 |postcode_district|incident_number|cal_year|        animal_group|population|
 +-----------------+---------------+--------+--------------------+----------+
@@ -184,7 +206,19 @@ rescue_with_pop %>%
 +-----------------+---------------+--------+--------------------+----------+
 only showing top 5 rows
 ```
-Note that the order of the DataFrame hasn't been preserved and that this preview has only given us rows with idential `PostcodeDistrict` values. This is due to two Spark concepts: lazy evaluation and the sort merge join algorithm. As the action only requires five rows to be returned, Spark can get all these from the first partition rather than having to return data from multiple partitions, ensuring that the job is completed faster. The sort merge join algorithm has sorted the DataFrame by the hashed join key, and put all these values in the first partition, and so these are the values that are returned. See the article on partitions for more information.
+
+```{code-tab} plaintext R Output
+# A tibble: 5 × 5
+  incident_number cal_year animal_group postcode_district population
+  <chr>              <int> <chr>        <chr>                  <dbl>
+1 93474091            2009 Dog          DA15                   29123
+2 194165091           2009 Cat          DA15                   29123
+3 126259101           2010 Cat          DA15                   29123
+4 154461131           2013 Dog          DA15                   29123
+5 36130141            2014 Bird         DA15                   29123
+```
+````
+Note that the order of the DataFrame has not been preserved and that this preview has only given us rows with idential `PostcodeDistrict` values. This is due to two Spark concepts: lazy evaluation and the sort merge join algorithm. As the action only requires five rows to be returned, Spark can get all these from the first partition rather than having to return data from multiple partitions, ensuring that the job is completed faster. The sort merge join algorithm has sorted the DataFrame by the hashed join key, and put all these values in the first partition, and so these are the values that are returned. See the article on [partitions](../spark-concepts/partitions) for more information.
 
 We know the result of the join, but to see how Spark actually processed the join we need to look at the *plan*. Remember that Spark has the concept of *lazy evaluation*, in which rather than process code line-by-line like in a pandas or base R DataFrame, we instead create a *plan* which gets executed on the cluster in one go when an *action* is called. We can see this plan with `explain()`, a [DataFrame method](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.explain.html) in PySpark and [dplyr function](https://dplyr.tidyverse.org/reference/explain.html) in sparklyr.
 ````{tabs}
@@ -199,7 +233,9 @@ rescue_with_pop %>% dplyr::explain()
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 == Physical Plan ==
 *(5) Project [postcode_district#65, incident_number#62, cal_year#63, animal_group#64, population#71L]
 +- SortMergeJoin [postcode_district#65], [postcode_district#70], LeftOuter
@@ -213,36 +249,31 @@ rescue_with_pop %>% dplyr::explain()
             +- *(3) Filter isnotnull(postcode_district#70)
                +- *(3) FileScan parquet [postcode_district#70,population#71L] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/population.parquet], PartitionFilters: [], PushedFilters: [IsNotNull(postcode_district)], ReadSchema: struct<postcode_district:string,population:bigint>
 ```
-Spark plans can be tricky to read if you're not familiar with them but we can see some key terms being used:
+
+```{code-tab} plaintext R Output
+<SQL>
+SELECT `incident_number`, `cal_year`, `animal_group`, `LHS`.`postcode_district` AS `postcode_district`, `population`
+FROM (SELECT `IncidentNumber` AS `incident_number`, `CalYear` AS `cal_year`, `AnimalGroupParent` AS `animal_group`, `PostcodeDistrict` AS `postcode_district`
+FROM `animal_rescue_67666c0b_5666_454a_b128_8abba6c315d5`) `LHS`
+LEFT JOIN `population_51b44349_e2d4_4ccd_89d8_4e677ff4c61d` AS `RHS`
+ON (`LHS`.`postcode_district` = `RHS`.`postcode_district`)
+
+
+<PLAN>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  plan
+1 == Physical Plan ==\n*(5) Project [incident_number#1180, cal_year#1181, animal_group#1182, postcode_district#1183, population#783L]\n+- SortMergeJoin [postcode_district#1183], [postcode_district#782], LeftOuter\n   :- *(2) Sort [postcode_district#1183 ASC NULLS FIRST], false, 0\n   :  +- Exchange hashpartitioning(postcode_district#1183, 16)\n   :     +- *(1) Project [IncidentNumber#71 AS incident_number#1180, CalYear#73 AS cal_year#1181, AnimalGroupParent#81 AS animal_group#1182, PostcodeDistrict#92 AS postcode_district#1183]\n   :        +- InMemoryTableScan [AnimalGroupParent#81, CalYear#73, IncidentNumber#71, PostcodeDistrict#92]\n   :              +- InMemoryRelation [IncidentNumber#71, DateTimeOfCall#72, CalYear#73, FinYear#74, TypeOfIncident#75, PumpCount#76, PumpHoursTotal#77, HourlyNotionalCostGBP#78, IncidentNotionalCostGBP#79, FinalDescription#80, AnimalGroupParent#81, OriginofCall#82, PropertyType#83, PropertyCategory#84, SpecialServiceTypeCategory#85, SpecialServiceType#86, WardCode#87, Ward#88, BoroughCode#89, Borough#90, StnGroundName#91, PostcodeDistrict#92, Easting_m#93, Northing_m#94, ... 2 more fields], StorageLevel(disk, memory, deserialized, 1 replicas)\n   :                    +- *(1) Project [IncidentNumber#19, DateTimeOfCall#20, CalYear#21, FinYear#22, TypeOfIncident#23, PumpCount#24, PumpHoursTotal#25, HourlyNotionalCost(£)#26 AS HourlyNotionalCostGBP#78, IncidentNotionalCost(£)#27 AS IncidentNotionalCostGBP#79, FinalDescription#28, AnimalGroupParent#29, OriginofCall#30, PropertyType#31, PropertyCategory#32, SpecialServiceTypeCategory#33, SpecialServiceType#34, WardCode#35, Ward#36, BoroughCode#37, Borough#38, StnGroundName#39, PostcodeDistrict#40, Easting_m#41, Northing_m#42, ... 2 more fields]\n   :                       +- *(1) FileScan csv [IncidentNumber#19,DateTimeOfCall#20,CalYear#21,FinYear#22,TypeOfIncident#23,PumpCount#24,PumpHoursTotal#25,HourlyNotionalCost(£)#26,IncidentNotionalCost(£)#27,FinalDescription#28,AnimalGroupParent#29,OriginofCall#30,PropertyType#31,PropertyCategory#32,SpecialServiceTypeCategory#33,SpecialServiceType#34,WardCode#35,Ward#36,BoroughCode#37,Borough#38,StnGroundName#39,PostcodeDistrict#40,Easting_m#41,Northing_m#42,... 2 more fields] Batched: false, Format: CSV, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/animal_rescue.csv], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<IncidentNumber:string,DateTimeOfCall:string,CalYear:int,FinYear:string,TypeOfIncident:stri...\n   +- *(4) Sort [postcode_district#782 ASC NULLS FIRST], false, 0\n      +- Exchange hashpartitioning(postcode_district#782, 16)\n         +- *(3) Filter isnotnull(postcode_district#782)\n            +- InMemoryTableScan [postcode_district#782, population#783L], [isnotnull(postcode_district#782)]\n                  +- InMemoryRelation [postcode_district#782, population#783L], StorageLevel(disk, memory, deserialized, 1 replicas)\n                        +- *(1) FileScan parquet [postcode_district#782,population#783L] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/population.parquet], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<postcode_district:string,population:bigint>
+```
+````
+Spark plans can be tricky to read if you are not familiar with them but we can see some key terms being used:
 - We are doing a `SortMergeJoin`, of type `LeftOuter`
 - Before that, each DataFrame is being sorted and shuffled; the name for this on the plan is an `Exchange`.
 - The data are being read with `FileScan csv` and `FileScan parquet`
-- As this was a left join, we don't need to return any values from `population` where `OutwardCode` is `null`, so Spark is filtering these out at source with `PushedFilters: [IsNotNull(OutwardCode)]`.
+- As this was a left join, we do not need to return any values from `population` where `OutwardCode` is `null`, so Spark is filtering these out at source with `PushedFilters: [IsNotNull(OutwardCode)]`.
 
-We can view the plan visually with the Spark UI on the SQL tab. See the Spark Application and UI article for details on how to access the Spark UI, and the Persisting article for more details on interpreting the information in the SQL tab.
-````{tabs}
-```{code-tab} py
-spark_ui_url = "spark-%s.%s" % (os.environ["CDSW_ENGINE_ID"], os.environ["CDSW_DOMAIN"])
-spark_ui_url
-```
+We can view the plan visually with the Spark UI on the SQL tab. The Spark UI for a local session is http://localhost:4040/jobs.
 
-```{code-tab} r R
+See the [Spark Application and UI](../spark-concepts/spark-application-and-ui) article for details on how to access the Spark UI, and the [Persisting](../spark-concepts/persistence) article for more details on interpreting the information in the SQL tab.
 
-spark_ui_url <- paste0(
-    "http://",
-    "spark-",
-    Sys.getenv("CDSW_ENGINE_ID"),
-    ".",
-    Sys.getenv("CDSW_DOMAIN"))
-
-spark_ui_url
-
-```
-````
-
-```plaintext
-'spark-rgho0m50if2n1upk.cdswmn-d01-01.ons.statistics.gov.uk'
-```
 ![Spark UI for sort merge join, showing an exchange for both DataFrames](../images/sort_merge_join_ui.png)
 
 This diagram has the same information as the `explain()`, just presented in a much nicer way. Again, we can see that there is an **Exchange** for each DataFrame, before the **SortMergeJoin**, and a **Filter** when reading the parquet.
@@ -295,7 +326,9 @@ rescue_with_pop_broadcast %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +-----------------+---------------+--------+------------+----------+
 |postcode_district|incident_number|cal_year|animal_group|population|
 +-----------------+---------------+--------+------------+----------+
@@ -307,6 +340,18 @@ rescue_with_pop_broadcast %>%
 +-----------------+---------------+--------+------------+----------+
 only showing top 5 rows
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 5 × 5
+  incident_number cal_year animal_group postcode_district population
+  <chr>              <int> <chr>        <chr>                  <dbl>
+1 139091              2009 Dog          SE19                   27639
+2 275091              2009 Fox          SE25                   34521
+3 2075091             2009 Dog          SM5                    38291
+4 2872091             2009 Horse        UB9                    14336
+5 3553091             2009 Rabbit       RM3                    40272
+```
+````
 Unlike the first example, the `postcode_district` values are not identical. The DataFrame has not needed to be shuffled and so the same `PostcodeDistrict` values may be on different partitions.
 
 `explain()` will confirm that a broadcast join was used:
@@ -322,7 +367,9 @@ rescue_with_pop_broadcast %>% dplyr::explain()
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 == Physical Plan ==
 *(2) Project [postcode_district#65, incident_number#62, cal_year#63, animal_group#64, population#71L]
 +- *(2) BroadcastHashJoin [postcode_district#65], [postcode_district#70], LeftOuter, BuildRight
@@ -333,33 +380,22 @@ rescue_with_pop_broadcast %>% dplyr::explain()
          +- *(1) Filter isnotnull(postcode_district#70)
             +- *(1) FileScan parquet [postcode_district#70,population#71L] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/population.parquet], PartitionFilters: [], PushedFilters: [IsNotNull(postcode_district)], ReadSchema: struct<postcode_district:string,population:bigint>
 ```
-We can see that we are now using a **BroadcastHashJoin**. Let's look at the UI again:
-````{tabs}
-```{code-tab} py
-spark_ui_url
-```
 
-```{code-tab} r R
+```{code-tab} plaintext R Output
+<SQL>
+SELECT `incident_number`, `cal_year`, `animal_group`, `LHS`.`postcode_district` AS `postcode_district`, `population`
+FROM (SELECT `IncidentNumber` AS `incident_number`, `CalYear` AS `cal_year`, `AnimalGroupParent` AS `animal_group`, `PostcodeDistrict` AS `postcode_district`
+FROM `animal_rescue_a6d335ce_420a_4777_8788_c972e0014f61`) `LHS`
+LEFT JOIN `sparklyr_tmp_d4f48777_5809_4b0d_a71f_c2dd7c9c4bb1` AS `RHS`
+ON (`LHS`.`postcode_district` = `RHS`.`postcode_district`)
 
-spark_ui_url
 
+<PLAN>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           plan
+1 == Physical Plan ==\n*(2) Project [incident_number#1505, cal_year#1506, animal_group#1507, postcode_district#1508, population#783L]\n+- *(2) BroadcastHashJoin [postcode_district#1508], [postcode_district#782], LeftOuter, BuildRight\n   :- *(2) Project [IncidentNumber#71 AS incident_number#1505, CalYear#73 AS cal_year#1506, AnimalGroupParent#81 AS animal_group#1507, PostcodeDistrict#92 AS postcode_district#1508]\n   :  +- InMemoryTableScan [AnimalGroupParent#81, CalYear#73, IncidentNumber#71, PostcodeDistrict#92]\n   :        +- InMemoryRelation [IncidentNumber#71, DateTimeOfCall#72, CalYear#73, FinYear#74, TypeOfIncident#75, PumpCount#76, PumpHoursTotal#77, HourlyNotionalCostGBP#78, IncidentNotionalCostGBP#79, FinalDescription#80, AnimalGroupParent#81, OriginofCall#82, PropertyType#83, PropertyCategory#84, SpecialServiceTypeCategory#85, SpecialServiceType#86, WardCode#87, Ward#88, BoroughCode#89, Borough#90, StnGroundName#91, PostcodeDistrict#92, Easting_m#93, Northing_m#94, ... 2 more fields], StorageLevel(disk, memory, deserialized, 1 replicas)\n   :              +- *(1) Project [IncidentNumber#19, DateTimeOfCall#20, CalYear#21, FinYear#22, TypeOfIncident#23, PumpCount#24, PumpHoursTotal#25, HourlyNotionalCost(£)#26 AS HourlyNotionalCostGBP#78, IncidentNotionalCost(£)#27 AS IncidentNotionalCostGBP#79, FinalDescription#28, AnimalGroupParent#29, OriginofCall#30, PropertyType#31, PropertyCategory#32, SpecialServiceTypeCategory#33, SpecialServiceType#34, WardCode#35, Ward#36, BoroughCode#37, Borough#38, StnGroundName#39, PostcodeDistrict#40, Easting_m#41, Northing_m#42, ... 2 more fields]\n   :                 +- *(1) FileScan csv [IncidentNumber#19,DateTimeOfCall#20,CalYear#21,FinYear#22,TypeOfIncident#23,PumpCount#24,PumpHoursTotal#25,HourlyNotionalCost(£)#26,IncidentNotionalCost(£)#27,FinalDescription#28,AnimalGroupParent#29,OriginofCall#30,PropertyType#31,PropertyCategory#32,SpecialServiceTypeCategory#33,SpecialServiceType#34,WardCode#35,Ward#36,BoroughCode#37,Borough#38,StnGroundName#39,PostcodeDistrict#40,Easting_m#41,Northing_m#42,... 2 more fields] Batched: false, Format: CSV, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/animal_rescue.csv], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<IncidentNumber:string,DateTimeOfCall:string,CalYear:int,FinYear:string,TypeOfIncident:stri...\n   +- BroadcastExchange HashedRelationBroadcastMode(List(input[0, string, false]))\n      +- *(1) Filter isnotnull(postcode_district#782)\n         +- InMemoryTableScan [postcode_district#782, population#783L], [isnotnull(postcode_district#782)]\n               +- InMemoryRelation [postcode_district#782, population#783L], StorageLevel(disk, memory, deserialized, 1 replicas)\n                     +- *(1) FileScan parquet [postcode_district#782,population#783L] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/population.parquet], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<postcode_district:string,population:bigint>
 ```
 ````
-
-```plaintext
-'spark-eejet47wnollgkuz.cdswmn-d01-01.ons.statistics.gov.uk'
-```
-![Spark UI for broadcast join, showing a broadcast exchange](../images/broadcast_join_ui.png)
-
-The difference from the sort merge join example is that rather than two shuffles, there is a **BroadcastExchange** then a **BroadcastHashJoin**. If the second DataFrame is small, pushing it to executors should take less time than the two full shuffles which occur in the sort merge join example.
-
-#### Example: Automatic Broadcasting
-
-In addition to broadcasting explicitly with the hint, Spark will use a broadcast join automatically if the size of the smaller DataFrame is known and below 10MB.
-
-You can change this value with the `spark.sql.autoBroadcastJoinThreshold` configuration setting. This has to be a `long` DataType, so 10MB is equal to $10\times1024^2$. Automatic broadcasting can be turned off by setting it to `-1`, as we did in the previous example.
-
-As we already have a Spark session running, we need to close this down and create another, ensuring that a new value for `spark.sql.autoBroadcastJoinThreshold` is defined. Be careful when closing and starting Spark sessions, as previous configuration settings will be used unless specifically overwritten.
+We can see that we are now using a **BroadcastHashJoin**. Let us look at the UI again:
 ````{tabs}
 ```{code-tab} py
 spark.stop()
@@ -439,7 +475,9 @@ rescue_with_pop_auto_broadcast %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +-----------------+---------------+--------+------------+------------------+----------+
 |postcode_district|incident_number|cal_year|animal_group|    origin_of_call|population|
 +-----------------+---------------+--------+------------+------------------+----------+
@@ -451,6 +489,19 @@ rescue_with_pop_auto_broadcast %>%
 +-----------------+---------------+--------+------------+------------------+----------+
 only showing top 5 rows
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 5 × 6
+  incident_number cal_year animal_group postcode_district origin_of_call    
+  <chr>              <int> <chr>        <chr>             <chr>             
+1 139091              2009 Dog          SE19              Person (land line)
+2 275091              2009 Fox          SE25              Person (land line)
+3 2075091             2009 Dog          SM5               Person (mobile)   
+4 2872091             2009 Horse        UB9               Person (mobile)   
+5 3553091             2009 Rabbit       RM3               Person (mobile)   
+# … with 1 more variable: population <dbl>
+```
+````
 This can be confirmed with `explain()`:
 ````{tabs}
 ```{code-tab} py
@@ -464,7 +515,9 @@ rescue_with_pop_auto_broadcast %>% dplyr::explain()
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 == Physical Plan ==
 *(2) Project [postcode_district#213, incident_number#210, cal_year#211, animal_group#212, origin_of_call#214, population#221L]
 +- *(2) BroadcastHashJoin [postcode_district#213], [postcode_district#220], LeftOuter, BuildRight
@@ -475,6 +528,21 @@ rescue_with_pop_auto_broadcast %>% dplyr::explain()
          +- *(1) Filter isnotnull(postcode_district#220)
             +- *(1) FileScan parquet [postcode_district#220,population#221L] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/population.parquet], PartitionFilters: [], PushedFilters: [IsNotNull(postcode_district)], ReadSchema: struct<postcode_district:string,population:bigint>
 ```
+
+```{code-tab} plaintext R Output
+<SQL>
+SELECT `incident_number`, `cal_year`, `animal_group`, `LHS`.`postcode_district` AS `postcode_district`, `origin_of_call`, `population`
+FROM (SELECT `IncidentNumber` AS `incident_number`, `CalYear` AS `cal_year`, `AnimalGroupParent` AS `animal_group`, `PostcodeDistrict` AS `postcode_district`, `OriginofCall` AS `origin_of_call`
+FROM `animal_rescue_c2bc9dff_f308_4bd6_9f89_9e985d9ae25f`) `LHS`
+LEFT JOIN `population_d5129a5c_b84f_461d_9383_f00953a66d4b` AS `RHS`
+ON (`LHS`.`postcode_district` = `RHS`.`postcode_district`)
+
+
+<PLAN>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         plan
+1 == Physical Plan ==\n*(2) Project [incident_number#1027, cal_year#1028, animal_group#1029, postcode_district#1030, origin_of_call#1031, population#783L]\n+- *(2) BroadcastHashJoin [postcode_district#1030], [postcode_district#782], LeftOuter, BuildRight\n   :- *(2) Project [IncidentNumber#71 AS incident_number#1027, CalYear#73 AS cal_year#1028, AnimalGroupParent#81 AS animal_group#1029, PostcodeDistrict#92 AS postcode_district#1030, OriginofCall#82 AS origin_of_call#1031]\n   :  +- InMemoryTableScan [AnimalGroupParent#81, CalYear#73, IncidentNumber#71, OriginofCall#82, PostcodeDistrict#92]\n   :        +- InMemoryRelation [IncidentNumber#71, DateTimeOfCall#72, CalYear#73, FinYear#74, TypeOfIncident#75, PumpCount#76, PumpHoursTotal#77, HourlyNotionalCostGBP#78, IncidentNotionalCostGBP#79, FinalDescription#80, AnimalGroupParent#81, OriginofCall#82, PropertyType#83, PropertyCategory#84, SpecialServiceTypeCategory#85, SpecialServiceType#86, WardCode#87, Ward#88, BoroughCode#89, Borough#90, StnGroundName#91, PostcodeDistrict#92, Easting_m#93, Northing_m#94, ... 2 more fields], StorageLevel(disk, memory, deserialized, 1 replicas)\n   :              +- *(1) Project [IncidentNumber#19, DateTimeOfCall#20, CalYear#21, FinYear#22, TypeOfIncident#23, PumpCount#24, PumpHoursTotal#25, HourlyNotionalCost(£)#26 AS HourlyNotionalCostGBP#78, IncidentNotionalCost(£)#27 AS IncidentNotionalCostGBP#79, FinalDescription#28, AnimalGroupParent#29, OriginofCall#30, PropertyType#31, PropertyCategory#32, SpecialServiceTypeCategory#33, SpecialServiceType#34, WardCode#35, Ward#36, BoroughCode#37, Borough#38, StnGroundName#39, PostcodeDistrict#40, Easting_m#41, Northing_m#42, ... 2 more fields]\n   :                 +- *(1) FileScan csv [IncidentNumber#19,DateTimeOfCall#20,CalYear#21,FinYear#22,TypeOfIncident#23,PumpCount#24,PumpHoursTotal#25,HourlyNotionalCost(£)#26,IncidentNotionalCost(£)#27,FinalDescription#28,AnimalGroupParent#29,OriginofCall#30,PropertyType#31,PropertyCategory#32,SpecialServiceTypeCategory#33,SpecialServiceType#34,WardCode#35,Ward#36,BoroughCode#37,Borough#38,StnGroundName#39,PostcodeDistrict#40,Easting_m#41,Northing_m#42,... 2 more fields] Batched: false, Format: CSV, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/animal_rescue.csv], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<IncidentNumber:string,DateTimeOfCall:string,CalYear:int,FinYear:string,TypeOfIncident:stri...\n   +- BroadcastExchange HashedRelationBroadcastMode(List(input[0, string, false]))\n      +- *(1) Filter isnotnull(postcode_district#782)\n         +- InMemoryTableScan [postcode_district#782, population#783L], [isnotnull(postcode_district#782)]\n               +- InMemoryRelation [postcode_district#782, population#783L], StorageLevel(disk, memory, deserialized, 1 replicas)\n                     +- *(1) FileScan parquet [postcode_district#782,population#783L] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/population.parquet], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<postcode_district:string,population:bigint>
+```
+````
 Both ways of broadcasting give the same result. You can leave it to Spark to decide, or if you want more control over how you DataFrames are joined, turn off automatic broadcasting by setting `spark.sql.autoBroadcastJoinThreshold` to `-1`.
 
 Note that Spark will not always be able to determine the size of the data in which case it will default to a sort merge join, even when this would be significantly less efficient. Spark does have some non-instinctive behaviour when it comes to automatic broadcasting; generally, if the raw file is less than 10MB it will be broadcast regardless of file type. Large parquet files which are filtered or grouped to reduce the size should be broadcast but the same is not true of CSVs. If unsure, use `explain()` to check or manually broadcast with the broadcast hint.
@@ -506,7 +574,9 @@ rescue %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +---------------------+
 |origin_of_call       |
 +---------------------+
@@ -520,7 +590,22 @@ rescue %>%
 |Ambulance            |
 +---------------------+
 ```
-Let's categorise these into `Emergency Services` and `Member of Public`; there is also a `Not known` value which can be mapped to `null`:
+
+```{code-tab} plaintext R Output
+# A tibble: 8 × 1
+  origin_of_call       
+  <chr>                
+1 Person (mobile)      
+2 Ambulance            
+3 Police               
+4 Coastguard           
+5 Person (running call)
+6 Not known            
+7 Person (land line)   
+8 Other FRS            
+```
+````
+Let us categorise these into `Emergency Services` and `Member of Public`; there is also a `Not known` value which can be mapped to `null`:
 ````{tabs}
 ```{code-tab} py
 call_origin = spark.createDataFrame([
@@ -554,7 +639,9 @@ call_origin %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +---------------------+------------------+
 |origin_of_call       |origin_type       |
 +---------------------+------------------+
@@ -568,6 +655,21 @@ call_origin %>%
 |Not known            |null              |
 +---------------------+------------------+
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 8 × 2
+  origin_of_call        origin_type       
+  <chr>                 <chr>             
+1 Coastguard            Emergency Services
+2 Police                Emergency Services
+3 Ambulance             Emergency Services
+4 Other FRS             Emergency Services
+5 Person (mobile)       Member of Public  
+6 Person (land line)    Member of Public  
+7 Person (running call) Member of Public  
+8 Not known             <NA>              
+```
+````
 We can do a left join, as we have done previously. As the DataFrame is small, we will ensure it is broadcast with the broadcast hint:
 ````{tabs}
 ```{code-tab} py
@@ -590,7 +692,9 @@ rescue_with_origin %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +------------------+----------------+--------+--------------------------------+-----------------+------------------+
 |origin_of_call    |incident_number |cal_year|animal_group                    |postcode_district|origin_type       |
 +------------------+----------------+--------+--------------------------------+-----------------+------------------+
@@ -602,6 +706,19 @@ rescue_with_origin %>%
 +------------------+----------------+--------+--------------------------------+-----------------+------------------+
 only showing top 5 rows
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 5 × 6
+  incident_number  cal_year animal_group        postcode_distri… origin_of_call 
+  <chr>               <int> <chr>               <chr>            <chr>          
+1 000014-03092018M     2018 Unknown - Heavy Li… CR8              Other FRS      
+2 000099-01012017      2017 Dog                 BR2              Person (mobile)
+3 000260-01012017      2017 Bird                CR0              Person (land l…
+4 000375-01012017      2017 Dog                 TW8              Person (mobile)
+5 000477-01012017      2017 Deer                HA7              Person (mobile)
+# … with 1 more variable: origin_type <chr>
+```
+````
 An alternative to a join here is using chained `F.when()` statements in PySpark or `case_when` inside `mutate` in sparklyr.
 
 The three `origin_of_call` which map to `Member of Public` all begin with `Person`. We can take the first six characters with `substr()` (a [column method](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Column.substr.html) in PySpark and a [Spark SQL function](https://spark.apache.org/docs/latest/api/sql/index.html#substr) in sparklyr), and if this equals `Person` we know that this is `Member of Public`.
@@ -610,7 +727,7 @@ We can put the values which map to `Emergency Services` in an [`.isin()`](https:
 
 For `Not known`, a simple equality statement can be used.
 
-Finally, any values not matching any of these criteria can be mapped to `null` with [`F.otherwise()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.otherwise.html) (PySpark) or `TRUE ~ NA` (sparklyr), although no values will match this criteria in our example. Note that this is the default value and could be omitted, but it's better to be explicit where we can.
+Finally, any values not matching any of these criteria can be mapped to `null` with [`F.otherwise()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.otherwise.html) (PySpark) or `TRUE ~ NA` (sparklyr), although no values will match this criteria in our example. Note that this is the default value and could be omitted, but it is better to be explicit where we can.
 ````{tabs}
 ```{code-tab} py
 rescue_with_origin_when = rescue.withColumn("origin_type",
@@ -641,7 +758,9 @@ rescue_with_origin_when %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +----------------+--------+--------------------------------+-----------------+------------------+------------------+
 |incident_number |cal_year|animal_group                    |postcode_district|origin_of_call    |origin_type       |
 +----------------+--------+--------------------------------+-----------------+------------------+------------------+
@@ -653,6 +772,19 @@ rescue_with_origin_when %>%
 +----------------+--------+--------------------------------+-----------------+------------------+------------------+
 only showing top 5 rows
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 5 × 6
+  incident_number  cal_year animal_group        postcode_distri… origin_of_call 
+  <chr>               <int> <chr>               <chr>            <chr>          
+1 000014-03092018M     2018 Unknown - Heavy Li… CR8              Other FRS      
+2 000099-01012017      2017 Dog                 BR2              Person (mobile)
+3 000260-01012017      2017 Bird                CR0              Person (land l…
+4 000375-01012017      2017 Dog                 TW8              Person (mobile)
+5 000477-01012017      2017 Deer                HA7              Person (mobile)
+# … with 1 more variable: origin_type <chr>
+```
+````
 
 ````{tabs}
 ```{code-tab} py
@@ -666,36 +798,41 @@ rescue_with_origin_when %>% dplyr::explain()
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 == Physical Plan ==
 *(1) Project [IncidentNumber#158 AS incident_number#210, CalYear#160 AS cal_year#211, AnimalGroupParent#168 AS animal_group#212, PostcodeDistrict#179 AS postcode_district#213, OriginofCall#169 AS origin_of_call#214, CASE WHEN (substring(OriginofCall#169, 1, 6) = Person) THEN Member of Public WHEN OriginofCall#169 IN (Coastguard,Police,Ambulance,Other FRS) THEN Emergency Services WHEN (OriginofCall#169 = Not known) THEN null ELSE null END AS origin_type#301]
 +- *(1) FileScan csv [IncidentNumber#158,CalYear#160,AnimalGroupParent#168,OriginofCall#169,PostcodeDistrict#179] Batched: false, Format: CSV, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/animal_rescue.csv], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<IncidentNumber:string,CalYear:int,AnimalGroupParent:string,OriginofCall:string,PostcodeDis...
 ```
+
+```{code-tab} plaintext R Output
+<SQL>
+SELECT `incident_number`, `cal_year`, `animal_group`, `postcode_district`, `origin_of_call`, CASE
+WHEN (SUBSTR(`origin_of_call`, 1, 6) = "Person") THEN ("Member of Public")
+WHEN (`origin_of_call` IN ("Coastguard", "Police", "Ambulance", "Other FRS")) THEN ("Emergency Services")
+WHEN (`origin_of_call` = "Not known") THEN (NULL)
+ELSE (NULL)
+END AS `origin_type`
+FROM (SELECT `IncidentNumber` AS `incident_number`, `CalYear` AS `cal_year`, `AnimalGroupParent` AS `animal_group`, `PostcodeDistrict` AS `postcode_district`, `OriginofCall` AS `origin_of_call`
+FROM `animal_rescue_b02fcdbf_fdac_4983_9071_b74f6d98b72e`) `q01`
+
+<PLAN>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   plan
+1 == Physical Plan ==\n*(1) Project [IncidentNumber#71 AS incident_number#1752, CalYear#73 AS cal_year#1753, AnimalGroupParent#81 AS animal_group#1754, PostcodeDistrict#92 AS postcode_district#1755, OriginofCall#82 AS origin_of_call#1756, CASE WHEN (substring(OriginofCall#82, 1, 6) = Person) THEN Member of Public WHEN OriginofCall#82 IN (Coastguard,Police,Ambulance,Other FRS) THEN Emergency Services WHEN (OriginofCall#82 = Not known) THEN null ELSE null END AS origin_type#1757]\n+- InMemoryTableScan [AnimalGroupParent#81, CalYear#73, IncidentNumber#71, OriginofCall#82, PostcodeDistrict#92]\n      +- InMemoryRelation [IncidentNumber#71, DateTimeOfCall#72, CalYear#73, FinYear#74, TypeOfIncident#75, PumpCount#76, PumpHoursTotal#77, HourlyNotionalCostGBP#78, IncidentNotionalCostGBP#79, FinalDescription#80, AnimalGroupParent#81, OriginofCall#82, PropertyType#83, PropertyCategory#84, SpecialServiceTypeCategory#85, SpecialServiceType#86, WardCode#87, Ward#88, BoroughCode#89, Borough#90, StnGroundName#91, PostcodeDistrict#92, Easting_m#93, Northing_m#94, ... 2 more fields], StorageLevel(disk, memory, deserialized, 1 replicas)\n            +- *(1) Project [IncidentNumber#19, DateTimeOfCall#20, CalYear#21, FinYear#22, TypeOfIncident#23, PumpCount#24, PumpHoursTotal#25, HourlyNotionalCost(£)#26 AS HourlyNotionalCostGBP#78, IncidentNotionalCost(£)#27 AS IncidentNotionalCostGBP#79, FinalDescription#28, AnimalGroupParent#29, OriginofCall#30, PropertyType#31, PropertyCategory#32, SpecialServiceTypeCategory#33, SpecialServiceType#34, WardCode#35, Ward#36, BoroughCode#37, Borough#38, StnGroundName#39, PostcodeDistrict#40, Easting_m#41, Northing_m#42, ... 2 more fields]\n               +- *(1) FileScan csv [IncidentNumber#19,DateTimeOfCall#20,CalYear#21,FinYear#22,TypeOfIncident#23,PumpCount#24,PumpHoursTotal#25,HourlyNotionalCost(£)#26,IncidentNotionalCost(£)#27,FinalDescription#28,AnimalGroupParent#29,OriginofCall#30,PropertyType#31,PropertyCategory#32,SpecialServiceTypeCategory#33,SpecialServiceType#34,WardCode#35,Ward#36,BoroughCode#37,Borough#38,StnGroundName#39,PostcodeDistrict#40,Easting_m#41,Northing_m#42,... 2 more fields] Batched: false, Format: CSV, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/animal_rescue.csv], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<IncidentNumber:string,DateTimeOfCall:string,CalYear:int,FinYear:string,TypeOfIncident:stri...
+```
+````
 The plan here confirms that no join is taking place; instead, the conditional statements are interpreted as an SQL style `CASE WHEN` statement. There are only narrow transformations, meaning that the data can stay within the partitions and no shuffle is needed and therefore should be more efficient than a join.
 
 This can be confirmed by looking at the Spark UI:
-````{tabs}
-```{code-tab} py
-spark_ui_url
-```
 
-```{code-tab} r R
-
-spark_ui_url
-
-```
-````
-
-```plaintext
-'spark-eejet47wnollgkuz.cdswmn-d01-01.ons.statistics.gov.uk'
-```
 ![Spark UI for replacing joins with a narrow transformation, showing no exchanges](../images/when_ui.png)
 
 This plan is far simpler than the other two we saw.
 
 Although it may be tempting to use this method be careful. It is trickier to code and harder to read than a conventional join and also will not work if the source data changes, so if a new value appeared in `origin_of_call` (e.g. the RSPCA or the army, which may want a different `origin_type`) we would have to change the actual code rather than adding new lines to a reference file.
 
-In production code, it is best practice to use unit tests. These are very important when making efficiency improvements, since it is important that any changes do not affect the functionality of the code. See the article on Unit Testing for more details.
+In production code, it is best practice to use unit tests. These are very important when making efficiency improvements, since it is important that any changes do not affect the functionality of the code. See the articles on [Unit Testing in PySpark] and [ sparklyr](../testing-debugging/unit-testing-sparklyr) for more details.
 
 ### When to use each method
 
@@ -710,7 +847,7 @@ First of all, it is most important that your code works. Optimising your code pr
 
 Once your code is working, the main question to answer is *is the second DataFrame small enough to be broadcast effectively?* If so, then a broadcast join is the best option. If not, use a sort merge join.
 
-Another question to answer is *should I turn the automatic broadcasting on or off*? Automatic broadcasting is useful if you're unsure as Spark will decide for you. It is also good for future-proofing if your source data grows in size, since it will automatically change to a sort merge join once it goes over the threshold; often large datasets started out as a small ones! However, only DataFrames which Spark can calculate the size of will be automatically broadcast; if not, a sort merge join will be used, even if the second DataFrame is tiny. If you're using automatic broadcasting, check the Spark UI or use `explain()` to verify the type of join.
+Another question to answer is *should I turn the automatic broadcasting on or off*? Automatic broadcasting is useful if you are unsure as Spark will decide for you. It is also good for future-proofing if your source data grows in size, since it will automatically change to a sort merge join once it goes over the threshold; often large datasets started out as a small ones! However, only DataFrames which Spark can calculate the size of will be automatically broadcast; if not, a sort merge join will be used, even if the second DataFrame is tiny. If you are using automatic broadcasting, check the Spark UI or use `explain()` to verify the type of join.
 
 Some users prefer to have complete control, by setting `spark.sql.autoBroadcastJoinThreshold` to `-1` and using the broadcast hints (`F.broadcast()`/`sdf_broadcast`). Be careful not to broadcast a DataFrame which grows in size over time if you choose to do this.
 
@@ -718,13 +855,22 @@ You can change the value of `spark.sql.autoBroadcastJoinThreshold`, which may be
 
 The narrow transformation method was shown mainly to demonstrate that you can replace a join with a narrow transformation in certain circumstances. In practice, as such DataFrames will be tiny they can be broadcast anyway so it is not recommended. Only use this if your source data will never change, and be careful to extensively test and comment your code.
 
-The analysis above assumes that the join keys in the DataFrames are roughly equally partitioned. If your DataFrame is skewed so that some partitions contain significantly more data than others, then the efficiency of the join could be affected. See the article on partitions for more detail. The solution here is to use a *salted join*.
+The analysis above assumes that the join keys in the DataFrames are roughly equally partitioned. If your DataFrame is skewed so that some partitions contain significantly more data than others, then the efficiency of the join could be affected. See the article on [partitions](../spark-concepts/partitions) for more detail. The solution here is to use a *salted join*.
 
 ### Salted Joins
 
-A sort merge join will move all the data with the same join keys to the same partition, which can lead to skew in the DataFrame and cause the join to process inefficiently, or not at all in some cases. This can be resolved with a *salted join*: splitting the join keys, so that the DataFrame is distributed into more equal partition sizes. See the article on salted joins for more information.
+A sort merge join will move all the data with the same join keys to the same partition, which can lead to skew in the DataFrame and cause the join to process inefficiently, or not at all in some cases. This can be resolved with a *salted join*: splitting the join keys, so that the DataFrame is distributed into more equal partition sizes. See the article on [salted joins](../spark-concepts/salted-joins) for more information.
 
 ### Further Resources
+
+Spark at the ONS Articles:
+- [Salted Joins](../spark-concepts/salted-joins)
+- [Shuffling](../spark-concepts/shuffling)
+- [Spark Application and UI](../spark-concepts/spark-application-and-ui)
+- [Partitions](../spark-concepts/partitions)
+- [Persisting](../spark-concepts/persistence)
+- [Unit Testing in PySpark](../testing-debugging/unit-testing-pyspark)
+- [Unit Testing in sparklyr](../testing-debugging/unit-testing-sparklyr)
 
 PySpark Documentation:
 - [`.join()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.join.html)
@@ -735,24 +881,17 @@ PySpark Documentation:
 - [`substr()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Column.substr.html) 
 - [`.isin()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Column.isin.html) 
 
-sparklyr Documentation:
+sparklyr and tidyverse Documentation:
 - [`left_join()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/join.tbl_spark.html)
 - [`explain()`](https://dplyr.tidyverse.org/reference/explain.html)
 - [`sdf_broadcast()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_broadcast.html)
 - [`case_when()`](https://dplyr.tidyverse.org/reference/case_when.html)
 
-Spark documentation:
-- [Performance tuning](https://spark.apache.org/docs/latest/sql-performance-tuning.html): details of `spark.sql.autoBroadcastJoinThreshold`
+Spark SQL Documentation:
 - [`substr`](https://spark.apache.org/docs/latest/api/sql/index.html#substr)
 
-Spark in ONS material:
-- Shuffles
-- Spark Application and UI
-- Persisting
-- Partitions
-- Salted Joins
-- Spark configuration hierarchy
-- Unit testing in Spark
+Spark Documentation
+- [Performance tuning](https://spark.apache.org/docs/latest/sql-performance-tuning.html): details of `spark.sql.autoBroadcastJoinThreshold`
 
 Other links:
 - [DataBricks Transformations definition](https://databricks.com/glossary/what-are-transformations)

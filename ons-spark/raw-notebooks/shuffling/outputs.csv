@@ -303,26 +303,26 @@ Sort [rand1#77L DESC NULLS LAST], true
   org.apache.spark.sql.execution.QueryExecution
   == Parsed Logical Plan ==
 'Project ['id, 'rand1]
-+- 'UnresolvedRelation `sparklyr_tmp_8b6bcde2_597e_41a1_afea_a2c90539caa0`
++- 'UnresolvedRelation `sparklyr_tmp_8854dc0e_5f3f_49ea_aa20_2ecb3fb39340`
 
 == Analyzed Logical Plan ==
 id: int, rand1: bigint
 Project [id#67, rand1#75L]
-+- SubqueryAlias `sparklyr_tmp_8b6bcde2_597e_41a1_afea_a2c90539caa0`
++- SubqueryAlias `sparklyr_tmp_8854dc0e_5f3f_49ea_aa20_2ecb3fb39340`
    +- Sort [rand2#76 ASC NULLS FIRST], true
       +- Project [id#67, rand1#75L, rand2#76]
-         +- SubqueryAlias `sparklyr_tmp_3c476af7_38ac_4f93_ba79_f890f7612595`
+         +- SubqueryAlias `sparklyr_tmp_0cf67306_b98a_4f6e_9707_9724b998d046`
             +- Sort [rand1#75L ASC NULLS FIRST], true
                +- Project [id#67, rand1#75L, rand2#76]
-                  +- SubqueryAlias `sparklyr_tmp_cf649a0a_9542_4b87_bd0c_5587d8ca5c9b`
+                  +- SubqueryAlias `sparklyr_tmp_eeb09493_e2b4_441e_87c6_cde6e90f4ee7`
                      +- Sort [rand2#76 ASC NULLS FIRST], true
                         +- Project [id#67, rand1#75L, rand2#76]
-                           +- SubqueryAlias `sparklyr_tmp_04e46434_3727_4701_a902_1a899f335459`
+                           +- SubqueryAlias `sparklyr_tmp_53ec02b6_5c26_4044_a594_706af310650b`
                               +- Sort [rand1#75L ASC NULLS FIRST], true
                                  +- Project [id#67, rand1#75L, CheckOverflow((promote_precision(cast(cast(rand1#75L as decimal(20,0)) as decimal(21,1))) * promote_precision(cast(-1.0 as decimal(21,1)))), DecimalType(23,1)) AS rand2#76]
                                     +- SubqueryAlias `q01`
                                        +- Project [id#67, CEIL((rand(999) * cast(10.0 as double))) AS rand1#75L]
-                                          +- SubqueryAlias `sparklyr_tmp_fb1a6a63_ad59_4c65_a7a1_3b5c1fd9e7a8`
+                                          +- SubqueryAlias `sparklyr_tmp_cec8b527_db0b_4b61_8c5e_71acac1728d2`
                                              +- LogicalRDD [id#67], false
 
 == Optimized Logical Plan ==

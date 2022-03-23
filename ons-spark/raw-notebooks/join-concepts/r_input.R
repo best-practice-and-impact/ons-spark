@@ -42,15 +42,6 @@ rescue_with_pop %>%
 
 rescue_with_pop %>% dplyr::explain()
 
-spark_ui_url <- paste0(
-    "http://",
-    "spark-",
-    Sys.getenv("CDSW_ENGINE_ID"),
-    ".",
-    Sys.getenv("CDSW_DOMAIN"))
-
-spark_ui_url
-
 rescue_with_pop_broadcast <- rescue %>%
     sparklyr::left_join(sparklyr::sdf_broadcast(population), by="postcode_district")
 
@@ -60,8 +51,6 @@ rescue_with_pop_broadcast %>%
     print()
 
 rescue_with_pop_broadcast %>% dplyr::explain()
-
-spark_ui_url
 
 sparklyr::spark_disconnect(sc)
 
@@ -134,5 +123,3 @@ rescue_with_origin_when %>%
     print()
 
 rescue_with_origin_when %>% dplyr::explain()
-
-spark_ui_url
