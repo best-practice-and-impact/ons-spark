@@ -8,18 +8,14 @@ To resolve this issue, we can change the join keys manually, so that the larger 
 
 ### Salted Join Example
 
-First, create a Spark session. This example may not work on a local session as the DataFrame is artificially created and is ten million rows long. Note that broadcast joins are being disabled by default.
+First, create a Spark session. Note that the DataFrame used in this example is artificially created and is ten million rows long, so this may not work if using a local session with only a small amount of memory. Note that broadcast joins are being disabled by default.
 ````{tabs}
 ```{code-tab} py
 import os
 from pyspark.sql import SparkSession, functions as F
 
-spark = (SparkSession.builder
+spark = (SparkSession.builder.master("local[2]")
          .appName("joins")
-         .config("spark.executor.memory", "1500m")
-         .config("spark.executor.cores", 2)
-         .config("spark.dynamicAllocation.enabled", "true")
-         .config("spark.dynamicAllocation.maxExecutors", 4)
          # Disable Broadcast join by default
          .config("spark.sql.autoBroadcastJoinThreshold", -1)
          .getOrCreate())
@@ -30,20 +26,15 @@ spark = (SparkSession.builder
 library(sparklyr)
 library(dplyr)
 
-small_config <- sparklyr::spark_config()
+no_broadcast_config <- sparklyr::spark_config()
 
-small_config$spark.executor.memory <- "1500m"
-small_config$spark.executor.cores <- 2
-small_config$spark.dynamicAllocation.enabled <- "true"
-small_config$spark.dynamicAllocation.maxExecutors <- 4
 # Disable Broadcast join by default
-small_config$spark.sql.autoBroadcastJoinThreshold <- -1
+no_broadcast_config$spark.sql.autoBroadcastJoinThreshold <- -1
 
 sc <- sparklyr::spark_connect(
-  master = "yarn-client",
+  master = "local[2]",
   app_name = "joins",
-  config = small_config)
-
+  config = no_broadcast_config)
 
 ```
 ````
@@ -93,7 +84,9 @@ skewed_df %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +--------+-------+-----------+
 |join_col|  count|pct_of_data|
 +--------+-------+-----------+
@@ -104,6 +97,18 @@ skewed_df %>%
 |       A|    100|      0.001|
 +--------+-------+-----------+
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 5 × 3
+  join_col   count pct_of_data
+  <chr>      <dbl>       <dbl>
+1 B            900       0.009
+2 A            100       0.001
+3 E        9900000      99    
+4 D          90000       0.9  
+5 C           9000       0.09 
+```
+````
 Create another DF, `small_df` that will be joined to `skewed_df`. This is a simple mapping of letters to numbers.
 ````{tabs}
 ```{code-tab} py
@@ -137,7 +142,7 @@ joined_df <- skewed_df %>%
 
 ```
 ````
-We want to see how the DataFrame is processed on the cluster using the Spark UI, so use `.count()` and set the job description with [`.setJobDescription()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.SparkContext.setJobDescription.html)/[`invoke("setJobDescription", ...)`](https://spark.rstudio.com/packages/sparklyr/latest/reference/invoke.html):
+We want to see how the DataFrame is processed on the cluster using the Spark UI, so use `.count()` and [set the job description](../spark-functions/job-description) with [`.setJobDescription()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.SparkContext.setJobDescription.html)/[`invoke("setJobDescription", ...)`](https://spark.rstudio.com/packages/sparklyr/latest/reference/invoke.html):
 ````{tabs}
 ```{code-tab} py
 spark.sparkContext.setJobDescription("Row Count")
@@ -155,9 +160,17 @@ sparklyr::sdf_nrow(joined_df)
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 10000000
 ```
+
+```{code-tab} plaintext R Output
+NULL
+[1] 1e+07
+```
+````
 Group the data to verify the result of the join:
 ````{tabs}
 ```{code-tab} py
@@ -180,7 +193,9 @@ joined_df %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +--------+----------+-------+
 |join_col|number_col|  count|
 +--------+----------+-------+
@@ -191,30 +206,21 @@ joined_df %>%
 |       A|         1|    100|
 +--------+----------+-------+
 ```
-Looking at the Spark UI for the `Row Count` job, we can see that one partition is taking much longer than the rest to process:
-````{tabs}
-```{code-tab} py
-spark_ui_url = "spark-%s.%s" % (os.environ["CDSW_ENGINE_ID"], os.environ["CDSW_DOMAIN"])
-spark_ui_url
-```
 
-```{code-tab} r R
-
-spark_ui_url <- paste0(
-    "http://",
-    "spark-",
-    Sys.getenv("CDSW_ENGINE_ID"),
-    ".",
-    Sys.getenv("CDSW_DOMAIN"))
-
-print(spark_ui_url)
-
+```{code-tab} plaintext R Output
+NULL
+# A tibble: 5 × 3
+  join_col number_col   count
+  <chr>         <int>   <dbl>
+1 B                 2     900
+2 A                 1     100
+3 E                 5 9900000
+4 D                 4   90000
+5 C                 3    9000
 ```
 ````
+Looking at the [Spark UI](../spark-concepts/spark-application-and-ui) (the Spark UI link for a local session is http://localhost:4040/jobs/) for the `Row Count` job, we can see that one partition is taking much longer than the rest to process:
 
-```plaintext
-'spark-eh9rfvaqfb5opghz.cdswmn-d01-01.ons.statistics.gov.uk'
-```
 ![Spark UI demonstrating inefficient processing of a skewed DF](../images/presalt_ui.png)
 
 This is because all of the data with the same join key will be on the same partition. To split this up, we can *salt* the keys. Salting is the process of artificially creating new join keys. For instance, the `E` key could be split into ten new keys, called `E-0`, `E-1` ... `E-9`. Provided the salting is identical in both DataFrames the result of the join will be correct. As with any similar process, ensure that your code is fully tested.
@@ -258,7 +264,9 @@ skewed_df %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +---+--------+----------+
 | id|join_col|salted_col|
 +---+--------+----------+
@@ -285,7 +293,35 @@ skewed_df %>%
 +---+--------+----------+
 only showing top 20 rows
 ```
-We now need to join on `salted_col`, so obviously need to create this column in `skewed_df` too. We can achieve this with a cross join (also sometimes called the cartesian product), to generate all the combinations of the salted values. Be careful when using cross joins as the number of rows returned will be the product of the row count in the two DataFrames.
+
+```{code-tab} plaintext R Output
+NULL
+# A tibble: 20 × 3
+      id join_col salted_col
+   <int> <chr>    <chr>     
+ 1     0 A        A-5       
+ 2     1 A        A-9       
+ 3     2 A        A-8       
+ 4     3 A        A-8       
+ 5     4 A        A-3       
+ 6     5 A        A-4       
+ 7     6 A        A-1       
+ 8     7 A        A-5       
+ 9     8 A        A-9       
+10     9 A        A-1       
+11    10 A        A-8       
+12    11 A        A-2       
+13    12 A        A-2       
+14    13 A        A-0       
+15    14 A        A-4       
+16    15 A        A-7       
+17    16 A        A-9       
+18    17 A        A-7       
+19    18 A        A-4       
+20    19 A        A-1       
+```
+````
+We now need to join on `salted_col`, so obviously need to create this column in `skewed_df` too. We can achieve this with a [cross join](../spark-functions/cross-joins) (also sometimes called the cartesian product), to generate all the combinations of the salted values. Be careful when using cross joins as the number of rows returned will be the product of the row count in the two DataFrames.
 
 Create a DataFrame of the numbers 0 to 9:
 ````{tabs}
@@ -329,33 +365,62 @@ small_df_salted %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +----------+----------+
 |number_col|salted_col|
 +----------+----------+
 |         1|       A-0|
 |         1|       A-1|
-|         2|       B-0|
-|         2|       B-1|
 |         1|       A-2|
 |         1|       A-3|
 |         1|       A-4|
+|         2|       B-0|
+|         2|       B-1|
 |         2|       B-2|
 |         2|       B-3|
 |         2|       B-4|
 |         1|       A-5|
 |         1|       A-6|
-|         2|       B-5|
-|         2|       B-6|
 |         1|       A-7|
 |         1|       A-8|
 |         1|       A-9|
+|         2|       B-5|
+|         2|       B-6|
 |         2|       B-7|
 |         2|       B-8|
 |         2|       B-9|
 +----------+----------+
 only showing top 20 rows
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 20 × 2
+   number_col salted_col
+        <int> <chr>     
+ 1          1 A-0       
+ 2          1 A-1       
+ 3          1 A-2       
+ 4          1 A-3       
+ 5          1 A-4       
+ 6          2 B-0       
+ 7          2 B-1       
+ 8          2 B-2       
+ 9          2 B-3       
+10          2 B-4       
+11          3 C-0       
+12          3 C-1       
+13          3 C-2       
+14          3 C-3       
+15          3 C-4       
+16          4 D-0       
+17          4 D-1       
+18          4 D-2       
+19          4 D-3       
+20          4 D-4       
+```
+````
 Now join on `salted_col` and `.count()` the DataFrame, once again setting the job description first:
 ````{tabs}
 ```{code-tab} py
@@ -378,9 +443,17 @@ sparklyr::sdf_nrow(salted_join_df)
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 10000000
 ```
+
+```{code-tab} plaintext R Output
+NULL
+[1] 1e+07
+```
+````
 Verify that the result was the same as before:
 ````{tabs}
 ```{code-tab} py
@@ -403,7 +476,9 @@ joined_df %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +--------+----------+-------+
 |join_col|number_col|  count|
 +--------+----------+-------+
@@ -414,22 +489,21 @@ joined_df %>%
 |       B|         2|    900|
 +--------+----------+-------+
 ```
-Finally, look at the Spark UI for `Salted Join Row Count` to see that the parallelism is improved:
-````{tabs}
-```{code-tab} py
-spark_ui_url
-```
 
-```{code-tab} r R
-
-spark_ui_url
-
+```{code-tab} plaintext R Output
+NULL
+# A tibble: 5 × 3
+  join_col number_col   count
+  <chr>         <int>   <dbl>
+1 B                 2     900
+2 A                 1     100
+3 E                 5 9900000
+4 D                 4   90000
+5 C                 3    9000
 ```
 ````
+Finally, look at the Spark UI for `Salted Join Row Count` to see that the parallelism is improved:
 
-```plaintext
-'spark-eh9rfvaqfb5opghz.cdswmn-d01-01.ons.statistics.gov.uk'
-```
 ![Spark UI demonstrating efficient processing of a salted DF](../images/salt_ui.png)
 
 The key metric here is not the overall time, but how the work is distributed. It is shared more equally and there is no longer one long green bar taking far longer than the other processes. In real life examples where salting is essential you will find that the Spark UI looks much more efficient; obviously this is only a minimal example.
@@ -437,12 +511,21 @@ The key metric here is not the overall time, but how the work is distributed. It
 ### Salting Alternatives
 
 Salting is not the only option for dealing with skewed DataFrames:
-- Broadcasting the smaller DataFrame removes the need for a shuffle of the larger DF, and so the partitioning will remain the same. A broadcast join should also be more efficient than salting.
+- [Broadcasting](../spark-concepts/join-concepts.html#broadcast-join) the smaller DataFrame removes the need for a shuffle of the larger DF, and so the partitioning will remain the same. A broadcast join should also be more efficient than salting.
 - Some parts of the join could be achieved with conditional statements, e.g. split the DF into two and use [`F.when()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.when.html)/[`case_when()`](https://dplyr.tidyverse.org/reference/case_when.html) for the larger join keys then a regular join for the rest.
 - Reducing the size of the larger DataFrame may be possible in some circumstances, e.g. by grouping or filtering earlier in the process.
-- If salting only leads to minor improvements in efficiency you may prefer not to salt and just use a regular sort merge join; you may feel that the benefits of the code being more readable and requiring less testing are worth a small sacrifice of efficiency
+- If salting only leads to minor improvements in efficiency you may prefer not to salt and just use a regular [sort merge join](../spark-concepts/join-concepts.html#sort-merge-join); you may feel that the benefits of the code being more readable and requiring less testing are worth a small sacrifice of efficiency
 
 ### Further Resources
+
+Spark at the ONS Articles:
+- [Spark Application and UI](../spark-concepts/spark-application-and-ui)
+- [Set Spark Job Description](../spark-functions/job-description)
+- [Cross Joins](../spark-functions/cross-joins)
+
+- [Optimising Joins](../spark-concepts/join-concepts)
+	- [Broadcast Join](../spark-concepts/join-concepts.html#broadcast-join)
+    - [Sort Merge Join](../spark-concepts/join-concepts.html#sort-merge-join)
 
 PySpark Documentation:
 - [`.repartition()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.repartition.html)
@@ -454,7 +537,7 @@ PySpark Documentation:
 - [`F.floor()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.floor.html)
 - [`.crossJoin()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.crossJoin.html)
 
-sparklyr/dplyr Documentation:
+sparklyr and tidyverse Documentation:
 - [`sdf_repartition()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_repartition.html)
 - [`sdf_seq()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_seq.html)
 - [`case_when()`](https://dplyr.tidyverse.org/reference/case_when.html)
@@ -466,9 +549,3 @@ Spark SQL Documentation:
 - [`rand`](https://spark.apache.org/docs/latest/api/sql/index.html#rand)
 - [`concat_ws`](https://spark.apache.org/docs/latest/api/sql/index.html#concat_ws)
 - [`floor`](https://spark.apache.org/docs/latest/api/sql/index.html#floor)
-
-Spark in ONS material:
-- Join Concepts: explains shuffle hash joins and broadcast joins
-- Spark Application and UI
-- Cross Joins
-- Spark SQL Functions in sparklyr
