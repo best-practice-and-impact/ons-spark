@@ -2,20 +2,15 @@ options(warn = -1)
 library(sparklyr)
 library(dplyr)
 
-small_config <- sparklyr::spark_config()
+no_broadcast_config <- sparklyr::spark_config()
 
-small_config$spark.executor.memory <- "1500m"
-small_config$spark.executor.cores <- 2
-small_config$spark.dynamicAllocation.enabled <- "true"
-small_config$spark.dynamicAllocation.maxExecutors <- 4
 # Disable Broadcast join by default
-small_config$spark.sql.autoBroadcastJoinThreshold <- -1
+no_broadcast_config$spark.sql.autoBroadcastJoinThreshold <- -1
 
 sc <- sparklyr::spark_connect(
-  master = "yarn-client",
+  master = "local[2]",
   app_name = "joins",
-  config = small_config)
-
+  config = no_broadcast_config)
 
 row_ct <- 10 ** 7
 skewed_df <- sparklyr::sdf_seq(sc, 0, row_ct - 1) %>%
@@ -55,15 +50,6 @@ joined_df %>%
     dplyr::summarise(count = n()) %>%
     sparklyr::collect() %>%
     print()
-
-spark_ui_url <- paste0(
-    "http://",
-    "spark-",
-    Sys.getenv("CDSW_ENGINE_ID"),
-    ".",
-    Sys.getenv("CDSW_DOMAIN"))
-
-print(spark_ui_url)
 
 sc %>%
     sparklyr::spark_context() %>%
@@ -110,5 +96,3 @@ joined_df %>%
     dplyr::summarise(count = n()) %>%
     sparklyr::collect() %>%
     print()
-
-spark_ui_url
