@@ -201,7 +201,7 @@ Spark at the ONS Articles:
 PySpark Documentation:
 - [`SparkSession`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html)
 - [`SparkSession.builder`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html#pyspark.sql.SparkSession.builder)
-- [`spark.stop()`](https://spark.apache.org/docs/3.1.1/api/python/reference/api/pyspark.sql.SparkSession.stop.html)
+- [`spark.stop()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.stop.html)
 - [`spark.sparkContext`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.SparkContext.html)
 - [`spark.sparkContext.getConf().getAll()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.SparkConf.getAll.html)
 

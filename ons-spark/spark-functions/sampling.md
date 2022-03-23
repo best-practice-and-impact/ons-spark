@@ -1,6 +1,6 @@
 ## Sampling: `.sample()` and `sdf_sample()`
 
-You can take a sample of a DataFrame with [`.sample()`](https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrame.sample) in PySpark or [`sdf_sample()`](https://spark.rstudio.com/reference/sdf_sample.html) in sparklyr. This is something that you may want to do during development or initial analysis of data, as with a smaller amount of data your code will run faster and requires less memory to process.
+You can take a sample of a DataFrame with [`.sample()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.sample.html) in PySpark or [`sdf_sample()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_sample.html) in sparklyr. This is something that you may want to do during development or initial analysis of data, as with a smaller amount of data your code will run faster and requires less memory to process.
 
 It is important to note that sampling in Spark returns an approximate fraction of the data, rather than an exact one. The reason for this is explained in the [Returning an exact sample](#returning-an-exact-sample) section.
 
@@ -80,7 +80,7 @@ rescue_sample %>% sparklyr::sdf_nrow()
 ```
 
 ```{code-tab} plaintext R Output
-[1] 573
+[1] 552
 ```
 ````
 You can also set a seed, in a similar way to how random numbers generators work. This enables replication, which is useful in Spark given that the DataFrame will be otherwise be re-sampled every time an action is called.
@@ -193,7 +193,7 @@ rescue %>%
 ````
 #### Partitioning
 
-The number of partitions will remain the same when sampling, even though the DataFrame will be smaller. If you are taking a small fraction of the data then your DataFrame may have too many partitions. You can use [`.coalesce()`](https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.functions.coalesce) in PySpark or [`sdf_coalesce()`](https://spark.rstudio.com/reference/sdf_coalesce.html) in sparklyr to reduce the number of partitions, e.g. if your original DF had $200$ partitions and you take a $10\%$ sample, you can reduce the number of partitions to $20$ with `df.sample(fraction=0.1).coalesce(20)`.
+The number of partitions will remain the same when sampling, even though the DataFrame will be smaller. If you are taking a small fraction of the data then your DataFrame may have too many partitions. You can use [`.coalesce()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.coalesce.html) in PySpark or [`sdf_coalesce()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html) in sparklyr to reduce the number of partitions, e.g. if your original DF had $200$ partitions and you take a $10\%$ sample, you can reduce the number of partitions to $20$ with `df.sample(fraction=0.1).coalesce(20)`.
 
 #### Sampling consistently by filtering the data
 
@@ -230,7 +230,6 @@ This section briefly discusses similar functions to `.sample()` and `sdf_sample(
 
 #### Splitting a DF: `.randomSplit()` and `sdf_random_split()`
 
-You can split a DF into two or more DFs with [`.randomSplit()`](https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrame.randomSplit) in PySpark and [`sdf_random_split()`](https://spark.rstudio.com/reference/sdf_random_split.html) in sparklyr. This is common when using machine learning, to generate training and test datasets.
 
 Every row in the DF will be allocated to one of the split DFs. In common with the other sampling methods the exact size of each split may vary. An optional seed can also be set.
 
@@ -267,9 +266,9 @@ Split3: 600
 ```
 
 ```{code-tab} plaintext R Output
-[1] "Split1: 2996"
-[1] "Split2: 2333"
-[1] "Split3: 569"
+[1] "Split1: 2907"
+[1] "Split2: 2387"
+[1] "Split3: 604"
 ```
 ````
 Check that the count of the splits equals the total row count:
@@ -304,11 +303,11 @@ Split count total: 5898
 ````
 #### Stratified samples: `.sampleBy()`
 
-A stratified sample can be taken with [`.sampleBy()`](https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrame.sampleBy) in PySpark. This takes a column, `col`, to sample by, and a dictionary of weights, `fractions`.
+A stratified sample can be taken with [`.sampleBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.sampleby.html) in PySpark. This takes a column, `col`, to sample by, and a dictionary of weights, `fractions`.
 
 In common with other sampling methods this does not return an exact proportion and you can also optionally set a seed.
 
-Note that there is no native sparklyr implementation for stratified sampling, although there is a method for weighted sampling, [`sdf_weighted_sample()`](https://spark.rstudio.com/reference/sdf_weighted_sample.html).
+Note that there is no native sparklyr implementation for stratified sampling, although there is a method for weighted sampling, [`sdf_weighted_sample()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_weighted_sample.html).
 
 In PySpark, to return $5\%$ of cats, $10\%$ of dogs and $50\%$ of hamsters:
 ````{tabs}
@@ -371,17 +370,17 @@ Spark at the ONS Articles:
 - [Checkpoint](../raw-notebooks/checkpoint-staging/checkpoint-staging)
 
 PySpark Documentation:
-- [`.sample()`](https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrame.sample)
+- [`.sample()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.sample.html)
 - [`.limit()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.limit.html)
-- [`.coalesce()`](https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.functions.coalesce)
-- [`.randomSplit()`](https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrame.randomSplit)
-- [`.sampleBy()`](https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrame.sampleBy)
+- [`.coalesce()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.coalesce.html)
+- [`.randomSplit()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.randomSplit.html)
+- [`.sampleBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.sampleBy.html)
 
 sparklyr Documentation:
-- [`sdf_sample()`](https://spark.rstudio.com/reference/sdf_sample.html)
-- [`sdf_coalesce()`](https://spark.rstudio.com/reference/sdf_coalesce.html)
-- [`sdf_random_split()`](https://spark.rstudio.com/reference/sdf_random_split.html)
-- [`sdf_weighted_sample()`](https://spark.rstudio.com/reference/sdf_weighted_sample.html)
+- [`sdf_sample()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_sample.html)
+- [`sdf_coalesce()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html)
+- [`sdf_random_split()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_random_split.html)
+- [`sdf_weighted_sample()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_weighted_sample.html)
 
 R Documentation:
 - [`head()`](https://stat.ethz.ch/R-manual/R-devel/library/utils/html/head.html)

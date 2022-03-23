@@ -494,9 +494,9 @@ Base R Documentation:
 - [`as.double()`](https://stat.ethz.ch/R-manual/R-devel/library/base/html/double.html)
 
 [Spark SQL Functions](../sparklyr-intro/sparklyr-functions) Documentation:
-- [`bigint()`](https://spark.apache.org/docs/latest/api/sql/index.html#bigint)
-- [`double()`](https://spark.apache.org/docs/latest/api/sql/index.html#double)
-- [`to_timestamp()`](https://spark.apache.org/docs/latest/api/sql/index.html#to_timestamp)
+- [`bigint`](https://spark.apache.org/docs/latest/api/sql/index.html#bigint)
+- [`double`](https://spark.apache.org/docs/latest/api/sql/index.html#double)
+- [`to_timestamp`](https://spark.apache.org/docs/latest/api/sql/index.html#to_timestamp)
 
 sparklyr Source Code:
 - [dbi_spark_connection.R](https://github.com/sparklyr/sparklyr/blob/eb3e795447887908d9e795512ad08eeeb32eede5/R/dbi_spark_connection.R#L38): shows data type mapping in sparklyr
