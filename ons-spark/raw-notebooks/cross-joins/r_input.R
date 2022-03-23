@@ -2,12 +2,10 @@ options(warn = -1)
 library(sparklyr)
 library(dplyr)
 
-default_config <- sparklyr::spark_config()
-
 sc <- sparklyr::spark_connect(
     master = "local[2]",
-    app_name = "sampling",
-    config = default_config)
+    app_name = "joins",
+    config = sparklyr::spark_config())
 
 config <- yaml::yaml.load_file("ons-spark/config.yaml")
 
