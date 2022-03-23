@@ -1,4 +1,4 @@
-# Spark Application and UI
+## Spark Application and UI
 
 This article introduces the structure of a Spark application and how the structure relates to the various pages within the application monitoring interface, the Spark UI. 
 
@@ -6,16 +6,16 @@ The Spark UI is used to monitor the status and resource consumption of your Spar
 
 Understanding the structure of a Spark application helps to understand how Spark works so you can begin to think differently as you code to get the most out of Spark.
 
-## Spark Application Overview
+### Spark Application Overview
 A Spark application has an underlining structure and learning about this structure will help us:
 1. understand the difference between a narrow transformation, wide transformation and an action 
 2. navigate around the Spark UI
 
 Below is a diagram of the Spark application hierarchy:
 
-- **Application** - a set of jobs managed by a single driver, e.g. on a Cloudera platform that is the CDSW session. An application is created when we connect to Spark with a `SparkSession` in PySpark or `spark_connect()` in sparklyr.
-- **Job** - a set of stages executed as a result of an *action*, e.g. `.count()`/`sdf_nrow()`. A job might consist of a number of *transformations*, but a job always finishes with an *action*.
-- **Stage** - a set of tasks that can be executed in parallel. Similar to how *actions* define a job boundary, a stage boundary is introduced by a *wide* transformation, such as `.groupby()`/`group_by()` or `.join()`/`left_join()`. A stage might consist of many *narrow* transformations, but a stage always finishes with a *wide* transformation or action.
+- **Application** - a set of jobs managed by a single driver, e.g. on a Cloudera platform that is the CDSW session. An application is created when we connect to Spark with a [`SparkSession`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html) in PySpark or [`spark_connect()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html) in sparklyr.
+- **Job** - a set of stages executed as a result of an *action*, e.g. [`.count()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.count.html)/[`sdf_nrow()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_dim.html). A job might consist of a number of *transformations*, but a job always finishes with an *action*.
+- **Stage** - a set of tasks that can be executed in parallel. Similar to how *actions* define a job boundary, a stage boundary is introduced by a *wide* transformation, such as [`.groupBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.groupBy.html)/[`group_by()`](https://dplyr.tidyverse.org/reference/group_by.html) or [`.join()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.join.html)/[`left_join()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/join.tbl_spark.html). A stage might consist of many *narrow* transformations, but a stage always finishes with a *wide* transformation or action.
 - **Task** - an individual unit of work assigned to a single core on an executor.
 
 
@@ -24,23 +24,23 @@ Below is a diagram of the Spark application hierarchy:
 
 Note that Jobs, Stages and Tasks are numbered starting from zero.
 
-Now look more closely at the DataFrame. On the left there is a Spark DataFrame which is split up into four sections, called *partitions*. Spark puts our data into partitions automatically so we don't have to decide how or when to do it. More details on exactly how Spark does this are in the **Partitions Article**. 
+Now look more closely at the DataFrame. On the left there is a Spark DataFrame which is split up into four sections, called *partitions*. Spark puts our data into partitions automatically so we don't have to decide how or when to do it. More details on exactly how Spark does this are in the [Partitions Article](../spark-concepts/partitions).
 
 The first operation to be applied to this DataFrame is a *narrow* transformation, e.g. adding two columns to create a new column. The second operation is again a narrow transformation. These two operations can be run in parallel, because each child partition has only one parent, indicated by the golden arrows.
 
-Then we hit a stage boundary, which means the third operation is a *wide* transformation, e.g. aggregating the data or joining with another DataFrame. This is a wide operation because each child partition has multiple parent partitions. This is also an example of *shuffling* the data, which means to move data between partitions, more on shuffling in the **Shuffling Article**.
+Then we hit a stage boundary, which means the third operation is a *wide* transformation, e.g. aggregating the data or joining with another DataFrame. This is a wide operation because each child partition has multiple parent partitions. This is also an example of *shuffling* the data, which means to move data between partitions, more on shuffling in the [Shuffling Article](../spark-concepts/shuffling).
 
 Finally in the diagram above there is another narrow operation on the aggregated DataFrame before we run into an *action*, e.g. writing the data to HDFS or a simple count of the rows. 
 
-As we execute the wide and narrow transformations nothing happens to the data at this point in time, Spark just builds up a plan of what to do with the DataFrame. This plan is a called the execution plan and is a set of instructions of how to transform the data from one state to another. More on the execution plan in the **Persisting Article**. An action initiates the execution plan and so this is when the DataFrame is processed. All the previous transformations, along with the action, are put into Spark *jobs* and deployed on the Spark cluster. 
+As we execute the wide and narrow transformations nothing happens to the data at this point in time, Spark just builds up a plan of what to do with the DataFrame. This plan is a called the execution plan and is a set of instructions of how to transform the data from one state to another. More on the execution plan in the [Persisting Article](../spark-concepts/persistence). An action initiates the execution plan and so this is when the DataFrame is processed. All the previous transformations, along with the action, are put into Spark *jobs* and deployed on the Spark cluster. 
 
-## Investigate the Spark UI
+### Investigate the Spark UI
 
 We will create an application and execute some code to create jobs. Then we can drill down from Job to Stage to Task and investigate their performance. In most cases this is where we look first when trying to diagnose a slow Spark application.
 
-### Create an application
+#### Create an application
 
-The first step is to create an application. Once we create a Spark application we can look at the Spark UI. If we stop the Spark session using `spark.stop()`/`spark_disconnect()` or disconnect from the notebook, the Spark UI for our application can no longer be accessed.
+The first step is to create an application. Once we create a Spark application we can look at the Spark UI. If we stop the Spark session using [`spark.stop()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.stop.html)/[`spark_disconnect()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html) or disconnect from the notebook, the Spark UI for our application can no longer be accessed.
 
 Let's start with the necessary imports and create an application. 
 ````{tabs}
@@ -65,7 +65,6 @@ sc <- sparklyr::spark_connect(
 
 ```
 ````
-
 We can then look at the Spark UI using the URL  http://localhost:4040/jobs/. Note this address is used for a local Spark session, for more information on how to navigate to the Spark UI see the [documentation on monitoring](https://spark.apache.org/docs/latest/monitoring.html).
 
 If you are running the source notebook and follow the above link you will see something similar to the screenshot below, with the application name on the top right and various tabs along the top. 
@@ -97,9 +96,16 @@ print(paste0("Number of partitions: ", sparklyr::sdf_num_partitions(rescue)))
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 Number of partitions:  2
 ```
+
+```{code-tab} plaintext R Output
+[1] "Number of partitions: 2"
+```
+````
 Next we'll carry out some basic processes to see how this translates into jobs, stages and tasks in the Spark UI. We will  group the incident costs by creating a new column called `cost_group` containing three groups `small`, `medium` and `large`.
 ````{tabs}
 ```{code-tab} py
@@ -133,7 +139,9 @@ rescue %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +------------+----------------------------------------------------------------+----------+----------+
 |animal_group|                                                     description|total_cost|cost_group|
 +------------+----------------------------------------------------------------+----------+----------+
@@ -147,6 +155,20 @@ rescue %>%
 +------------+----------------------------------------------------------------+----------+----------+
 only showing top 7 rows
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 7 × 4
+  animal_group description                                 total_cost cost_group
+  <chr>        <chr>                                            <dbl> <chr>     
+1 Cat          CAT TRAPPED IN BASEMENT                            290 small     
+2 Horse        HORSE TRAPPED IN GATE                              590 medium    
+3 Bird         PIGEON WITH WING IMAPLED ON SHARP IMPLEMEN…        326 medium    
+4 Cat          ASSIST RSPCA WITH CAT STUCK ON CHIMNEY             295 small     
+5 Dog          DOG FALLEN INTO THE CANAL                          260 small     
+6 Deer         DEER STUCK IN RAILINGS                             520 medium    
+7 Deer         DEER TRAPPED IN FENCE                              260 small     
+```
+````
 To produce the above output Spark didn't need to process all of the partitions, there are enough rows on one partition to create the output so Spark only processed one partition. If we want Spark to process all of the partitions we need to call an action that involves all rows of the DataFrame, such as getting the row count.
 ````{tabs}
 ```{code-tab} py
@@ -160,15 +182,22 @@ rescue %>% sparklyr::sdf_nrow()
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 5898
 ```
+
+```{code-tab} plaintext R Output
+[1] 5898
+```
+````
 ### Jobs page
 Now that we've created some jobs let's have a quick look at the application's *Event timeline*. For those who are running this as a notebook:
 
 1. Go into the Spark UI
 2. Make sure you're on the Jobs tab
-3. Open the *Event timeline* collapsable section using the blue arrow to see something similar to the below image.
+3. Open the *Event timeline* collapsible section using the blue arrow to see something similar to the below image.
 
 Note the images in this article were created using PySpark, the Spark UI will look slightly different when using sparklyr, but not very different.
 
@@ -180,18 +209,18 @@ In the top section of the timeline you will see the executors being added and re
 
 Let's look at the *Completed Jobs* table. The description gives us a clue as to the action that initiated that job. The first job, *Job Id* 0, was to interact with HDFS, so it has the description `parquet at NativeMethodAccessorImpl.java:0`. Remember that executing transformations creates an execution plan, so Spark needs to know the DataFrame's schema, i.e. column names and types, to validate our PySpark/sparklyr code. Reading from disk will always create a job, usually consisting of just one stage as shown in the *Stages* column.
 
-The second job was initiated by `.show()`/`collect()`, again it consists of one stage, which itself had one task as shown in the *Tasks* column. As mentioned in the previous section, Spark only needed to process one partition to produce the output so we therefore have one task in this job. 
+The second job was initiated by [`.show()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.show.html)/[`collect()`](https://dplyr.tidyverse.org/reference/compute.html), again it consists of one stage, which itself had one task as shown in the *Tasks* column. As mentioned in the previous section, Spark only needed to process one partition to produce the output so we therefore have one task in this job. 
 
 The third job was the `.count()`/`sdf_nrow()`. The job contains two stages, which themselves consist of 3 tasks. Let's get more information on these stages and tasks. Within the *Completed Jobs* table click on the link in the *Description* column for the latest job that says `count at NativeMethodAccessorImpl.java:0`. 
 
-Now we are on the *Job Details* page which show information about the job's stages. The first stage had two tasks, one task to count the rows in each partition. The second stage had one task, which was to send the result to the driver for us to see. On this page you will see another type of diagram called a Directed Acyclic Graph or DAG, by opening the *DAG Vizualisation* collapsable section.
+Now we are on the *Job Details* page which show information about the job's stages. The first stage had two tasks, one task to count the rows in each partition. The second stage had one task, which was to send the result to the driver for us to see. On this page you will see another type of diagram called a Directed Acyclic Graph or DAG, by opening the *DAG Vizualisation* collapsible section.
 
 The DAG shows the two stages. Here are some rough definitions of the terms inside the boxes
 1. *WholeStageCodegen*- this is Spark creating an optimised version of our code
 2. *Exchange* - another word for *shuffling* data, i.e. data is being moved between partitions
 3. *mapPartitionsInternal* - bringing information from multiple partitions together
 
-There are more informative DAG diagrams on the SQL tab, which are explored in the **Joins Article** and **Persisiting Article**. 
+There are more informative DAG diagrams on the SQL tab, which are explored in the [Optimising Joins](../spark-concepts/join-concepts) and [Persisting](../spark-concepts/persistence) articles. 
 
 ![Stage information in Spark UI showing DAG and stage table](../images/spark_app_stages.png)
 
@@ -203,7 +232,7 @@ This page contains lots of detailed information about the individual tasks and i
 
 #### Task Event timeline
 
-Opening the *Event timeline* collapseable menu will show a timeline like in the below image. This timeline has a single row, which means one executor (i.e. the driver in our case because we're running a local session) was used to complete these tasks. This executor has two cores, we know this because the *Executor Computing Time* (shown in green) of the two task are overlapping. If there was just one core available to the driver the two tasks would not run in parallel.
+Opening the *Event timeline* collapsible menu will show a timeline like in the below image. This timeline has a single row, which means one executor (i.e. the driver in our case because we're running a local session) was used to complete these tasks. This executor has two cores, we know this because the *Executor Computing Time* (shown in green) of the two task are overlapping. If there was just one core available to the driver the two tasks would not run in parallel.
 
 ![Task event timeline in Spark UI showing parallel processing on tasks](../images/spark_app_task_timeline.png)
 
@@ -223,11 +252,11 @@ This is a useful indication of the distribution of times taken for various compo
 
 ![Task metrics table in the Spark UI](../images/spark_app_task_metrics.png)
 
-We won't discuss *GC time*, or garbage collection time, in this article. This is a topic that is covered in **a separate article**.
+We won't discuss *GC time*, or garbage collection time, in this article. This is a topic that is covered in [a separate article](../spark-concepts/garbage-collection).
 
-## More information
+### More information
 
-### Documentation
+#### Documentation
 
 There are tens of blogs available online that introduce some feature in the Spark UI, but most are not particularly useful and are generally rehashes of other blogs. 
 
@@ -237,13 +266,13 @@ The documentation runs through the different pages of the Spark UI with screensh
 
 >**Scheduler delay** is the time the task waits to be scheduled for execution
 
-### Moving data outside Spark
+#### Moving data outside Spark
 
 Note that in our case using the Data Access Platform (DAP) we could call the *driver* here *CDSW session*, but we'll use driver to be consistent with other material in this book.
 
 What can the Spark UI tell us about the processing of Pandas/R DataFrames? Let's investigate by 
 1. aggregate the `rescue` DataFrame
-2. use `.toPandas()`/`collect()` to move the data to the driver
+2. use [`.toPandas()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.toPandas.html)/`collect()` to move the data to the driver
 3. make a plot of the aggregated data
 4. check the Spark UI
 
@@ -270,13 +299,26 @@ aggregated_r
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
   cost_group  count
 0       None     82
 1     medium   2045
 2      small   3691
 3      large     80
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 4 × 2
+  cost_group count
+  <chr>      <dbl>
+1 <NA>          38
+2 medium      2045
+3 small       3691
+4 large        124
+```
+````
 
 ````{tabs}
 ```{code-tab} py
@@ -299,6 +341,12 @@ ggplot2::ggplot(aggregated_r_plot, ggplot2::aes(cost_group, count)) +
 ```
 ````
 
+````{tabs}
+
+```{code-tab} plaintext Python Output
+<matplotlib.axes._subplots.AxesSubplot at 0x7fc7dd4c2a58>
+```
+````
 ![Incident cost by cost group chart](../images/spark_app_incident_cost_chart.png)
 
 Now we have our chart, let's see how that translates to tasks in the Spark UI.
@@ -311,11 +359,11 @@ The plotting was done in Pandas/R and so Spark was not involved at all. We there
 
 Finally, let's take a look at the stages and tasks for the latest job in the Spark UI and have and see an example of identifying a performance issue, how to solving it, and finding evidence of improvement.
 
-The `.toPandas()`/`collect()` job has two stages because the `.groupBy().agg()`/`group_by()%>%summarise()` command is a wide transformation. In the first stage the data is read in, a new column added and then the dataset is aggregated. This stage has 2 tasks because the `rescue` DataFrame has 2 partitions. The second stage in this job moves the data from the cluster to the CDSW session. This stage has 200 tasks, because `aggregated_spark` has 200 partitions, more on why this is the case in the **Partitions article**. A screenshot of the *Stage details* for these tasks is below.
+The `.toPandas()`/`collect()` job has two stages because the `.groupBy()`[`.agg()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.agg.html)/`group_by() %>% `[`summarise()`](https://dplyr.tidyverse.org/reference/summarise.html) command is a wide transformation. In the first stage the data is read in, a new column added and then the dataset is aggregated. This stage has 2 tasks because the `rescue` DataFrame has 2 partitions. The second stage in this job moves the data from the cluster to the CDSW session. This stage has 200 tasks, because `aggregated_spark` has 200 partitions, more on why this is the case in the [Partitions](../spark-concepts/partitions). A screenshot of the *Stage details* for these tasks is below.
 
 ![Task information for 200 tasks](../images/spark_app_200_tasks.png)
 
-As we're running in local mode with 2 cores (or threads), the processing of these 200 tasks took place on the driver. The tasks seem to show relatively poor performance, which is indicated by the non-green colours in the timeline. Also by comparing the *Duration* (useful processing time) metrics with that of *Scheduler Delay* and *Task Deserialization Time* in the *Summary Metrics* table. Would we get better performance if the `aggregated_spark` DataFrame had fewer partitions? Let's try to improve the performace by reducing the number of partitions from 200 to 2.
+As we're running in local mode with 2 cores (or threads), the processing of these 200 tasks took place on the driver. The tasks seem to show relatively poor performance, which is indicated by the non-green colours in the timeline. Also by comparing the *Duration* (useful processing time) metrics with that of *Scheduler Delay* and *Task Deserialization Time* in the *Summary Metrics* table. Would we get better performance if the `aggregated_spark` DataFrame had fewer partitions? Let's try to improve the performance by reducing the number of partitions from 200 to 2 with [`.coalesce()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.coalesce.html)/[`sdf_coalesce()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html):
 ````{tabs}
 ```{code-tab} py
 aggregated_spark = rescue.groupBy("cost_group").agg(F.count("incident_number").alias("count")).coalesce(2)
@@ -335,7 +383,6 @@ aggregated_r <- aggregated_spark %>%
 
 ```
 ````
-
 Now navigate to the details of the latter stage of the latest job within the UI and you will see something similar to the screenshot below. Of course, the all important metric to compare is the time taken to complete the stage. Previously, using 200 partitions the stage time was 0.6 seconds, using 2 partitions the stage time was 0.3 seconds. Looking at this page we can see why.
 
 ![Task timeline for fewer tasks showing better performance](../images/spark_app_2_tasks.png)
@@ -346,7 +393,7 @@ Again, the processing took place on the driver with 2 cores, but this time there
 
 The important point is that we are processing a small amount of data and therefore should reduce the partitioning. With 200 partitions a lot of time was spent scheduling tasks and (de)serializing data. By putting our small DataFrame into fewer partitions we spent more time on useful processing and decreased the overall processing time.
 
-## Summary
+### Summary
 
 **Spark application hierarchy**
 
@@ -365,23 +412,38 @@ The important point is that we are processing a small amount of data and therefo
 - Look out for task colours, green is generally good
 - Use online documentation for more information about the UI
 - Lots of small partitions is an inefficient strategy to process data
-- Matching up the executed code with the job number in the UI is difficult, the description starts with the action used to initiate that job. You can also customise the job description to track jobs easier. See **Job Decription tip** for more information.
+- Matching up the executed code with the job number in the UI is difficult, the description starts with the action used to initiate that job. You can also customise the job description to track jobs easier. See the article on [Set Spark Job Description](../spark-functions/job-description) for more information.
 
-## Further Resources
+### Further Resources
 
-Spark at the ONS:
-- Partitions
-- Shuffling
-- Persisting
-- Joins
-- Garbage Collection
-- Job description
+Spark at the ONS Articles:
+- [Partitions](../spark-concepts/partitions)
+- [Shuffling](../spark-concepts/shuffling).
+- [Persisting](../spark-concepts/persistence)
+- [Optimising Joins](../spark-concepts/join-concepts)
+- [Garbage Collection](../spark-concepts/garbage-collection)
+- [Set Spark Job Description](../spark-functions/job-description) 
+
+PySpark Documentation:
+- [`SparkSession`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html)
+- [`.count()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.count.html)
+- [`.groupBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.groupBy.html)
+- [`.join()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.join.html)
+- [`spark.stop()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.stop.html)
+- [`.show()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.show.html)
+- [`.toPandas()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.toPandas.html)
+- [`.agg()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.agg.html)
+- [`.coalesce()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.coalesce.html)
+
+sparklyr and tidyverse Documentation:
+- [`spark_connect()` and `spark_disconnect()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html)
+- [`group_by()`](https://dplyr.tidyverse.org/reference/group_by.html)
+- [`left_join()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/join.tbl_spark.html)
+- [`sdf_nrow()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_dim.html)
+- [`collect()`](https://dplyr.tidyverse.org/reference/compute.html)
+- [`summarise()`](https://dplyr.tidyverse.org/reference/summarise.html)
+- [`sdf_coalesce()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html)
 
 Spark documentation:
+- [Monitoring and Instrumentation](https://spark.apache.org/docs/latest/monitoring.html)
 - [Spark Web UI](https://spark.apache.org/docs/latest/web-ui.html)
-
-PySpark documentation:
-- [`.coalesce()`](https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.functions.coalesce)
-
-sparklyr documentation:
-- [`sdf_coalesce()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html#usage)
