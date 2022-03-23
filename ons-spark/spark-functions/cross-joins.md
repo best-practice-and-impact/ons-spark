@@ -6,11 +6,9 @@ As a cross join will return every combination of the rows, the size of the retur
 
 The syntax for cross joins is different in PySpark and sparklyr. In PySpark, DataFrames have a [`.crossJoin()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.crossJoin.html) method. In sparklyr, use [`full_join()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/join.tbl_spark.html) with `by=character()`.
 
-One use case for cross joins is to return every combination when producing results that involve grouping and aggregation, even when some of these are zero. Cross joins are also commonly used in salted joins, used to improve the efficiency of a join when the join keys are skewed.
+One use case for cross joins is to return every combination when producing results that involve grouping and aggregation, even when some of these are zero. Cross joins are also commonly used in [salted joins](../spark-concepts/salted-joins), used to improve the efficiency of a join when the join keys are skewed.
 
 ### Example: producing all combinations of results
-
-Note that the output displayed is for PySpark; the sparklyr output may be formatted slightly differently.
 
 First, start a Spark session (disabling broadcast joins by default) read in the Animal Rescue data, group by `animal_group` and `cal_year`, and then get the sum of `total_cost`:
 ````{tabs}
@@ -42,12 +40,10 @@ rescue.show(5, truncate=False)
 library(sparklyr)
 library(dplyr)
 
-default_config <- sparklyr::spark_config()
-
 sc <- sparklyr::spark_connect(
     master = "local[2]",
-    app_name = "sampling",
-    config = default_config)
+    app_name = "joins",
+    config = sparklyr::spark_config())
 
 config <- yaml::yaml.load_file("ons-spark/config.yaml")
 
@@ -64,7 +60,9 @@ rescue %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +--------------------------------+--------+-------+
 |animal_group                    |cal_year|cost   |
 +--------------------------------+--------+-------+
@@ -76,6 +74,18 @@ rescue %>%
 +--------------------------------+--------+-------+
 only showing top 5 rows
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 5 × 3
+  animal_group                     cal_year  cost
+  <chr>                               <int> <dbl>
+1 Dog                                  2018 34507
+2 Horse                                2013 11890
+3 Squirrel                             2011  1040
+4 Fox                                  2017 12124
+5 Unknown - Domestic Animal Or Pet     2015  9217
+```
+````
 If there are no animals rescued in a particular year then there are no rows to sum, and so nothing will be returned. In some cases we would prefer a zero value to be returned, rather than an empty DataFrame.
 
 For instance, no data will be returned for `Hamster` and `2012`:
@@ -94,12 +104,20 @@ rescue %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +------------+--------+----+
 |animal_group|cal_year|cost|
 +------------+--------+----+
 +------------+--------+----+
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 0 × 3
+# … with 3 variables: animal_group <chr>, cal_year <int>, cost <dbl>
+```
+````
 A cross join can be used here, to return every combination of `animal_group` and `cal_year`, which then serves as a base DataFrame which `rescue` can be joined to. First, create a DataFrame for unique `animals` and `cal_years` and sort them:
 ````{tabs}
 ```{code-tab} py
@@ -129,11 +147,19 @@ print(paste("Distinct year count:",  sparklyr::sdf_nrow(cal_years), sep=" "))
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 Distinct animal count: 27
 Distinct year count: 11
 ```
-There can be issues in Spark when joining values from a DF to itself, which can be resolved by checkpointing to break the lineage of the DataFrame. See the article on checkpointing for more information.
+
+```{code-tab} plaintext R Output
+[1] "Distinct animal count: 27"
+[1] "Distinct year count: 11"
+```
+````
+There can be issues in Spark when joining values from a DF to itself, which can be resolved by checkpointing to break the lineage of the DataFrame. See the article on [checkpointings](../raw-notebooks/checkpoint-staging/checkpoint-staging) for more information.
 ````{tabs}
 ```{code-tab} py
 checkpoint_path = config["checkpoint_path"]
@@ -172,9 +198,16 @@ sparklyr::sdf_nrow(result)
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 297
 ```
+
+```{code-tab} plaintext R Output
+[1] 297
+```
+````
 Previewing `result` we can see that every combination has been returned:
 ````{tabs}
 ```{code-tab} py
@@ -191,7 +224,9 @@ result %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +------------+--------+
 |animal_group|cal_year|
 +------------+--------+
@@ -213,9 +248,31 @@ result %>%
 +------------+--------+
 only showing top 15 rows
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 15 × 2
+   animal_group cal_year
+   <chr>           <int>
+ 1 Bird             2009
+ 2 Bird             2010
+ 3 Bird             2011
+ 4 Bird             2012
+ 5 Bird             2013
+ 6 Bird             2014
+ 7 Bird             2015
+ 8 Bird             2016
+ 9 Bird             2017
+10 Bird             2018
+11 Bird             2019
+12 Budgie           2009
+13 Budgie           2010
+14 Budgie           2011
+15 Budgie           2012
+```
+````
 Now left join `rescue` to `result`, to return the `cost`. Combinations which do not exist in `rescue` will return a null `cost`.
 
-Note that the DF has been reordered during the join, as shuffle hash join was used rather than a broadcast join. See the article on join concepts for more information on this.
+Note that the DF has been reordered during the join, as [sort merge join](../spark-concepts/join-concepts.html#sort-merge-join) was used rather than a [broadcast join](../spark-concepts/join-concepts.html#broadcast-join). See the article on [optimising joins](../spark-concepts/join-concepts)for more information on this.
 ````{tabs}
 ```{code-tab} py
 result = result.join(rescue, on = ["animal_group", "cal_year"], how="left")
@@ -235,7 +292,9 @@ result %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +--------------------+--------+-------+
 |        animal_group|cal_year|   cost|
 +--------------------+--------+-------+
@@ -252,6 +311,23 @@ result %>%
 +--------------------+--------+-------+
 only showing top 10 rows
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 10 × 3
+   animal_group cal_year  cost
+   <chr>           <int> <dbl>
+ 1 Bird             2009 25095
+ 2 Budgie           2009    NA
+ 3 Bird             2010 27300
+ 4 Budgie           2010    NA
+ 5 Bird             2011 36140
+ 6 Budgie           2011   260
+ 7 Bird             2012 32240
+ 8 Budgie           2012    NA
+ 9 Bird             2013 26350
+10 Budgie           2013    NA
+```
+````
 The final stage is to change any null values to zero and re-order the DF.
 
 We can now filter on `Hamster` to see that `2012` now exists and is returned with a zero value:
@@ -275,7 +351,9 @@ result %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +------------+--------+------+
 |animal_group|cal_year|  cost|
 +------------+--------+------+
@@ -292,6 +370,24 @@ result %>%
 |     Hamster|    2019|   0.0|
 +------------+--------+------+
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 11 × 3
+   animal_group cal_year  cost
+   <chr>           <int> <dbl>
+ 1 Hamster          2009     0
+ 2 Hamster          2010   780
+ 3 Hamster          2011   780
+ 4 Hamster          2012     0
+ 5 Hamster          2013   870
+ 6 Hamster          2014   295
+ 7 Hamster          2015     0
+ 8 Hamster          2016  1630
+ 9 Hamster          2017     0
+10 Hamster          2018     0
+11 Hamster          2019     0
+```
+````
 ### Accidental Cross Joins
 
 Cross joins can be dangerous due to the size of DataFrame that they return. In PySpark, it is possible to create a cross join accidentally when using a regular join where the key column only has one distinct value in it. In these cases Spark will sometimes process the join as a cross join and return an error, depending on the lineage of the DataFrame. You can disable this error with `.config("spark.sql.crossJoin.enabled", "true")`.
@@ -320,9 +416,12 @@ except AnalysisException as e:
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 'Detected implicit cartesian product for LEFT OUTER join between logical plans\nRange (0, 5, step=1, splits=Some(2))\nand\nProject [animal_noise#203]\n+- Filter (isnotnull(animal_group#202) && (Dog = animal_group#202))\n   +- LogicalRDD [animal_group#202, animal_noise#203], false\nJoin condition is missing or trivial.\nEither: use the CROSS JOIN syntax to allow cartesian products between these\nrelations, or: enable implicit cartesian products by setting the configuration\nvariable spark.sql.crossJoin.enabled=true;'
 ```
+````
 To resolve this, start a new Spark session and add `.config("spark.sql.crossJoin.enabled", "true")` to the config. The DFs will have been cleared by closing the Spark session and so need to be created again.
 ````{tabs}
 ```{code-tab} py
@@ -345,7 +444,9 @@ dogs.join(animal_noise, on="animal_group", how="left").show()
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +------------+---+------------+
 |animal_group| id|animal_noise|
 +------------+---+------------+
@@ -356,6 +457,7 @@ dogs.join(animal_noise, on="animal_group", how="left").show()
 |         Dog|  4|        Woof|
 +------------+---+------------+
 ```
+````
 Finally, clear the checkpoints that were used in the code:
 ````{tabs}
 ```{code-tab} py
@@ -369,12 +471,26 @@ system(paste0("hdfs dfs -rm -r -skipTrash ", config$checkpoint_path))
 
 ```
 ````
+
+````{tabs}
+
+```{code-tab} plaintext R Output
+Deleted file:///home/cdsw/ons-spark/checkpoints
+```
+````
 ### Salted Joins
 
-Cross joins can also be used when *salting* a join. Salting improves the efficiency of a join by reducing the skew in the DataFrame, by introducing new join keys. See the article on salted joins for an example.
+Cross joins can also be used when *salting* a join. Salting improves the efficiency of a join by reducing the skew in the DataFrame, by introducing new join keys. See the article on [salted joins](../spark-concepts/salted-joins) for an example.
 
 ### Further Resources
 
+Spark at the ONS Articles:
+- [Salted Joins](../spark-concepts/salted-joins)
+- [Checkpoint and Staging Tables](../raw-notebooks/checkpoint-staging/checkpoint-staging)
+- [Optimising Joins](../spark-concepts/join-concepts)
+    - [Sort Merge Join](../spark-concepts/join-concepts.html#sort-merge-join)
+	- [Broadcast Join](../spark-concepts/join-concepts.html#broadcast-join)
+    
 PySpark Documentation:
 - [`.crossJoin()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.crossJoin.html)
 - [`.checkpoint()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.checkpoint.html)
@@ -384,11 +500,6 @@ sparklyr Documentation:
 - [`full_join()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/join.tbl_spark.html): there is no native cross join function in sparklyr; the documentation recommends using `by=character()`
 - [`sdf_checkpoint()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_checkpoint.html)
 - [`sdf_distinct()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_distinct.html)
-
-Spark in ONS material:
-- Join Concepts: explains shuffle hash joins and broadcast joins 
-- Salted Joins: salted joins make use of cross joining during the preparation
-- Lineage, Checkpoints and Staging Tables
 
 Other links:
 - [GitHub: SPARK-28621](https://github.com/apache/spark/pull/25520): pull request for setting `spark.sql.crossJoin.enabled` to be `true` by default in Spark 3
