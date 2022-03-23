@@ -1,12 +1,10 @@
 options(warn = -1)
 library(sparklyr)
 
-partitions_config <- sparklyr::spark_config()
-
 sc <- sparklyr::spark_connect(
     master = "local[2]",
     app_name = "partitions",
-    config = partitions_config)
+    config = sparklyr::spark_config())
 
 row_ct <- 5000
 seed_no <- 42L #this is used to create the pseudo-random numbers
@@ -59,8 +57,9 @@ count_by_area <- rescue %>% dplyr::group_by(PostcodeDistrict) %>%
 count_by_area %>% head(5) %>% sparklyr::collect()
 print(paste0('Number of partitions in count_by_area DataFrame:', count_by_area %>% sparklyr::sdf_num_partitions()))
 
-#rows_in_part <- sparklyr::spark_apply(rand_df, function(x) nrow(x)) %>% sparklyr::collect() #this takes a long time in sparklyr
-#print(paste0('Number of rows per partition: ', rows_in_part)) 
+# Note that this code takes a long time to run in sparklyr
+rows_in_part <- sparklyr::spark_apply(count_by_area, function(x) nrow(x)) %>% sparklyr::collect()
+print(paste0('Number of rows per partition: ', rows_in_part)) 
 
 rand_df %>% sparklyr::sdf_num_partitions()
 
