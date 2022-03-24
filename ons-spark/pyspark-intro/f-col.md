@@ -244,14 +244,15 @@ rescue.filter(F.col("notional_cost") > 2500).show()
 |092389-09072018|       2664.0|
 +---------------+-------------+
 ```
-If your data is stored as CSV with non-standard column names you may want to create a data cleansing stage, which reads in the CSV and renames the columns, then write this out as a [parquet file](../spark-functions/parquet) or [Hive table](../spark-functions/table). Parquet files and Hive tables also have the advantage of being far quicker for Spark to process
+If your data is stored as CSV with non-standard column names you may want to create a data cleansing stage, which reads in the CSV and renames the columns, then write this out as a [parquet file](../spark-functions/writing-data.html#writing-data-to-a-parquet-file) or [Hive table](../spark-functions/writing-data.html#writing-data-to-a-hive-table). Parquet files and Hive tables also have the advantage of being far quicker for Spark to process
 
 ### Further Resources
 
 Spark at the ONS Articles:
 - [Handling Errors in PySpark](../testing-debugging/handling-errors-pyspark)
-- [Writing Data to a Parquet File](../spark-functions/parquet)
-- [Writing Data to a Hive table](../spark-functions/table)
+- [Writing Data](../spark-functions/writing-data)
+    - [Writing Data to a Parquet File](../spark-functions/writing-data.html#writing-data-to-a-parquet-file)
+    - [Writing Data to a Hive Table](../spark-functions/writing-data.html#writing-data-to-a-hive-table)
 
 PySpark Documentation:
 - [`.filter()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.filter.html)

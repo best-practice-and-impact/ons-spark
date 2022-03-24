@@ -95,7 +95,7 @@ only showing top 10 rows
 ````
 To find the number of partitions of a DataFrame in PySpark we need to access the underlying RDD structures that make up the DataFrame by using `.rdd` after referencing the DataFrame. Then we can use the [`.getNumPartitions()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.RDD.getNumPartitions.html) method to return the number of partitions. In sparklyr we can just use the function [`sdf_num_partitions()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_num_partitions.html).
 
-We can also find out how many rows are in each partition. There is more than one way of doing this, one method was introduced in the [Shuffling](../spark-concepts/shuffles) article and will be used later in this article, a second method is shown below. Again, in PySpark we will need to access the underlying RDDs then map on a `lambda` function that will loop over the rows in each partition and return a count of these rows in a list. In sparklyr we can use [`spark_apply()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_apply.html) to give us a row count for each partition.
+We can also find out how many rows are in each partition. There is more than one way of doing this, one method was introduced in the [Shuffling](../spark-concepts/shuffling) article and will be used later in this article, a second method is shown below. Again, in PySpark we will need to access the underlying RDDs then map on a `lambda` function that will loop over the rows in each partition and return a count of these rows in a list. In sparklyr we can use [`spark_apply()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_apply.html) to give us a row count for each partition.
 
 Don't worry too much about understanding this line of code, it's the result which is important here.
 ````{tabs}
@@ -430,7 +430,7 @@ Number of rows per partition:	 [1, 1, 1, 0, 0, 0, 1, 1, 2, 1, 2, 1, 0, 1, 1, 0, 
 ````
 Quite a few empty partitions- this is a clear case of overpartitioning. In the [Spark Application and UI](../spark-concepts/spark-application-and-ui) article it was shown that overpartitioning leads to slower processing as a larger proportion of time is spent on scheduling tasks and (de)serialising data instead of processing the task.
 
-Again, there is a property we can modify in the Spark session configuration to change this behaviour. The property to override is `spark.sql.shuffle.partitions`. *Shuffle partitions* means when a shuffle occurs, for example a *wide* operation. So this property says "give the resulting DataFrame this many partitions". See the article on [Shuffling](../spark-concepts/shuffles) for more information on shuffles. 
+Again, there is a property we can modify in the Spark session configuration to change this behaviour. The property to override is `spark.sql.shuffle.partitions`. *Shuffle partitions* means when a shuffle occurs, for example a *wide* operation. So this property says "give the resulting DataFrame this many partitions". See the article on [Shuffling](../spark-concepts/shuffling) for more information on shuffles. 
 
 The [Spark documentation](https://spark.apache.org/docs/latest/configuration.html#runtime-sql-configuration) shows that the default value for `spark.sql.shuffle.partitions` is 200. This default is obviously too high for our case of grouping a small dataset with a small number of groups i.e. `PostcodeDistrict`. This is one of the more useful properties to consider changing depending on the size of the data you want to process with Spark.
 
@@ -576,7 +576,7 @@ rand_df %>% sparklyr::sdf_num_partitions()
 ````
 Repartition can be used to increase parallelisation.
 
-The other important difference is that `.repartition()` incurs a *full* shuffle of the DataFrame, meaning it rewrites all the data into the new partitions. Shuffling takes time, especially for large amounts of data, so it's best to avoid shuffling more data than needed. To learn more about shuffling have a look at the [Shuffling](../spark-concepts/shuffles) article.
+The other important difference is that `.repartition()` incurs a *full* shuffle of the DataFrame, meaning it rewrites all the data into the new partitions. Shuffling takes time, especially for large amounts of data, so it's best to avoid shuffling more data than needed. To learn more about shuffling have a look at the [Shuffling](../spark-concepts/shuffling) article.
 
 On the other hand `.coalesce()` involves moving just some of the data. Let's demonstrate by an example.
 
@@ -1148,7 +1148,7 @@ Remember, it's only worth experimenting on the *optimum* number if you have a re
 
 Spark at the ONS Articles:
 - [Spark Application and UI](../spark-concepts/spark-application-and-ui)
-- [Shuffling](../spark-concepts/shuffles)
+- [Shuffling](../spark-concepts/shuffling)
 - [Guidance on Spark Sessions](../spark-overview/spark-session-guidance)
 - [Window Functions in Spark](../spark-functions/window-functions)
 - [Salted Joins](../spark-concepts/salted-joins)
@@ -1175,4 +1175,4 @@ sparklyr and tidyverse Documentation:
 Spark Documentation:
 - [Spark Configuration](https://spark.apache.org/docs/latest/configuration.html):
     - [Execution Behaviour](https://spark.apache.org/docs/latest/configuration.html#execution-behavior)
-	- [Runtime SQL Configuration]https://spark.apache.org/docs/latest/configuration.html#runtime-sql-configuration
+    - [Runtime SQL Configuration](https://spark.apache.org/docs/latest/configuration.html#runtime-sql-configuration)
