@@ -4,8 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Caching &#8212; Spark at the ONS</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
@@ -39,22 +38,24 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/tabs.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Checkpoint" href="../raw-notebooks/checkpoint-staging/checkpoint_staging.html" />
+    <link rel="next" title="Checkpoint" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html" />
     <link rel="prev" title="Persisting in Spark" href="persistence.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
@@ -106,8 +107,13 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/when-to-use-spark.html">
+   When To Use Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="../spark-overview/spark-session-guidance.html">
-   Spark Sessions
+   Guidance on Spark Sessions
   </a>
  </li>
  <li class="toctree-l1">
@@ -135,6 +141,11 @@
    Creating DataFrames Manually
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/data-storage.html">
+   Data Storage
+  </a>
+ </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
@@ -148,8 +159,8 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../pyspark-intro/pyspark-intro-exercises.html">
-   Introduction to PySpark: Exercises
+  <a class="reference internal" href="../pyspark-intro/reading-data-pyspark.html">
+   Reading Data in PySpark
   </a>
  </li>
  <li class="toctree-l1">
@@ -175,7 +186,7 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../sparklyr-intro/sparklyr_functions.html">
+  <a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">
    Using Spark functions in sparklyr
   </a>
  </li>
@@ -187,7 +198,7 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/union_dataframes_with_different_columns.html">
+  <a class="reference internal" href="../spark-functions/union-dataframes-with-different-columns.html">
    Union two DataFrames with different columns
   </a>
  </li>
@@ -232,6 +243,26 @@
    Window Functions in Spark
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/cross-joins.html">
+   Cross Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/arrays.html">
+   Array Functions in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/writing-data.html">
+   Writing Data
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/job-description.html">
+   Set Spark Job Description
+  </a>
+ </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
@@ -240,7 +271,7 @@
 </p>
 <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="spark_application_and_ui.html">
+  <a class="reference internal" href="spark-application-and-ui.html">
    Spark Application and UI
   </a>
  </li>
@@ -250,23 +281,18 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="join_concepts.html">
+  <a class="reference internal" href="join-concepts.html">
    Optimising Joins
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/cross_joins.html">
-   Cross Joins
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="salted_joins.html">
+  <a class="reference internal" href="salted-joins.html">
    Salted Joins
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="partitions.html">
-   Managing partitions
+   Managing Partitions
   </a>
  </li>
  <li class="toctree-l1">
@@ -280,13 +306,60 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint_staging.html">
+  <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html">
    Checkpoint
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="garbage-collection.html">
+   Garbage Collection
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="df-order.html">
+   Spark DFs Are Not Ordered
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="exercises.html">
    Exercises
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Testing and Debugging
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/unit-testing-pyspark.html">
+   Unit Testing in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/unit-testing-sparklyr.html">
+   Unit Testing in sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/errors-pyspark.html">
+   Understanding Errors in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/errors-sparklyr.html">
+   Understanding Errors in sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/handling-errors-pyspark.html">
+   Handling Errors in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/handling-errors-sparklyr.html">
+   Handling Errors in sparklyr
   </a>
  </li>
 </ul>
@@ -299,6 +372,16 @@
  <li class="toctree-l1">
   <a class="reference internal" href="../ancillary-topics/visualisation.html">
    Spark and Visualisation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/module-imports.html">
+   Avoiding Module Import Conflicts
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/pydoop.html">
+   Pydoop
   </a>
  </li>
 </ul>
@@ -347,7 +430,7 @@
                 data-placement="left">.md</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -381,56 +464,56 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
             </div>
             <nav id="bd-toc-nav" aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#">
-   Caching
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#how-big-is-my-dataframe">
+   How big is my DataFrame?
   </a>
-  <ul class="visible nav section-nav flex-column">
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#how-big-is-my-dataframe">
-     How big is my DataFrame?
-    </a>
-   </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#persist">
-     Persist
-    </a>
-   </li>
-  </ul>
  </li>
- <li class="toc-h1 nav-item toc-entry">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#persist">
+   Persist
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#using-cache-for-more-efficient-coding">
    Using cache for more efficient coding
   </a>
-  <ul class="visible nav section-nav flex-column">
-   <li class="toc-h2 nav-item toc-entry">
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#preparing-the-data">
      Preparing the data
     </a>
    </li>
-   <li class="toc-h2 nav-item toc-entry">
+   <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#analysis">
      Analysis
     </a>
    </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#investigate-the-spark-ui">
-     Investigate the Spark UI
-    </a>
-   </li>
-   <li class="toc-h2 nav-item toc-entry">
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#investigate-the-spark-ui">
+   Investigate the Spark UI
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#using-a-cache">
      Using a cache
     </a>
    </li>
   </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
  </li>
 </ul>
 
@@ -440,10 +523,72 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Caching</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#how-big-is-my-dataframe">
+   How big is my DataFrame?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#persist">
+   Persist
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#using-cache-for-more-efficient-coding">
+   Using cache for more efficient coding
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#preparing-the-data">
+     Preparing the data
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#analysis">
+     Analysis
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#investigate-the-spark-ui">
+   Investigate the Spark UI
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#using-a-cache">
+     Using a cache
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
-  <section class="tex2jax_ignore mathjax_ignore" id="caching">
+  <div class="section" id="caching">
 <h1>Caching<a class="headerlink" href="#caching" title="Permalink to this headline">¶</a></h1>
 <p>Caching Spark DataFrames can be useful for two reasons:</p>
 <ol class="simple">
@@ -451,8 +596,8 @@
 <li><p>Improve Spark performance by breaking the lineage of a DataFrame</p></li>
 </ol>
 <p>In this article we will firstly introduce caching to estimate the size of a DataFrame then see an example of where caching is useful to remove repeated runs of an execution plan.</p>
-<p>For a more detailed discussion on persistence in Spark please see the <strong>Persistence article</strong>.</p>
-<section id="how-big-is-my-dataframe">
+<p>For a more detailed discussion on persistence in Spark please see the <a class="reference internal" href="persistence.html"><span class="doc std std-doc">Persisting</span></a> article.</p>
+<div class="section" id="how-big-is-my-dataframe">
 <h2>How big is my DataFrame?<a class="headerlink" href="#how-big-is-my-dataframe" title="Permalink to this headline">¶</a></h2>
 <p>A simple use of persistence in Spark is to find out how much memory is used to store a DataFrame. This is a tricky subject because the amount of memory or disk space a data set uses depends on many factors, including:</p>
 <ol class="simple">
@@ -462,7 +607,7 @@
 <li><p>type of serialisation (compression)</p></li>
 </ol>
 <p>Most of this list is beyond the scope of this article, but it’s useful to know that these factors effect the exact size of a data set.</p>
-<p>As usual we’ll start with some imports and creating a <code class="docutils literal notranslate"><span class="pre">SparkSession</span></code>.</p>
+<p>As usual we’ll start with some imports and creating a Spark session.</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-0-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-0-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
@@ -482,9 +627,9 @@
 </pre></div>
 </div>
 </div></div>
-<p>Next we need some data. Here we’re using a small amount of data because we’re running a local session which has very imited resource.</p>
-<p>Note that <code class="docutils literal notranslate"><span class="pre">cache()</span></code> in PySpark is a transformation, so to initiate moving the data into memory we need an action, hence the <code class="docutils literal notranslate"><span class="pre">.count()</span></code>.</p>
-<p>In sparklyr there is a <code class="docutils literal notranslate"><span class="pre">force=TRUE</span></code> argument in the <code class="docutils literal notranslate"><span class="pre">tbl_cache()</span></code> function meaning there is no need to pipe this into a row count. Also note that the name of the DataFrame will appear in the Spark UI, which is a nice feature in sparklyr. To do the same in PySpark we would need to register the DataFrame as a temporary table and give it a name.</p>
+<p>Next we need some data. Here we’re using a small amount of data because we’re running a local session which has very limited resource.</p>
+<p>Note that <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.cache.html"><code class="docutils literal notranslate"><span class="pre">.cache()</span></code></a> in PySpark is a transformation, so to initiate moving the data into memory we need an action, hence the <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.count.html"><code class="docutils literal notranslate"><span class="pre">.count()</span></code></a>.</p>
+<p>In sparklyr there is a <code class="docutils literal notranslate"><span class="pre">force=TRUE</span></code> argument in the <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/tbl_cache.html"><code class="docutils literal notranslate"><span class="pre">tbl_cache()</span></code></a> function meaning there is no need to pipe this into a row count. Also note that the name of the DataFrame will appear in the Spark UI, which is a nice feature in sparklyr. To do the same in PySpark we would need to register the DataFrame as a temporary table and give it a name.</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-1-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-1-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
@@ -505,18 +650,20 @@
 </pre></div>
 </div>
 </div></div>
-<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>2297
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button></div><div aria-labelledby="tab-2-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>2297
 </pre></div>
 </div>
-<p>Now we can take a look in the Spark UI, which is reached using the URL <a class="reference external" href="http://localhost:4040/jobs/">http://localhost:4040/jobs/</a>. Note this address is used for a local Spark session, for more information on how to navigate to the Spark UI see the <a class="reference external" href="https://spark.apache.org/docs/latest/monitoring.html">documentation on monitoring</a>.</p>
-<p>Within the Spark UI, if you were to head over to the <em>Storage</em> tab you would see an RDD stored in memory, in two partitions and using 35.7 KB of executor memory. More on RDDs in the <a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-concepts/shuffling.html#a-quick-note-on-rdds">Shuffling</a> article.</p>
+</div></div>
+<p>Now we can take a look in the <a class="reference internal" href="spark-application-and-ui.html"><span class="doc std std-doc">Spark UI</span></a>, which is reached using the URL <a class="reference external" href="http://localhost:4040/jobs/">http://localhost:4040/jobs/</a>. Note this address is used for a local Spark session, for more information on how to navigate to the Spark UI see the <a class="reference external" href="https://spark.apache.org/docs/latest/monitoring.html">documentation on monitoring</a>.</p>
+<p>Within the Spark UI, if you were to head over to the <em>Storage</em> tab you would see an RDD stored in memory, in two partitions and using 35.7 KB of executor memory. More on RDDs in the <a class="reference external" href="../spark-concepts/shuffling.html#a-quick-note-on-rdds">Shuffling</a> article.</p>
 <p><img alt="cached DataFrame in memory" src="../_images/cache_memory.png" /></p>
 <p>You can also click on the RDD name to get more information, such as how many executors are being used and the size of each partition.</p>
 <p><img alt="partition details of cached DataFrame" src="../_images/cache_memory_partitions.png" /></p>
-</section>
-<section id="persist">
+</div>
+<div class="section" id="persist">
 <h2>Persist<a class="headerlink" href="#persist" title="Permalink to this headline">¶</a></h2>
-<p>There is another function that can be used to persist DataFrames, <code class="docutils literal notranslate"><span class="pre">persist()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_persist()</span></code> in PySpark/sparklyr. This is a general form of <code class="docutils literal notranslate"><span class="pre">cache()</span></code>/<code class="docutils literal notranslate"><span class="pre">tbl_cache()</span></code>. It is similar to doing a cache but we are able to specify where to store the data, e.g. use memory but allow spill over to executor disk if the executor memory is full. <code class="docutils literal notranslate"><span class="pre">persist()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_persist()</span></code> takes a <code class="docutils literal notranslate"><span class="pre">StorageLevel</span></code> argument to specify where to cache the data. Options for storage levels are:</p>
+<p>There is another function that can be used to persist DataFrames, <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.persist.html"><code class="docutils literal notranslate"><span class="pre">.persist()</span></code></a>/<a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_persist.html"><code class="docutils literal notranslate"><span class="pre">sdf_persist()</span></code></a> in PySpark/sparklyr. This is a general form of <code class="docutils literal notranslate"><span class="pre">.cache()</span></code>/<code class="docutils literal notranslate"><span class="pre">tbl_cache()</span></code>. It is similar to doing a cache but we are able to specify where to store the data, e.g. use memory but allow spill over to executor disk if the executor memory is full. <code class="docutils literal notranslate"><span class="pre">.persist()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_persist()</span></code> takes a <code class="docutils literal notranslate"><span class="pre">StorageLevel</span></code> argument to specify where to cache the data. Options for storage levels are:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">MEMORY_ONLY</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">MEMORY_AND_DISK</span></code></p></li>
@@ -525,69 +672,77 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">DISK_ONLY</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">OFF_HEAP</span></code></p></li>
 </ul>
-<p>Using the <code class="docutils literal notranslate"><span class="pre">MEMORY_ONLY</span></code> option is equivalent to <code class="docutils literal notranslate"><span class="pre">cache()</span></code>/<code class="docutils literal notranslate"><span class="pre">tbl_cache()</span></code>. More information on storage levels can be found in the <a class="reference external" href="https://spark.apache.org/docs/latest/rdd-programming-guide.html#rdd-persistence">Apache Spark documentation</a>. The only detail we will add here is that <code class="docutils literal notranslate"><span class="pre">DISK</span></code> in this instance refers to the executor disk and not the file system.</p>
+<p>Using the <code class="docutils literal notranslate"><span class="pre">MEMORY_ONLY</span></code> option is equivalent to <code class="docutils literal notranslate"><span class="pre">.cache()</span></code>/<code class="docutils literal notranslate"><span class="pre">tbl_cache()</span></code>. More information on storage levels can be found in the <a class="reference external" href="https://spark.apache.org/docs/latest/rdd-programming-guide.html#rdd-persistence">Apache Spark documentation</a>. The only detail we will add here is that <code class="docutils literal notranslate"><span class="pre">DISK</span></code> in this instance refers to the executor disk and not the file system.</p>
 <p>There’s an example below to see how this is used, first we will unpersist the previous DataFrame so that we don’t fill our cache memory with unused data. Note this time in sparklyr we need to add a row count.</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-2-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-2-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">population</span><span class="o">.</span><span class="n">unpersist</span><span class="p">()</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-3-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-3-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">population</span><span class="o">.</span><span class="n">unpersist</span><span class="p">()</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-2-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">tbl_uncache</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="s">&quot;population&quot;</span><span class="p">)</span>
+</div><div aria-labelledby="tab-3-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">tbl_uncache</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="s">&quot;population&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></div>
-<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>DataFrame[postcode_district: string, population: bigint]
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-4-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button></div><div aria-labelledby="tab-4-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>DataFrame[postcode_district: string, population: bigint]
 </pre></div>
 </div>
+</div></div>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-3-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-3-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark</span> <span class="kn">import</span> <span class="n">StorageLevel</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-5-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-5-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-5-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark</span> <span class="kn">import</span> <span class="n">StorageLevel</span>
 <span class="n">population</span><span class="o">.</span><span class="n">persist</span><span class="p">(</span><span class="n">StorageLevel</span><span class="o">.</span><span class="n">DISK_ONLY</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-3-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_persist</span><span class="p">(</span><span class="n">population</span><span class="p">,</span> <span class="n">storage.level</span> <span class="o">=</span> <span class="s">&quot;DISK_ONLY&quot;</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;population&quot;</span><span class="p">)</span> <span class="o">%&gt;%</span>
+</div><div aria-labelledby="tab-5-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_persist</span><span class="p">(</span><span class="n">population</span><span class="p">,</span> <span class="n">storage.level</span> <span class="o">=</span> <span class="s">&quot;DISK_ONLY&quot;</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;population&quot;</span><span class="p">)</span> <span class="o">%&gt;%</span>
     <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">()</span>
 </pre></div>
 </div>
 </div></div>
-<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>2297
-</pre></div>
-</div>
-<p>Before we move on, head back to the Spark UI and have a look at how much space the <code class="docutils literal notranslate"><span class="pre">population</span></code> DataFrame uses on disk.</p>
-<p><img alt="cached DataFrame on executor disk" src="../_images/cache_disk.png" /></p>
-<p>Is this what you expected? Why is this number different to persisting in memory? Because there is some compression involved in data written on disk.</p>
-<p><a class="reference external" href="https://en.wikipedia.org/wiki/Databricks">Databricks</a>, a company founded by the creators of Apache Spark, suggest the use cases for <code class="docutils literal notranslate"><span class="pre">.persist()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_persist()</span></code> are rare. The are often cases where you might want to persist using <code class="docutils literal notranslate"><span class="pre">cache()</span></code>/<code class="docutils literal notranslate"><span class="pre">tbl_cache()</span></code>, write to disk, use <code class="docutils literal notranslate"><span class="pre">checkpoint()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_checkpoint()</span></code> or staging tables, but the options that <code class="docutils literal notranslate"><span class="pre">.persist()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_persist()</span></code> present are not as useful. For a more detailed discussion about these options see the <strong>Persistence article</strong></p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-4-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-4-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-4-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">population</span><span class="o">.</span><span class="n">unpersist</span><span class="p">()</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-6-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-6-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-6-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>2297
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-4-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">tbl_uncache</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="s">&quot;population&quot;</span><span class="p">)</span>
+</div><div aria-labelledby="tab-6-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] 2297
 </pre></div>
 </div>
 </div></div>
-<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>DataFrame[postcode_district: string, population: bigint]
+<p>Before we move on, head back to the Spark UI and have a look at how much space the <code class="docutils literal notranslate"><span class="pre">population</span></code> DataFrame uses on disk.</p>
+<p><img alt="cached DataFrame on executor disk" src="../_images/cache_disk.png" /></p>
+<p>Is this what you expected? Why is this number different to persisting in memory? Because there is some compression involved in data written on disk.</p>
+<p><a class="reference external" href="https://databricks.com/">Databricks</a>, a company founded by the creators of Apache Spark, suggest the use cases for <code class="docutils literal notranslate"><span class="pre">.persist()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_persist()</span></code> are rare. The are often cases where you might want to persist using <code class="docutils literal notranslate"><span class="pre">cache()</span></code>/<code class="docutils literal notranslate"><span class="pre">tbl_cache()</span></code>, write to disk, use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.checkpoint.html"><code class="docutils literal notranslate"><span class="pre">.checkpoint()</span></code></a>/<a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_checkpoint.html"><code class="docutils literal notranslate"><span class="pre">sdf_checkpoint()</span></code></a> or staging tables, but the options that <code class="docutils literal notranslate"><span class="pre">.persist()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_persist()</span></code> present are not as useful. For a more detailed discussion about these options see the <a class="reference internal" href="persistence.html"><span class="doc std std-doc">Persisting</span></a> article.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-7-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-7-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-7-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-7-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">population</span><span class="o">.</span><span class="n">unpersist</span><span class="p">()</span>
 </pre></div>
 </div>
-</section>
-</section>
-<section class="tex2jax_ignore mathjax_ignore" id="using-cache-for-more-efficient-coding">
-<h1>Using cache for more efficient coding<a class="headerlink" href="#using-cache-for-more-efficient-coding" title="Permalink to this headline">¶</a></h1>
+</div><div aria-labelledby="tab-7-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-7-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">tbl_uncache</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="s">&quot;population&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-8-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button></div><div aria-labelledby="tab-8-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-8-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>DataFrame[postcode_district: string, population: bigint]
+</pre></div>
+</div>
+</div></div>
+</div>
+<div class="section" id="using-cache-for-more-efficient-coding">
+<h2>Using cache for more efficient coding<a class="headerlink" href="#using-cache-for-more-efficient-coding" title="Permalink to this headline">¶</a></h2>
 <p>Let’s take a look at caching to speed up some processing. The scenario is that we want to read in some data and apply some cleaning and preprocessing. Then using this <em>cleansed</em> DataFrame we want to produce three tables as outputs for a publication.</p>
 <p>The data we will use are the animal rescue data set collected by the London Fire Brigade.</p>
-<section id="preparing-the-data">
-<h2>Preparing the data<a class="headerlink" href="#preparing-the-data" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="preparing-the-data">
+<h3>Preparing the data<a class="headerlink" href="#preparing-the-data" title="Permalink to this headline">¶</a></h3>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-5-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-5-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-5-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-9-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-9-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-9-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-9-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span>
     <span class="n">config</span><span class="p">[</span><span class="s1">&#39;rescue_path_csv&#39;</span><span class="p">],</span> 
     <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
 <span class="p">)</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-5-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_csv</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">config</span><span class="o">$</span><span class="n">rescue_path_csv</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span> <span class="n">infer_schema</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span> 
+</div><div aria-labelledby="tab-9-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-9-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_csv</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">config</span><span class="o">$</span><span class="n">rescue_path_csv</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span> <span class="n">infer_schema</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span> 
 </pre></div>
 </div>
 </div></div>
 <p>The DataFrame is read into a single partition, which is fine because it’s a small amount of data. However, we’ll repartition to later demonstrate a feature of Spark.</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-6-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-6-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-6-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">repartition</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-10-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-10-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-10-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-10-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">repartition</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
 <span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span>
     <span class="s1">&#39;WardCode&#39;</span><span class="p">,</span> 
@@ -624,7 +779,7 @@
 <span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">na</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;TotalCost&quot;</span><span class="p">,</span> <span class="s2">&quot;IncidentDuration&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-6-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_repartition</span><span class="p">(</span><span class="m">2</span><span class="p">)</span>
+</div><div aria-labelledby="tab-10-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-10-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_repartition</span><span class="p">(</span><span class="m">2</span><span class="p">)</span>
 
 <span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span>
      <span class="o">-</span> <span class="n">WardCode</span><span class="p">,</span> 
@@ -662,12 +817,12 @@
 </div>
 </div></div>
 <p>Note that the above cells executed very quickly. Remember this is because they’re all transformations, which means Spark hasn’t executed the code yet; take a look at the Spark UI if you need convincing. So far Spark has created an execution plan but is waiting for an action to implement the plan.</p>
-</section>
-<section id="analysis">
-<h2>Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="analysis">
+<h3>Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h3>
 <p>Now we have our cleansed DataFrame we can go on to produce some tables for our article on animal rescue costs for the London Fire Brigade. Here we will put the code into functions because we will rerun these snippets of code multiple times in this notebook.</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-7-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-7-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-7-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-7-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_top_10_incidents</span><span class="p">(</span><span class="n">sdf</span><span class="p">):</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-11-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-11-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-11-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-11-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_top_10_incidents</span><span class="p">(</span><span class="n">sdf</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">sdf</span>
         <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;CalYear&quot;</span><span class="p">,</span> <span class="s2">&quot;PostcodeDistrict&quot;</span><span class="p">,</span> <span class="s2">&quot;AnimalGroup&quot;</span><span class="p">,</span> <span class="s2">&quot;IncidentDuration&quot;</span><span class="p">,</span> <span class="s2">&quot;TotalCost&quot;</span><span class="p">)</span>
         <span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s2">&quot;TotalCost&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -700,7 +855,7 @@
     <span class="p">)</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-7-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-7-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">get_top_10_incidents</span> <span class="o">&lt;-</span> <span class="nf">function</span><span class="p">(</span><span class="n">sdf</span><span class="p">)</span> <span class="p">{</span>
+</div><div aria-labelledby="tab-11-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-11-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">get_top_10_incidents</span> <span class="o">&lt;-</span> <span class="nf">function</span><span class="p">(</span><span class="n">sdf</span><span class="p">)</span> <span class="p">{</span>
         <span class="n">sdf</span> <span class="o">%&gt;%</span> 
             <span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">CalYear</span><span class="p">,</span> <span class="n">PostcodeDistrict</span><span class="p">,</span> <span class="n">AnimalGroup</span><span class="p">,</span> <span class="n">IncidentDuration</span><span class="p">,</span> <span class="n">TotalCost</span><span class="p">)</span> <span class="o">%&gt;%</span>
             <span class="n">dplyr</span><span class="o">::</span><span class="nf">arrange</span><span class="p">(</span><span class="n">dplyr</span><span class="o">::</span><span class="nf">desc</span><span class="p">(</span><span class="n">TotalCost</span><span class="p">))</span> <span class="o">%&gt;%</span>
@@ -737,11 +892,11 @@
 </div></div>
 <p>Next we will call the above functions and show the results</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-8-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-8-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-8-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-8-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">top_10_incidents</span> <span class="o">=</span> <span class="n">get_top_10_incidents</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-12-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-12-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-12-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-12-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">top_10_incidents</span> <span class="o">=</span> <span class="n">get_top_10_incidents</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span>
 <span class="n">top_10_incidents</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-8-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-8-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">top_10_incidents</span> <span class="o">&lt;-</span> <span class="nf">get_top_10_incidents</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span>
+</div><div aria-labelledby="tab-12-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-12-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">top_10_incidents</span> <span class="o">&lt;-</span> <span class="nf">get_top_10_incidents</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span>
 
 <span class="n">top_10_incidents</span> <span class="o">%&gt;%</span>
     <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
@@ -749,7 +904,8 @@
 </pre></div>
 </div>
 </div></div>
-<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+-------+----------------+---------------------+----------------+---------+
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-13-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-13-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-13-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-13-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+-------+----------------+---------------------+----------------+---------+
 |CalYear|PostcodeDistrict|AnimalGroup          |IncidentDuration|TotalCost|
 +-------+----------------+---------------------+----------------+---------+
 |2016   |NW5             |Cat                  |4.0             |3912.0   |
@@ -765,19 +921,36 @@
 +-------+----------------+---------------------+----------------+---------+
 </pre></div>
 </div>
+</div><div aria-labelledby="tab-13-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-13-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># A tibble: 10 × 5
+   CalYear PostcodeDistrict AnimalGroup           IncidentDuration TotalCost
+     &lt;int&gt; &lt;chr&gt;            &lt;chr&gt;                            &lt;dbl&gt;     &lt;dbl&gt;
+ 1    2016 NW5              Cat                                4        3912
+ 2    2013 E4               Horse                              6        3480
+ 3    2015 TN14             Horse                              5        2980
+ 4    2018 UB4              Horse                              4        2664
+ 5    2014 TW4              Cat                                4.5      2655
+ 6    2011 E17              Horse                              3        2340
+ 7    2011 E17              Horse                              3        2340
+ 8    2011 E14              Deer                               3        2340
+ 9    2018 TN16             Unknown - Wild Animal              3.5      2296
+10    2017 N19              Cat                                3.5      2282
+</pre></div>
+</div>
+</div></div>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-9-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-9-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-9-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-9-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">mean_cost_by_animal</span> <span class="o">=</span> <span class="n">get_mean_cost_by_animal</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-14-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-14-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-14-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-14-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-14-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-14-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">mean_cost_by_animal</span> <span class="o">=</span> <span class="n">get_mean_cost_by_animal</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span>
 <span class="n">mean_cost_by_animal</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-9-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-9-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">mean_cost_by_animal</span> <span class="o">&lt;-</span> <span class="nf">get_mean_cost_by_animal</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span>
+</div><div aria-labelledby="tab-14-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-14-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">mean_cost_by_animal</span> <span class="o">&lt;-</span> <span class="nf">get_mean_cost_by_animal</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span>
 <span class="n">mean_cost_by_animal</span> <span class="o">%&gt;%</span>
     <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
     <span class="nf">print</span><span class="p">()</span>
 </pre></div>
 </div>
 </div></div>
-<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+------------------------------------------------+------------------+
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-15-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-15-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-15-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-15-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-15-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-15-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+------------------------------------------------+------------------+
 |AnimalGroup                                     |MeanCost          |
 +------------------------------------------------+------------------+
 |Goat                                            |1180.0            |
@@ -793,19 +966,36 @@
 +------------------------------------------------+------------------+
 </pre></div>
 </div>
+</div><div aria-labelledby="tab-15-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-15-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># A tibble: 10 × 2
+   AnimalGroup                                      MeanCost
+   &lt;chr&gt;                                               &lt;dbl&gt;
+ 1 Goat                                                1180 
+ 2 Fish                                                 780 
+ 3 Bull                                                 780 
+ 4 Horse                                                747.
+ 5 Unknown - Animal rescue from water - Farm animal     710.
+ 6 Cow                                                  624.
+ 7 Lamb                                                 520 
+ 8 Hedgehog                                             520 
+ 9 Deer                                                 424.
+10 Unknown - Wild Animal                                390.
+</pre></div>
+</div>
+</div></div>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-10-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-10-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-10-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-10-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">summary_cost_by_animal</span> <span class="o">=</span> <span class="n">get_summary_cost_by_animal</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-16-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-16-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-16-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-16-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-16-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-16-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">summary_cost_by_animal</span> <span class="o">=</span> <span class="n">get_summary_cost_by_animal</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span>
 <span class="n">summary_cost_by_animal</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-10-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-10-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">summary_cost_by_animal</span> <span class="o">&lt;-</span> <span class="nf">get_summary_cost_by_animal</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span>
+</div><div aria-labelledby="tab-16-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-16-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">summary_cost_by_animal</span> <span class="o">&lt;-</span> <span class="nf">get_summary_cost_by_animal</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span>
 <span class="n">summary_cost_by_animal</span> <span class="o">%&gt;%</span>
     <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
     <span class="nf">print</span><span class="p">()</span>
 </pre></div>
 </div>
 </div></div>
-<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+-----------+------+-----------------+------+-----+
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-17-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-17-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-17-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-17-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-17-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-17-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+-----------+------+-----------------+------+-----+
 |AnimalGroup|   Min|             Mean|   Max|Count|
 +-----------+------+-----------------+------+-----+
 |       Goat|1180.0|           1180.0|1180.0|    1|
@@ -815,11 +1005,22 @@
 +-----------+------+-----------------+------+-----+
 </pre></div>
 </div>
+</div><div aria-labelledby="tab-17-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-17-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># A tibble: 4 × 5
+  AnimalGroup   Min  Mean   Max Count
+  &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 Goat         1180 1180   1180     1
+2 Fish          260  780   1300     2
+3 Bull          780  780    780     1
+4 Horse         255  747.  3480   154
+</pre></div>
+</div>
+</div></div>
 <p>Great- we have our tables. Let’s take a look at the individual steps Spark carried out to create our outputs.</p>
-</section>
-<section id="investigate-the-spark-ui">
+</div>
+</div>
+<div class="section" id="investigate-the-spark-ui">
 <h2>Investigate the Spark UI<a class="headerlink" href="#investigate-the-spark-ui" title="Permalink to this headline">¶</a></h2>
-<p>Go into the Spark UI and look at the <em>SQL</em> tab which lists the queries that are created from our PySpark code. Alternatively, we could use the <em>Jobs</em> tab, but the <em>SQL</em> tab has more detailed information for our needs here.</p>
+<p>Go into the <a class="reference internal" href="spark-application-and-ui.html"><span class="doc std std-doc">Spark UI</span></a> and look at the <em>SQL</em> tab which lists the queries that are created from our PySpark code. Alternatively, we could use the <em>Jobs</em> tab, but the <em>SQL</em> tab has more detailed information for our needs here.</p>
 <p>Click on the query with a description that starts with ‘csv’ and look at the DAG diagram. DAG stands for Directed Acyclic Graph and is often used to describe a process.</p>
 <p><img alt="SQL DAG for csv file scan" src="../_images/cache_file_scan.png" /></p>
 <p>This query is glancing at the <code class="docutils literal notranslate"><span class="pre">animal_rescue.csv</span></code> file to get the schema so that following transformations can be validated before being added to the execution plan (it does this because we asked Spark to infer the schema). Doing this for large files can take several minutes, so for large data sets use parquet files or Hive tables, which store the schema for you.</p>
@@ -832,34 +1033,36 @@
 <li><p>Every single one starts with reading in the data (Scan csv).</p></li>
 </ul>
 <p>The last point above means that Spark is reading in the file at the beginning of the job, and assuming there are no skipped stages, Spark is repeating the cleaning process for each output table.</p>
-</section>
-<section id="using-a-cache">
-<h2>Using a cache<a class="headerlink" href="#using-a-cache" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="using-a-cache">
+<h3>Using a cache<a class="headerlink" href="#using-a-cache" title="Permalink to this headline">¶</a></h3>
 <p>What we need to do is to persist the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame so when we start our analysis functions Spark will use the cleansed and persisted DataFrame as the starting point.</p>
 <p>Let’s cache the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame.</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-11-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-11-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-11-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-11-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">cache</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-18-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-18-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-18-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-18-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-18-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-18-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">cache</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-11-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-11-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_register</span><span class="p">(</span><span class="n">rescue</span><span class="p">,</span> <span class="s">&quot;rescue&quot;</span><span class="p">)</span>
+</div><div aria-labelledby="tab-18-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-18-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_register</span><span class="p">(</span><span class="n">rescue</span><span class="p">,</span> <span class="s">&quot;rescue&quot;</span><span class="p">)</span>
 <span class="n">sparklyr</span><span class="o">::</span><span class="nf">tbl_cache</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="s">&quot;rescue&quot;</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></div>
-<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>5860
-</pre></div>
-</div>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-12-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-12-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-12-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-12-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">get_top_10_incidents</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-19-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-19-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button></div><div aria-labelledby="tab-19-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-19-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>5860
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-12-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-12-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">get_top_10_incidents</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span> <span class="o">%&gt;%</span>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-20-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-20-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-20-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-20-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-20-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-20-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">get_top_10_incidents</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-20-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-20-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">get_top_10_incidents</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span> <span class="o">%&gt;%</span>
     <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
     <span class="nf">print</span><span class="p">()</span>
 </pre></div>
 </div>
 </div></div>
-<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+-------+----------------+--------------------+----------------+---------+
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-21-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-21-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-21-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-21-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-21-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-21-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+-------+----------------+--------------------+----------------+---------+
 |CalYear|PostcodeDistrict|         AnimalGroup|IncidentDuration|TotalCost|
 +-------+----------------+--------------------+----------------+---------+
 |   2016|             NW5|                 Cat|             4.0|   3912.0|
@@ -875,17 +1078,34 @@
 +-------+----------------+--------------------+----------------+---------+
 </pre></div>
 </div>
-<div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-13-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-13-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-13-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-13-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">get_mean_cost_by_animal</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</div><div aria-labelledby="tab-21-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-21-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># A tibble: 10 × 5
+   CalYear PostcodeDistrict AnimalGroup           IncidentDuration TotalCost
+     &lt;int&gt; &lt;chr&gt;            &lt;chr&gt;                            &lt;dbl&gt;     &lt;dbl&gt;
+ 1    2016 NW5              Cat                                4        3912
+ 2    2013 E4               Horse                              6        3480
+ 3    2015 TN14             Horse                              5        2980
+ 4    2018 UB4              Horse                              4        2664
+ 5    2014 TW4              Cat                                4.5      2655
+ 6    2011 E17              Horse                              3        2340
+ 7    2011 E17              Horse                              3        2340
+ 8    2011 E14              Deer                               3        2340
+ 9    2018 TN16             Unknown - Wild Animal              3.5      2296
+10    2017 N19              Cat                                3.5      2282
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-13-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-13-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">get_mean_cost_by_animal</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span> <span class="o">%&gt;%</span>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-22-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-22-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-22-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-22-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-22-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-22-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">get_mean_cost_by_animal</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-22-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-22-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">get_mean_cost_by_animal</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span> <span class="o">%&gt;%</span>
     <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
     <span class="nf">print</span><span class="p">()</span>
 </pre></div>
 </div>
 </div></div>
-<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+--------------------+------------------+
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-23-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-23-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-23-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-23-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-23-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-23-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+--------------------+------------------+
 |         AnimalGroup|          MeanCost|
 +--------------------+------------------+
 |                Goat|            1180.0|
@@ -901,17 +1121,34 @@
 +--------------------+------------------+
 </pre></div>
 </div>
-<div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-14-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-14-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-14-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-14-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-14-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-14-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">get_summary_cost_by_animal</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</div><div aria-labelledby="tab-23-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-23-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># A tibble: 10 × 2
+   AnimalGroup                                      MeanCost
+   &lt;chr&gt;                                               &lt;dbl&gt;
+ 1 Goat                                                1180 
+ 2 Fish                                                 780 
+ 3 Bull                                                 780 
+ 4 Horse                                                747.
+ 5 Unknown - Animal rescue from water - Farm animal     710.
+ 6 Cow                                                  624.
+ 7 Lamb                                                 520 
+ 8 Hedgehog                                             520 
+ 9 Deer                                                 424.
+10 Unknown - Wild Animal                                390.
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-14-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-14-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">get_summary_cost_by_animal</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span> <span class="o">%&gt;%</span>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-24-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-24-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-24-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-24-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-24-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-24-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">get_summary_cost_by_animal</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-24-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-24-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">get_summary_cost_by_animal</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span> <span class="o">%&gt;%</span>
     <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
     <span class="nf">print</span><span class="p">()</span>
 </pre></div>
 </div>
 </div></div>
-<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+-----------+------+-----------------+------+-----+
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-25-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-25-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-25-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-25-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-25-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-25-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+-----------+------+-----------------+------+-----+
 |AnimalGroup|   Min|             Mean|   Max|Count|
 +-----------+------+-----------------+------+-----+
 |       Goat|1180.0|           1180.0|1180.0|    1|
@@ -921,6 +1158,16 @@
 +-----------+------+-----------------+------+-----+
 </pre></div>
 </div>
+</div><div aria-labelledby="tab-25-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-25-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># A tibble: 4 × 5
+  AnimalGroup   Min  Mean   Max Count
+  &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 Goat         1180 1180   1180     1
+2 Fish          260  780   1300     2
+3 Bull          780  780    780     1
+4 Horse         255  747.  3480   154
+</pre></div>
+</div>
+</div></div>
 <p>Look at the Spark UI. Below is the DAG for the latest query.</p>
 <p><img alt="SQL DAG with cached data" src="../_images/cache_dag_in_memory.png" /></p>
 <p>This time Spark didn’t read in the data from disk and apply the cleaning, we have broken the lineage. We know this because the DAG starts with a <em>InMemoryTableScan</em>, i.e. the cache. Note that this diagram consists of fewer stages than we had previously. Another sign of cached data being used is the presence of <em>Skipped Stages</em> on the Jobs page.</p>
@@ -928,8 +1175,44 @@
 <p>There are many factors that contribute towards the time taken for each query that make benchmarking in Spark complex. When running the source notebook, sometimes the processing will be faster after the cache, but sometimes it will be slower. If we run the last three code cells above once more and look at the times we see that the processing after the cache was generally quicker.</p>
 <p>Each function is labelled in the image below. The first run was without caching, the second was with caching and the third was a second run with cached data.</p>
 <p><img alt="comparison of query times using cache" src="../_images/cache_sql_compare.png" /></p>
-</section>
-</section>
+</div>
+</div>
+<div class="section" id="further-resources">
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
+<p>Spark at the ONS Articles:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="persistence.html"><span class="doc std std-doc">Persisting</span></a></p></li>
+<li><p><a class="reference internal" href="shuffling.html"><span class="doc std std-doc">Shuffling</span></a>:</p>
+<ul>
+<li><p><a class="reference external" href="../spark-concepts/shuffling.html#a-quick-note-on-rdds">A Quick Note on RDDs</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="spark-application-and-ui.html"><span class="doc std std-doc">Spark Application and UI</span></a></p></li>
+</ul>
+<p>PySpark Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.count.html"><code class="docutils literal notranslate"><span class="pre">.count()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.cache.html"><code class="docutils literal notranslate"><span class="pre">.cache()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.persist.html"><code class="docutils literal notranslate"><span class="pre">.persist()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.checkpoint.html"><code class="docutils literal notranslate"><span class="pre">.checkpoint()</span></code></a></p></li>
+</ul>
+<p>sparklyr and tidyverse Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/tbl_cache.html"><code class="docutils literal notranslate"><span class="pre">tbl_cache()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_persist.html"><code class="docutils literal notranslate"><span class="pre">sdf_persist()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_checkpoint.html"><code class="docutils literal notranslate"><span class="pre">sdf_checkpoint()</span></code></a></p></li>
+</ul>
+<p>Spark Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/monitoring.html">Monitoring and Instrumentation</a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/rdd-programming-guide.html#rdd-persistence">RDD Persistence</a></p></li>
+</ul>
+<p>Other Links:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://databricks.com/">Databricks</a></p></li>
+</ul>
+</div>
+</div>
 
     <script type="text/x-thebe-config">
     {
@@ -953,8 +1236,8 @@
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="persistence.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -963,7 +1246,7 @@
             <p class="prev-next-title">Persisting in Spark</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="../raw-notebooks/checkpoint-staging/checkpoint_staging.html" title="next page">
+    <a class='right-next' id="next-link" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
         <p class="prev-next-title">Checkpoint</p>
@@ -971,18 +1254,16 @@
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By Wil Roberts & Adrian Prince<br/>
-        
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By Wil Roberts & Adrian Prince<br/>
+    
+  </p>
+</footer>
 </main>
 
 

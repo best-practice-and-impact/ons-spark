@@ -4,8 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Spark and Visualisation &#8212; Spark at the ONS</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
@@ -39,22 +38,25 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/tabs.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="Exercises" href="../spark-concepts/exercises.html" />
+    <link rel="next" title="Avoiding Module Import Conflicts" href="module-imports.html" />
+    <link rel="prev" title="Handling Errors in sparklyr" href="../testing-debugging/handling-errors-sparklyr.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -105,8 +107,13 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/when-to-use-spark.html">
+   When To Use Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="../spark-overview/spark-session-guidance.html">
-   Spark Sessions
+   Guidance on Spark Sessions
   </a>
  </li>
  <li class="toctree-l1">
@@ -134,6 +141,11 @@
    Creating DataFrames Manually
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/data-storage.html">
+   Data Storage
+  </a>
+ </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
@@ -147,8 +159,8 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../pyspark-intro/pyspark-intro-exercises.html">
-   Introduction to PySpark: Exercises
+  <a class="reference internal" href="../pyspark-intro/reading-data-pyspark.html">
+   Reading Data in PySpark
   </a>
  </li>
  <li class="toctree-l1">
@@ -174,7 +186,7 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../sparklyr-intro/sparklyr_functions.html">
+  <a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">
    Using Spark functions in sparklyr
   </a>
  </li>
@@ -186,7 +198,7 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/union_dataframes_with_different_columns.html">
+  <a class="reference internal" href="../spark-functions/union-dataframes-with-different-columns.html">
    Union two DataFrames with different columns
   </a>
  </li>
@@ -231,6 +243,26 @@
    Window Functions in Spark
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/cross-joins.html">
+   Cross Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/arrays.html">
+   Array Functions in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/writing-data.html">
+   Writing Data
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/job-description.html">
+   Set Spark Job Description
+  </a>
+ </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
@@ -239,7 +271,7 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/spark_application_and_ui.html">
+  <a class="reference internal" href="../spark-concepts/spark-application-and-ui.html">
    Spark Application and UI
   </a>
  </li>
@@ -249,23 +281,18 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/join_concepts.html">
+  <a class="reference internal" href="../spark-concepts/join-concepts.html">
    Optimising Joins
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/cross_joins.html">
-   Cross Joins
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/salted_joins.html">
+  <a class="reference internal" href="../spark-concepts/salted-joins.html">
    Salted Joins
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../spark-concepts/partitions.html">
-   Managing partitions
+   Managing Partitions
   </a>
  </li>
  <li class="toctree-l1">
@@ -279,13 +306,60 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint_staging.html">
+  <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html">
    Checkpoint
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/garbage-collection.html">
+   Garbage Collection
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/df-order.html">
+   Spark DFs Are Not Ordered
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../spark-concepts/exercises.html">
    Exercises
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Testing and Debugging
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/unit-testing-pyspark.html">
+   Unit Testing in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/unit-testing-sparklyr.html">
+   Unit Testing in sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/errors-pyspark.html">
+   Understanding Errors in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/errors-sparklyr.html">
+   Understanding Errors in sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/handling-errors-pyspark.html">
+   Handling Errors in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/handling-errors-sparklyr.html">
+   Handling Errors in sparklyr
   </a>
  </li>
 </ul>
@@ -298,6 +372,16 @@
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
    Spark and Visualisation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="module-imports.html">
+   Avoiding Module Import Conflicts
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="pydoop.html">
+   Pydoop
   </a>
  </li>
 </ul>
@@ -346,7 +430,7 @@
                 data-placement="left">.md</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -380,7 +464,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -410,15 +494,48 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Spark and Visualisation</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#an-example-aggregating-the-animal-rescue-data-by-year">
+   An example: aggregating the Animal Rescue data by year
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#dashboards">
+   Dashboards
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
-  <section id="spark-and-visualisation">
+  <div class="section" id="spark-and-visualisation">
 <h1>Spark and Visualisation<a class="headerlink" href="#spark-and-visualisation" title="Permalink to this headline">¶</a></h1>
 <p>Visualising data with a graph or dashboard can be a useful way to show or discover trends that may not be obvious if just looking at the raw data. Visualisation can be useful throughout any coding project when working with data. At the start of a project graphs can assist in noticing patterns or outliers that you may not notice if just viewing the raw data. They can also help communicate interim and final results of analysis to stakeholders who aren’t programmers. Visualisations are extensively used in official statistical publications produced by the ONS.</p>
-<p>Spark has an additional challenge when it comes to charts and dashboards: your data will often be large, and if your data will not fit on the driver it will not be able to be visualised using a chart. Good practice for data visualisation when using Spark is therefore to aggregate the data, ensuring it is small enough to fit on the driver, use <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code> if using PySpark or <code class="docutils literal notranslate"><span class="pre">collect()</span></code> if using sparklyr, and then use the regular charting packages, e.g. <a class="reference external" href="https://matplotlib.org/">Matplotlib</a> or <a class="reference external" href="https://ggplot2.tidyverse.org/">ggplot2</a>.</p>
+<p>Spark has an additional challenge when it comes to charts and dashboards: your data will often be large, and if your data will not fit on the driver it will not be able to be visualised using a chart. Good practice for data visualisation when using Spark is therefore to aggregate the data, ensuring it is small enough to fit on the driver, use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.toPandas.html"><code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code></a> if using PySpark or <a class="reference external" href="https://dplyr.tidyverse.org/reference/compute.html"><code class="docutils literal notranslate"><span class="pre">collect()</span></code></a> if using sparklyr, and then use the regular charting packages, e.g. <a class="reference external" href="https://matplotlib.org/">Matplotlib</a> or <a class="reference external" href="https://ggplot2.tidyverse.org/">ggplot2</a>.</p>
 <p>Good resources on visualisation include the <a class="reference external" href="https://style.ons.gov.uk/category/data-visualisation/">ONS Style Guide: Presenting Data</a>. All ONS charts should follow this guidance and those producing work on behalf of other organisations can also use this guide as an authority too. The <a class="reference external" href="https://gss.civilservice.gov.uk/policy-store/introduction-to-data-visualisation/">GSS Style Guide: Introduction to data visualisation</a> is another good resource and contains useful links to further assist in presenting data effectively.</p>
-<section id="an-example-aggregating-the-animal-rescue-data-by-year">
+<div class="section" id="an-example-aggregating-the-animal-rescue-data-by-year">
 <h2>An example: aggregating the Animal Rescue data by year<a class="headerlink" href="#an-example-aggregating-the-animal-rescue-data-by-year" title="Permalink to this headline">¶</a></h2>
 <p>First, read in the data with Spark and aggregate to the level required in the chart. In this example, we will get the number of animals rescued by year:</p>
 <div class="sphinx-tabs docutils container">
@@ -457,7 +574,7 @@
 </pre></div>
 </div>
 </div></div>
-<p>Now copy the data to to the driver, with <code class="docutils literal notranslate"><span class="pre">toPandas()</span></code> if using Python or <code class="docutils literal notranslate"><span class="pre">collect()</span></code> if using R:</p>
+<p>Now copy the data to to the driver, with <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code> if using Python or <code class="docutils literal notranslate"><span class="pre">collect()</span></code> if using R:</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-1-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-1-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_pd</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
 </pre></div>
@@ -485,7 +602,7 @@
 </div>
 </div></div>
 <p><img alt="ggplot2 chart of count of animals rescued by cal_year" src="../_images/viz_2_r.png" /></p>
-<p>You can pass a sparklyr DataFrame directly into <code class="docutils literal notranslate"><span class="pre">ggplot()</span></code>, although this could lead to errors if the data are too large. It is better to aggregate the data first and <code class="docutils literal notranslate"><span class="pre">collect()</span></code>.</p>
+<p>You can pass a sparklyr DataFrame directly into <a class="reference external" href="https://ggplot2.tidyverse.org/reference/ggplot.html"><code class="docutils literal notranslate"><span class="pre">ggplot()</span></code></a>, although this could lead to errors if the data are too large. It is better to aggregate the data first and <code class="docutils literal notranslate"><span class="pre">collect()</span></code>.</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-4-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-4-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">ggplot2</span><span class="o">::</span><span class="nf">ggplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">rescue</span><span class="p">,</span> <span class="n">ggplot2</span><span class="o">::</span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="nf">as.factor</span><span class="p">(</span><span class="n">cal_year</span><span class="p">),</span> <span class="n">y</span><span class="o">=</span><span class="n">count</span><span class="p">))</span> <span class="o">+</span>
     <span class="n">ggplot2</span><span class="o">::</span><span class="nf">geom_bar</span><span class="p">(</span><span class="n">stat</span><span class="o">=</span><span class="s">&quot;identity&quot;</span><span class="p">)</span> <span class="o">+</span>
@@ -494,14 +611,23 @@
 </div>
 </div></div>
 <p><img alt="ggplot2 chart of count of animals rescued by cal_year" src="../_images/viz_2_r.png" /></p>
-</section>
-<section id="dashboards">
+</div>
+<div class="section" id="dashboards">
 <h2>Dashboards<a class="headerlink" href="#dashboards" title="Permalink to this headline">¶</a></h2>
 <p>The principles for using <a class="reference external" href="https://style.ons.gov.uk/data-visualisation/dashboards/">dashboards</a> with Spark are the same as for charts: aggregate the data first using Spark, then use these data to power the dashboard. In theory you could have a dashboard to power a Spark process which then returns an aggregated result, although this would likely have a negative impact on the user experience given the processing time and subsequent lag.</p>
 <p>Common dashboard applications include <a class="reference external" href="https://seaborn.pydata.org/">Seaborn</a> and <a class="reference external" href="https://streamlit.io/">Streamlit</a> for Python and <a class="reference external" href="https://shiny.rstudio.com/">Shiny</a> for R.</p>
-</section>
-<section id="further-resources">
+</div>
+<div class="section" id="further-resources">
 <h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
+<p>PySpark Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.toPandas.html"><code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code></a></p></li>
+</ul>
+<p>sparklyr and tidyverse Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://dplyr.tidyverse.org/reference/compute.html"><code class="docutils literal notranslate"><span class="pre">collect()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://ggplot2.tidyverse.org/reference/ggplot.html"><code class="docutils literal notranslate"><span class="pre">ggplot()</span></code></a></p></li>
+</ul>
 <p>Guidance on data visualisation:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://style.ons.gov.uk/category/data-visualisation/">ONS Style Guide: Presenting Data</a></p></li>
@@ -519,8 +645,8 @@
 <li><p><a class="reference external" href="https://streamlit.io/">Streamlit</a></p></li>
 <li><p><a class="reference external" href="https://shiny.rstudio.com/">Shiny</a></p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
     <script type="text/x-thebe-config">
     {
@@ -544,29 +670,34 @@
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="../spark-concepts/exercises.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="../testing-debugging/handling-errors-sparklyr.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Exercises</p>
+            <p class="prev-next-title">Handling Errors in sparklyr</p>
         </div>
     </a>
+    <a class='right-next' id="next-link" href="module-imports.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Avoiding Module Import Conflicts</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By Wil Roberts & Adrian Prince<br/>
-        
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By Wil Roberts & Adrian Prince<br/>
+    
+  </p>
+</footer>
 </main>
 
 

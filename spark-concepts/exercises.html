@@ -4,8 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Exercises &#8212; Spark at the ONS</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
@@ -39,23 +38,25 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/tabs.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Spark and Visualisation" href="../ancillary-topics/visualisation.html" />
-    <link rel="prev" title="Checkpoint" href="../raw-notebooks/checkpoint-staging/checkpoint_staging.html" />
+    <link rel="next" title="Unit Testing in PySpark" href="../testing-debugging/unit-testing-pyspark.html" />
+    <link rel="prev" title="Spark DFs Are Not Ordered" href="df-order.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -106,8 +107,13 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/when-to-use-spark.html">
+   When To Use Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="../spark-overview/spark-session-guidance.html">
-   Spark Sessions
+   Guidance on Spark Sessions
   </a>
  </li>
  <li class="toctree-l1">
@@ -135,6 +141,11 @@
    Creating DataFrames Manually
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/data-storage.html">
+   Data Storage
+  </a>
+ </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
@@ -148,8 +159,8 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../pyspark-intro/pyspark-intro-exercises.html">
-   Introduction to PySpark: Exercises
+  <a class="reference internal" href="../pyspark-intro/reading-data-pyspark.html">
+   Reading Data in PySpark
   </a>
  </li>
  <li class="toctree-l1">
@@ -175,7 +186,7 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../sparklyr-intro/sparklyr_functions.html">
+  <a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">
    Using Spark functions in sparklyr
   </a>
  </li>
@@ -187,7 +198,7 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/union_dataframes_with_different_columns.html">
+  <a class="reference internal" href="../spark-functions/union-dataframes-with-different-columns.html">
    Union two DataFrames with different columns
   </a>
  </li>
@@ -232,6 +243,26 @@
    Window Functions in Spark
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/cross-joins.html">
+   Cross Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/arrays.html">
+   Array Functions in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/writing-data.html">
+   Writing Data
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/job-description.html">
+   Set Spark Job Description
+  </a>
+ </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
@@ -240,7 +271,7 @@
 </p>
 <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="spark_application_and_ui.html">
+  <a class="reference internal" href="spark-application-and-ui.html">
    Spark Application and UI
   </a>
  </li>
@@ -250,23 +281,18 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="join_concepts.html">
+  <a class="reference internal" href="join-concepts.html">
    Optimising Joins
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/cross_joins.html">
-   Cross Joins
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="salted_joins.html">
+  <a class="reference internal" href="salted-joins.html">
    Salted Joins
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="partitions.html">
-   Managing partitions
+   Managing Partitions
   </a>
  </li>
  <li class="toctree-l1">
@@ -280,13 +306,60 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint_staging.html">
+  <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html">
    Checkpoint
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="garbage-collection.html">
+   Garbage Collection
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="df-order.html">
+   Spark DFs Are Not Ordered
   </a>
  </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
    Exercises
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Testing and Debugging
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/unit-testing-pyspark.html">
+   Unit Testing in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/unit-testing-sparklyr.html">
+   Unit Testing in sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/errors-pyspark.html">
+   Understanding Errors in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/errors-sparklyr.html">
+   Understanding Errors in sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/handling-errors-pyspark.html">
+   Handling Errors in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/handling-errors-sparklyr.html">
+   Handling Errors in sparklyr
   </a>
  </li>
 </ul>
@@ -299,6 +372,16 @@
  <li class="toctree-l1">
   <a class="reference internal" href="../ancillary-topics/visualisation.html">
    Spark and Visualisation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/module-imports.html">
+   Avoiding Module Import Conflicts
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/pydoop.html">
+   Pydoop
   </a>
  </li>
 </ul>
@@ -347,7 +430,7 @@
                 data-placement="left">.md</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -381,7 +464,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -401,12 +484,35 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Exercises</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#shuffling">
+   Shuffling
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
-  <section id="exercises">
+  <div class="section" id="exercises">
 <h1>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h1>
-<section id="shuffling">
+<div class="section" id="shuffling">
 <h2>Shuffling<a class="headerlink" href="#shuffling" title="Permalink to this headline">¶</a></h2>
 <p>You have been assigned to review some code from an existing business as usual pipeline, written a couple of years ago. The code works as desired and passes all unit tests, but the business users are finding it slow to run and would like you to make it more efficient. Although the example data supplied are small, it must also be able to work efficiently for large data.</p>
 <p>The objective of the code is to produce a DataFrame with the ten most expensive animal rescue incidents, consisting of <code class="docutils literal notranslate"><span class="pre">animal_group</span></code>, <code class="docutils literal notranslate"><span class="pre">postcode_district</span></code>, <code class="docutils literal notranslate"><span class="pre">incident_number</span></code>, <code class="docutils literal notranslate"><span class="pre">total_cost</span></code>, <code class="docutils literal notranslate"><span class="pre">population</span></code> and <code class="docutils literal notranslate"><span class="pre">animal_count</span></code>, where <code class="docutils literal notranslate"><span class="pre">animal_count</span></code> is the total number of each <code class="docutils literal notranslate"><span class="pre">animal_group</span></code> in the data. The row count should also be returned.</p>
@@ -630,8 +736,8 @@
 </div>
 </div></div>
 </details>
-</section>
-</section>
+</div>
+</div>
 
     <script type="text/x-thebe-config">
     {
@@ -655,36 +761,34 @@
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="../raw-notebooks/checkpoint-staging/checkpoint_staging.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="df-order.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Checkpoint</p>
+            <p class="prev-next-title">Spark DFs Are Not Ordered</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="../ancillary-topics/visualisation.html" title="next page">
+    <a class='right-next' id="next-link" href="../testing-debugging/unit-testing-pyspark.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Spark and Visualisation</p>
+        <p class="prev-next-title">Unit Testing in PySpark</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By Wil Roberts & Adrian Prince<br/>
-        
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By Wil Roberts & Adrian Prince<br/>
+    
+  </p>
+</footer>
 </main>
 
 

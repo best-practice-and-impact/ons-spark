@@ -4,8 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Add leading zeros with lpad() &#8212; Spark at the ONS</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
@@ -39,25 +38,27 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/tabs.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Sampling: .sample() and sdf_sample()" href="sampling.html" />
-    <link rel="prev" title="Union two DataFrames with different columns" href="union_dataframes_with_different_columns.html" />
+    <link rel="prev" title="Union two DataFrames with different columns" href="union-dataframes-with-different-columns.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -108,8 +109,13 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/when-to-use-spark.html">
+   When To Use Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="../spark-overview/spark-session-guidance.html">
-   Spark Sessions
+   Guidance on Spark Sessions
   </a>
  </li>
  <li class="toctree-l1">
@@ -137,6 +143,11 @@
    Creating DataFrames Manually
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/data-storage.html">
+   Data Storage
+  </a>
+ </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
@@ -150,8 +161,8 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../pyspark-intro/pyspark-intro-exercises.html">
-   Introduction to PySpark: Exercises
+  <a class="reference internal" href="../pyspark-intro/reading-data-pyspark.html">
+   Reading Data in PySpark
   </a>
  </li>
  <li class="toctree-l1">
@@ -177,7 +188,7 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../sparklyr-intro/sparklyr_functions.html">
+  <a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">
    Using Spark functions in sparklyr
   </a>
  </li>
@@ -189,7 +200,7 @@
 </p>
 <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="union_dataframes_with_different_columns.html">
+  <a class="reference internal" href="union-dataframes-with-different-columns.html">
    Union two DataFrames with different columns
   </a>
  </li>
@@ -234,6 +245,26 @@
    Window Functions in Spark
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="cross-joins.html">
+   Cross Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="arrays.html">
+   Array Functions in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="writing-data.html">
+   Writing Data
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="job-description.html">
+   Set Spark Job Description
+  </a>
+ </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
@@ -242,7 +273,7 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/spark_application_and_ui.html">
+  <a class="reference internal" href="../spark-concepts/spark-application-and-ui.html">
    Spark Application and UI
   </a>
  </li>
@@ -252,23 +283,18 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/join_concepts.html">
+  <a class="reference internal" href="../spark-concepts/join-concepts.html">
    Optimising Joins
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="cross_joins.html">
-   Cross Joins
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/salted_joins.html">
+  <a class="reference internal" href="../spark-concepts/salted-joins.html">
    Salted Joins
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../spark-concepts/partitions.html">
-   Managing partitions
+   Managing Partitions
   </a>
  </li>
  <li class="toctree-l1">
@@ -282,13 +308,60 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint_staging.html">
+  <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html">
    Checkpoint
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/garbage-collection.html">
+   Garbage Collection
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/df-order.html">
+   Spark DFs Are Not Ordered
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../spark-concepts/exercises.html">
    Exercises
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Testing and Debugging
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/unit-testing-pyspark.html">
+   Unit Testing in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/unit-testing-sparklyr.html">
+   Unit Testing in sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/errors-pyspark.html">
+   Understanding Errors in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/errors-sparklyr.html">
+   Understanding Errors in sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/handling-errors-pyspark.html">
+   Handling Errors in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/handling-errors-sparklyr.html">
+   Handling Errors in sparklyr
   </a>
  </li>
 </ul>
@@ -301,6 +374,16 @@
  <li class="toctree-l1">
   <a class="reference internal" href="../ancillary-topics/visualisation.html">
    Spark and Visualisation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/module-imports.html">
+   Avoiding Module Import Conflicts
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/pydoop.html">
+   Pydoop
   </a>
  </li>
 </ul>
@@ -349,7 +432,7 @@
                 data-placement="left">.md</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -383,7 +466,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -430,18 +513,68 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Add leading zeros with lpad()</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Add leading zeros with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     lpad()
+    </span>
+   </code>
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#example-incident-numbers">
+     Example: Incident Numbers
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#padding-on-the-right-rpad">
+     Padding on the right:
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       rpad()
+      </span>
+     </code>
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
-  <section id="add-leading-zeros-with-lpad">
+  <div class="section" id="add-leading-zeros-with-lpad">
 <h1>Add leading zeros with <code class="docutils literal notranslate"><span class="pre">lpad()</span></code><a class="headerlink" href="#add-leading-zeros-with-lpad" title="Permalink to this headline">¶</a></h1>
 <p>There are some datasets that consist of code columns, which are fixed width and are stored as strings even though they look like numbers. For instance, the data might have values such as <code class="docutils literal notranslate"><span class="pre">&quot;000123&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;456789&quot;</span></code>.</p>
 <p>However, sometimes these can appear as integers which will lose the initial zeros. So <code class="docutils literal notranslate"><span class="pre">&quot;000123&quot;</span></code> becomes <code class="docutils literal notranslate"><span class="pre">123</span></code>. Commonly this can happen if at some point the data is manipulated in Excel and later read in a CSV file; it can also happen if the column is converted to a numeric type. An ONS example is <a class="reference external" href="https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities/uksic2007">Standard Industrial Classification (SIC)</a>. SIC codes are five digits, but some begin with <span class="math notranslate nohighlight">\(0\)</span>.</p>
-<p>There is an easy way to change this back into the correct format: <a class="reference external" href="https://spark.apache.org/docs/latest/api/python//reference/api/pyspark.sql.functions.lpad.html"><code class="docutils literal notranslate"><span class="pre">F.lpad()</span></code></a> from the <code class="docutils literal notranslate"><span class="pre">functions</span></code> package in PySpark and <a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#lpad"><code class="docutils literal notranslate"><span class="pre">lpad()</span></code></a> inside <code class="docutils literal notranslate"><span class="pre">mutate()</span></code> in sparklyr. This will add a string that you specify to the start, making every value a fixed width string. For instance, <code class="docutils literal notranslate"><span class="pre">&quot;123&quot;</span></code> becomes <code class="docutils literal notranslate"><span class="pre">&quot;000123&quot;</span></code> but <code class="docutils literal notranslate"><span class="pre">&quot;456789&quot;</span></code> remains the same.</p>
-<section id="example-incident-numbers">
+<p>There is an easy way to change this back into the correct format: <a class="reference external" href="https://spark.apache.org/docs/latest/api/python//reference/api/pyspark.sql.functions.lpad.html"><code class="docutils literal notranslate"><span class="pre">F.lpad()</span></code></a> from the <code class="docutils literal notranslate"><span class="pre">functions</span></code> package in PySpark and the <a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html"><span class="doc std std-doc">Spark function</span></a> <a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#lpad"><code class="docutils literal notranslate"><span class="pre">lpad()</span></code></a> inside <code class="docutils literal notranslate"><span class="pre">mutate()</span></code> in sparklyr. This will add a string that you specify to the start, making every value a fixed width string. For instance, <code class="docutils literal notranslate"><span class="pre">&quot;123&quot;</span></code> becomes <code class="docutils literal notranslate"><span class="pre">&quot;000123&quot;</span></code> but <code class="docutils literal notranslate"><span class="pre">&quot;456789&quot;</span></code> remains the same.</p>
+<div class="section" id="example-incident-numbers">
 <h2>Example: Incident Numbers<a class="headerlink" href="#example-incident-numbers" title="Permalink to this headline">¶</a></h2>
 <p>The Animal Rescue data has an <code class="docutils literal notranslate"><span class="pre">incident_number</span></code> column, which is unique and of variable length. We will add leading zeros to this column to make it of a consistent length.</p>
-<p>First, start a Spark session and read in the Animal Rescue data, filter on <code class="docutils literal notranslate"><span class="pre">Police</span></code> and select the relevant columns (note that the output displayed is for PySpark; the sparklyr output may be formatted slightly differently).</p>
+<p>First, start a Spark session and read in the Animal Rescue data, filter on <code class="docutils literal notranslate"><span class="pre">&quot;Police&quot;</span></code> and select the relevant columns:</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-0-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-0-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
@@ -480,7 +613,8 @@
 </pre></div>
 </div>
 </div></div>
-<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+---------------+--------------+
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-1-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-1-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+---------------+--------------+
 |incident_number|origin_of_call|
 +---------------+--------------+
 |      146647151|        Police|
@@ -492,27 +626,48 @@
 only showing top 5 rows
 </pre></div>
 </div>
-<p>The input to <code class="docutils literal notranslate"><span class="pre">lpad()</span></code> will most often be either a string or an integer. In this example, <code class="docutils literal notranslate"><span class="pre">incident_number</span></code> is a string:</p>
-<div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-1-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-1-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
-</pre></div>
-</div>
-</div><div aria-labelledby="tab-1-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">pillar</span><span class="o">::</span><span class="nf">glimpse</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span>
+</div><div aria-labelledby="tab-1-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># A tibble: 5 × 2
+  incident_number origin_of_call
+  &lt;chr&gt;           &lt;chr&gt;         
+1 146647151       Police        
+2 66969111        Police        
+3 103407111       Police        
+4 137525091       Police        
+5 158794091       Police        
 </pre></div>
 </div>
 </div></div>
-<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>root
+<p>The input to <code class="docutils literal notranslate"><span class="pre">lpad()</span></code> will most often be either a string or an integer. In this example, <code class="docutils literal notranslate"><span class="pre">incident_number</span></code> is a string:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-2-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-2-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">pillar</span><span class="o">::</span><span class="nf">glimpse</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-3-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-3-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>root
  |-- incident_number: string (nullable = true)
  |-- origin_of_call: string (nullable = true)
 </pre></div>
 </div>
-<p>Use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python//reference/api/pyspark.sql.functions.length.html"><code class="docutils literal notranslate"><span class="pre">length()</span></code></a> to demonstrate that the <code class="docutils literal notranslate"><span class="pre">incident_number</span></code> column is not always the same size:</p>
+</div><div aria-labelledby="tab-3-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Rows: ??
+Columns: 2
+Database: spark_connection
+Ordered by: date_time_of_call
+$ incident_number &lt;chr&gt; &quot;146647151&quot;, &quot;66969111&quot;, &quot;103407111&quot;, &quot;137525091&quot;, &quot;15…
+$ origin_of_call  &lt;chr&gt; &quot;Police&quot;, &quot;Police&quot;, &quot;Police&quot;, &quot;Police&quot;, &quot;Police&quot;, &quot;Pol…
+</pre></div>
+</div>
+</div></div>
+<p>Use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python//reference/api/pyspark.sql.functions.length.html"><code class="docutils literal notranslate"><span class="pre">F.length()</span></code></a>/<a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#length"><code class="docutils literal notranslate"><span class="pre">length()</span></code></a> to demonstrate that the <code class="docutils literal notranslate"><span class="pre">incident_number</span></code> column is not always the same size:</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-2-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-2-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;incident_no_length&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">length</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">))</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-4-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-4-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-4-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;incident_no_length&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">length</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">))</span>
 <span class="n">rescue</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;incident_no_length&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;incident_no_length&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-2-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
+</div><div aria-labelledby="tab-4-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
     <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">incident_no_length</span> <span class="o">=</span> <span class="nf">length</span><span class="p">(</span><span class="n">incident_number</span><span class="p">))</span>
 
 <span class="n">rescue</span> <span class="o">%&gt;%</span>
@@ -524,7 +679,8 @@ only showing top 5 rows
 </pre></div>
 </div>
 </div></div>
-<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+------------------+-----+
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-5-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-5-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-5-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+------------------+-----+
 |incident_no_length|count|
 +------------------+-----+
 |                 6|    1|
@@ -534,15 +690,25 @@ only showing top 5 rows
 +------------------+-----+
 </pre></div>
 </div>
+</div><div aria-labelledby="tab-5-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># A tibble: 4 × 3
+  incident_no_length origin_of_call count
+               &lt;int&gt; &lt;chr&gt;          &lt;dbl&gt;
+1                  6 Police             1
+2                  8 Police            57
+3                  7 Police             6
+4                  9 Police            65
+</pre></div>
+</div>
+</div></div>
 <p>We want the <code class="docutils literal notranslate"><span class="pre">incident_number</span></code> column to be a string with a fixed width of <span class="math notranslate nohighlight">\(9\)</span>, with zeros at the start if the length is shorter than this.</p>
 <p><code class="docutils literal notranslate"><span class="pre">lpad()</span></code> takes three arguments. The first argument, <code class="docutils literal notranslate"><span class="pre">col</span></code> is the column name, the second, <code class="docutils literal notranslate"><span class="pre">len</span></code> is the fixed width of the string, and the third, <code class="docutils literal notranslate"><span class="pre">pad</span></code>, the value to pad it with if it is too short, often <code class="docutils literal notranslate"><span class="pre">&quot;0&quot;</span></code>. The data type returned from <code class="docutils literal notranslate"><span class="pre">lpad()</span></code> will always be a string.</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-3-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-3-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;padded_incident_no&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">lpad</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">),</span> <span class="mi">9</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">))</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-6-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-6-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-6-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;padded_incident_no&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">lpad</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">),</span> <span class="mi">9</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">))</span>
 <span class="n">rescue</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;incident_no_length&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 <span class="n">rescue</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;incident_no_length&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-3-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
+</div><div aria-labelledby="tab-6-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
     <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">padded_incident_no</span> <span class="o">=</span> <span class="nf">lpad</span><span class="p">(</span><span class="n">incident_number</span><span class="p">,</span> <span class="m">9</span><span class="p">,</span> <span class="s">&quot;0&quot;</span><span class="p">))</span>
 
 <span class="n">rescue</span> <span class="o">%&gt;%</span>
@@ -559,7 +725,8 @@ only showing top 5 rows
 </pre></div>
 </div>
 </div></div>
-<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+---------------+--------------+------------------+------------------+
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-7-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-7-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-7-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-7-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+---------------+--------------+------------------+------------------+
 |incident_number|origin_of_call|incident_no_length|padded_incident_no|
 +---------------+--------------+------------------+------------------+
 |         955141|        Police|                 6|         000955141|
@@ -582,13 +749,32 @@ only showing top 5 rows
 only showing top 5 rows
 </pre></div>
 </div>
+</div><div aria-labelledby="tab-7-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-7-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># A tibble: 5 × 4
+  incident_number origin_of_call incident_no_length padded_incident_no
+  &lt;chr&gt;           &lt;chr&gt;                       &lt;int&gt; &lt;chr&gt;             
+1 955141          Police                          6 000955141         
+2 3215101         Police                          7 003215101         
+3 3223101         Police                          7 003223101         
+4 7003121         Police                          7 007003121         
+5 6311101         Police                          7 006311101         
+# A tibble: 5 × 4
+  incident_number origin_of_call incident_no_length padded_incident_no
+  &lt;chr&gt;           &lt;chr&gt;                       &lt;int&gt; &lt;chr&gt;             
+1 163121101       Police                          9 163121101         
+2 103225141       Police                          9 103225141         
+3 114153091       Police                          9 114153091         
+4 101172091       Police                          9 101172091         
+5 110211101       Police                          9 110211101         
+</pre></div>
+</div>
+</div></div>
 <p>Be careful; if you set the fixed width to be too short you can lose data:</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-4-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-4-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-4-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;too_short_inc_no&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">lpad</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">),</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">))</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-8-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-8-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-8-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-8-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;too_short_inc_no&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">lpad</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">),</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">))</span>
 <span class="n">rescue</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;incident_no_length&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-4-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
+</div><div aria-labelledby="tab-8-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-8-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
     <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">too_short_inc_no</span> <span class="o">=</span> <span class="nf">lpad</span><span class="p">(</span><span class="n">incident_number</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="s">&quot;0&quot;</span><span class="p">))</span>
 
 <span class="n">rescue</span> <span class="o">%&gt;%</span>
@@ -599,7 +785,8 @@ only showing top 5 rows
 </pre></div>
 </div>
 </div></div>
-<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+---------------+--------------+------------------+------------------+----------------+
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-9-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-9-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-9-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-9-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+---------------+--------------+------------------+------------------+----------------+
 |incident_number|origin_of_call|incident_no_length|padded_incident_no|too_short_inc_no|
 +---------------+--------------+------------------+------------------+----------------+
 |      114153091|        Police|                 9|         114153091|             114|
@@ -611,13 +798,25 @@ only showing top 5 rows
 only showing top 5 rows
 </pre></div>
 </div>
+</div><div aria-labelledby="tab-9-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-9-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># A tibble: 5 × 5
+  incident_number origin_of_call incident_no_length padded_incident_no
+  &lt;chr&gt;           &lt;chr&gt;                       &lt;int&gt; &lt;chr&gt;             
+1 163121101       Police                          9 163121101         
+2 103225141       Police                          9 103225141         
+3 114153091       Police                          9 114153091         
+4 101172091       Police                          9 101172091         
+5 110211101       Police                          9 110211101         
+# … with 1 more variable: too_short_inc_no &lt;chr&gt;
+</pre></div>
+</div>
+</div></div>
 <p>You can have values other than zero for the last argument and they do not have to be width 1, although there are fewer use cases for this. For example:</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-5-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-5-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-5-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;silly_example&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">lpad</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">),</span> <span class="mi">14</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">))</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-10-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-10-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-10-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-10-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;silly_example&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">lpad</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">),</span> <span class="mi">14</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">))</span>
 <span class="n">rescue</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;incident_no_length&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-5-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
+</div><div aria-labelledby="tab-10-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-10-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
     <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">silly_example</span> <span class="o">=</span> <span class="nf">lpad</span><span class="p">(</span><span class="n">incident_number</span><span class="p">,</span> <span class="m">14</span><span class="p">,</span> <span class="s">&quot;xyz&quot;</span><span class="p">))</span>
     
 <span class="n">rescue</span> <span class="o">%&gt;%</span>
@@ -628,7 +827,8 @@ only showing top 5 rows
 </pre></div>
 </div>
 </div></div>
-<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+---------------+--------------+------------------+------------------+----------------+--------------+
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-11-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-11-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-11-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-11-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+---------------+--------------+------------------+------------------+----------------+--------------+
 |incident_number|origin_of_call|incident_no_length|padded_incident_no|too_short_inc_no| silly_example|
 +---------------+--------------+------------------+------------------+----------------+--------------+
 |         955141|        Police|                 6|         000955141|             955|xyzxyzxy955141|
@@ -640,16 +840,28 @@ only showing top 5 rows
 only showing top 5 rows
 </pre></div>
 </div>
-</section>
-<section id="padding-on-the-right-rpad">
+</div><div aria-labelledby="tab-11-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-11-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># A tibble: 5 × 6
+  incident_number origin_of_call incident_no_length padded_incident_no
+  &lt;chr&gt;           &lt;chr&gt;                       &lt;int&gt; &lt;chr&gt;             
+1 955141          Police                          6 000955141         
+2 3215101         Police                          7 003215101         
+3 3223101         Police                          7 003223101         
+4 7003121         Police                          7 007003121         
+5 6311101         Police                          7 006311101         
+# … with 2 more variables: too_short_inc_no &lt;chr&gt;, silly_example &lt;chr&gt;
+</pre></div>
+</div>
+</div></div>
+</div>
+<div class="section" id="padding-on-the-right-rpad">
 <h2>Padding on the right: <code class="docutils literal notranslate"><span class="pre">rpad()</span></code><a class="headerlink" href="#padding-on-the-right-rpad" title="Permalink to this headline">¶</a></h2>
-<p>There is also a similar function, <a class="reference external" href="https://spark.apache.org/docs/latest/api/python//reference/api/pyspark.sql.functions.rpad.html"><code class="docutils literal notranslate"><span class="pre">F.rpad()</span></code></a>, that works in the same way with identical arguments, just padding to the right instead:</p>
+<p>There is also a similar function, <a class="reference external" href="https://spark.apache.org/docs/latest/api/python//reference/api/pyspark.sql.functions.rpad.html"><code class="docutils literal notranslate"><span class="pre">F.rpad()</span></code></a>/<a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#rpad"><code class="docutils literal notranslate"><span class="pre">rpad</span></code></a>, that works in the same way with identical arguments, just padding to the right instead:</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-6-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-6-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-6-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;right_padded_inc_no&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">rpad</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">),</span> <span class="mi">9</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">))</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-12-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-12-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-12-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-12-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;right_padded_inc_no&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">rpad</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">),</span> <span class="mi">9</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">))</span>
 <span class="n">rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;right_padded_inc_no&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-6-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
+</div><div aria-labelledby="tab-12-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-12-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
     <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">right_padded_inc_no</span> <span class="o">=</span> <span class="nf">rpad</span><span class="p">(</span><span class="n">incident_number</span><span class="p">,</span> <span class="m">9</span><span class="p">,</span> <span class="s">&quot;0&quot;</span><span class="p">))</span>
     
 <span class="n">rescue</span> <span class="o">%&gt;%</span>
@@ -661,7 +873,8 @@ only showing top 5 rows
 </pre></div>
 </div>
 </div></div>
-<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+---------------+-------------------+
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-13-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-13-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-13-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-13-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+---------------+-------------------+
 |incident_number|right_padded_inc_no|
 +---------------+-------------------+
 |      146647151|          146647151|
@@ -673,10 +886,25 @@ only showing top 5 rows
 only showing top 5 rows
 </pre></div>
 </div>
-</section>
-</section>
-<section id="further-resources">
+</div><div aria-labelledby="tab-13-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-13-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># A tibble: 5 × 2
+  incident_number right_padded_inc_no
+  &lt;chr&gt;           &lt;chr&gt;              
+1 53242091        532420910          
+2 45531111        455311110          
+3 19747141        197471410          
+4 21512131        215121310          
+5 220308091       220308091          
+</pre></div>
+</div>
+</div></div>
+</div>
+</div>
+<div class="section" id="further-resources">
 <h1>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h1>
+<p>Spark at the ONS Articles:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html"><span class="doc std std-doc">Using Spark Functions in sparklyr</span></a>: note that <code class="docutils literal notranslate"><span class="pre">lpad</span></code>/<code class="docutils literal notranslate"><span class="pre">rpad</span></code> are inherited directly from Spark SQL and need to be used inside <code class="docutils literal notranslate"><span class="pre">mutate()</span></code>, rather than imported from the sparklyr package as standalone functions</p></li>
+</ul>
 <p>PySpark Documentation:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python//reference/api/pyspark.sql.functions.lpad.html"><code class="docutils literal notranslate"><span class="pre">F.lpad()</span></code></a></p></li>
@@ -689,15 +917,11 @@ only showing top 5 rows
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#rpad"><code class="docutils literal notranslate"><span class="pre">rpad</span></code></a></p></li>
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#length"><code class="docutils literal notranslate"><span class="pre">length</span></code></a></p></li>
 </ul>
-<p>Spark in ONS material:</p>
-<ul class="simple">
-<li><p>Spark SQL Functions in sparklyr: note that <code class="docutils literal notranslate"><span class="pre">lpad</span></code>/<code class="docutils literal notranslate"><span class="pre">rpad</span></code> are inherited directly from Spark SQL and need to be used inside <code class="docutils literal notranslate"><span class="pre">mutate()</span></code>, rather than imported from the sparklyr package as standalone functions</p></li>
-</ul>
 <p>Other links:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities/uksic2007">ONS Standard Industrial Classification (SIC)</a></p></li>
 </ul>
-</section>
+</div>
 
     <script type="text/x-thebe-config">
     {
@@ -721,10 +945,10 @@ only showing top 5 rows
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="union_dataframes_with_different_columns.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="union-dataframes-with-different-columns.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
@@ -739,18 +963,16 @@ only showing top 5 rows
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By Wil Roberts & Adrian Prince<br/>
-        
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By Wil Roberts & Adrian Prince<br/>
+    
+  </p>
+</footer>
 </main>
 
 

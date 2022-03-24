@@ -1,7 +1,7 @@
 ## Configuration Hierarchy and `spark-defaults.conf`
 
 Every Spark session has a *configuration*, where important settings such as the amount of memory, number of executors and cores are defined. There are three places that can contain configuration settings for a Spark session:
-- Directly in `SparkSession.builder` (PySpark) or `spark_connect()` (sparklyr)
+- Directly in [`SparkSession.builder`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html#pyspark.sql.SparkSession.builder) (PySpark) or [`spark_connect()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html) (sparklyr)
 - In a `spark-defaults.conf` configuration file
 - The default global setting
 
@@ -79,10 +79,24 @@ The hierarchy of Spark session settings is more complicated once a Spark session
 
 ### Scala and CDSW
 
-If using Scala in CDSW, a Spark session will be automatically started when loading a CDSW session, so you will have to use `spark-defaults.conf`, unless the default settings are appropriate for your project.
+If using [Scala](https://www.scala-lang.org/) in CDSW, a Spark session will be automatically started when loading a CDSW session, so you will have to use `spark-defaults.conf`, unless the default settings are appropriate for your project.
 
 At the ONS, we recommend that Spark code is written with Python or R, using the PySpark or sparklyr packages. Most users find writing Spark code with Python or R much easier than learning Scala. There are also more users of Python and R at the ONS, meaning it is easier to find people to peer review and maintain your code.
 
 ### Further Resources
 
-TBC
+Spark at the ONS Articles:
+- [Guidance on Spark Sessions](../spark-overview/spark-session-guidance)
+- [Example Spark Sessions](../spark-overview/example-spark-sessions)
+
+PySpark Documentation:
+- [`SparkSession.builder`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html#pyspark.sql.SparkSession.builder)
+
+sparklyr and tidyverse Documentation:
+- [`spark_connect()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html)
+
+Spark Documentation:
+- [Spark Properties and Defaults](https://spark.apache.org/docs/latest/configuration.html#available-properties)
+
+Other Links:
+- [Scala](https://www.scala-lang.org/)

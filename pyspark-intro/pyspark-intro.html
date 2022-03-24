@@ -4,8 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Introduction to PySpark &#8212; Spark at the ONS</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
@@ -39,22 +38,24 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Introduction to PySpark: Exercises" href="pyspark-intro-exercises.html" />
-    <link rel="prev" title="Creating DataFrames Manually" href="../spark-overview/creating-dataframes.html" />
+    <link rel="next" title="Reading Data in PySpark" href="reading-data-pyspark.html" />
+    <link rel="prev" title="Data Storage" href="../spark-overview/data-storage.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -105,8 +106,13 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/when-to-use-spark.html">
+   When To Use Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="../spark-overview/spark-session-guidance.html">
-   Spark Sessions
+   Guidance on Spark Sessions
   </a>
  </li>
  <li class="toctree-l1">
@@ -134,6 +140,11 @@
    Creating DataFrames Manually
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/data-storage.html">
+   Data Storage
+  </a>
+ </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
@@ -147,8 +158,8 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="pyspark-intro-exercises.html">
-   Introduction to PySpark: Exercises
+  <a class="reference internal" href="reading-data-pyspark.html">
+   Reading Data in PySpark
   </a>
  </li>
  <li class="toctree-l1">
@@ -174,7 +185,7 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../sparklyr-intro/sparklyr_functions.html">
+  <a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">
    Using Spark functions in sparklyr
   </a>
  </li>
@@ -186,7 +197,7 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/union_dataframes_with_different_columns.html">
+  <a class="reference internal" href="../spark-functions/union-dataframes-with-different-columns.html">
    Union two DataFrames with different columns
   </a>
  </li>
@@ -231,6 +242,26 @@
    Window Functions in Spark
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/cross-joins.html">
+   Cross Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/arrays.html">
+   Array Functions in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/writing-data.html">
+   Writing Data
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/job-description.html">
+   Set Spark Job Description
+  </a>
+ </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
@@ -239,7 +270,7 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/spark_application_and_ui.html">
+  <a class="reference internal" href="../spark-concepts/spark-application-and-ui.html">
    Spark Application and UI
   </a>
  </li>
@@ -249,23 +280,18 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/join_concepts.html">
+  <a class="reference internal" href="../spark-concepts/join-concepts.html">
    Optimising Joins
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/cross_joins.html">
-   Cross Joins
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/salted_joins.html">
+  <a class="reference internal" href="../spark-concepts/salted-joins.html">
    Salted Joins
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../spark-concepts/partitions.html">
-   Managing partitions
+   Managing Partitions
   </a>
  </li>
  <li class="toctree-l1">
@@ -279,13 +305,60 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint_staging.html">
+  <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html">
    Checkpoint
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/garbage-collection.html">
+   Garbage Collection
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/df-order.html">
+   Spark DFs Are Not Ordered
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../spark-concepts/exercises.html">
    Exercises
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Testing and Debugging
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/unit-testing-pyspark.html">
+   Unit Testing in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/unit-testing-sparklyr.html">
+   Unit Testing in sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/errors-pyspark.html">
+   Understanding Errors in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/errors-sparklyr.html">
+   Understanding Errors in sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/handling-errors-pyspark.html">
+   Handling Errors in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/handling-errors-sparklyr.html">
+   Handling Errors in sparklyr
   </a>
  </li>
 </ul>
@@ -298,6 +371,16 @@
  <li class="toctree-l1">
   <a class="reference internal" href="../ancillary-topics/visualisation.html">
    Spark and Visualisation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/module-imports.html">
+   Avoiding Module Import Conflicts
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/pydoop.html">
+   Pydoop
   </a>
  </li>
 </ul>
@@ -346,7 +429,7 @@
                 data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -397,7 +480,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -511,6 +594,28 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercise-1">
+   Exercise 1
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-1a">
+     Exercise 1a
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-1b">
+     Exercise 1b
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-1c">
+     Exercise 1c
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#filter-rows-filter-and-f-col">
    Filter rows:
    <code class="docutils literal notranslate">
@@ -524,6 +629,11 @@
      F.col()
     </span>
    </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercise-2">
+   Exercise 2
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -544,6 +654,11 @@
      .orderBy()
     </span>
    </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercise-3">
+   Exercise 3
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -628,6 +743,13 @@
   <a class="reference internal nav-link" href="#further-resources">
    Further Resources
   </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#acknowledgments">
+     Acknowledgments
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -637,15 +759,297 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Introduction to PySpark</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#pyspark-a-quick-introduction">
+   PySpark: a quick introduction
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-pyspark-package">
+   The
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     pyspark
+    </span>
+   </code>
+   Package
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#create-a-spark-session-sparksession-builder">
+   Create a Spark session:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     SparkSession.builder
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#reading-data-spark-read-csv">
+   Reading data:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     spark.read.csv()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#preview-data-printschema">
+   Preview data:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .printSchema()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#show-data-show">
+   Show data:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .show()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#convert-to-pandas-topandas">
+   Convert to pandas:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .toPandas()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#select-columns-select">
+   Select columns
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .select()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#get-the-row-count-count">
+   Get the row count:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .count()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#drop-columns-drop">
+   Drop columns:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .drop()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#rename-columns-withcolumnrenamed">
+   Rename columns:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .withColumnRenamed()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercise-1">
+   Exercise 1
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-1a">
+     Exercise 1a
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-1b">
+     Exercise 1b
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-1c">
+     Exercise 1c
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#filter-rows-filter-and-f-col">
+   Filter rows:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .filter()
+    </span>
+   </code>
+   and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     F.col()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercise-2">
+   Exercise 2
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#adding-columns-withcolumn">
+   Adding Columns:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .withColumn()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#sorting-orderby">
+   Sorting:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .orderBy()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercise-3">
+   Exercise 3
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#grouping-and-aggregating-groupby-agg-and-alias">
+   Grouping and Aggregating:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .groupBy()
+    </span>
+   </code>
+   ,
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .agg()
+    </span>
+   </code>
+   and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .alias()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#reading-data-from-a-parquet-file-spark-read-parquet">
+   Reading data from a Parquet file:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     spark.read.parquet()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#joining-data-join">
+   Joining Data
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .join()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#writing-data-file-choice">
+   Writing data: file choice
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#write-to-a-parquet-write-parquet">
+   Write to a parquet:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .write.parquet()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#write-to-a-csv-write-csv-and-coalesce">
+   Write to a CSV:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .write.csv()
+    </span>
+   </code>
+   and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .coalesce()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#removing-files">
+   Removing files
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#acknowledgments">
+     Acknowledgments
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
-  <section id="introduction-to-pyspark">
+  <div class="section" id="introduction-to-pyspark">
 <h1>Introduction to PySpark<a class="headerlink" href="#introduction-to-pyspark" title="Permalink to this headline">¶</a></h1>
 <p>This article aims to give hands on experience in working with the DataFrame API in PySpark. You can download this article as a notebook and run the code yourself by clicking on the download button above and selecting <code class="docutils literal notranslate"><span class="pre">.ipynb</span></code>.</p>
 <p>We will not aim to cover all the PySpark DataFrame functionality or go into detail of how Spark works, but instead focus on practicality by performing some common operations on an example dataset. There are a handful of exercises that you can complete while reading this article.</p>
 <p>Prerequisites for this article are some basic knowledge of Python and pandas. If you are completely new to Python then it is recommended to complete an introductory course first; your organisation may have specific Python training. Other resources include the <a class="reference external" href="https://docs.python.org/3/tutorial/">Python Tutorial</a> and <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/user_guide/10min.html">10 Minutes to pandas</a>.</p>
-<section id="pyspark-a-quick-introduction">
+<div class="section" id="pyspark-a-quick-introduction">
 <h2>PySpark: a quick introduction<a class="headerlink" href="#pyspark-a-quick-introduction" title="Permalink to this headline">¶</a></h2>
 <p>Although this article focusses on practical usage to enable you to quickly use PySpark, you do need to understand some basic theory of Spark and distributed computing.</p>
 <p>Spark is a powerful tool used to process huge data in an efficient way. We can access Spark in Python with the PySpark package. Spark has DataFrames, consisting of rows and columns, similar to pandas. Many of the operations are also similar, if not identically named: e.g. you can select and add columns, filter rows, group and aggregate.</p>
@@ -660,12 +1064,12 @@
 <li><p>In PySpark, DataFrames are <em>lazily evaluated</em>. We give Spark a set of instructions, called <em>transformations</em>, which are only evaluated when necessary, for instance to get a row count or write out data to a file, referred to as an <em>action</em>. In the example above, the plan is triggered once the data are set to write out to a file.</p></li>
 </ul>
 <p>For more detail on how Spark works, you can refer to the articles in the Understanding and Optimising Spark chapter of this book. <a class="reference external" href="https://pages.databricks.com/rs/094-YMS-629/images/LearningSpark2.0.pdf">Databricks: Learning Spark</a> is another useful resource.</p>
-</section>
-<section id="the-pyspark-package">
+</div>
+<div class="section" id="the-pyspark-package">
 <h2>The <code class="docutils literal notranslate"><span class="pre">pyspark</span></code> Package<a class="headerlink" href="#the-pyspark-package" title="Permalink to this headline">¶</a></h2>
 <p>As with all coding scripts or notebooks the first thing we do is to import the relevant packages. When coding in PySpark there are two particular imports we need.</p>
 <p>Firstly we will import the <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html"><code class="docutils literal notranslate"><span class="pre">SparkSession</span></code></a> class, which we will use to create a <code class="docutils literal notranslate"><span class="pre">SparkSession</span></code> object for processing data using Spark.</p>
-<p>The second is the <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql.html#functions"><code class="docutils literal notranslate"><span class="pre">pyspark.sql.functions</span></code></a> module, which contain functions that can be applied to Spark DataFrames, or columns within the DataFrames. The standard method is to import the <code class="docutils literal notranslate"><span class="pre">functions</span></code> module with the alias <code class="docutils literal notranslate"><span class="pre">F</span></code>, which means whenever we want to call a function from this module we write <code class="docutils literal notranslate"><span class="pre">F.function_name()</span></code>.</p>
+<p>The second is the <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql.html#functions"><code class="docutils literal notranslate"><span class="pre">pyspark.sql.functions</span></code></a> module, which contain functions that can be applied to Spark DataFrames, or columns within the DataFrames. The standard method is to <a class="reference internal" href="../ancillary-topics/module-imports.html"><span class="doc std std-doc">import the <code class="docutils literal notranslate"><span class="pre">functions</span></code> module with the alias <code class="docutils literal notranslate"><span class="pre">F</span></code></span></a>, which means whenever we want to call a function from this module we write <code class="docutils literal notranslate"><span class="pre">F.function_name()</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span>
@@ -687,10 +1091,10 @@
 </div>
 </div>
 <p>As <code class="docutils literal notranslate"><span class="pre">pyspark.sql.functions</span></code> is just a Python package, <a class="reference external" href="https://docs.python.org/3/library/functions.html#dir"><code class="docutils literal notranslate"><span class="pre">dir()</span></code></a> to list the functions and <a class="reference external" href="https://docs.python.org/3/library/functions.html#help"><code class="docutils literal notranslate"><span class="pre">help()</span></code></a> both work as normal, although the easiest way is to look at the <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql.html#functions">documentation</a>. There are a lot of functions in this module and you will be very unlikely to use them all.</p>
-</section>
-<section id="create-a-spark-session-sparksession-builder">
+</div>
+<div class="section" id="create-a-spark-session-sparksession-builder">
 <h2>Create a Spark session: <code class="docutils literal notranslate"><span class="pre">SparkSession.builder</span></code><a class="headerlink" href="#create-a-spark-session-sparksession-builder" title="Permalink to this headline">¶</a></h2>
-<p>With our <code class="docutils literal notranslate"><span class="pre">SparkSession</span></code> class imported we now want to create a connection to the Spark cluster. We use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html#pyspark.sql.SparkSession.builder"><code class="docutils literal notranslate"><span class="pre">SparkSession.builder</span></code></a> and assign this to <code class="docutils literal notranslate"><span class="pre">spark</span></code>. <code class="docutils literal notranslate"><span class="pre">SparkSession.builder</span></code> has many options; see the guidance on Spark sessions and also Sample Spark Sessions to get an idea of what sized session to use.</p>
+<p>With our <code class="docutils literal notranslate"><span class="pre">SparkSession</span></code> class imported we now want to create a connection to the Spark cluster. We use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html#pyspark.sql.SparkSession.builder"><code class="docutils literal notranslate"><span class="pre">SparkSession.builder</span></code></a> and assign this to <code class="docutils literal notranslate"><span class="pre">spark</span></code>. <code class="docutils literal notranslate"><span class="pre">SparkSession.builder</span></code> has many options; see the <a class="reference internal" href="../spark-overview/spark-session-guidance.html"><span class="doc std std-doc">Guidance on Spark Sessions</span></a> and also <a class="reference internal" href="../spark-overview/example-spark-sessions.html"><span class="doc std std-doc">Example Spark Sessions</span></a> to get an idea of what sized session to use.</p>
 <p>For this article, we are using a tiny dataset by Spark standards, and so are using a <em>local</em> session. This also means that you can run this code without having access to a Spark cluster.</p>
 <p>Note that only one Spark session can be running at once. If a session already exists then a new one will not created, instead the connection to the existing session will be used, hence the <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.builder.getOrCreate.html"><code class="docutils literal notranslate"><span class="pre">.getOrCreate()</span></code></a> method.</p>
 <div class="cell docutils container">
@@ -702,12 +1106,12 @@
 </div>
 </div>
 </div>
-</section>
-<section id="reading-data-spark-read-csv">
+</div>
+<div class="section" id="reading-data-spark-read-csv">
 <h2>Reading data: <code class="docutils literal notranslate"><span class="pre">spark.read.csv()</span></code><a class="headerlink" href="#reading-data-spark-read-csv" title="Permalink to this headline">¶</a></h2>
-<p>For this article we will look at some open data on animal rescue incidents from the London Fire Brigade. The data are stored as a CSV, although the parquet file format is the most common when using Spark. The reason for using CSV in this article is because it is a familiar file format and allows you to adapt this code easily for your own sample data.</p>
-<p>Often your data will be large and stored using Hadoop, on the Hadoop Distributed File System (HDFS). This example uses a local file, enabling us to get started quickly; see the article on HDFS for more information.</p>
-<p>To read in from a CSV file, use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrameReader.csv.html"><code class="docutils literal notranslate"><span class="pre">spark.read.csv()</span></code></a>. The file path is stored in the config file as <code class="docutils literal notranslate"><span class="pre">rescue_path_csv</span></code>. Using <code class="docutils literal notranslate"><span class="pre">header=True</span></code> means that the DataFrame will use the column headers from the CSV as the column names. CSV files do not contain information about the data types, so use <code class="docutils literal notranslate"><span class="pre">inferSchema=True</span></code> which makes Spark scan the file to infer the data types.</p>
+<p>For this article we will look at some open data on animal rescue incidents from the London Fire Brigade. The data are stored as a CSV, although the parquet file format is the most common when using Spark. The reason for using CSV in this article is because it is a familiar file format and allows you to adapt this code easily for your own sample data. See the article on <a class="reference internal" href="reading-data-pyspark.html"><span class="doc std std-doc">Reading Data in PySpark</span></a> for more information.</p>
+<p>Often your data will be large and stored using Hadoop, on the Hadoop Distributed File System (HDFS). This example uses a local file, enabling us to get started quickly; see the article on <a class="reference internal" href="../spark-overview/data-storage.html"><span class="doc std std-doc">Data Storage</span></a> for more information.</p>
+<p>To read in from a CSV file, use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrameReader.csv.html"><code class="docutils literal notranslate"><span class="pre">spark.read.csv()</span></code></a>. The file path is stored in the config file as <code class="docutils literal notranslate"><span class="pre">rescue_path_csv</span></code>. Using <code class="docutils literal notranslate"><span class="pre">header=True</span></code> means that the DataFrame will use the column headers from the CSV as the column names. CSV files do not contain information about the <a class="reference internal" href="../spark-overview/data-types.html"><span class="doc std std-doc">data types</span></a>, so use <code class="docutils literal notranslate"><span class="pre">inferSchema=True</span></code> which makes Spark scan the file to infer the data types.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_path_csv</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path_csv&quot;</span><span class="p">]</span>
@@ -716,8 +1120,8 @@
 </div>
 </div>
 </div>
-</section>
-<section id="preview-data-printschema">
+</div>
+<div class="section" id="preview-data-printschema">
 <h2>Preview data: <code class="docutils literal notranslate"><span class="pre">.printSchema()</span></code><a class="headerlink" href="#preview-data-printschema" title="Permalink to this headline">¶</a></h2>
 <p>To view the column names and data types use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.printSchema.html"><code class="docutils literal notranslate"><span class="pre">.printSchema()</span></code></a>. This will not return any actual data.</p>
 <div class="cell docutils container">
@@ -758,8 +1162,8 @@
 </div>
 </div>
 </div>
-</section>
-<section id="show-data-show">
+</div>
+<div class="section" id="show-data-show">
 <h2>Show data: <code class="docutils literal notranslate"><span class="pre">.show()</span></code><a class="headerlink" href="#show-data-show" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.show.html"><code class="docutils literal notranslate"><span class="pre">.show()</span></code></a> function is an action that previews a DataFrame. <code class="docutils literal notranslate"><span class="pre">.show()</span></code> is an <em>action</em>, meaning that all previous <em>transformations</em> will be ran on the Spark cluster; often this will have many <em>transformations</em>, but here we only have one, reading in the data.</p>
 <p>By default <code class="docutils literal notranslate"><span class="pre">.show()</span></code> will display 20 rows and will truncate the columns to a fixed width.</p>
@@ -783,8 +1187,8 @@ only showing top 3 rows
 </div>
 </div>
 </div>
-</section>
-<section id="convert-to-pandas-topandas">
+</div>
+<div class="section" id="convert-to-pandas-topandas">
 <h2>Convert to pandas: <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code><a class="headerlink" href="#convert-to-pandas-topandas" title="Permalink to this headline">¶</a></h2>
 <p>The returned results can look pretty ugly with <code class="docutils literal notranslate"><span class="pre">.show()</span></code> when you have a lot of columns, so often the best way to view the data is to convert to a pandas DataFrame. Be careful: the DataFrame is currently on the <em>Spark cluster</em> with lots of memory capacity, whereas pandas DataFrames are stored on the <em>driver</em>, which will have much less. Trying to use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.toPandas.html"><code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code></a> and a huge PySpark DF will not work. If converting to a pandas DF just to view the data, use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.limit.html"><code class="docutils literal notranslate"><span class="pre">.limit()</span></code></a> to just bring back a small number of rows.</p>
 <p><code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code> is an <em>action</em> and will process the whole plan on the Spark cluster. In this example, it will read the CSV file, return three rows, and then convert the result to the driver as a pandas DF.</p>
@@ -796,17 +1200,17 @@ only showing top 3 rows
 </div>
 <div class="cell_output docutils container">
 <div class="output text_html"><div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
-
-    .dataframe thead th {
-        text-align: left;
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
     }
 
     .dataframe tbody tr th {
         vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
     }
 </style>
 <table border="1" class="dataframe">
@@ -914,8 +1318,9 @@ only showing top 3 rows
 <p>3 rows × 26 columns</p>
 </div></div></div>
 </div>
-</section>
-<section id="select-columns-select">
+<p>See the article on <a class="reference internal" href="returning-data.html"><span class="doc std std-doc">Returning Data from Cluster to Driver</span></a> for more details.</p>
+</div>
+<div class="section" id="select-columns-select">
 <h2>Select columns <code class="docutils literal notranslate"><span class="pre">.select()</span></code><a class="headerlink" href="#select-columns-select" title="Permalink to this headline">¶</a></h2>
 <p>Often your data will have too many columns that are not relevant, so we can use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.select.html"><code class="docutils literal notranslate"><span class="pre">.select()</span></code></a> to just get the ones that are of interest. In our example, we can reduce the number of columns returned so that the output of <code class="docutils literal notranslate"><span class="pre">.show()</span></code> is much neater.</p>
 <p>Selecting columns is a <em>transformation</em>, and so will only be processed once an <em>action</em> is called. As such we are chaining this with <code class="docutils literal notranslate"><span class="pre">.show()</span></code> to preview the data:</p>
@@ -942,8 +1347,8 @@ only showing top 5 rows
 </div>
 </div>
 </div>
-</section>
-<section id="get-the-row-count-count">
+</div>
+<div class="section" id="get-the-row-count-count">
 <h2>Get the row count: <code class="docutils literal notranslate"><span class="pre">.count()</span></code><a class="headerlink" href="#get-the-row-count-count" title="Permalink to this headline">¶</a></h2>
 <p>Sometimes you data will be small enough that you do not even need to use Spark. As such it is useful to know the row count, and then make the decision on whether to use Spark or just use pandas.</p>
 <p>Note that unlike pandas DataFrames the row count is not automatically determined when the data are read in as a PySpark DataFrame. This is an example of <em>lazy evaluation</em>. As such, <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.count.html"><code class="docutils literal notranslate"><span class="pre">.count()</span></code></a> is an <em>action</em> and has to be explicitly called.</p>
@@ -959,8 +1364,8 @@ only showing top 5 rows
 </div>
 </div>
 </div>
-</section>
-<section id="drop-columns-drop">
+</div>
+<div class="section" id="drop-columns-drop">
 <h2>Drop columns: <code class="docutils literal notranslate"><span class="pre">.drop()</span></code><a class="headerlink" href="#drop-columns-drop" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.drop.html"><code class="docutils literal notranslate"><span class="pre">.drop()</span></code></a> is the opposite of <code class="docutils literal notranslate"><span class="pre">select()</span></code>; we specify the columns that we want to remove. There are a lot of columns related to the location of the animal rescue incidents that we will not use that can be removed with <code class="docutils literal notranslate"><span class="pre">.drop()</span></code>. You do not need to specify the columns as a list with <code class="docutils literal notranslate"><span class="pre">[]</span></code>, just use a comma separator.</p>
 <p>Note that we have written over the our previous DataFrame by re-assiging to <code class="docutils literal notranslate"><span class="pre">rescue</span></code>; unlike pandas DFs, PySpark DFs are <em>immutable</em>.</p>
@@ -1006,11 +1411,11 @@ only showing top 5 rows
 </div>
 </div>
 </div>
-</section>
-<section id="rename-columns-withcolumnrenamed">
+</div>
+<div class="section" id="rename-columns-withcolumnrenamed">
 <h2>Rename columns: <code class="docutils literal notranslate"><span class="pre">.withColumnRenamed()</span></code><a class="headerlink" href="#rename-columns-withcolumnrenamed" title="Permalink to this headline">¶</a></h2>
 <p>The source data has the column names in <code class="docutils literal notranslate"><span class="pre">CamelCase</span></code>, but when using Python we generally prefer to use <code class="docutils literal notranslate"><span class="pre">snake_case</span></code>. The source data also has columns containing special characters (<code class="docutils literal notranslate"><span class="pre">£</span></code>) which can be problematic when writing out data as it is not compatible will all storage formats.</p>
-<p>To rename columns, use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.withColumnRenamed.html"><code class="docutils literal notranslate"><span class="pre">.withColumnRenamed()</span></code></a>. This has two arguments: the original column name, followed by the new name. You need a separate <code class="docutils literal notranslate"><span class="pre">.withColumnRenamed()</span></code> statement for each column name but can chain these together. We then use <code class="docutils literal notranslate"><span class="pre">.select()</span></code> to only select these columns. Once again we are re-assigning the DataFrame as it is immutable.</p>
+<p>To rename columns, use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.withColumnRenamed.html"><code class="docutils literal notranslate"><span class="pre">.withColumnRenamed()</span></code></a>. This has two arguments: the original column name, followed by the new name. You need a separate <code class="docutils literal notranslate"><span class="pre">.withColumnRenamed()</span></code> statement for each column name but can chain these together. Once again we are re-assigning the DataFrame as it is immutable.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
@@ -1019,18 +1424,7 @@ only showing top 5 rows
           <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;CalYear&quot;</span><span class="p">,</span> <span class="s2">&quot;cal_year&quot;</span><span class="p">)</span>
           <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;IncidentNotionalCost(£)&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">)</span>
           <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;PumpHoursTotal&quot;</span><span class="p">,</span> <span class="s2">&quot;job_hours&quot;</span><span class="p">)</span>
-          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;PumpCount&quot;</span><span class="p">,</span> <span class="s2">&quot;engine_count&quot;</span><span class="p">)</span>
-          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;FinalDescription&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">)</span>
-          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;PostcodeDistrict&quot;</span><span class="p">,</span> <span class="s2">&quot;postcode_district&quot;</span><span class="p">)</span>
-          <span class="o">.</span><span class="n">select</span><span class="p">(</span>
-              <span class="s2">&quot;incident_number&quot;</span><span class="p">,</span>
-              <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span>
-              <span class="s2">&quot;cal_year&quot;</span><span class="p">,</span>
-              <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span>
-              <span class="s2">&quot;job_hours&quot;</span><span class="p">,</span>
-              <span class="s2">&quot;engine_count&quot;</span><span class="p">,</span>
-              <span class="s2">&quot;description&quot;</span><span class="p">,</span>
-              <span class="s2">&quot;postcode_district&quot;</span><span class="p">))</span>
+          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;PumpCount&quot;</span><span class="p">,</span> <span class="s2">&quot;engine_count&quot;</span><span class="p">))</span>
 
 <span class="n">rescue</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
 </pre></div>
@@ -1039,23 +1433,91 @@ only showing top 5 rows
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>root
  |-- incident_number: string (nullable = true)
- |-- animal_group: string (nullable = true)
+ |-- DateTimeOfCall: string (nullable = true)
  |-- cal_year: integer (nullable = true)
- |-- total_cost: double (nullable = true)
- |-- job_hours: double (nullable = true)
+ |-- FinYear: string (nullable = true)
+ |-- TypeOfIncident: string (nullable = true)
  |-- engine_count: double (nullable = true)
- |-- description: string (nullable = true)
- |-- postcode_district: string (nullable = true)
+ |-- job_hours: double (nullable = true)
+ |-- HourlyNotionalCost(£): integer (nullable = true)
+ |-- total_cost: double (nullable = true)
+ |-- FinalDescription: string (nullable = true)
+ |-- animal_group: string (nullable = true)
+ |-- OriginofCall: string (nullable = true)
+ |-- PropertyType: string (nullable = true)
+ |-- PropertyCategory: string (nullable = true)
+ |-- SpecialServiceTypeCategory: string (nullable = true)
+ |-- SpecialServiceType: string (nullable = true)
+ |-- Ward: string (nullable = true)
+ |-- Borough: string (nullable = true)
+ |-- StnGroundName: string (nullable = true)
+ |-- PostcodeDistrict: string (nullable = true)
 </pre></div>
 </div>
 </div>
 </div>
 <p>Be careful using <code class="docutils literal notranslate"><span class="pre">.withColumnRenamed()</span></code>; if the column is not in the DataFrame then nothing will happen and an error will not be raised until you try and use the new column name.</p>
-<p>You can now try Exercise 1.</p>
-</section>
-<section id="filter-rows-filter-and-f-col">
+</div>
+<div class="section" id="exercise-1">
+<h2>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="exercise-1a">
+<h3>Exercise 1a<a class="headerlink" href="#exercise-1a" title="Permalink to this headline">¶</a></h3>
+<p>Rename the following columns in the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame:</p>
+<p><code class="docutils literal notranslate"><span class="pre">FinalDescription</span></code> –&gt; <code class="docutils literal notranslate"><span class="pre">description</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">PostcodeDistrict</span></code> –&gt; <code class="docutils literal notranslate"><span class="pre">postcode_district</span></code></p>
+</div>
+<div class="section" id="exercise-1b">
+<h3>Exercise 1b<a class="headerlink" href="#exercise-1b" title="Permalink to this headline">¶</a></h3>
+<p>Select these columns and the six columns that were renamed in the cell above; you should have eight in total. Reassign the result to the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame.</p>
+</div>
+<div class="section" id="exercise-1c">
+<h3>Exercise 1c<a class="headerlink" href="#exercise-1c" title="Permalink to this headline">¶</a></h3>
+<p>Preview the first five rows of the DataFrame.</p>
+<details>
+<summary><b>Exercise 1: Solution</b></summary><div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1a: Chain two .withColumnRenamed() operations</span>
+<span class="n">rescue</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;FinalDescription&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;PostcodeDistrict&quot;</span><span class="p">,</span> <span class="s2">&quot;postcode_district&quot;</span><span class="p">))</span>
+
+<span class="c1"># 1b: Select the eight columns and assign to rescue</span>
+<span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+    <span class="s2">&quot;incident_number&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cal_year&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;job_hours&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;engine_count&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;description&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;postcode_district&quot;</span><span class="p">)</span>
+
+<span class="c1"># 1c Preview with .show(); can also use .limit(5).toPandas()</span>
+<span class="n">rescue</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+---------------+------------+--------+----------+---------+------------+--------------------+-----------------+
+|incident_number|animal_group|cal_year|total_cost|job_hours|engine_count|         description|postcode_district|
++---------------+------------+--------+----------+---------+------------+--------------------+-----------------+
+|         139091|         Dog|    2009|     510.0|      2.0|         1.0|DOG WITH JAW TRAP...|             SE19|
+|         275091|         Fox|    2009|     255.0|      1.0|         1.0|ASSIST RSPCA WITH...|             SE25|
+|        2075091|         Dog|    2009|     255.0|      1.0|         1.0|DOG CAUGHT IN DRA...|              SM5|
+|        2872091|       Horse|    2009|     255.0|      1.0|         1.0|HORSE TRAPPED IN ...|              UB9|
+|        3553091|      Rabbit|    2009|     255.0|      1.0|         1.0|RABBIT TRAPPED UN...|              RM3|
++---------------+------------+--------+----------+---------+------------+--------------------+-----------------+
+only showing top 5 rows
+</pre></div>
+</div>
+</div>
+</div>
+</details>
+</div>
+</div>
+<div class="section" id="filter-rows-filter-and-f-col">
 <h2>Filter rows: <code class="docutils literal notranslate"><span class="pre">.filter()</span></code> and <code class="docutils literal notranslate"><span class="pre">F.col()</span></code><a class="headerlink" href="#filter-rows-filter-and-f-col" title="Permalink to this headline">¶</a></h2>
-<p>Rows of PySpark DataFrames can be filtered with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.filter.html"><code class="docutils literal notranslate"><span class="pre">.filter()</span></code></a>, which takes a logical condition. <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.col.html"><code class="docutils literal notranslate"><span class="pre">F.col()</span></code></a> is used to reference a column in a DataFrame by name and is the most robust method to use.</p>
+<p>Rows of PySpark DataFrames can be filtered with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.filter.html"><code class="docutils literal notranslate"><span class="pre">.filter()</span></code></a>, which takes a logical condition. <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.col.html"><code class="docutils literal notranslate"><span class="pre">F.col()</span></code></a> is used to reference a column in a DataFrame by name and is the <a class="reference internal" href="f-col.html"><span class="doc std std-doc">most robust method to use</span></a>.</p>
 <p>For instance, if we want to select all the rows where <code class="docutils literal notranslate"><span class="pre">animal_group</span></code> is equal to <code class="docutils literal notranslate"><span class="pre">Hamster</span></code>, we can use <code class="docutils literal notranslate"><span class="pre">F.col(&quot;animal_group&quot;)</span> <span class="pre">==</span> <span class="pre">&quot;Hamster&quot;)</span></code>. Note the double equals sign used in a condition. We do not want to change the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame, so assign it to a new DF, <code class="docutils literal notranslate"><span class="pre">hamsters</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1126,9 +1588,45 @@ only showing top 3 rows
 </div>
 </div>
 </div>
-<p>You can now try Exercise 2.</p>
-</section>
-<section id="adding-columns-withcolumn">
+</div>
+<div class="section" id="exercise-2">
+<h2>Exercise 2<a class="headerlink" href="#exercise-2" title="Permalink to this headline">¶</a></h2>
+<p>Create a new DataFrame which consists of all the rows where <code class="docutils literal notranslate"><span class="pre">animal_group</span></code> is equal to <code class="docutils literal notranslate"><span class="pre">&quot;Fox&quot;</span></code> and preview the first ten rows.</p>
+<details>
+<summary><b>Exercise 2: Solution</b></summary><div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use F.col() to filter, ensuring that a new DataFrame is created</span>
+<span class="c1"># Can also use a string condition instead, e.g. rescue.filter(&quot;animal_group == &#39;Fox&#39;&quot;)</span>
+<span class="n">foxes</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Fox&quot;</span><span class="p">)</span>
+
+<span class="c1"># Preview with .show() or .limit(10).toPandas()</span>
+<span class="n">foxes</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+---------------+------------+--------+----------+---------+------------+--------------------+-----------------+
+|incident_number|animal_group|cal_year|total_cost|job_hours|engine_count|         description|postcode_district|
++---------------+------------+--------+----------+---------+------------+--------------------+-----------------+
+|         275091|         Fox|    2009|     255.0|      1.0|         1.0|ASSIST RSPCA WITH...|             SE25|
+|       12451091|         Fox|    2009|     765.0|      3.0|         2.0|ASSIST RSPCA WITH...|              SE1|
+|       12770091|         Fox|    2009|     255.0|      1.0|         1.0|FOX TRAPPED IN FE...|              KT3|
+|       18386091|         Fox|    2009|     255.0|      1.0|         1.0|FOX TRAPPED IN FO...|              NW9|
+|       20027091|         Fox|    2009|     255.0|      1.0|         1.0|FOX TRAPPED IN BA...|              W14|
+|       30133091|         Fox|    2009|     255.0|      1.0|         1.0|FOX TRAPPED ABOVE...|              SE1|
+|       73167091|         Fox|    2009|     260.0|      1.0|         1.0|ASSIST RSPCA WITH...|              RM2|
+|       80733091|         Fox|    2009|     780.0|      3.0|         2.0|FOX TRAPPED IN DI...|              E14|
+|      105324091|         Fox|    2009|     520.0|      2.0|         1.0|FOX STUCK IN WIND...|              SW7|
+|      116595091|         Fox|    2009|     260.0|      1.0|         1.0|FOX TRAPPED IN FENCE|              HA5|
++---------------+------------+--------+----------+---------+------------+--------------------+-----------------+
+only showing top 10 rows
+</pre></div>
+</div>
+</div>
+</div>
+</details>
+</div>
+<div class="section" id="adding-columns-withcolumn">
 <h2>Adding Columns: <code class="docutils literal notranslate"><span class="pre">.withColumn()</span></code><a class="headerlink" href="#adding-columns-withcolumn" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.withColumn.html"><code class="docutils literal notranslate"><span class="pre">.withColumn()</span></code></a> can be used to either create a new column, or overwrite an existing one. The first argument is the new column name, the second is the value of the column. Often this will be derived from other columns. For instance, we do not have a column for how long an incident took in the data, but do have the columns available to derive this:</p>
 <ul class="simple">
@@ -1155,17 +1653,17 @@ only showing top 3 rows
 </div>
 <div class="cell_output docutils container">
 <div class="output text_html"><div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
-
-    .dataframe thead th {
-        text-align: left;
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
     }
 
     .dataframe tbody tr th {
         vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
     }
 </style>
 <table border="1" class="dataframe">
@@ -1254,10 +1752,10 @@ only showing top 3 rows
 <li><p><strong>Actions</strong> trigger computation to be performed on the cluster and results returned to the driver. It is actions that trigger the execution plan.</p></li>
 </ul>
 <p>Multiple transformations can be combined, as we did to preprocess the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame above. Only when an action is called, for example <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code>, <code class="docutils literal notranslate"><span class="pre">.show()</span></code> or <code class="docutils literal notranslate"><span class="pre">.count()</span></code>, are these transformations and action executed on the cluster, after which the results are returned to the driver.</p>
-</section>
-<section id="sorting-orderby">
+</div>
+<div class="section" id="sorting-orderby">
 <h2>Sorting: <code class="docutils literal notranslate"><span class="pre">.orderBy()</span></code><a class="headerlink" href="#sorting-orderby" title="Permalink to this headline">¶</a></h2>
-<p>An important Spark concept is that DataFrames are not ordered by default, unlike a pandas DF which has an index. Remember that a Spark DataFrame is distributed into partitions, and there is no guarantee of the order of the rows within these partitions, or which partition a particular row is on.</p>
+<p>An important Spark concept is that DataFrames are <a class="reference internal" href="../spark-concepts/df-order.html"><span class="doc std std-doc">not ordered by default</span></a>, unlike a pandas DF which has an index. Remember that a Spark DataFrame is distributed into partitions, and there is no guarantee of the order of the rows within these partitions, or which partition a particular row is on.</p>
 <p>To sort the data, use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.orderBy.html"><code class="docutils literal notranslate"><span class="pre">.orderBy()</span></code></a>. By default this will sort ascending; to sort descending, use <code class="docutils literal notranslate"><span class="pre">ascending=False</span></code>. To show the highest cost incidents:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1290,10 +1788,69 @@ only showing top 10 rows
 </div>
 <p>Horses make up a lot of the more expensive calls, which makes sense, given that they are large animals.</p>
 <p>There are actually multiple ways to sort data in PySpark; as well as <code class="docutils literal notranslate"><span class="pre">.orderBy()</span></code>, you can use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.sort.html"><code class="docutils literal notranslate"><span class="pre">.sort()</span></code></a> or even an SQL expression. The same is true of sorting the data descending, where <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.desc.html"><code class="docutils literal notranslate"><span class="pre">F.desc(column_name)</span></code></a> can be used instead of <code class="docutils literal notranslate"><span class="pre">ascending=False</span></code>. The most important principle here is consistency; try and use the same syntax as your colleagues to make the code easier to read.</p>
-<p>Note that sorting the DataFrame is an expensive operation, as the rows move between partitions. This is a key Spark concept called a <em>shuffle</em>. When you are ready to optimise your Spark code you will want to read the article on Shuffling.</p>
-<p>You can now try Exercise 3.</p>
-</section>
-<section id="grouping-and-aggregating-groupby-agg-and-alias">
+<p>Note that sorting the DataFrame is an expensive operation, as the rows move between partitions. This is a key Spark concept called a <a class="reference internal" href="../spark-concepts/shuffling.html"><span class="doc std std-doc"><em>shuffle</em></span></a>. When you are ready to optimise your Spark code you will want to read the article on Shuffling.</p>
+</div>
+<div class="section" id="exercise-3">
+<h2>Exercise 3<a class="headerlink" href="#exercise-3" title="Permalink to this headline">¶</a></h2>
+<p>Sort the incidents in terms of their duration, look at the top 10 and the bottom 10. Do you notice anything strange?</p>
+<details>
+<summary><b>Exercise 3: Solution</b></summary><div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># To get the top 10, sort the DF descending</span>
+<span class="n">top10</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+         <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;incident_duration&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+
+<span class="n">top10</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># The bottom 10 can just be sorted ascending</span>
+<span class="c1"># Note that .tail() does not exist in Spark 2.4</span>
+<span class="n">bottom10</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+         <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;incident_duration&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+
+<span class="c1"># When previewing the results, the incident_duration are all null</span>
+<span class="n">bottom10</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+---------------+--------------------+--------+----------+---------+------------+--------------------+-----------------+-----------------+
+|incident_number|        animal_group|cal_year|total_cost|job_hours|engine_count|         description|postcode_district|incident_duration|
++---------------+--------------------+--------+----------+---------+------------+--------------------+-----------------+-----------------+
+|       48360131|               Horse|    2013|    3480.0|     12.0|         2.0|FOAL IN RIVER WAT...|               E4|              6.0|
+|      137525091|               Horse|    2009|    1300.0|      5.0|         1.0|HORSE STUCK IN CANAL|              N18|              5.0|
+|       18627122|               Horse|    2012|    1300.0|      5.0|         1.0|HORSE STUCK ON SO...|              EN3|              5.0|
+|       92423121|Unknown - Domesti...|    2012|    1300.0|      5.0|         1.0|RUNNING CALL TO S...|              E14|              5.0|
+|         955141|               Horse|    2014|    1450.0|      5.0|         1.0|ASSIST POLICE WIT...|               E4|              5.0|
+|       62700151|               Horse|    2015|    2980.0|     10.0|         2.0|HORSE FALLEN INTO...|             TN14|              5.0|
+|125704-02092018|               Horse|    2018|    1665.0|      5.0|         1.0|HORSE STUCK IN DI...|             DA17|              5.0|
+|126939-05092018|               Horse|    2018|    1665.0|      5.0|         1.0|ASSIST RSPCA WITH...|             DA17|              5.0|
+|       49076141|                 Cat|    2014|    2655.0|      9.0|         2.0|KITTEN TRAPPED IN...|              TW4|              4.5|
+|       64764121|                 Dog|    2012|    1040.0|      4.0|         1.0|DOG TRAPPED IN BA...|              CR5|              4.0|
++---------------+--------------------+--------+----------+---------+------------+--------------------+-----------------+-----------------+
+
++---------------+------------+--------+----------+---------+------------+--------------------+-----------------+-----------------+
+|incident_number|animal_group|cal_year|total_cost|job_hours|engine_count|         description|postcode_district|incident_duration|
++---------------+------------+--------+----------+---------+------------+--------------------+-----------------+-----------------+
+|       35453121|         Cat|    2012|      null|     null|        null| CAT INJURED UP TREE|              W11|             null|
+|        4920141|        Bird|    2014|      null|     null|        null|PIDGEON TRAPPED I...|              SW3|             null|
+|       36995121|       Horse|    2012|      null|     null|        null|PONY COLLASPED IN...|              CR0|             null|
+|      194986111|       Horse|    2011|      null|     null|        null|HORSE WITH NECK S...|              EN2|             null|
+|       51412121|         Cat|    2012|      null|     null|        null|INJURED CAT IN DI...|               E8|             null|
+|      208663091|       Horse|    2009|      null|     null|        null|3 HORSES LOOSE ON...|             UB10|             null|
+|       18325122|         Dog|    2012|      null|     null|        null|DOG WITH HEAD STU...|              SE6|             null|
+|       43265111|         Dog|    2011|      null|     null|        null|DOG IN DISTRESS I...|              SE1|             null|
+|        2602131|         Cat|    2013|      null|     null|        null|CAT STUCK BETWEEN...|               W4|             null|
+|      118613121|         Cat|    2012|      null|     null|        null|CAT FALLEN INTO R...|             SE16|             null|
++---------------+------------+--------+----------+---------+------------+--------------------+-----------------+-----------------+
+</pre></div>
+</div>
+</div>
+</div>
+</details>
+</div>
+<div class="section" id="grouping-and-aggregating-groupby-agg-and-alias">
 <h2>Grouping and Aggregating: <code class="docutils literal notranslate"><span class="pre">.groupBy()</span></code>, <code class="docutils literal notranslate"><span class="pre">.agg()</span></code> and <code class="docutils literal notranslate"><span class="pre">.alias()</span></code><a class="headerlink" href="#grouping-and-aggregating-groupby-agg-and-alias" title="Permalink to this headline">¶</a></h2>
 <p>In most cases, we want to get insights into the raw data, for instance, by taking the sum or average of a column, or getting the largest or smallest values. This is key to what the Office for National Statistics does: we release statistics!</p>
 <p>In Spark, grouping and aggregating is similar to pandas or SQL: we first group the data with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.groupBy.html"><code class="docutils literal notranslate"><span class="pre">.groupBy()</span></code></a>, then aggregate it in some way with a function from the <code class="docutils literal notranslate"><span class="pre">functions</span></code> module inside <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.agg.html"><code class="docutils literal notranslate"><span class="pre">.agg()</span></code></a>, e.g. <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.sum.html"><code class="docutils literal notranslate"><span class="pre">F.sum()</span></code></a>, <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.max.html"><code class="docutils literal notranslate"><span class="pre">F.max()</span></code></a>. For instance, to find the average cost by <code class="docutils literal notranslate"><span class="pre">animal_group</span></code> we use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.mean.html"><code class="docutils literal notranslate"><span class="pre">F.mean()</span></code></a>:</p>
@@ -1359,13 +1916,13 @@ only showing top 5 rows
 |        animal_group|      average_cost|
 +--------------------+------------------+
 |                Goat|            1180.0|
-|                Fish|             780.0|
 |                Bull|             780.0|
+|                Fish|             780.0|
 |               Horse| 747.4350649350649|
 |Unknown - Animal ...| 709.6666666666666|
 |                 Cow| 624.1666666666666|
-|            Hedgehog|             520.0|
 |                Lamb|             520.0|
+|            Hedgehog|             520.0|
 |                Deer| 423.8829787234043|
 |Unknown - Wild An...|390.03636363636366|
 +--------------------+------------------+
@@ -1397,17 +1954,17 @@ only showing top 10 rows
 </div>
 <div class="cell_output docutils container">
 <div class="output text_html"><div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
-
-    .dataframe thead th {
-        text-align: left;
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
     }
 
     .dataframe tbody tr th {
         vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
     }
 </style>
 <table border="1" class="dataframe">
@@ -1431,8 +1988,8 @@ only showing top 10 rows
 </div></div></div>
 </div>
 <p>Note that we did not use <code class="docutils literal notranslate"><span class="pre">.limit()</span></code> before <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code> here. This is because we know the row count is tiny, and so there was no danger of overloading the driver with too much data.</p>
-</section>
-<section id="reading-data-from-a-parquet-file-spark-read-parquet">
+</div>
+<div class="section" id="reading-data-from-a-parquet-file-spark-read-parquet">
 <h2>Reading data from a Parquet file: <code class="docutils literal notranslate"><span class="pre">spark.read.parquet()</span></code><a class="headerlink" href="#reading-data-from-a-parquet-file-spark-read-parquet" title="Permalink to this headline">¶</a></h2>
 <p>The next section covers how to join data in Spark, but before we do, we need to read in another dataset. In our rescue data, we have a column for the postcode district, which represents the first part of the postcode. We have data for the population by postcode in another dataset, <code class="docutils literal notranslate"><span class="pre">population</span></code>.</p>
 <p>This data are stored as a parquet file. Parquet files the most efficient way to store data when using Spark. They are compressed and so take up much less storage space, and reading parquet files with Spark is many times quicker than reading CSVs. The drawback is that they are not human readable, although you can store them as a Hive table which means they can easily be interrogated with SQL. See the article on Parquet files for more information.</p>
@@ -1447,17 +2004,17 @@ only showing top 10 rows
 </div>
 <div class="cell_output docutils container">
 <div class="output text_html"><div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
-
-    .dataframe thead th {
-        text-align: left;
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
     }
 
     .dataframe tbody tr th {
         vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
     }
 </style>
 <table border="1" class="dataframe">
@@ -1498,11 +2055,11 @@ only showing top 10 rows
 </table>
 </div></div></div>
 </div>
-</section>
-<section id="joining-data-join">
+</div>
+<div class="section" id="joining-data-join">
 <h2>Joining Data <code class="docutils literal notranslate"><span class="pre">.join()</span></code><a class="headerlink" href="#joining-data-join" title="Permalink to this headline">¶</a></h2>
 <p>Now we have read the population data in, we can join it to the rescue data to get the population by postcode. This can be done with the <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.join.html"><code class="docutils literal notranslate"><span class="pre">.join()</span></code></a> method.</p>
-<p>This article assumes that you are familiar with joins. Those who know SQL will be familiar with this term, although pandas and R users sometimes use the term <em>merge</em>. If you do not know how a join works, please read about <a class="reference external" href="https://en.wikipedia.org/wiki/Join_(SQL)">joins in SQL</a> first; the principles are the same in Spark. Joins are expensive in Spark as they involve shuffling the data and this can make larger joins slow. See the article on Optimising Joins for more information on how to make them more efficient.</p>
+<p>This article assumes that you are familiar with joins. Those who know SQL will be familiar with this term, although pandas and R users sometimes use the term <em>merge</em>. If you do not know how a join works, please read about <a class="reference external" href="https://en.wikipedia.org/wiki/Join_(SQL)">joins in SQL</a> first; the principles are the same in Spark. Joins are expensive in Spark as they involve shuffling the data and this can make larger joins slow. See the article on <a class="reference internal" href="../spark-concepts/join-concepts.html"><span class="doc std std-doc">Optimising Joins</span></a> for more information on how to make them more efficient.</p>
 <p><code class="docutils literal notranslate"><span class="pre">.join()</span></code> is a DataFrame method, so we start with the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame. The other arguments we need are:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">other</span></code>: the DataFrame on the right hand side of the join, <code class="docutils literal notranslate"><span class="pre">population</span></code>;</p></li>
@@ -1534,17 +2091,17 @@ only showing top 10 rows
 </div>
 <div class="cell_output docutils container">
 <div class="output text_html"><div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
-
-    .dataframe thead th {
-        text-align: left;
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
     }
 
     .dataframe tbody tr th {
         vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
     }
 </style>
 <table border="1" class="dataframe">
@@ -1597,8 +2154,8 @@ only showing top 10 rows
 </table>
 </div></div></div>
 </div>
-</section>
-<section id="writing-data-file-choice">
+</div>
+<div class="section" id="writing-data-file-choice">
 <h2>Writing data: file choice<a class="headerlink" href="#writing-data-file-choice" title="Permalink to this headline">¶</a></h2>
 <p>In this article so far, we have been calling actions to preview the data, bringing back only a handful of rows each time. This is useful when developing and debugging code, but in production pipelines you will want to write the results.</p>
 <p>The format in which the results are written out depends on what you want to do next with the data:</p>
@@ -1606,9 +2163,9 @@ only showing top 10 rows
 <li><p>If the data are intended to be human readable, e.g. as the basis for a presentation, or as a publication on the ONS website, then you will likely want to output the data as a CSV</p></li>
 <li><p>If the data are intended to be used as an input to another Spark process, then use parquet or a Hive table.</p></li>
 </ul>
-<p>There are other use cases, e.g. JSON can be useful if you want the results to analysed with a different programming language, although here we only focus on CSV and parquet. See the article on Output File Choices for more information.</p>
-</section>
-<section id="write-to-a-parquet-write-parquet">
+<p>There are other use cases, e.g. JSON can be useful if you want the results to analysed with a different programming language, although here we only focus on CSV and parquet. See the article on <a class="reference internal" href="../spark-functions/writing-data.html"><span class="doc std std-doc">Writing Data</span></a> for more information.</p>
+</div>
+<div class="section" id="write-to-a-parquet-write-parquet">
 <h2>Write to a parquet: <code class="docutils literal notranslate"><span class="pre">.write.parquet()</span></code><a class="headerlink" href="#write-to-a-parquet-write-parquet" title="Permalink to this headline">¶</a></h2>
 <p>To write out our DataFrame as a parquet file, use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrameWriter.parquet.html"><code class="docutils literal notranslate"><span class="pre">rescue_with_pop.write.parquet()</span></code></a>, using the file path as the argument.</p>
 <p>The key difference between writing out data with Spark and writing out data with pandas is that the data will be distributed, which means that multiple files will be created, stored in a parent folder. Spark can read in these parent folders as one DataFrame. There will be one file written out per partition of the DataFrame.</p>
@@ -1621,9 +2178,9 @@ only showing top 10 rows
 </div>
 </div>
 <p>It is worth looking at the raw data that is written out to see that it has been stored in several files in a parent folder.</p>
-<p>When reading the data in, Spark will treat every individual file as a partition. See the article on Partitions for more information.</p>
-</section>
-<section id="write-to-a-csv-write-csv-and-coalesce">
+<p>When reading the data in, Spark will treat every individual file as a partition. See the article on <a class="reference internal" href="../spark-concepts/partitions.html"><span class="doc std std-doc">Managing Partitions</span></a> for more information.</p>
+</div>
+<div class="section" id="write-to-a-csv-write-csv-and-coalesce">
 <h2>Write to a CSV: <code class="docutils literal notranslate"><span class="pre">.write.csv()</span></code> and <code class="docutils literal notranslate"><span class="pre">.coalesce()</span></code><a class="headerlink" href="#write-to-a-csv-write-csv-and-coalesce" title="Permalink to this headline">¶</a></h2>
 <p>CSVs will also be written out in a distributed manner as multiple files. While this is desirable in a parquet, it is not very useful with CSV, as the main benefit is to make them human readable. First, write out the data with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrameWriter.csv.html"><code class="docutils literal notranslate"><span class="pre">.write.csv()</span></code></a>, using the path defined in the config:</p>
 <div class="cell docutils container">
@@ -1649,9 +2206,9 @@ only showing top 10 rows
 </div>
 </div>
 <p>Checking the file again, you can see that although the folder still exists, it will contain only one CSV file.</p>
-<p>A neater way of writing out CSV files to a Hadoop file system is with Pydoop, allowing you to convert the Spark DataFrame to pandas first before making use of <a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_csv.html"><code class="docutils literal notranslate"><span class="pre">.to_csv()</span></code></a> from pandas, which has many options to control the output format.</p>
-</section>
-<section id="removing-files">
+<p>A neater way of writing out CSV files to a Hadoop file system is with <a class="reference internal" href="../ancillary-topics/pydoop.html"><span class="doc std std-doc">Pydoop</span></a>, allowing you to convert the Spark DataFrame to pandas first before making use of <a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_csv.html"><code class="docutils literal notranslate"><span class="pre">.to_csv()</span></code></a> from pandas, which has many options to control the output format.</p>
+</div>
+<div class="section" id="removing-files">
 <h2>Removing files<a class="headerlink" href="#removing-files" title="Permalink to this headline">¶</a></h2>
 <p>Spark has no native way of removing files, so either use the standard Python methods, or delete them manually through a file browser. If on a local file system, use <a class="reference external" href="https://docs.python.org/3/library/os.html#os.remove"><code class="docutils literal notranslate"><span class="pre">os.remove()</span></code></a> to delete a file and <a class="reference external" href="https://docs.python.org/3/library/shutil.html#shutil.rmtree"><code class="docutils literal notranslate"><span class="pre">shutil.rmtree()</span></code></a> to remove a directory. If using HDFS or similar, then use <a class="reference external" href="https://docs.python.org/3/library/subprocess.html#subprocess.run"><code class="docutils literal notranslate"><span class="pre">subprocess.run()</span></code></a>. Be careful when using the <code class="docutils literal notranslate"><span class="pre">subprocess</span></code> module as you will not get a warning when deleting files.</p>
 <div class="cell docutils container">
@@ -1664,9 +2221,26 @@ only showing top 10 rows
 </div>
 </div>
 </div>
-</section>
-<section id="further-resources">
+</div>
+<div class="section" id="further-resources">
 <h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
+<p>Spark at the ONS Articles:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../ancillary-topics/module-imports.html"><span class="doc std std-doc">Avoiding Module Import Conflicts</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-overview/spark-session-guidance.html"><span class="doc std std-doc">Guidance on Spark Sessions</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-overview/example-spark-sessions.html"><span class="doc std std-doc">Example Spark Sessions</span></a></p></li>
+<li><p><a class="reference internal" href="reading-data-pyspark.html"><span class="doc std std-doc">Reading Data in PySpark</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-overview/data-storage.html"><span class="doc std std-doc">Data Storage</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-overview/data-types.html"><span class="doc std std-doc">Data Types in Spark</span></a></p></li>
+<li><p><a class="reference internal" href="returning-data.html"><span class="doc std std-doc">Returning Data from Cluster to Driver</span></a></p></li>
+<li><p><a class="reference internal" href="f-col.html"><span class="doc std std-doc">Reference columns by name: <code class="docutils literal notranslate"><span class="pre">F.col()</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../spark-concepts/df-order.html"><span class="doc std std-doc">Spark DataFrames Are Not Ordered</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-concepts/shuffling.html"><span class="doc std std-doc">Shuffling</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-concepts/join-concepts.html"><span class="doc std std-doc">Optimising Joins</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-functions/writing-data.html"><span class="doc std std-doc">Writing Data</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-concepts/partitions.html"><span class="doc std std-doc">Managing Partitions</span></a></p></li>
+<li><p><a class="reference internal" href="../ancillary-topics/pydoop.html"><span class="doc std std-doc">Pydoop</span></a></p></li>
+</ul>
 <p>PySpark Documentation:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html"><code class="docutils literal notranslate"><span class="pre">SparkSession</span></code></a></p></li>
@@ -1690,10 +2264,10 @@ only showing top 10 rows
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.desc.html"><code class="docutils literal notranslate"><span class="pre">F.desc()</span></code></a></p></li>
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.groupBy.html"><code class="docutils literal notranslate"><span class="pre">.groupBy()</span></code></a></p></li>
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.agg.html"><code class="docutils literal notranslate"><span class="pre">.agg()</span></code></a></p></li>
-<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Column.alias.html"><code class="docutils literal notranslate"><span class="pre">.alias()</span></code></a></p></li>
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.sum.html"><code class="docutils literal notranslate"><span class="pre">F.sum()</span></code></a></p></li>
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.max.html"><code class="docutils literal notranslate"><span class="pre">F.max()</span></code></a></p></li>
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.mean.html"><code class="docutils literal notranslate"><span class="pre">F.mean()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Column.alias.html"><code class="docutils literal notranslate"><span class="pre">.alias()</span></code></a></p></li>
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrameReader.parquet.html"><code class="docutils literal notranslate"><span class="pre">spark.read.parquet()</span></code></a></p></li>
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.join.html"><code class="docutils literal notranslate"><span class="pre">.join()</span></code></a></p></li>
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrameWriter.parquet.html"><code class="docutils literal notranslate"><span class="pre">.write.parquet()</span></code></a></p></li>
@@ -1701,24 +2275,8 @@ only showing top 10 rows
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.coalesce.html"><code class="docutils literal notranslate"><span class="pre">.coalesce()</span></code></a></p></li>
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrameWriter.mode.html"><code class="docutils literal notranslate"><span class="pre">.mode()</span></code></a></p></li>
 </ul>
-<p>Spark in ONS material:</p>
+<p>Python Documentation</p>
 <ul class="simple">
-<li><p>Introduction to PySpark: Exercises</p></li>
-<li><p>Understanding and Optimising Spark chapter</p></li>
-<li><p>Guidance on Spark sessions</p></li>
-<li><p>Sample Spark Sessions</p></li>
-<li><p>Introduction to PySpark</p></li>
-<li><p>F.col()</p></li>
-<li><p>Parquet files</p></li>
-<li><p>Optimising Joins</p></li>
-<li><p>Output File Choices</p></li>
-<li><p>Writing Data</p></li>
-<li><p>Pydoop</p></li>
-</ul>
-<p>Other links:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org">Python documentation</a></p>
-<ul>
 <li><p><a class="reference external" href="https://docs.python.org/3/tutorial/">Python Tutorial</a></p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#dir"><code class="docutils literal notranslate"><span class="pre">dir()</span></code></a></p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#help"><code class="docutils literal notranslate"><span class="pre">help()</span></code></a></p></li>
@@ -1726,18 +2284,22 @@ only showing top 10 rows
 <li><p><a class="reference external" href="https://docs.python.org/3/library/shutil.html#shutil.rmtree"><code class="docutils literal notranslate"><span class="pre">shutil.rmtree()</span></code></a></p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/subprocess.html#subprocess.run"><code class="docutils literal notranslate"><span class="pre">subprocess.run()</span></code></a></p></li>
 </ul>
-</li>
-<li><p><a class="reference external" href="https://pandas.pydata.org/"><code class="docutils literal notranslate"><span class="pre">pandas</span></code> documentation</a>:</p>
-<ul>
+<p>pandas Documentation:</p>
+<ul class="simple">
 <li><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/user_guide/10min.html">10 Minutes to pandas</a></p></li>
 <li><p><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_csv.html"><code class="docutils literal notranslate"><span class="pre">.to_csv()</span></code></a></p></li>
 </ul>
-</li>
-<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Join_(SQL)">Wikipedia; Join (SQL)</a></p></li>
+<p>Other Links:</p>
+<ul class="simple">
 <li><p><a class="reference external" href="https://pages.databricks.com/rs/094-YMS-629/images/LearningSpark2.0.pdf">Databricks: Learning Spark</a></p></li>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Join_(SQL)">Wikipedia; Join (SQL)</a></p></li>
 </ul>
-</section>
-</section>
+<div class="section" id="acknowledgments">
+<h3>Acknowledgments<a class="headerlink" href="#acknowledgments" title="Permalink to this headline">¶</a></h3>
+<p>Thanks to Karina Marks, Chris Musselle and Dave Beech for creating the initial version of this article.</p>
+</div>
+</div>
+</div>
 
     <script type="text/x-thebe-config">
     {
@@ -1761,36 +2323,34 @@ only showing top 10 rows
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="../spark-overview/creating-dataframes.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="../spark-overview/data-storage.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Creating DataFrames Manually</p>
+            <p class="prev-next-title">Data Storage</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="pyspark-intro-exercises.html" title="next page">
+    <a class='right-next' id="next-link" href="reading-data-pyspark.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Introduction to PySpark: Exercises</p>
+        <p class="prev-next-title">Reading Data in PySpark</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By Wil Roberts & Adrian Prince<br/>
-        
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By Wil Roberts & Adrian Prince<br/>
+    
+  </p>
+</footer>
 </main>
 
 

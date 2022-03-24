@@ -4,8 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Example Spark Sessions &#8212; Spark at the ONS</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
@@ -39,23 +38,25 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/tabs.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Configuration Hierarchy and spark-defaults.conf" href="spark-defaults.html" />
-    <link rel="prev" title="Spark Sessions" href="spark-session-guidance.html" />
+    <link rel="prev" title="Guidance on Spark Sessions" href="spark-session-guidance.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -106,8 +107,13 @@
 </p>
 <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
+  <a class="reference internal" href="when-to-use-spark.html">
+   When To Use Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="spark-session-guidance.html">
-   Spark Sessions
+   Guidance on Spark Sessions
   </a>
  </li>
  <li class="toctree-l1 current active">
@@ -135,6 +141,11 @@
    Creating DataFrames Manually
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="data-storage.html">
+   Data Storage
+  </a>
+ </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
@@ -148,8 +159,8 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../pyspark-intro/pyspark-intro-exercises.html">
-   Introduction to PySpark: Exercises
+  <a class="reference internal" href="../pyspark-intro/reading-data-pyspark.html">
+   Reading Data in PySpark
   </a>
  </li>
  <li class="toctree-l1">
@@ -175,7 +186,7 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../sparklyr-intro/sparklyr_functions.html">
+  <a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">
    Using Spark functions in sparklyr
   </a>
  </li>
@@ -187,7 +198,7 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/union_dataframes_with_different_columns.html">
+  <a class="reference internal" href="../spark-functions/union-dataframes-with-different-columns.html">
    Union two DataFrames with different columns
   </a>
  </li>
@@ -232,6 +243,26 @@
    Window Functions in Spark
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/cross-joins.html">
+   Cross Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/arrays.html">
+   Array Functions in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/writing-data.html">
+   Writing Data
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/job-description.html">
+   Set Spark Job Description
+  </a>
+ </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
@@ -240,7 +271,7 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/spark_application_and_ui.html">
+  <a class="reference internal" href="../spark-concepts/spark-application-and-ui.html">
    Spark Application and UI
   </a>
  </li>
@@ -250,23 +281,18 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/join_concepts.html">
+  <a class="reference internal" href="../spark-concepts/join-concepts.html">
    Optimising Joins
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/cross_joins.html">
-   Cross Joins
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/salted_joins.html">
+  <a class="reference internal" href="../spark-concepts/salted-joins.html">
    Salted Joins
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../spark-concepts/partitions.html">
-   Managing partitions
+   Managing Partitions
   </a>
  </li>
  <li class="toctree-l1">
@@ -280,13 +306,60 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint_staging.html">
+  <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html">
    Checkpoint
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/garbage-collection.html">
+   Garbage Collection
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/df-order.html">
+   Spark DFs Are Not Ordered
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../spark-concepts/exercises.html">
    Exercises
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Testing and Debugging
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/unit-testing-pyspark.html">
+   Unit Testing in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/unit-testing-sparklyr.html">
+   Unit Testing in sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/errors-pyspark.html">
+   Understanding Errors in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/errors-sparklyr.html">
+   Understanding Errors in sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/handling-errors-pyspark.html">
+   Handling Errors in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/handling-errors-sparklyr.html">
+   Handling Errors in sparklyr
   </a>
  </li>
 </ul>
@@ -299,6 +372,16 @@
  <li class="toctree-l1">
   <a class="reference internal" href="../ancillary-topics/visualisation.html">
    Spark and Visualisation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/module-imports.html">
+   Avoiding Module Import Conflicts
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/pydoop.html">
+   Pydoop
   </a>
  </li>
 </ul>
@@ -347,7 +430,7 @@
                 data-placement="left">.md</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -381,7 +464,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -418,6 +501,11 @@
    Closing Spark sessions
   </a>
  </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
 </ul>
 
             </nav>
@@ -426,14 +514,67 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Example Spark Sessions</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#default-blank-session">
+   Default/Blank Session
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#small-session">
+   Small Session
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#medium-session">
+   Medium Session
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#large-session">
+   Large Session
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#extra-large-session">
+   Extra Large session
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#closing-spark-sessions">
+   Closing Spark sessions
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
-  <section id="example-spark-sessions">
+  <div class="section" id="example-spark-sessions">
 <h1>Example Spark Sessions<a class="headerlink" href="#example-spark-sessions" title="Permalink to this headline">¶</a></h1>
-<p>This document gives some example Spark sessions. For more information on Spark sessions and why you need to be careful with memory usage, please consult the <a class="reference external" href="http://np2rvlapxx507/DAP_CATS/guidance/-/blob/master/Spark%20session%20guidance.md">Guidance on Spark Sessions</a>.</p>
-<p>Remember to only use a Spark session for as long as you need. It’s good etiquette to use <code class="docutils literal notranslate"><span class="pre">spark.stop()</span></code> (for PySpark) or <code class="docutils literal notranslate"><span class="pre">spark_disconnect(sc)</span></code> (for sparklyr) in your scripts. Stopping the CDSW or Jupyter Notebook session will also close the Spark session if one is running.</p>
-<section id="default-blank-session">
+<p>This document gives some example Spark sessions. For more information on Spark sessions and why you need to be careful with memory usage, please consult the <a class="reference internal" href="spark-session-guidance.html"><span class="doc std std-doc">Guidance on Spark Sessions</span></a> and <a class="reference internal" href="spark-defaults.html"><span class="doc std std-doc">Configuration Hierarchy and <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code></span></a>.</p>
+<p>Remember to only use a Spark session for as long as you need. It’s good etiquette to use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.stop.html"><code class="docutils literal notranslate"><span class="pre">spark.stop()</span></code></a> (for PySpark) or <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html"><code class="docutils literal notranslate"><span class="pre">spark_disconnect(sc)</span></code></a> (for sparklyr) in your scripts. Stopping the CDSW or Jupyter Notebook session will also close the Spark session if one is running.</p>
+<div class="section" id="default-blank-session">
 <h2>Default/Blank Session<a class="headerlink" href="#default-blank-session" title="Permalink to this headline">¶</a></h2>
 <p>As a starting point you can create a Spark session with all the default options. This is the bare minimum you need to create a Spark session and will work fine for many DAP users.</p>
 <p>Please use this session by default or if unsure in any way about your resource requirements.</p>
@@ -463,17 +604,17 @@
 </div>
 </div><div aria-labelledby="tab-0-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
 
-<span class="n">default_config</span> <span class="o">&lt;-</span> <span class="nf">spark_config</span><span class="p">()</span>
+<span class="n">default_config</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">()</span>
 
-<span class="n">sc</span> <span class="o">&lt;-</span> <span class="nf">spark_connect</span><span class="p">(</span>
+<span class="n">sc</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
   <span class="n">master</span> <span class="o">=</span> <span class="s">&quot;yarn-client&quot;</span><span class="p">,</span>
   <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;default-session&quot;</span><span class="p">,</span>
   <span class="n">config</span> <span class="o">=</span> <span class="n">default_config</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></div>
-</section>
-<section id="small-session">
+</div>
+<div class="section" id="small-session">
 <h2>Small Session<a class="headerlink" href="#small-session" title="Permalink to this headline">¶</a></h2>
 <p>This is the smallest session that will realistically be used in DAP. It is similar in size to that used for DAP CATS training, as the low memory and only one core means several people can run this session at the same time on Dev Test, the cluster with the smallest capacity.</p>
 <p>Details:</p>
@@ -510,7 +651,7 @@
 </div>
 </div><div aria-labelledby="tab-1-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
 
-<span class="n">small_config</span> <span class="o">&lt;-</span> <span class="nf">spark_config</span><span class="p">()</span>
+<span class="n">small_config</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">()</span>
 <span class="n">small_config</span><span class="o">$</span><span class="n">spark.executor.memory</span> <span class="o">&lt;-</span> <span class="s">&quot;1g&quot;</span>
 <span class="n">small_config</span><span class="o">$</span><span class="n">spark.executor.cores</span> <span class="o">&lt;-</span> <span class="m">1</span>
 <span class="n">small_config</span><span class="o">$</span><span class="n">spark.dynamicAllocation.enabled</span> <span class="o">&lt;-</span> <span class="s">&quot;true&quot;</span>
@@ -518,15 +659,15 @@
 <span class="n">small_config</span><span class="o">$</span><span class="n">spark.sql.shuffle.partitions</span> <span class="o">&lt;-</span> <span class="m">12</span>
 <span class="n">small_config</span><span class="o">$</span><span class="n">spark.shuffle.service.enabled</span> <span class="o">&lt;-</span> <span class="s">&quot;true&quot;</span>
 
-<span class="n">sc</span> <span class="o">&lt;-</span> <span class="nf">spark_connect</span><span class="p">(</span>
+<span class="n">sc</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
   <span class="n">master</span> <span class="o">=</span> <span class="s">&quot;yarn-client&quot;</span><span class="p">,</span>
   <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;small-session&quot;</span><span class="p">,</span>
   <span class="n">config</span> <span class="o">=</span> <span class="n">small_config</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></div>
-</section>
-<section id="medium-session">
+</div>
+<div class="section" id="medium-session">
 <h2>Medium Session<a class="headerlink" href="#medium-session" title="Permalink to this headline">¶</a></h2>
 <p>A standard session used for analysing survey or synthetic datasets. Also used for some Production pipelines based on survey and/or smaller administrative data.</p>
 <p>Details:</p>
@@ -565,7 +706,7 @@
 </div>
 </div><div aria-labelledby="tab-2-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
 
-<span class="n">medium_config</span> <span class="o">&lt;-</span> <span class="nf">spark_config</span><span class="p">()</span>
+<span class="n">medium_config</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">()</span>
 <span class="n">medium_config</span><span class="o">$</span><span class="n">spark.executor.memory</span> <span class="o">&lt;-</span> <span class="s">&quot;6g&quot;</span>
 <span class="n">medium_config</span><span class="o">$</span><span class="n">spark.executor.cores</span> <span class="o">&lt;-</span> <span class="m">3</span>
 <span class="n">medium_config</span><span class="o">$</span><span class="n">spark.dynamicAllocation.enabled</span> <span class="o">&lt;-</span> <span class="s">&quot;true&quot;</span>
@@ -573,15 +714,15 @@
 <span class="n">medium_config</span><span class="o">$</span><span class="n">spark.sql.shuffle.partitions</span> <span class="o">&lt;-</span> <span class="m">18</span>
 <span class="n">medium_config</span><span class="o">$</span><span class="n">spark.shuffle.service.enabled</span> <span class="o">&lt;-</span> <span class="s">&quot;true&quot;</span>
 
-<span class="n">sc</span> <span class="o">&lt;-</span> <span class="nf">spark_connect</span><span class="p">(</span>
+<span class="n">sc</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
  <span class="n">master</span> <span class="o">=</span> <span class="s">&quot;yarn-client&quot;</span><span class="p">,</span>
  <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;medium-session&quot;</span><span class="p">,</span>
  <span class="n">config</span> <span class="o">=</span> <span class="n">medium_config</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></div>
-</section>
-<section id="large-session">
+</div>
+<div class="section" id="large-session">
 <h2>Large Session<a class="headerlink" href="#large-session" title="Permalink to this headline">¶</a></h2>
 <p>Session designed for running Production pipelines on large administrative data, rather than just survey data. Will often develop using a sample and a smaller session then change to this once the pipeline is complete.</p>
 <p>Details:</p>
@@ -621,7 +762,7 @@
 </div>
 </div><div aria-labelledby="tab-3-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
 
-<span class="n">large_config</span> <span class="o">&lt;-</span> <span class="nf">spark_config</span><span class="p">()</span>
+<span class="n">large_config</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">()</span>
 <span class="n">large_config</span><span class="o">$</span><span class="n">spark.executor.memory</span> <span class="o">&lt;-</span> <span class="s">&quot;10g&quot;</span>
 <span class="n">large_config</span><span class="o">$</span><span class="n">spark.yarn.executor.memoryOverhead</span> <span class="o">&lt;-</span> <span class="s">&quot;1g&quot;</span>
 <span class="n">large_config</span><span class="o">$</span><span class="n">spark.executor.cores</span> <span class="o">&lt;-</span> <span class="m">5</span>
@@ -630,15 +771,15 @@
 <span class="n">large_config</span><span class="o">$</span><span class="n">spark.sql.shuffle.partitions</span> <span class="o">&lt;-</span> <span class="m">200</span>
 <span class="n">large_config</span><span class="o">$</span><span class="n">spark.shuffle.service.enabled</span> <span class="o">&lt;-</span> <span class="s">&quot;true&quot;</span>
 
-<span class="n">sc</span> <span class="o">&lt;-</span> <span class="nf">spark_connect</span><span class="p">(</span>
+<span class="n">sc</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
   <span class="n">master</span> <span class="o">=</span> <span class="s">&quot;yarn-client&quot;</span><span class="p">,</span>
   <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;large-session&quot;</span><span class="p">,</span>
   <span class="n">config</span> <span class="o">=</span> <span class="n">large_config</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></div>
-</section>
-<section id="extra-large-session">
+</div>
+<div class="section" id="extra-large-session">
 <h2>Extra Large session<a class="headerlink" href="#extra-large-session" title="Permalink to this headline">¶</a></h2>
 <p>Used for the most complex pipelines, with huge administrative data sources and complex calculations. This uses a large amount of resource on the cluster, so only use when running Production pipelines.</p>
 <p>It is even more important when using more resource to close your Spark session once finished.</p>
@@ -679,7 +820,7 @@
 </div>
 </div><div aria-labelledby="tab-4-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
 
-<span class="n">xl_config</span> <span class="o">&lt;-</span> <span class="nf">spark_config</span><span class="p">()</span>
+<span class="n">xl_config</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">()</span>
 <span class="n">xl_config</span><span class="o">$</span><span class="n">spark.executor.memory</span> <span class="o">&lt;-</span> <span class="s">&quot;20g&quot;</span>
 <span class="n">xl_config</span><span class="o">$</span><span class="n">spark.yarn.executor.memoryOverhead</span> <span class="o">&lt;-</span> <span class="s">&quot;2g&quot;</span>
 <span class="n">xl_config</span><span class="o">$</span><span class="n">spark.executor.cores</span> <span class="o">&lt;-</span> <span class="m">5</span>
@@ -688,27 +829,44 @@
 <span class="n">xl_config</span><span class="o">$</span><span class="n">spark.sql.shuffle.partitions</span> <span class="o">&lt;-</span> <span class="m">240</span>
 <span class="n">xl_config</span><span class="o">$</span><span class="n">spark.shuffle.service.enabled</span> <span class="o">&lt;-</span> <span class="s">&quot;true&quot;</span>
 
-<span class="n">sc</span> <span class="o">&lt;-</span> <span class="nf">spark_connect</span><span class="p">(</span>
+<span class="n">sc</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
   <span class="n">master</span> <span class="o">=</span> <span class="s">&quot;yarn-client&quot;</span><span class="p">,</span>
   <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;xl-session&quot;</span><span class="p">,</span>
   <span class="n">config</span> <span class="o">=</span> <span class="n">xl_config</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></div>
-</section>
-<section id="closing-spark-sessions">
+</div>
+<div class="section" id="closing-spark-sessions">
 <h2>Closing Spark sessions<a class="headerlink" href="#closing-spark-sessions" title="Permalink to this headline">¶</a></h2>
 <p>Remember to close your sessions once finished, so that the memory can be re-allocated to another user.</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-5-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-5-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-5-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-5-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span><span class="o">-</span><span class="nf">disconnect</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+</div><div aria-labelledby="tab-5-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_disconnect</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></div>
-</section>
-</section>
+</div>
+<div class="section" id="further-resources">
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
+<p>Spark at the ONS Articles:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="spark-session-guidance.html"><span class="doc std std-doc">Guidance on Spark Sessions</span></a></p></li>
+<li><p><a class="reference internal" href="spark-defaults.html"><span class="doc std std-doc">Configuration Hierarchy and <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code></span></a></p></li>
+</ul>
+<p>PySpark Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html#pyspark.sql.SparkSession.builder"><code class="docutils literal notranslate"><span class="pre">SparkSession.builder</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.stop.html"><code class="docutils literal notranslate"><span class="pre">spark.stop()</span></code></a></p></li>
+</ul>
+<p>sparklyr and tidyverse Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html"><code class="docutils literal notranslate"><span class="pre">spark_connect</span></code>/<code class="docutils literal notranslate"><span class="pre">spark_disconnect()</span></code></a></p></li>
+</ul>
+</div>
+</div>
 
     <script type="text/x-thebe-config">
     {
@@ -732,14 +890,14 @@
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="spark-session-guidance.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Spark Sessions</p>
+            <p class="prev-next-title">Guidance on Spark Sessions</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="spark-defaults.html" title="next page">
@@ -750,18 +908,16 @@
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By Wil Roberts & Adrian Prince<br/>
-        
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By Wil Roberts & Adrian Prince<br/>
+    
+  </p>
+</footer>
 </main>
 
 

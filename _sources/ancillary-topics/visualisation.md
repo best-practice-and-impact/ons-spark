@@ -2,7 +2,7 @@
 
 Visualising data with a graph or dashboard can be a useful way to show or discover trends that may not be obvious if just looking at the raw data. Visualisation can be useful throughout any coding project when working with data. At the start of a project graphs can assist in noticing patterns or outliers that you may not notice if just viewing the raw data. They can also help communicate interim and final results of analysis to stakeholders who aren't programmers. Visualisations are extensively used in official statistical publications produced by the ONS.
 
-Spark has an additional challenge when it comes to charts and dashboards: your data will often be large, and if your data will not fit on the driver it will not be able to be visualised using a chart. Good practice for data visualisation when using Spark is therefore to aggregate the data, ensuring it is small enough to fit on the driver, use `.toPandas()` if using PySpark or `collect()` if using sparklyr, and then use the regular charting packages, e.g. [Matplotlib](https://matplotlib.org/) or [ggplot2](https://ggplot2.tidyverse.org/).
+Spark has an additional challenge when it comes to charts and dashboards: your data will often be large, and if your data will not fit on the driver it will not be able to be visualised using a chart. Good practice for data visualisation when using Spark is therefore to aggregate the data, ensuring it is small enough to fit on the driver, use [`.toPandas()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.toPandas.html) if using PySpark or [`collect()`](https://dplyr.tidyverse.org/reference/compute.html) if using sparklyr, and then use the regular charting packages, e.g. [Matplotlib](https://matplotlib.org/) or [ggplot2](https://ggplot2.tidyverse.org/).
 
 Good resources on visualisation include the [ONS Style Guide: Presenting Data](https://style.ons.gov.uk/category/data-visualisation/). All ONS charts should follow this guidance and those producing work on behalf of other organisations can also use this guide as an authority too. The [GSS Style Guide: Introduction to data visualisation](https://gss.civilservice.gov.uk/policy-store/introduction-to-data-visualisation/) is another good resource and contains useful links to further assist in presenting data effectively.
 
@@ -48,7 +48,7 @@ rescue <- sparklyr::spark_read_parquet(sc, config$rescue_path) %>%
 
 ```
 ````
-Now copy the data to to the driver, with `toPandas()` if using Python or `collect()` if using R:
+Now copy the data to to the driver, with `.toPandas()` if using Python or `collect()` if using R:
 ````{tabs}
 ```{code-tab} py
 rescue_pd = rescue.toPandas()
@@ -85,7 +85,7 @@ ggplot2::ggplot(data=rescue_tb, ggplot2::aes(x=as.factor(cal_year), y=count)) +
 ````
 ![ggplot2 chart of count of animals rescued by cal_year](../images/viz_2_r.png)
 
-You can pass a sparklyr DataFrame directly into `ggplot()`, although this could lead to errors if the data are too large. It is better to aggregate the data first and `collect()`.
+You can pass a sparklyr DataFrame directly into [`ggplot()`](https://ggplot2.tidyverse.org/reference/ggplot.html), although this could lead to errors if the data are too large. It is better to aggregate the data first and `collect()`.
 ````{tabs}
 
 ```{code-tab} r R
@@ -105,6 +105,13 @@ The principles for using [dashboards](https://style.ons.gov.uk/data-visualisatio
 Common dashboard applications include [Seaborn](https://seaborn.pydata.org/) and [Streamlit](https://streamlit.io/) for Python and [Shiny](https://shiny.rstudio.com/) for R.
 
 ### Further Resources
+
+PySpark Documentation:
+- [`.toPandas()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.toPandas.html)
+
+sparklyr and tidyverse Documentation:
+- [`collect()`](https://dplyr.tidyverse.org/reference/compute.html)
+- [`ggplot()`](https://ggplot2.tidyverse.org/reference/ggplot.html)
 
 Guidance on data visualisation:
 - [ONS Style Guide: Presenting Data](https://style.ons.gov.uk/category/data-visualisation/)

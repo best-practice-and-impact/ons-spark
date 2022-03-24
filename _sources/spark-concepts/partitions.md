@@ -1,12 +1,12 @@
-# Managing partitions
+## Managing Partitions
 
 DataFrames in Spark are *distributed*, so although we treat them as one object they might be split up into multiple partitions over many machines on the cluster. The benefit of having multiple partitions is that some operations can be performed on the partitions in parallel. 
 
-More partitions means greater *parallelisation*. However, there is a cost associated with multiple partitions, for example scheduling delay and data serialisation. In the **Spark Application and UI** article we saw that putting a small DataFrame into one or two partitions can lead to more efficient processing. 
+More partitions means greater *parallelisation*. However, there is a cost associated with multiple partitions, for example scheduling delay and data serialisation. In the [Spark Application and UI](../spark-concepts/spark-application-and-ui) article we saw that putting a small DataFrame into one or two partitions can lead to more efficient processing. 
 
 In this notebook we will explore these partitions and how the partitioning of a DataFrame is affected by importing, processing and writing data in Spark. The goal is not to find the optimum number of partitions for a given DataFrame, the goal is to have greater awareness of partitioning so we can avoid the extreme cases of over-partitioning, under-partitioning and highly skewed partitioning.
 
-## Investigating partitions
+### Investigating partitions
 
 We will start by investigating the partitions of some DataFrames. We will look at the partitions of a newly created DataFrame, an imported DataFrame and a processed DataFrame. But first, we'll need to do some imports and create a local application in the usual way.
 ````{tabs}
@@ -23,16 +23,14 @@ spark = (SparkSession.builder.master("local[2]")
 
 library(sparklyr)
 
-partitions_config <- sparklyr::spark_config()
-
 sc <- sparklyr::spark_connect(
     master = "local[2]",
     app_name = "partitions",
-    config = partitions_config)
+    config = sparklyr::spark_config())
 
 ```
 ````
-### Newly created DataFrame
+#### Newly created DataFrame
 
 Let's create a DataFrame called `rand_df` with an `id` column from 0 to 4,999 and a `rand_val` column containing random numbers from 1 to 10.
 ````{tabs}
@@ -59,7 +57,9 @@ rand_df %>% head(10) %>% sparklyr::collect()
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +---+--------+
 | id|rand_val|
 +---+--------+
@@ -76,9 +76,26 @@ rand_df %>% head(10) %>% sparklyr::collect()
 +---+--------+
 only showing top 10 rows
 ```
-To find the number of partitions of a DataFrame in PySpark we need to access the underlying RDD structures that make up the DataFrame by using `.rdd` after referencing the DataFrame. Then we can use the `.getNumPartitions()` method to return the number of partitions. In sparklyr we can just use the function `sdf_num_partitions()`.
 
-We can also find out how many rows are in each partition. There is more than one way of doing this, one method was introduced in the **Shuffling article** and will be used later in this article, a second method is shown below. Again, in PySpark we will need to access the underlying RDDs then map on a `lambda` function that will loop over the rows in each partition and return a count of these rows in a list. In sparklyr we can use `spark_apply()` to give us a row count for each partition.
+```{code-tab} plaintext R Output
+# A tibble: 10 × 2
+      id rand_val
+   <int>    <dbl>
+ 1     0        7
+ 2     1        9
+ 3     2       10
+ 4     3        9
+ 5     4        5
+ 6     5        6
+ 7     6        1
+ 8     7        2
+ 9     8        4
+10     9        7
+```
+````
+To find the number of partitions of a DataFrame in PySpark we need to access the underlying RDD structures that make up the DataFrame by using `.rdd` after referencing the DataFrame. Then we can use the [`.getNumPartitions()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.RDD.getNumPartitions.html) method to return the number of partitions. In sparklyr we can just use the function [`sdf_num_partitions()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_num_partitions.html).
+
+We can also find out how many rows are in each partition. There is more than one way of doing this, one method was introduced in the [Shuffling](../spark-concepts/shuffling) article and will be used later in this article, a second method is shown below. Again, in PySpark we will need to access the underlying RDDs then map on a `lambda` function that will loop over the rows in each partition and return a count of these rows in a list. In sparklyr we can use [`spark_apply()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_apply.html) to give us a row count for each partition.
 
 Don't worry too much about understanding this line of code, it's the result which is important here.
 ````{tabs}
@@ -99,13 +116,21 @@ print(paste0('Number of rows per partition: ', rows_in_part))
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 Number of partitions:		 2
 Number of rows per partition:	 [2500, 2500]
 ```
+
+```{code-tab} plaintext R Output
+[1] "Number of partitions: 2"
+[1] "Number of rows per partition: c(2500, 2500)"
+```
+````
 Note that the size of the partitions is the same. We will see later, if there was skew in partition sizes we would always have to wait for the largest partition to finish processing before moving on to the next task, this is commonly referred to as a bottleneck. So Spark understandably puts a similar number of rows in each partition.
 
-The number of partitions was set by default. The property that controls this number is `spark.default.parallelism`, and to modify the default we must override it in the Spark session. See the **Spark session guidance** for more information on how to do this. To see what the default is we can look at [the Spark documentation](https://spark.apache.org/docs/2.4.4/configuration.html#execution-behavior) (if you follow the link use Ctrl+F to search for the property name).
+The number of partitions was set by default. The property that controls this number is `spark.default.parallelism`, and to modify the default we must override it in the Spark session. See the [Guidance on Spark Sessions](../spark-overview/spark-session-guidance) for more information on how to do this. To see what the default is we can look at [the Spark documentation](https://spark.apache.org/docs/latest/configuration.html#execution-behavior) (if you follow the link use Ctrl+F to search for the property name).
 
 >For operations like parallelize with no parent RDDs, it depends on the cluster manager:
 >- Local mode: number of cores on the local machine
@@ -136,7 +161,9 @@ small_rand %>% sparklyr::sdf_num_partitions()
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +---+----------+
 | id|rand_value|
 +---+----------+
@@ -153,7 +180,25 @@ small_rand %>% sparklyr::sdf_num_partitions()
 +---+----------+
 1
 ```
-### Imported DataFrame
+
+```{code-tab} plaintext R Output
+# A tibble: 10 × 2
+      id rand_val
+   <int>    <dbl>
+ 1     0        7
+ 2     1        9
+ 3     2       10
+ 4     3        9
+ 5     4        5
+ 6     5        6
+ 7     6        1
+ 8     7        2
+ 9     8        4
+10     9        7
+[1] 1
+```
+````
+#### Imported DataFrame
 
 Next, let's import the `animal_rescue.csv` file and see how many partitions we have.
 ````{tabs}
@@ -179,9 +224,16 @@ rescue %>% sparklyr::sdf_num_partitions()
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 1
 ```
+
+```{code-tab} plaintext R Output
+[1] 1
+```
+````
 Again, we didn't set this number anywhere, and it obviously wasn't set by `spark.default.parallelism` either. 
 
 How many rows and columns do each DataFrame have?
@@ -217,7 +269,9 @@ print(paste0('Total number of cells in random_df DataFrame:', rand_df_columns*ro
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 Number of rows in rescue DataFrame:		 5898
 Number of columns in rescue DataFrame:		 26
 Total number of cells in rescue DataFrame:	 153348
@@ -226,11 +280,21 @@ Number of rows in random_df DataFrame:		 5000
 Number of columns in random_df DataFrame:	 2
 Total number of cells in random_df DataFrame:	 10000
 ```
+
+```{code-tab} plaintext R Output
+[1] "Number of rows in rescue DataFrame: 5898"
+[1] "Number of columns in rescue DataFrame:26"
+[1] "Total number of cells in rescue DataFrame:153348"
+[1] "Number of rows in random_df DataFrame:5000"
+[1] "Number of columns in random_df DataFrame:2"
+[1] "Total number of cells in random_df DataFrame:10000"
+```
+````
 There are more cells in the rescue DataFrame, but Spark put it into just one partition.
 
 The reason for this is that the original csv file is stored as a single file on disk, which means that Spark will read it in as one partition. Data on HDFS can be stored in multiple files. In general, when a Spark DataFrame with $P$ partitions is written onto disk, it will be stored in $P$ files, and whenever we read that dataset into a Spark session it will again have $P$ partitions. We will revisit writing partitions to disk later.
 
-### Processed DataFrame
+#### Processed DataFrame
 
 Let's see how applying *narrow* and *wide* transformations to the DataFrame affects the number of partitions. Firstly we'll filter the data, which is a *narrow* operation.
 ````{tabs}
@@ -253,7 +317,9 @@ print(paste0('Number of partitions in filtered_rescue DataFrame: ',filtered_resc
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +-----------------+--------------------------------------------+
 |AnimalGroupParent|FinalDescription                            |
 +-----------------+--------------------------------------------+
@@ -265,11 +331,22 @@ only showing top 3 rows
 
 Number of partitions in filtered_rescue DataFrame:	 1
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 3 × 2
+  AnimalGroupParent FinalDescription                            
+  <chr>             <chr>                                       
+1 Cat               TO ASSIST RSPCA WITH CAT TRAPPED UP TREE,B15
+2 Cat               ASSIST RSPCA WITH CAT STUCK UP TREE, B15    
+3 Cat               CAT STUCK UP TREE,B15                       
+[1] "Number of partitions in filtered_rescue DataFrame: 1"
+```
+````
 No change. In general, for a narrow transformations the contents of the partitions will change according to the transformation applied, but no data will move from one partition to another and the total number of partitions will remain the same.
 
 Now let's group the data, which is a wide operation, by `PostcodeDistrict` and then aggregate to find a count of incidents by area. How many partitions will we have in the new DataFrame?
 
-*Note PySpark and sparklyr will give different results here, we will explain why later. PySpark results are shown in this article.*
+*Note PySpark and sparklyr will give different results here; we will explain why later.
 ````{tabs}
 ```{code-tab} py
 count_by_area = (rescue.groupBy('PostcodeDistrict')
@@ -290,7 +367,9 @@ print(paste0('Number of partitions in count_by_area DataFrame:', count_by_area %
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +----------------+-----+
 |PostcodeDistrict|Count|
 +----------------+-----+
@@ -304,6 +383,19 @@ only showing top 5 rows
 
 Number of partitions in rescue_by_area DataFrame:	 200
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 5 × 2
+  PostcodeDistrict count
+  <chr>            <dbl>
+1 SE5                 42
+2 SE17                20
+3 E7                  45
+4 SE13                42
+5 N6                   9
+[1] "Number of partitions in count_by_area DataFrame:16"
+```
+````
 **How many?!?**  
 
 
@@ -319,37 +411,45 @@ print('Number of rows per partition:\t', rows_in_part)
 
 ```{code-tab} r R
 
-#rows_in_part <- sparklyr::spark_apply(rand_df, function(x) nrow(x)) %>% sparklyr::collect() #this takes a long time in sparklyr
-#print(paste0('Number of rows per partition: ', rows_in_part)) 
+# Note that this code takes a long time to run in sparklyr
+rows_in_part <- sparklyr::spark_apply(count_by_area, function(x) nrow(x)) %>% sparklyr::collect()
+print(paste0('Number of rows per partition: ', rows_in_part)) 
 
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 Number of rows per partition:	 [1, 1, 1, 0, 0, 0, 1, 1, 2, 1, 2, 1, 0, 1, 1, 0, 1, 2, 2, 4, 1, 2, 1, 0, 2, 3, 2, 3, 1, 2, 0, 1, 1, 3, 0, 0, 2, 3, 0, 1, 1, 2, 1, 1, 3, 0, 2, 2, 1, 2, 1, 2, 0, 3, 5, 4, 1, 1, 1, 2, 0, 2, 2, 1, 0, 1, 1, 0, 0, 0, 1, 1, 4, 3, 1, 2, 3, 3, 1, 4, 0, 2, 2, 5, 1, 1, 0, 0, 3, 1, 3, 2, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 0, 2, 0, 1, 2, 2, 0, 1, 6, 0, 2, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 2, 2, 1, 3, 1, 3, 1, 3, 0, 0, 1, 4, 1, 4, 1, 0, 0, 0, 1, 1, 3, 1, 2, 3, 1, 0, 1, 0, 2, 1, 1, 2, 1, 0, 2, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 2, 4, 2, 0, 1, 0, 0, 1, 2, 3, 2, 1, 0, 1, 0, 3, 2, 0, 2, 1, 0, 4, 0, 2, 0, 0, 0, 3]
 ```
-Quite a few empty partitions- this is a clear case of overpartitioning. In the **Spark Applications and UI article** it was shown that overpartitioning leads to slower processing as a larger proportion of time is spent on scheduling tasks and (de)serialising data instead of processing the task.
 
-Again, there is a property we can modify in the Spark session configuration to change this behaviour. The property to override is `spark.sql.shuffle.partitions`. *Shuffle partitions* means when a shuffle occurs, for example a *wide* operation. So this property says "give the resulting DataFrame this many partitions". See the **article on Shuffling** for more information on shuffles. 
+```{code-tab} plaintext R Output
+[1] "Number of rows per partition: c(15, 22, 14, 25, 13, 21, 14, 17, 15, 22, 15, 18, 13, 17, 16, 11)"
+```
+````
+Quite a few empty partitions- this is a clear case of overpartitioning. In the [Spark Application and UI](../spark-concepts/spark-application-and-ui) article it was shown that overpartitioning leads to slower processing as a larger proportion of time is spent on scheduling tasks and (de)serialising data instead of processing the task.
+
+Again, there is a property we can modify in the Spark session configuration to change this behaviour. The property to override is `spark.sql.shuffle.partitions`. *Shuffle partitions* means when a shuffle occurs, for example a *wide* operation. So this property says "give the resulting DataFrame this many partitions". See the article on [Shuffling](../spark-concepts/shuffling) for more information on shuffles. 
 
 The [Spark documentation](https://spark.apache.org/docs/latest/configuration.html#runtime-sql-configuration) shows that the default value for `spark.sql.shuffle.partitions` is 200. This default is obviously too high for our case of grouping a small dataset with a small number of groups i.e. `PostcodeDistrict`. This is one of the more useful properties to consider changing depending on the size of the data you want to process with Spark.
 
 We noted above that sparklyr would give different results. Using a local sparklyr session there is another property that is used for partitioning after a wide operation, `spark.sql.shuffle.partitions.local`, which is set to 16 by default.
 
-## How to change partitioning
+### How to change partitioning
 
 Before we look at how to modify DataFrame partitioning, let's revisit the motivation for wanting to do this.
 
-### Motivation
+#### Motivation
 
 1. We can change the number of partitions of a DataFrame to achieve less or more parallelisation. More parallel processing is great for large DataFrames, but there are some scheduling and data serialisation overheads involved in processing multiple partitions. So for small DataFrames it's best to have just a small number of partition because the overheads involved in organising and writing multiple partitions will result in slower processing. However, we don't always get to choose the partitioning, e.g. to do a join Spark must first put rows with the same join keys on the same partition. More on this later.
 
 2. We can also partition by a specified column(s) in the DataFrame. This can be useful when writing to a Hive table or file becuase we can then read in single partitions. For example, say we had a DataFrame containing records from the past 20 years. We could partition this DataFrame by year when writing it to disk, then in future we could read in one year at a time or multiple years to speed up future tasks. 
 
 
-### Change partitioning
+#### Change partitioning
 
-Here are two ways of changing the number of partitions of a DataFrame. One is `.repartition()`/`sdf_repartition()` and the other is `coalesce()`/`sdf_coalesce()`.
+Here are two ways of changing the number of partitions of a DataFrame. One is [`.repartition()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.repartition.html)/[`sdf_repartition()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_repartition.html) and the other is `coalesce()`/[`sdf_coalesce()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html).
 
 Let's see how to use these functions.
 ````{tabs}
@@ -364,9 +464,16 @@ rand_df %>% sparklyr::sdf_num_partitions()
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 2
 ```
+
+```{code-tab} plaintext R Output
+[1] 2
+```
+````
 
 ````{tabs}
 ```{code-tab} py
@@ -382,9 +489,16 @@ rand_df %>% sparklyr::sdf_num_partitions()
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 1
 ```
+
+```{code-tab} plaintext R Output
+[1] 1
+```
+````
 
 ````{tabs}
 ```{code-tab} py
@@ -400,10 +514,17 @@ rand_df %>% sparklyr::sdf_num_partitions()
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 2
 ```
-Is that the answer we were expecting? Note that `.coalesce()` should only be used to *decrease* the number of partitions. When increasing it can only increase to a previous state.
+
+```{code-tab} plaintext R Output
+[1] 2
+```
+````
+Is that the answer we were expecting? Note that [`.coalesce()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.coalesce.html) should only be used to *decrease* the number of partitions. When increasing it can only increase to a previous state.
 ````{tabs}
 ```{code-tab} py
 rand_df = rand_df.repartition(1)
@@ -418,9 +539,16 @@ rand_df %>% sparklyr::sdf_num_partitions()
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 1
 ```
+
+```{code-tab} plaintext R Output
+[1] 1
+```
+````
 
 ````{tabs}
 ```{code-tab} py
@@ -436,12 +564,19 @@ rand_df %>% sparklyr::sdf_num_partitions()
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 10
 ```
+
+```{code-tab} plaintext R Output
+[1] 10
+```
+````
 Repartition can be used to increase parallelisation.
 
-The other important difference is that `.repartition()` incurs a *full* shuffle of the DataFrame, meaning it rewrites all the data into the new partitions. Shuffling takes time, especially for large amounts of data, so it's best to avoid shuffling more data than needed. To learn more about shuffling have a look at the **Shuffling article**
+The other important difference is that `.repartition()` incurs a *full* shuffle of the DataFrame, meaning it rewrites all the data into the new partitions. Shuffling takes time, especially for large amounts of data, so it's best to avoid shuffling more data than needed. To learn more about shuffling have a look at the [Shuffling](../spark-concepts/shuffling) article.
 
 On the other hand `.coalesce()` involves moving just some of the data. Let's demonstrate by an example.
 
@@ -461,17 +596,15 @@ So the data on Partitions 1 and 2 have not been shuffled. We have just moved the
 
 It's also possible to use a column name in `.repartition()` or even a number and column name, see documentation for more information. 
 
-## Intermediate partitions in wide operations
+### Intermediate partitions in wide operations
 
 Now onto a more complex topic of intermediate partitioining.
 
 We saw earlier that for narrow transformations the number of partitions of input and output DataFrames is the same. We also saw that for wide transformations the number of partitions of the output DataFrame is changed to the value of the `spark.sql.shuffle.partitions` property set in the Spark session. 
 
-But what is inside the partitions of the output DataFrame after a wide operation? This depends on the operation, so in this section we will look at three wide transformations: join, group by and window functions. Understanding how these functions work is particularly useful when we deal with skewed data, or more specifically skew in the join key, group variable or windows. We will demonstrate this with some skewed data and show that knowing your data can help you make informed decisions on scaling jobs vertically or horizontally, or employing an alternative strategy like a **salted join**.
+But what is inside the partitions of the output DataFrame after a wide operation? This depends on the operation, so in this section we will look at three wide transformations: join, group by and [window functions](../spark-functions/window-functions). Understanding how these functions work is particularly useful when we deal with skewed data, or more specifically skew in the join key, group variable or windows. We will demonstrate this with some skewed data and show that knowing your data can help you make informed decisions on scaling jobs vertically or horizontally, or employing an alternative strategy like a [salted join](../spark-concepts/salted-joins).
 
-*Note: If R users would like more information about window functions, please see the [Window functions](https://dplyr.tidyverse.org/articles/window-functions.html) page in the `dplyr` documentation.*
-
-### Set up the problem
+#### Set up the problem
 
 Let's start with a DataFrame with a skewed variable `skew_col`, but uniform partition sizes. It also has a column `rand_val` containing some random numbers to perform some calculations.
 ````{tabs}
@@ -513,7 +646,9 @@ skewed_df %>% head(5) %>% sparklyr::collect()
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +---+--------+--------+
 | id|skew_col|rand_val|
 +---+--------+--------+
@@ -525,6 +660,18 @@ skewed_df %>% head(5) %>% sparklyr::collect()
 +---+--------+--------+
 only showing top 5 rows
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 5 × 3
+     id skew_col rand_val
+  <int> <chr>       <dbl>
+1     0 A               7
+2     1 A               9
+3     2 A              10
+4     3 A               9
+5     4 A               5
+```
+````
 To confirm the details of the partitioning we will add a column with the partition ID, then group that column and count how many rows are in each partition. This method of counting how many rows are in each partition is very useful and much quicker than the method shown earlier, but it will not show any empty partitions like the previous method. Therefore, we will also show the total number of partitions.
 
 We'll put this into a function so we can run it again on other DataFrames later.
@@ -564,7 +711,9 @@ print_partitioning_info(skewed_df)
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +-------+-------+
 |part_id|  count|
 +-------+-------+
@@ -574,6 +723,16 @@ print_partitioning_info(skewed_df)
 
 Number of partitions: 2
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 2 × 2
+  part_id   count
+    <int>   <dbl>
+1       1 5000000
+2       0 5000000
+[1] "Number of partitions: 2"
+```
+````
 To perform the join we will also need a second DataFrame
 ````{tabs}
 ```{code-tab} py
@@ -596,7 +755,7 @@ small_df <- sparklyr::sdf_copy_to(sc, data.frame(
 ````
 To see how Spark executes each plan in full we will write the output DataFrames to disk to initiate the Spark job, then delete the file afterwards. Of course, the information on the Spark job will remain in the UI for us to inspect after deleting the file. In Spark 3 there is a nicer way of doing this by using the `noop` argument, meaning *no operation*. 
 
-We will use the `checkpoint_path` from the config.yml file to write the data before deleting it. More on checkpoint in the **Persisting article**.
+We will use the `checkpoint_path` from the config.yml file to write the data before deleting it. See the [Checkpoint and Staging Tables](../raw-notebooks/checkpoint-staging/checkpoint-staging) article for more information.
 ````{tabs}
 ```{code-tab} py
 import subprocess
@@ -621,7 +780,7 @@ write_delete <- function(sdf) {
 ````
 We will need a link to the Spark UI to view the details of how Spark partitions the data. When using a local session we can access the Spark UI with this URL, http://localhost:4040/jobs/.
 
-### Run the jobs and investigate UI
+#### Run the jobs and investigate UI
 
 Next we will carry out the wide transformations on the `skewed_df` and apply the above function to create jobs. We have also added custom job descriptions to make it easier to find the relevant stage details in the UI.
 
@@ -673,6 +832,18 @@ write_delete(window_df)
 
 ```
 ````
+
+````{tabs}
+
+```{code-tab} plaintext R Output
+NULL
+Deleted file:///home/cdsw/ons-spark/checkpoints/temp.parquet
+NULL
+Deleted file:///home/cdsw/ons-spark/checkpoints/temp.parquet
+NULL
+Deleted file:///home/cdsw/ons-spark/checkpoints/temp.parquet
+```
+````
 Below are images of the task timeline for the above jobs containing the wide transformations. Note that the images might look slightly different if you are running the source notebook. The processing times will also vary.
 
 The main message in this set of images is that we see a clear bottleneck in the case of the join and window function, but there is no bottleneck in the group by.
@@ -716,7 +887,9 @@ print_partitioning_info(joined_df)
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +-------+-------+
 |part_id|  count|
 +-------+-------+
@@ -730,6 +903,19 @@ print_partitioning_info(joined_df)
 Number of partitions: 200
 ```
 
+```{code-tab} plaintext R Output
+# A tibble: 5 × 2
+  part_id   count
+    <int>   <dbl>
+1       1     900
+2       3 9900000
+3       2     100
+4       6   90000
+5       9    9000
+[1] "Number of partitions: 16"
+```
+````
+
 ````{tabs}
 ```{code-tab} py
 print_partitioning_info(grouped_df)
@@ -742,7 +928,9 @@ print_partitioning_info(grouped_df)
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +-------+-----+
 |part_id|count|
 +-------+-----+
@@ -756,6 +944,19 @@ print_partitioning_info(grouped_df)
 Number of partitions: 200
 ```
 
+```{code-tab} plaintext R Output
+# A tibble: 5 × 2
+  part_id count
+    <int> <dbl>
+1       1     1
+2       3     1
+3       2     1
+4       6     1
+5       9     1
+[1] "Number of partitions: 16"
+```
+````
+
 ````{tabs}
 ```{code-tab} py
 print_partitioning_info(window_df)
@@ -768,7 +969,9 @@ print_partitioning_info(window_df)
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +-------+-------+
 |part_id|  count|
 +-------+-------+
@@ -778,6 +981,16 @@ print_partitioning_info(window_df)
 
 Number of partitions: 200
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 2 × 2
+  part_id   count
+    <int>   <dbl>
+1       1 5000000
+2       0 5000000
+[1] "Number of partitions: 16"
+```
+````
 ### Discussion
 
 Now that we have all the information on how Spark performed these processes we can compare the three cases.
@@ -796,15 +1009,15 @@ In the case of the group by the skewed variable isn't too much of an issue becau
 
 Like the join, there is more work to do on the larger partitions. However, unlike the join, the rows of the output DataFrame have the same partition IDs as the input DataFrame.
 
-### What does this mean in practice?
+#### What does this mean in practice?
 
 Highly skewed data is a common issue that causes slow processing with Spark. Above we have seen that skewed data causes skewed partitions when Spark processes wide transformations and can result in bottlenecks, where some tasks take much longer than others therefore not utilising the full potential of parallel processing. An even worse situation is where the skew causes spill, where the large partition cannot fit into its allocated memory on an executor and overflows temporarily onto disk. We cannot recreate the issue of spill in a local session but they are easy to spot in the Stage details page in the Spark UI.
 
 This is where knowing your data can be useful. To help with the explanation we will refer to the join keys/groups/windows as groups. If a join/group by/window function is causing you issues, try to work out how many groups there are and the sizes of these groups. If there are lots on smaller groups it might help to increase `spark.sql.shuffle.partitions` and aim for greater parallel power with lots of smaller executors. If there are fewer groups you might want to scale more vertically so decrease `spark.sql.shuffle.partitions` and aim for a smaller number of bulkier executors.
 
-If you are doing a join on a highly skewed DataFrame you might want to try a **salted join**. If you are dealing with skew in a window function you can apply a group by and join to achieve the same result. However, these are alternative solutions when dealing with highly skewed data and in most cases a regular join or window function are more efficient and makes the code more readable. 
+If you are doing a join on a highly skewed DataFrame you might want to try a [salted join](../spark-concepts/salted-joins). If you are dealing with skew in a window function you can apply a group by and join to achieve the same result. However, these are alternative solutions when dealing with highly skewed data and in most cases a regular join or window function are more efficient and makes the code more readable. 
 
-## Partitions when writing data
+### Partitions when writing data
 
 As previously mentioned, we can also partition by a certain column when writing to disk. The reason why this is useful is we can choose which partitions we want to read in later. This is really useful for larger data sets. 
 
@@ -836,7 +1049,7 @@ sparklyr::spark_write_parquet(rescue,
 ````
 This will create multiple directories in the `rescue_by_year.parquet` directory on the file system, one for each year in the data. 
 
-The easiest way to see this is by navigating to these directories using the file browser in HUE. Alternatively we can use the `subprocess` package to run lines of code through the terminal to return the contents of the `rescue_by_year.parquet` directory.
+The easiest way to see this is by navigating to these directories using the file browser in HUE. Alternatively we can use the [`subprocess`](https://docs.python.org/3/library/subprocess.html) package to run lines of code through the terminal to return the contents of the `rescue_by_year.parquet` directory.
 ````{tabs}
 ```{code-tab} py
 import subprocess
@@ -853,7 +1066,9 @@ system(cmd)
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2009
 file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2010
 file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2011
@@ -867,6 +1082,22 @@ file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2018
 file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2019
 file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/_SUCCESS
 ```
+
+```{code-tab} plaintext R Output
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2009
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2010
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2011
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2012
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2013
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2014
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2015
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2016
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2017
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2018
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2019
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/_SUCCESS
+```
+````
 On the right of the ouput above you will see there is one directory for each `CalYear`. So to import a subset of the data we can use the specific path for that year or filter the data in Spark and let Spark work out which folders to look for. 
 
 Finally, we will delete these files to clean up the file system.
@@ -883,7 +1114,14 @@ system(cmd)
 
 ```
 ````
-## How should I partition my data?
+
+````{tabs}
+
+```{code-tab} plaintext R Output
+Deleted file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet
+```
+````
+### How should I partition my data?
 
 The short answer is- don't worry about it too much!
 
@@ -897,7 +1135,7 @@ As the computer scientist Donald Knuth once wrote:
 
 More importantly it's good practice to be aware of the size of the DataFrame and the number of partitions as this will help to avoid obvious issues or over-partitioning, under-partitioning and highly skewed processes.
 
-A more accurate answer depends on a variety of factors including: the size of the data, data types, distributions within the data, type of processing and other properties defined in the `SparkSession`. Here are some tips for quick wins:
+A more accurate answer depends on a variety of factors including: the size of the data, data types, distributions within the data, type of processing and other properties defined in the [`SparkSession`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html). Here are some tips for quick wins:
 
 - As suggested above, the first step is getting the code right. Only look to optimise if you're running into performance issues.
 - Decreasing the `spark.sql.shuffle.partitions` parameter is sensible for smaller datasets.
@@ -906,21 +1144,35 @@ A more accurate answer depends on a variety of factors including: the size of th
 
 Remember, it's only worth experimenting on the *optimum* number if you have a real performance issue. 
 
-## Further resources
+### Further resources
 
-PySpark:
+Spark at the ONS Articles:
+- [Spark Application and UI](../spark-concepts/spark-application-and-ui)
+- [Shuffling](../spark-concepts/shuffling)
+- [Guidance on Spark Sessions](../spark-overview/spark-session-guidance)
+- [Window Functions in Spark](../spark-functions/window-functions)
+- [Salted Joins](../spark-concepts/salted-joins)
+- [Checkpoint and Staging Tables](../raw-notebooks/checkpoint-staging/checkpoint-staging)
 
-- [`.rdd.getNumPartitions()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.RDD.getNumPartitions.html)
-- [`.rdd.mapPartitions()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.RDD.mapPartitions.html?highlight=mappartitions)
-- [`.coalesce()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.coalesce.html?highlight=coalesce#pyspark.sql.DataFrame.coalesce)
-- [`.repartition()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.repartition.html?highlight=repartition#pyspark.sql.DataFrame.repartition)
-- [`Window.partitionBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Window.partitionBy.html?highlight=partitionby#pyspark.sql.Window.partitionBy)
-- [`DataFrameWriter.partitionBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrameWriter.partitionBy.html?highlight=partitionby#pyspark.sql.DataFrameWriter.partitionBy)
+PySpark Documentation:
+- [`.coalesce()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.coalesce.html)
+- [`SparkSession`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html)
+- [`.getNumPartitions()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.RDD.getNumPartitions.html)
+- [`.repartition()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.repartition.html)
+- [`.coalesce()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.coalesce.html)
+- [`.rdd.mapPartitions()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.RDD.mapPartitions.html)
+- [`DataFrameWriter.partitionBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrameWriter.partitionBy.html)
 
-sparklyr and dplyr:
+Python Documentation:
+- [`subprocess`](https://docs.python.org/3/library/subprocess.html) 
 
-- [`sparklyr::sdf_num_partitions()`](https://www.rdocumentation.org/packages/sparklyr/versions/0.8.2/topics/sdf_num_partitions)
-- [`sparklyr::spark_apply()`](https://www.rdocumentation.org/packages/sparklyr/versions/1.7.5/topics/spark_apply)
-- [`sparklyr::sdf_coalesce()`](https://www.rdocumentation.org/packages/sparklyr/versions/1.7.5/topics/sdf_coalesce)
-- [`sparklyr::sdf_repartition()`](https://www.rdocumentation.org/packages/sparklyr/versions/1.7.5/topics/sdf_repartition)
-- [Window functions](https://dplyr.tidyverse.org/articles/window-functions.html)
+sparklyr and tidyverse Documentation:
+- [`sdf_coalesce()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html)
+- [`sdf_repartition()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_repartition.html)
+- [`sdf_num_partitions()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_num_partitions.html)
+- [`spark_apply()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_apply.html)
+
+Spark Documentation:
+- [Spark Configuration](https://spark.apache.org/docs/latest/configuration.html):
+    - [Execution Behaviour](https://spark.apache.org/docs/latest/configuration.html#execution-behavior)
+    - [Runtime SQL Configuration](https://spark.apache.org/docs/latest/configuration.html#runtime-sql-configuration)

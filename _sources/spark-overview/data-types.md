@@ -10,9 +10,9 @@ This article gives an overview of the most common data types and shows how to us
 
 ### Importing Data Types
 
-In PySpark, data types are in the `pyspark.sql.types` module. The documentation uses the `import *` style; we prefer to import only the data types needed, e.g. from `pyspark.sql.types import IntegerType`.
+In PySpark, data types are in the [`pyspark.sql.types`](https://spark.apache.org/docs/latest/sql-ref-datatypes.html) module. The documentation uses the `import *` style; we prefer to [import only the data types needed](../ancillary-topics/module-imports), e.g. from `pyspark.sql.types import IntegerType`.
 
-In R, there is no need to import data types, as they can be handled with base R (e.g. `as.numeric()` or a Spark function e.g. `bigint()`.
+In R, there is no need to import data types, as they can be handled with base R (e.g. [`as.numeric()`](https://stat.ethz.ch/R-manual/R-devel/library/base/html/numeric.html) or a Spark function e.g. [`bigint()`](https://spark.apache.org/docs/latest/api/sql/index.html#bigint).
 ````{tabs}
 ```{code-tab} py
 # Structural types
@@ -79,7 +79,7 @@ If the column only contains integers, then `IntegerType` or `LongType` will be t
 
 For decimals, you can use often use `DoubleType`. For larger numbers or those with a lot of decimal places, `DecimalType` gives greater precision as you can specify the `precision` and `scale`, e.g. `precision=5` and `scale=2` has values between $\pm 999.99$.
 
-The types given by `.printSchema()` are simpler than the full Spark type name, e.g. `IntegerType` is `integer`.
+The types given by [`.printSchema()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.printSchema.html) are simpler than the full Spark type name, e.g. `IntegerType` is `integer`.
 
 As a quick example, we can see what happens when a value is too long for `IntegerType`, and also see that the `DecimalType` has a fixed width to the right of the decimal point:
 ```
@@ -90,7 +90,7 @@ If the column only contains integers, then `IntegerType` may be the most suitabl
 
 `DoubleType` is also used for decimals; there is no `DecimalType` in sparklyr.
 
-The types given by `glimpse()` are abbreviated, e.g. `IntegerType` is `<int>`. You can see the automatic conversion of data types in the example below:
+The types given by [`glimpse()`](https://pillar.r-lib.org/reference/glimpse.html) are abbreviated, e.g. `IntegerType` is `<int>`. You can see the automatic conversion of data types in the example below:
 ```
 ````
 ````{tabs}
@@ -236,7 +236,7 @@ $ example_timestamp <dttm> 2022-03-01, 2022-04-01, 2022-05-01
 
 Other common types are `BooleanType`; although this is boolean remember that it can also contain null values in addition to `True` and `False`.
 
-For arrays, use `ArrayType`. For more details on arrays, see the separate article.
+For arrays, use `ArrayType`. For more details on arrays, see the [Arrays in PySpark](../spark-functions/arrays.md) article.
 
 ### Schemas
 
@@ -414,9 +414,9 @@ root
 
 The process of changing data types is referred to as *casting*. For instance, if a string column contains numbers you may want to cast this as an integer.
 
-In PySpark, use the column methods `.cast()` or `.astype()`. These methods are identical and just aliases of each other. It is good to be consistent within your project as to which one you use.
+In PySpark, use the column methods [`.cast()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Column.cast.html) or [`.astype()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Column.astype.html). These methods are identical and just aliases of each other. It is good to be consistent within your project as to which one you use.
 
-In sparklyr, casting can be done with either base R methods (when available), e.g. `as.double()`, or Spark functions, e.g. `double()`, `to_timestamp()`. Spark functions are preferred as they are easier for Spark to compile.
+In sparklyr, casting can be done with either base R methods (when available), e.g. [`as.double()`](https://stat.ethz.ch/R-manual/R-devel/library/base/html/double.html), or [Spark functions](../sparklyr-intro/sparklyr-functions), e.g. [`double()`](https://spark.apache.org/docs/latest/api/sql/index.html#double), [`to_timestamp()`](https://spark.apache.org/docs/latest/api/sql/index.html#to_timestamp). Spark functions are preferred as they are easier for Spark to compile.
 
 Be careful when casting an existing column as this can make the code harder to read and amend. Instead you may want to create a new column to hold the casted value.
 ````{tabs}
@@ -475,7 +475,35 @@ $ id_double <dbl> 0, 1, 2, 3, 4
 ````
 ### Further Resources
 
+Spark at the ONS Articles:
+- [Avoiding Module Import Conflicts](../ancillary-topics/module-imports)
+- [Arrays in PySpark](../spark-functions/arrays.md)
+- [Using Spark Functions in sparklyr](../sparklyr-intro/sparklyr-functions)
+
+PySpark Documentation:
+- [`.printSchema()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.printSchema.html)
+- [`pyspark.sql.types`](https://spark.apache.org/docs/latest/sql-ref-datatypes.html)
+- [`.cast()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Column.cast.html)
+- [`.astype()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Column.astype.html)
+
+sparklyr and tidyverse Documentation:
+- [`glimpse()`](https://pillar.r-lib.org/reference/glimpse.html)
+
+Base R Documentation:
+- [`as.numeric()`](https://stat.ethz.ch/R-manual/R-devel/library/base/html/numeric.html)
+- [`as.double()`](https://stat.ethz.ch/R-manual/R-devel/library/base/html/double.html)
+
+[Spark SQL Functions](../sparklyr-intro/sparklyr-functions) Documentation:
+- [`bigint`](https://spark.apache.org/docs/latest/api/sql/index.html#bigint)
+- [`double`](https://spark.apache.org/docs/latest/api/sql/index.html#double)
+- [`to_timestamp`](https://spark.apache.org/docs/latest/api/sql/index.html#to_timestamp)
+
 sparklyr Source Code:
 - [dbi_spark_connection.R](https://github.com/sparklyr/sparklyr/blob/eb3e795447887908d9e795512ad08eeeb32eede5/R/dbi_spark_connection.R#L38): shows data type mapping in sparklyr
 
-TBC
+Other links:
+- [DataBricks blog: A Comprehensive Look at Dates and Timestamps in Apache Spark™ 3.0](https://databricks.com/blog/2020/07/22/a-comprehensive-look-at-dates-and-timestamps-in-apache-spark-3-0.html)
+
+#### Acknowledgments
+
+Thanks to Diogo Marques for assistance with the differences between dates in Spark 2.4 and 3.

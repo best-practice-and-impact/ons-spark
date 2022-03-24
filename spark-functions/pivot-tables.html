@@ -4,8 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pivot tables in Spark &#8212; Spark at the ONS</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
@@ -39,18 +38,20 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/tabs.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -106,8 +107,13 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/when-to-use-spark.html">
+   When To Use Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="../spark-overview/spark-session-guidance.html">
-   Spark Sessions
+   Guidance on Spark Sessions
   </a>
  </li>
  <li class="toctree-l1">
@@ -135,6 +141,11 @@
    Creating DataFrames Manually
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/data-storage.html">
+   Data Storage
+  </a>
+ </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
@@ -148,8 +159,8 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../pyspark-intro/pyspark-intro-exercises.html">
-   Introduction to PySpark: Exercises
+  <a class="reference internal" href="../pyspark-intro/reading-data-pyspark.html">
+   Reading Data in PySpark
   </a>
  </li>
  <li class="toctree-l1">
@@ -175,7 +186,7 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../sparklyr-intro/sparklyr_functions.html">
+  <a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">
    Using Spark functions in sparklyr
   </a>
  </li>
@@ -187,7 +198,7 @@
 </p>
 <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="union_dataframes_with_different_columns.html">
+  <a class="reference internal" href="union-dataframes-with-different-columns.html">
    Union two DataFrames with different columns
   </a>
  </li>
@@ -232,6 +243,26 @@
    Window Functions in Spark
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="cross-joins.html">
+   Cross Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="arrays.html">
+   Array Functions in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="writing-data.html">
+   Writing Data
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="job-description.html">
+   Set Spark Job Description
+  </a>
+ </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
@@ -240,7 +271,7 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/spark_application_and_ui.html">
+  <a class="reference internal" href="../spark-concepts/spark-application-and-ui.html">
    Spark Application and UI
   </a>
  </li>
@@ -250,23 +281,18 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/join_concepts.html">
+  <a class="reference internal" href="../spark-concepts/join-concepts.html">
    Optimising Joins
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="cross_joins.html">
-   Cross Joins
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/salted_joins.html">
+  <a class="reference internal" href="../spark-concepts/salted-joins.html">
    Salted Joins
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../spark-concepts/partitions.html">
-   Managing partitions
+   Managing Partitions
   </a>
  </li>
  <li class="toctree-l1">
@@ -280,13 +306,60 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint_staging.html">
+  <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html">
    Checkpoint
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/garbage-collection.html">
+   Garbage Collection
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/df-order.html">
+   Spark DFs Are Not Ordered
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../spark-concepts/exercises.html">
    Exercises
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Testing and Debugging
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/unit-testing-pyspark.html">
+   Unit Testing in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/unit-testing-sparklyr.html">
+   Unit Testing in sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/errors-pyspark.html">
+   Understanding Errors in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/errors-sparklyr.html">
+   Understanding Errors in sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/handling-errors-pyspark.html">
+   Handling Errors in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/handling-errors-sparklyr.html">
+   Handling Errors in sparklyr
   </a>
  </li>
 </ul>
@@ -299,6 +372,16 @@
  <li class="toctree-l1">
   <a class="reference internal" href="../ancillary-topics/visualisation.html">
    Spark and Visualisation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/module-imports.html">
+   Avoiding Module Import Conflicts
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/pydoop.html">
+   Pydoop
   </a>
  </li>
 </ul>
@@ -347,7 +430,7 @@
                 data-placement="left">.md</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -381,7 +464,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -426,10 +509,58 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Pivot tables in Spark</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#example-1-group-by-one-column-and-count">
+   Example 1: Group by one column and count
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#example-2-aggregate-by-another-column-and-specify-values">
+   Example 2: Aggregate by another column and specify values
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#example-3-multiple-groupings-and-aggregations-fill-nulls-and-sort">
+   Example 3: Multiple groupings and aggregations, fill nulls and sort
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#comparison-with-pivot-wider">
+   Comparison with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     pivot_wider()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
-  <section id="pivot-tables-in-spark">
+  <div class="section" id="pivot-tables-in-spark">
 <h1>Pivot tables in Spark<a class="headerlink" href="#pivot-tables-in-spark" title="Permalink to this headline">¶</a></h1>
 <p>A pivot table is a way of displaying the result of grouped and aggregated data as a two dimensional table, rather than in the list form that you get from regular grouping and aggregating. You might be familiar with them from Excel.</p>
 <p>The principles are the same in PySpark and sparklyr, although unlike some Spark functions that are used in both PySpark and sparklyr the syntax is very different.</p>
@@ -440,17 +571,19 @@
 </details>
 <details>
 <summary><b>R Explanation</b></summary>
-<p>You can create pivot tables in sparklyr with <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_pivot.html"><code class="docutils literal notranslate"><span class="pre">sdf_pivot()</span></code></a>. This is a sparklyr specific function and so it cannot be used on base R DataFrames or tibbles. An example of pivoting on a tibble is given at the end for comparison.</p>
-<p><code class="docutils literal notranslate"><span class="pre">sdf_pivot(x,</span> <span class="pre">formula,</span> <span class="pre">fun.aggregate)</span></code> has three arguments. The first, <code class="docutils literal notranslate"><span class="pre">x</span></code> is the sparklyr DataFrame, the second, formula is an R formula with grouped columns on the left and pivot column on the right, separated by a tilde (e.g. <code class="docutils literal notranslate"><span class="pre">col1</span> <span class="pre">+</span> <span class="pre">col2</span> <span class="pre">~</span> <span class="pre">pivot_col</span></code>), and the third, <code class="docutils literal notranslate"><span class="pre">fun.aggregate</span></code>, is the functions used for aggregation; by default it will count the rows if left blank. Be careful with pivoting data where your pivot column has a large number of distinct values; it will return a very wide DataFrame that will be untidy to view. It is recommended to <code class="docutils literal notranslate"><span class="pre">filter()</span></code> the data first to only include the values you want in the output columns. The second example uses <code class="docutils literal notranslate"><span class="pre">filter()</span></code>.</p>
+<p>You can create pivot tables in sparklyr with <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_pivot.html"><code class="docutils literal notranslate"><span class="pre">sdf_pivot()</span></code></a>. This is a sparklyr specific function and so it cannot be used on base R DataFrames or tibbles. An example of <a class="reference external" href="#comparison-with-pivot-wider">pivoting on a tibble</a> is given at the end for comparison.</p>
+<p><code class="docutils literal notranslate"><span class="pre">sdf_pivot(x,</span> <span class="pre">formula,</span> <span class="pre">fun.aggregate)</span></code> has three arguments. The first, <code class="docutils literal notranslate"><span class="pre">x</span></code> is the sparklyr DataFrame, the second, formula is an R formula with grouped columns on the left and pivot column on the right, separated by a tilde (e.g. <code class="docutils literal notranslate"><span class="pre">col1</span> <span class="pre">+</span> <span class="pre">col2</span> <span class="pre">~</span> <span class="pre">pivot_col</span></code>), and the third, <code class="docutils literal notranslate"><span class="pre">fun.aggregate</span></code>, is the functions used for aggregation; by default it will count the rows if left blank. Be careful with pivoting data where your pivot column has a large number of distinct values; it will return a very wide DataFrame that will be untidy to view. It is recommended to <a class="reference external" href="https://dplyr.tidyverse.org/reference/filter.html"><code class="docutils literal notranslate"><span class="pre">filter()</span></code></a> the data first to only include the values you want in the output columns. The second example uses <code class="docutils literal notranslate"><span class="pre">filter()</span></code>.</p>
 </details>
-<section id="example-1-group-by-one-column-and-count">
+<div class="section" id="example-1-group-by-one-column-and-count">
 <h2>Example 1: Group by one column and count<a class="headerlink" href="#example-1-group-by-one-column-and-count" title="Permalink to this headline">¶</a></h2>
 <p>Create a new Spark session and read the Animal Rescue data. To make the example easier to read, just filter on a few animal groups:</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-0-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-0-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
 
-<span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;sampling&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;pivot&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
 
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
@@ -467,7 +600,7 @@
 
 <span class="n">sc</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
     <span class="n">master</span> <span class="o">=</span> <span class="s">&quot;local[2]&quot;</span><span class="p">,</span>
-    <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;sampling&quot;</span><span class="p">,</span>
+    <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;pivot&quot;</span><span class="p">,</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">())</span>
 
 <span class="n">config</span> <span class="o">&lt;-</span> <span class="n">yaml</span><span class="o">::</span><span class="nf">yaml.load_file</span><span class="p">(</span><span class="s">&quot;ons-spark/config.yaml&quot;</span><span class="p">)</span>
@@ -481,7 +614,7 @@
 <p>The minimal example is grouping by just one column, pivoting on another, just counting the rows, rather than an aggregating values in another column.</p>
 <details>
 <summary><b>Python Example</b></summary>
-<p>In PySpark, use <code class="docutils literal notranslate"><span class="pre">.groupBy()</span></code> and <code class="docutils literal notranslate"><span class="pre">.count()</span></code> as you normally would when grouping and getting the row count, but add <code class="docutils literal notranslate"><span class="pre">.pivot()</span></code> between the two functions.</p>
+<p>In PySpark, use <code class="docutils literal notranslate"><span class="pre">.groupBy()</span></code> and <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.count.html"><code class="docutils literal notranslate"><span class="pre">.count()</span></code></a> as you normally would when grouping and getting the row count, but add <code class="docutils literal notranslate"><span class="pre">.pivot()</span></code> between the two functions.</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button></div><div aria-labelledby="tab-1-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_pivot</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
                 <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span>
@@ -635,8 +768,8 @@
 </pre></div>
 </div>
 </details>
-</section>
-<section id="example-2-aggregate-by-another-column-and-specify-values">
+</div>
+<div class="section" id="example-2-aggregate-by-another-column-and-specify-values">
 <h2>Example 2: Aggregate by another column and specify values<a class="headerlink" href="#example-2-aggregate-by-another-column-and-specify-values" title="Permalink to this headline">¶</a></h2>
 <details>
 <summary><b>Python Example</b></summary>
@@ -665,7 +798,7 @@
 </details>
 <details>
 <summary><b>R Example</b></summary>
-To group by several columns express this on the left side of the `formula` argument, concatenating them with `+`, in this example `AnimalGroup + OriginOfCall ~ CalYear`.
+<p>To group by several columns express this on the left side of the <code class="docutils literal notranslate"><span class="pre">formula</span></code> argument, concatenating them with <code class="docutils literal notranslate"><span class="pre">+</span></code>, in this example <code class="docutils literal notranslate"><span class="pre">AnimalGroup</span> <span class="pre">+</span> <span class="pre">OriginOfCall</span> <span class="pre">~</span> <span class="pre">CalYear</span></code>.</p>
 <p>To only look at a certain subset of the pivot column you can just use <code class="docutils literal notranslate"><span class="pre">filter()</span></code> before pivoting. This is a good idea if your pivot column has a large number of distinct values. As an example, we just look at three years.</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-6-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-6-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_pivot</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
@@ -690,14 +823,14 @@ To group by several columns express this on the left side of the `formula` argum
 </pre></div>
 </div>
 </details>
-</section>
-<section id="example-3-multiple-groupings-and-aggregations-fill-nulls-and-sort">
+</div>
+<div class="section" id="example-3-multiple-groupings-and-aggregations-fill-nulls-and-sort">
 <h2>Example 3: Multiple groupings and aggregations, fill nulls and sort<a class="headerlink" href="#example-3-multiple-groupings-and-aggregations-fill-nulls-and-sort" title="Permalink to this headline">¶</a></h2>
 <details>
 <summary><b>Python Example</b></summary>
-<p>You can only supply one column to <code class="docutils literal notranslate"><span class="pre">.pivot()</span></code>, but you can have multiple aggregations. Adding an <code class="docutils literal notranslate"><span class="pre">.alias()</span></code> makes the result easier to read.</p>
-<p>Any missing combinations of the grouping and pivot will be returned as <code class="docutils literal notranslate"><span class="pre">null</span></code>, e.g. there are no incidents with <code class="docutils literal notranslate"><span class="pre">Hamster</span></code>, <code class="docutils literal notranslate"><span class="pre">Person</span> <span class="pre">(land</span> <span class="pre">line)</span></code> and <code class="docutils literal notranslate"><span class="pre">2009</span></code>. To set this to zero, use <code class="docutils literal notranslate"><span class="pre">.fillna()</span></code>.</p>
-<p>If grouping by multiple columns you may also want to add <code class="docutils literal notranslate"><span class="pre">.orderBy()</span></code>.</p>
+<p>You can only supply one column to <code class="docutils literal notranslate"><span class="pre">.pivot()</span></code>, but you can have multiple aggregations. Adding an <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Column.alias.html"><code class="docutils literal notranslate"><span class="pre">.alias()</span></code></a> makes the result easier to read.</p>
+<p>Any missing combinations of the grouping and pivot will be returned as <code class="docutils literal notranslate"><span class="pre">null</span></code>, e.g. there are no incidents with <code class="docutils literal notranslate"><span class="pre">Hamster</span></code>, <code class="docutils literal notranslate"><span class="pre">Person</span> <span class="pre">(land</span> <span class="pre">line)</span></code> and <code class="docutils literal notranslate"><span class="pre">2009</span></code>. To set this to zero, use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.fillna.html"><code class="docutils literal notranslate"><span class="pre">.fillna()</span></code></a>.</p>
+<p>If grouping by multiple columns you may also want to add <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.orderBy.html"><code class="docutils literal notranslate"><span class="pre">.orderBy()</span></code></a>.</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-7-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button></div><div aria-labelledby="tab-7-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-7-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_pivot</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
            <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;origin_of_call&quot;</span><span class="p">)</span>
@@ -737,7 +870,7 @@ To group by several columns express this on the left side of the `formula` argum
 <summary><b>R Example</b></summary>
 <p><code class="docutils literal notranslate"><span class="pre">sdf_pivot()</span></code> is quite awkward with multiple aggregations on the same column. <code class="docutils literal notranslate"><span class="pre">fun.aggregate</span></code> can take a named list, but only one aggregation can be applied to each column. As we want to get the <code class="docutils literal notranslate"><span class="pre">sum</span></code> and <code class="docutils literal notranslate"><span class="pre">max</span></code> of <code class="docutils literal notranslate"><span class="pre">total_cost</span></code>, we can create another column, <code class="docutils literal notranslate"><span class="pre">total_cost_copy</span></code>, and aggregate on this. To rename the result columns dynamically, use <a class="reference external" href="https://dplyr.tidyverse.org/reference/rename.html"><code class="docutils literal notranslate"><span class="pre">rename_with()</span></code></a>.</p>
 <p>Any missing combinations of the grouping and pivot will be returned as <code class="docutils literal notranslate"><span class="pre">NA</span></code>, e.g. there are no incidents with <code class="docutils literal notranslate"><span class="pre">Hamster</span></code>, <code class="docutils literal notranslate"><span class="pre">Person</span> <span class="pre">(land</span> <span class="pre">line)</span></code> and <code class="docutils literal notranslate"><span class="pre">2009</span></code>. To set this to zero, use <code class="docutils literal notranslate"><span class="pre">na.replace()</span></code>.</p>
-<p>If grouping by multiple columns you may also want to add <code class="docutils literal notranslate"><span class="pre">sdf_sort()</span></code>.</p>
+<p>If grouping by multiple columns you may also want to add <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_sort.html"><code class="docutils literal notranslate"><span class="pre">sdf_sort()</span></code></a>.</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-8-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-8-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-8-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_pivot</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
     <span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">cal_year</span> <span class="o">%in%</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;2009&quot;</span><span class="p">,</span> <span class="s">&quot;2010&quot;</span><span class="p">,</span> <span class="s">&quot;2011&quot;</span><span class="p">))</span> <span class="o">%&gt;%</span>
@@ -792,8 +925,8 @@ To group by several columns express this on the left side of the `formula` argum
 </pre></div>
 </div>
 </details>
-</section>
-<section id="comparison-with-pivot-wider">
+</div>
+<div class="section" id="comparison-with-pivot-wider">
 <h2>Comparison with <code class="docutils literal notranslate"><span class="pre">pivot_wider()</span></code><a class="headerlink" href="#comparison-with-pivot-wider" title="Permalink to this headline">¶</a></h2>
 <p>This section is just for those interested in R and dplyr.</p>
 <details>
@@ -847,23 +980,29 @@ To group by several columns express this on the left side of the `formula` argum
 </pre></div>
 </div>
 </details>
-</section>
-<section id="further-resources">
+</div>
+<div class="section" id="further-resources">
 <h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
 <p>PySpark Documentation:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.GroupedData.pivot.html"><code class="docutils literal notranslate"><span class="pre">.pivot()</span></code></a></p></li>
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.groupBy.html"><code class="docutils literal notranslate"><span class="pre">.groupBy()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.count.html"><code class="docutils literal notranslate"><span class="pre">.count()</span></code></a></p></li>
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.GroupedData.agg.html"><code class="docutils literal notranslate"><span class="pre">.agg()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Column.alias.html"><code class="docutils literal notranslate"><span class="pre">.alias()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.fillna.html"><code class="docutils literal notranslate"><span class="pre">.fillna()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.orderBy.html"><code class="docutils literal notranslate"><span class="pre">.orderBy()</span></code></a></p></li>
 </ul>
 <p>sparklyr and tidyverse Documentation:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_pivot.html"><code class="docutils literal notranslate"><span class="pre">sdf_pivot()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://dplyr.tidyverse.org/reference/filter.html"><code class="docutils literal notranslate"><span class="pre">filter()</span></code></a></p></li>
 <li><p><a class="reference external" href="https://tidyr.tidyverse.org/reference/pivot_wider.html"><code class="docutils literal notranslate"><span class="pre">pivot_wider()</span></code></a></p></li>
 <li><p><a class="reference external" href="https://dplyr.tidyverse.org/reference/rename.html"><code class="docutils literal notranslate"><span class="pre">rename_with()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_sort.html"><code class="docutils literal notranslate"><span class="pre">sdf_sort()</span></code></a></p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
     <script type="text/x-thebe-config">
     {
@@ -887,8 +1026,8 @@ To group by several columns express this on the left side of the `formula` argum
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="sampling.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -905,18 +1044,16 @@ To group by several columns express this on the left side of the `formula` argum
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By Wil Roberts & Adrian Prince<br/>
-        
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By Wil Roberts & Adrian Prince<br/>
+    
+  </p>
+</footer>
 </main>
 
 

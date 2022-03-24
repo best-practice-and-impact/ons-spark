@@ -4,8 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Rounding differences in Python, R and Spark &#8212; Spark at the ONS</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
@@ -39,21 +38,23 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/tabs.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Window Functions in Spark" href="window-functions.html" />
@@ -108,8 +109,13 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/when-to-use-spark.html">
+   When To Use Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="../spark-overview/spark-session-guidance.html">
-   Spark Sessions
+   Guidance on Spark Sessions
   </a>
  </li>
  <li class="toctree-l1">
@@ -137,6 +143,11 @@
    Creating DataFrames Manually
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/data-storage.html">
+   Data Storage
+  </a>
+ </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
@@ -150,8 +161,8 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../pyspark-intro/pyspark-intro-exercises.html">
-   Introduction to PySpark: Exercises
+  <a class="reference internal" href="../pyspark-intro/reading-data-pyspark.html">
+   Reading Data in PySpark
   </a>
  </li>
  <li class="toctree-l1">
@@ -177,7 +188,7 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../sparklyr-intro/sparklyr_functions.html">
+  <a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">
    Using Spark functions in sparklyr
   </a>
  </li>
@@ -189,7 +200,7 @@
 </p>
 <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="union_dataframes_with_different_columns.html">
+  <a class="reference internal" href="union-dataframes-with-different-columns.html">
    Union two DataFrames with different columns
   </a>
  </li>
@@ -234,6 +245,26 @@
    Window Functions in Spark
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="cross-joins.html">
+   Cross Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="arrays.html">
+   Array Functions in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="writing-data.html">
+   Writing Data
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="job-description.html">
+   Set Spark Job Description
+  </a>
+ </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
@@ -242,7 +273,7 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/spark_application_and_ui.html">
+  <a class="reference internal" href="../spark-concepts/spark-application-and-ui.html">
    Spark Application and UI
   </a>
  </li>
@@ -252,23 +283,18 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/join_concepts.html">
+  <a class="reference internal" href="../spark-concepts/join-concepts.html">
    Optimising Joins
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="cross_joins.html">
-   Cross Joins
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/salted_joins.html">
+  <a class="reference internal" href="../spark-concepts/salted-joins.html">
    Salted Joins
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../spark-concepts/partitions.html">
-   Managing partitions
+   Managing Partitions
   </a>
  </li>
  <li class="toctree-l1">
@@ -282,13 +308,60 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint_staging.html">
+  <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html">
    Checkpoint
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/garbage-collection.html">
+   Garbage Collection
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/df-order.html">
+   Spark DFs Are Not Ordered
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../spark-concepts/exercises.html">
    Exercises
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Testing and Debugging
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/unit-testing-pyspark.html">
+   Unit Testing in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/unit-testing-sparklyr.html">
+   Unit Testing in sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/errors-pyspark.html">
+   Understanding Errors in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/errors-sparklyr.html">
+   Understanding Errors in sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/handling-errors-pyspark.html">
+   Handling Errors in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/handling-errors-sparklyr.html">
+   Handling Errors in sparklyr
   </a>
  </li>
 </ul>
@@ -301,6 +374,16 @@
  <li class="toctree-l1">
   <a class="reference internal" href="../ancillary-topics/visualisation.html">
    Spark and Visualisation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/module-imports.html">
+   Avoiding Module Import Conflicts
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/pydoop.html">
+   Pydoop
   </a>
  </li>
 </ul>
@@ -349,7 +432,7 @@
                 data-placement="left">.md</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -383,7 +466,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -440,16 +523,76 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Rounding differences in Python, R and Spark</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#comparison-of-rounding-methods">
+   Comparison of rounding methods
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#other-information-on-rounding">
+   Other information on rounding
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#udfs-and-spark-apply">
+     UDFs and
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       spark_apply()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#python-2">
+     Python 2
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#other-common-software">
+     Other common software
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#testing">
+     Testing
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
-  <section id="rounding-differences-in-python-r-and-spark">
+  <div class="section" id="rounding-differences-in-python-r-and-spark">
 <h1>Rounding differences in Python, R and Spark<a class="headerlink" href="#rounding-differences-in-python-r-and-spark" title="Permalink to this headline">¶</a></h1>
 <p>Python, R and Spark have different ways of rounding numbers which end in <span class="math notranslate nohighlight">\(.5\)</span>; Python and R round to the <strong>nearest even integer</strong> (sometimes called <em>bankers rounding</em>), whereas Spark will round <strong>away from zero</strong> (up in the conventional mathematical way for positive numbers, and round down for negative numbers), in the same way as in Excel.</p>
 <p>This can be confusing when using PySpark and sparklyr if you are used to the behaviour in Python and R.</p>
-<section id="comparison-of-rounding-methods">
+<div class="section" id="comparison-of-rounding-methods">
 <h2>Comparison of rounding methods<a class="headerlink" href="#comparison-of-rounding-methods" title="Permalink to this headline">¶</a></h2>
-<p>Create a DataFrame with numbers all ending in <code class="docutils literal notranslate"><span class="pre">.5</span></code>, both positive and negative:</p>
+<p>Create a DataFrame with numbers all ending in <code class="docutils literal notranslate"><span class="pre">.5</span></code>, both positive and negative, using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.range.html"><code class="docutils literal notranslate"><span class="pre">spark.range()</span></code></a>/<a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_seq.html"><code class="docutils literal notranslate"><span class="pre">sdf_seq()</span></code></a> and then dividing the <code class="docutils literal notranslate"><span class="pre">id</span></code> column by <code class="docutils literal notranslate"><span class="pre">2</span></code>:</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-0-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-0-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -468,7 +611,7 @@
 
 <span class="n">sc</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
     <span class="n">master</span> <span class="o">=</span> <span class="s">&quot;local[2]&quot;</span><span class="p">,</span>
-    <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;window-functions&quot;</span><span class="p">,</span>
+    <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;rounding&quot;</span><span class="p">,</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">())</span>
 
 <span class="n">sdf</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">:::</span><span class="nf">sdf_seq</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="m">-7</span><span class="p">,</span> <span class="m">8</span><span class="p">,</span> <span class="m">2</span><span class="p">)</span> <span class="o">%&gt;%</span>
@@ -510,7 +653,7 @@
 </pre></div>
 </div>
 </div></div>
-<p>Round using Spark; this will round away from zero (up for positive numbers and down for negative):</p>
+<p>Round using Spark with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.round.html"><code class="docutils literal notranslate"><span class="pre">F.round()</span></code></a>/<a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#round"><code class="docutils literal notranslate"><span class="pre">round()</span></code></a>; this will round away from zero (up for positive numbers and down for negative):</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-2-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-2-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">sdf</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;spark_round&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="s2">&quot;half_id&quot;</span><span class="p">))</span>
 <span class="n">sdf</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
@@ -613,7 +756,7 @@
 </pre></div>
 </div>
 </div></div>
-<p>You can use the Python and R style of bankers rounding in Spark with <code class="docutils literal notranslate"><span class="pre">bround()</span></code>:</p>
+<p>You can use the Python and R style of bankers rounding in Spark with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.bround.html"><code class="docutils literal notranslate"><span class="pre">F.bround()</span></code></a>/<a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#bround"><code class="docutils literal notranslate"><span class="pre">bround()</span></code></a>:</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-8-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-8-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-8-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-8-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">sdf</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;spark_bround&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">bround</span><span class="p">(</span><span class="s2">&quot;half_id&quot;</span><span class="p">))</span>
 <span class="n">sdf</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
@@ -654,31 +797,52 @@
 </pre></div>
 </div>
 </div></div>
-</section>
-<section id="other-information-on-rounding">
+</div>
+<div class="section" id="other-information-on-rounding">
 <h2>Other information on rounding<a class="headerlink" href="#other-information-on-rounding" title="Permalink to this headline">¶</a></h2>
-<section id="udfs-and-spark-apply">
+<div class="section" id="udfs-and-spark-apply">
 <h3>UDFs and <code class="docutils literal notranslate"><span class="pre">spark_apply()</span></code><a class="headerlink" href="#udfs-and-spark-apply" title="Permalink to this headline">¶</a></h3>
-<p>User Defined Functions (UDFs) in Python, and R code ran on the Spark cluster with <code class="docutils literal notranslate"><span class="pre">spark_apply()</span></code> will use bankers rounding, in common with Python and R.</p>
-</section>
-<section id="python-2">
+<p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.udf.html">User Defined Functions</a> (UDFs) in Python, and R code ran on the Spark cluster with <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_apply.html"><code class="docutils literal notranslate"><span class="pre">spark_apply()</span></code></a> will use bankers rounding, in common with Python and R.</p>
+</div>
+<div class="section" id="python-2">
 <h3>Python 2<a class="headerlink" href="#python-2" title="Permalink to this headline">¶</a></h3>
 <p>The rounding method changed to bankers rounding in Python 3. In Python 2, it used the round away from zero method, the same as Spark. It is strongly recommended to use Python 3 for any new code development. Spark 3 has dropped support for Python 2.</p>
-</section>
-<section id="other-common-software">
+</div>
+<div class="section" id="other-common-software">
 <h3>Other common software<a class="headerlink" href="#other-common-software" title="Permalink to this headline">¶</a></h3>
 <p>Both Excel and SPSS Statistics use the Spark method of rounding away from zero. If you are new to coding and are learning Python or R predominately to use Spark, be careful when using regular Python or R functions.</p>
-</section>
-<section id="testing">
+</div>
+<div class="section" id="testing">
 <h3>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h3>
-<p>Given that there are different ways of rounding depending on the language used, it is a good idea to thoroughly unit test your functions to ensure that they behave as expected.</p>
-</section>
-</section>
-<section id="further-resources">
+<p>Given that there are different ways of rounding depending on the language used, it is a good idea to thoroughly unit test your functions with <a class="reference internal" href="../testing-debugging/unit-testing-pyspark.html"><span class="doc std std-doc">Pytest</span></a> or <a class="reference internal" href="../testing-debugging/unit-testing-sparklyr.html"><span class="doc std std-doc">testthat</span></a> to ensure that they behave as expected.</p>
+</div>
+</div>
+<div class="section" id="further-resources">
 <h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
-<p>TBC</p>
-</section>
-</section>
+<p>Spark at the ONS Articles:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../testing-debugging/unit-testing-pyspark.html"><span class="doc std std-doc">Unit Testing in PySpark</span></a></p></li>
+<li><p><a class="reference internal" href="../testing-debugging/unit-testing-sparklyr.html"><span class="doc std std-doc">Unit Testing in sparklyr</span></a></p></li>
+</ul>
+<p>PySpark Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.range.html"><code class="docutils literal notranslate"><span class="pre">spark.range()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.round.html"><code class="docutils literal notranslate"><span class="pre">F.round()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.bround.html"><code class="docutils literal notranslate"><span class="pre">F.bround()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.udf.html">User Defined Functions</a></p></li>
+</ul>
+<p>sparklyr Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_seq.html"><code class="docutils literal notranslate"><span class="pre">sdf_seq()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_apply.html"><code class="docutils literal notranslate"><span class="pre">spark_apply()</span></code></a></p></li>
+</ul>
+<p>Spark SQL Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#round"><code class="docutils literal notranslate"><span class="pre">round</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#bround"><code class="docutils literal notranslate"><span class="pre">bround</span></code></a></p></li>
+</ul>
+</div>
+</div>
 
     <script type="text/x-thebe-config">
     {
@@ -702,8 +866,8 @@
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="pivot-tables.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -720,18 +884,16 @@
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By Wil Roberts & Adrian Prince<br/>
-        
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By Wil Roberts & Adrian Prince<br/>
+    
+  </p>
+</footer>
 </main>
 
 
