@@ -1,4 +1,4 @@
-## Writing Data to a Hive Table
+## Writing Data
 
 ```{warning}
 This section is under construction.

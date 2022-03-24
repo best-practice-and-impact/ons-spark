@@ -418,7 +418,7 @@ The important point is that we are processing a small amount of data and therefo
 
 Spark at the ONS Articles:
 - [Partitions](../spark-concepts/partitions)
-- [Shuffling](../spark-concepts/shuffling).
+- [Shuffling](../spark-concepts/shuffling)
 - [Persisting](../spark-concepts/persistence)
 - [Optimising Joins](../spark-concepts/join-concepts)
 - [Garbage Collection](../spark-concepts/garbage-collection)
