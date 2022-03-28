@@ -7,56 +7,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Spark DataFrames Are Not Ordered &#8212; Spark at the ONS</title>
     
-  <link href="../_static/css/theme.css" rel="stylesheet">
-  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+  <link href="../../_static/css/theme.css" rel="stylesheet">
+  <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
 
     
   <link rel="stylesheet"
-    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
   <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
   <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
     
       
 
     
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
-    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
     
-  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+  <link rel="preload" as="script" href="../../_static/js/index.be7d3bbb2ef33a8344ce.js">
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/clipboard.min.js"></script>
-    <script src="../_static/copybutton.js"></script>
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../_static/togglebutton.js"></script>
-    <script src="../_static/tabs.js"></script>
+    <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script src="../../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
-    <script async="async" src="../_static/sphinx-thebe.js"></script>
-    <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Exercises" href="exercises.html" />
-    <link rel="prev" title="Garbage Collection" href="garbage-collection.html" />
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -76,26 +73,26 @@ const thebe_selector_output = ".output, .cell_output"
 <div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
     
         <div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="../index.html">
+    <a class="navbar-brand text-wrap" href="../../index.html">
       
         <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
         
       
       
-      <img src="../_static/logo.png" class="logo" alt="logo">
+      <img src="../../_static/logo.png" class="logo" alt="logo">
       
       
       <h1 class="site-logo" id="site-title">Spark at the ONS</h1>
       
     </a>
-</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
         <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../intro.html">
+  <a class="reference internal" href="../../intro.html">
    Introduction
   </a>
  </li>
@@ -107,22 +104,22 @@ const thebe_selector_output = ".output, .cell_output"
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/when-to-use-spark.html">
+  <a class="reference internal" href="../../spark-overview/when-to-use-spark.html">
    When To Use Spark
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/spark-session-guidance.html">
+  <a class="reference internal" href="../../spark-overview/spark-session-guidance.html">
    Guidance on Spark Sessions
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/example-spark-sessions.html">
+  <a class="reference internal" href="../../spark-overview/example-spark-sessions.html">
    Example Spark Sessions
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/spark-defaults.html">
+  <a class="reference internal" href="../../spark-overview/spark-defaults.html">
    Configuration Hierarchy and
    <code class="docutils literal notranslate">
     <span class="pre">
@@ -132,17 +129,17 @@ const thebe_selector_output = ".output, .cell_output"
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/data-types.html">
+  <a class="reference internal" href="../../spark-overview/data-types.html">
    Data Types in Spark
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/creating-dataframes.html">
+  <a class="reference internal" href="../../spark-overview/creating-dataframes.html">
    Creating DataFrames Manually
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/data-storage.html">
+  <a class="reference internal" href="../../spark-overview/data-storage.html">
    Data Storage
   </a>
  </li>
@@ -154,22 +151,22 @@ const thebe_selector_output = ".output, .cell_output"
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../pyspark-intro/pyspark-intro.html">
+  <a class="reference internal" href="../../pyspark-intro/pyspark-intro.html">
    Introduction to PySpark
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../pyspark-intro/reading-data-pyspark.html">
+  <a class="reference internal" href="../../pyspark-intro/reading-data-pyspark.html">
    Reading Data in PySpark
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../pyspark-intro/returning-data.html">
+  <a class="reference internal" href="../../pyspark-intro/returning-data.html">
    Returning Data from Cluster to Driver
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../pyspark-intro/f-col.html">
+  <a class="reference internal" href="../../pyspark-intro/f-col.html">
    Reference columns by name:
    <code class="docutils literal notranslate">
     <span class="pre">
@@ -186,7 +183,7 @@ const thebe_selector_output = ".output, .cell_output"
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">
+  <a class="reference internal" href="../../sparklyr-intro/sparklyr-functions.html">
    Using Spark functions in sparklyr
   </a>
  </li>
@@ -198,12 +195,12 @@ const thebe_selector_output = ".output, .cell_output"
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/union-dataframes-with-different-columns.html">
+  <a class="reference internal" href="../../spark-functions/union-dataframes-with-different-columns.html">
    Union two DataFrames with different columns
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/padding.html">
+  <a class="reference internal" href="../../spark-functions/padding.html">
    Add leading zeros with
    <code class="docutils literal notranslate">
     <span class="pre">
@@ -213,7 +210,7 @@ const thebe_selector_output = ".output, .cell_output"
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/sampling.html">
+  <a class="reference internal" href="../../spark-functions/sampling.html">
    Sampling:
    <code class="docutils literal notranslate">
     <span class="pre">
@@ -229,42 +226,42 @@ const thebe_selector_output = ".output, .cell_output"
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/pivot-tables.html">
+  <a class="reference internal" href="../../spark-functions/pivot-tables.html">
    Pivot tables in Spark
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/rounding.html">
+  <a class="reference internal" href="../../spark-functions/rounding.html">
    Rounding differences in Python, R and Spark
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/window-functions.html">
+  <a class="reference internal" href="../../spark-functions/window-functions.html">
    Window Functions in Spark
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/cross-joins.html">
+  <a class="reference internal" href="../../spark-functions/cross-joins.html">
    Cross Joins
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/arrays.html">
+  <a class="reference internal" href="../../spark-functions/arrays.html">
    Array Functions in PySpark
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/writing-data.html">
+  <a class="reference internal" href="../../spark-functions/writing-data.html">
    Writing Data
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/job-description.html">
+  <a class="reference internal" href="../../spark-functions/job-description.html">
    Set Spark Job Description
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/sorting-data.html">
+  <a class="reference internal" href="../../spark-functions/sorting-data.html">
    Sorting Spark DataFrames
   </a>
  </li>
@@ -274,59 +271,59 @@ const thebe_selector_output = ".output, .cell_output"
   Understanding and Optimising Spark
  </span>
 </p>
-<ul class="current nav bd-sidenav">
+<ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="spark-application-and-ui.html">
+  <a class="reference internal" href="../../spark-concepts/spark-application-and-ui.html">
    Spark Application and UI
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="shuffling.html">
+  <a class="reference internal" href="../../spark-concepts/shuffling.html">
    Shuffling
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="join-concepts.html">
+  <a class="reference internal" href="../../spark-concepts/join-concepts.html">
    Optimising Joins
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="salted-joins.html">
+  <a class="reference internal" href="../../spark-concepts/salted-joins.html">
    Salted Joins
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="partitions.html">
+  <a class="reference internal" href="../../spark-concepts/partitions.html">
    Managing Partitions
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="persistence.html">
+  <a class="reference internal" href="../../spark-concepts/persistence.html">
    Persisting in Spark
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="cache.html">
+  <a class="reference internal" href="../../spark-concepts/cache.html">
    Caching
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html">
+  <a class="reference internal" href="../checkpoint-staging/checkpoint-staging.html">
    Checkpoint
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="garbage-collection.html">
+  <a class="reference internal" href="../../spark-concepts/garbage-collection.html">
    Garbage Collection
   </a>
  </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-concepts/df-order.html">
    Spark DataFrames Are Not Ordered
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="exercises.html">
+  <a class="reference internal" href="../../spark-concepts/exercises.html">
    Exercises
   </a>
  </li>
@@ -338,32 +335,32 @@ const thebe_selector_output = ".output, .cell_output"
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/unit-testing-pyspark.html">
+  <a class="reference internal" href="../../testing-debugging/unit-testing-pyspark.html">
    Unit Testing in PySpark
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/unit-testing-sparklyr.html">
+  <a class="reference internal" href="../../testing-debugging/unit-testing-sparklyr.html">
    Unit Testing in sparklyr
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/errors-pyspark.html">
+  <a class="reference internal" href="../../testing-debugging/errors-pyspark.html">
    Understanding Errors in PySpark
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/errors-sparklyr.html">
+  <a class="reference internal" href="../../testing-debugging/errors-sparklyr.html">
    Understanding Errors in sparklyr
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/handling-errors-pyspark.html">
+  <a class="reference internal" href="../../testing-debugging/handling-errors-pyspark.html">
    Handling Errors in PySpark
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/handling-errors-sparklyr.html">
+  <a class="reference internal" href="../../testing-debugging/handling-errors-sparklyr.html">
    Handling Errors in sparklyr
   </a>
  </li>
@@ -375,17 +372,17 @@ const thebe_selector_output = ".output, .cell_output"
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../ancillary-topics/visualisation.html">
+  <a class="reference internal" href="../../ancillary-topics/visualisation.html">
    Spark and Visualisation
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../ancillary-topics/module-imports.html">
+  <a class="reference internal" href="../../ancillary-topics/module-imports.html">
    Naming Conflicts in Module Imports
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../ancillary-topics/pydoop.html">
+  <a class="reference internal" href="../../ancillary-topics/pydoop.html">
    Pydoop: HDFS to pandas
   </a>
  </li>
@@ -430,9 +427,9 @@ const thebe_selector_output = ".output, .cell_output"
         <!-- ipynb file if we had a myst markdown file -->
         
         <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/spark-concepts/df-order.md"><button type="button"
+        <a class="dropdown-buttons" href="../../_sources/raw-notebooks/df-order/df-order.ipynb"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.md</button></a>
+                data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
                 onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
@@ -450,7 +447,7 @@ const thebe_selector_output = ".output, .cell_output"
                 data-toggle="tooltip" data-placement="left" title="Source repository"><i
                     class="fab fa-github"></i>repository</button></a>
         <a class="issues-button"
-            href="https://github.com/robertswh/Spark at the ONS/issues/new?title=Issue%20on%20page%20%2Fspark-concepts/df-order.html&body=Your%20issue%20content%20here."><button
+            href="https://github.com/robertswh/Spark at the ONS/issues/new?title=Issue%20on%20page%20%2Fraw-notebooks/df-order/df-order.html&body=Your%20issue%20content%20here."><button
                 type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
                 title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
         
@@ -465,6 +462,23 @@ const thebe_selector_output = ".output, .cell_output"
             class="fas fa-expand"></i></button></a>
 
             <!-- Launch buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+    <div class="dropdown-buttons">
+        
+        <a class="binder-button" href="https://mybinder.org/v2/gh/robertswh/Spark at the ONS/main?urlpath=tree/docs/raw-notebooks/df-order/df-order.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="../../_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
+        
+        
+        
+        
+    </div>
+</div>
 
         </div>
 
@@ -578,24 +592,25 @@ const thebe_selector_output = ".output, .cell_output"
   <div class="section" id="spark-dataframes-are-not-ordered">
 <h1>Spark DataFrames Are Not Ordered<a class="headerlink" href="#spark-dataframes-are-not-ordered" title="Permalink to this headline">¶</a></h1>
 <p>Spark DataFrames do not have the order preserved in the same way as pandas or base R DataFrames. Subsetting a pandas or R DataFrame, e.g. with <code class="docutils literal notranslate"><span class="pre">head()</span></code>, will always return identical rows, whereas the rows returned may be different when subsetting PySpark or sparklyr DFs, e.g with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.show.html"><code class="docutils literal notranslate"><span class="pre">.show()</span></code></a> or <code class="docutils literal notranslate"><span class="pre">head()</span></code>.</p>
-<p>The reason for this is that Spark DataFrames are distributed across partitions. Some operations, such as joining, grouping or sorting, cause data to be moved between <a class="reference internal" href="partitions.html"><span class="doc std std-doc">partitions</span></a>, known as a <a class="reference internal" href="shuffling.html"><span class="doc std std-doc"><em>shuffle</em></span></a>. Running the exact same Spark code can result in different data being on different partitions, as well as a different order within each partition.</p>
+<p>The reason for this is that Spark DataFrames are distributed across partitions. Some operations, such as joining, grouping or sorting, cause data to be moved between <span class="xref myst">partitions</span>, known as a <span class="xref myst"><em>shuffle</em></span>. Running the exact same Spark code can result in different data being on different partitions, as well as a different order within each partition.</p>
 <div class="section" id="why-spark-dfs-are-not-ordered">
 <h2>Why Spark DFs are not ordered<a class="headerlink" href="#why-spark-dfs-are-not-ordered" title="Permalink to this headline">¶</a></h2>
 <p>The lack of an order in a Spark DataFrame is due to two related concepts: partitioning and lazy evaluation.</p>
 <p>A Spark DataFrame is distributed across partitions on the Spark cluster, rather than being one complete object stored in the driver memory. Executing an identical Spark plan can result in the same rows going to different partitions. Within these partitions, the rows can also be in a different order.</p>
-<p>The lazy evaluation will cause the DataFrame to be re-evaluated each time an action is called. Spark will only do the minimum required to return the result of the action specified, e.g. subsetting and previewing the data with <code class="docutils literal notranslate"><span class="pre">.show()</span></code>/<code class="docutils literal notranslate"><span class="pre">head()</span> <span class="pre">%&gt;%</span> </code> <a class="reference external" href="https://dplyr.tidyverse.org/reference/compute.html"><code class="docutils literal notranslate"><span class="pre">collect()</span></code></a> may not require evaluation of the whole DataFrame (this can be demonstrated when using <a class="reference internal" href="cache.html"><span class="doc std std-doc">caching</span></a>, as the cache may only be partially filled with these operations). As such, if no order is specified then the data may be returned in a different order, despite the Spark plan being identical. If the data is being subset in a non-specific way, e.g. with <code class="docutils literal notranslate"><span class="pre">.show()</span></code>/<code class="docutils literal notranslate"><span class="pre">head()</span> <span class="pre">%&gt;%</span> <span class="pre">collect()</span></code>, then different rows may be returned.</p>
-<p>The technical term for this is <em>non-determinism</em>, which is where the same algorithm can return different results for the same inputs. This can cause problems when regression testing (ensuring that results are identical after a code change) and unit testing your Spark code with <a class="reference internal" href="../testing-debugging/unit-testing-pyspark.html"><span class="doc std std-doc">Pytest</span></a> or <a class="reference internal" href="../testing-debugging/unit-testing-sparklyr.html"><span class="doc std std-doc">testthat</span></a>.</p>
-<p>The main lesson from this is that if you want to rely on the order of a Spark DataFrame, you need to <a class="reference internal" href="../spark-functions/sorting-data.html"><span class="doc std std-doc">explicitly specify the order</span></a>; this may involve using a column as a tie-breaker (e.g. a key column such as an ID, which is unique).</p>
+<p>The lazy evaluation will cause the DataFrame to be re-evaluated each time an action is called. Spark will only do the minimum required to return the result of the action specified, e.g. subsetting and previewing the data with <code class="docutils literal notranslate"><span class="pre">.show()</span></code>/<code class="docutils literal notranslate"><span class="pre">head()</span> <span class="pre">%&gt;%</span> </code> <a class="reference external" href="https://dplyr.tidyverse.org/reference/compute.html"><code class="docutils literal notranslate"><span class="pre">collect()</span></code></a> may not require evaluation of the whole DataFrame (this can be demonstrated when using <span class="xref myst">caching</span>, as the cache may only be partially filled with these operations). As such, if no order is specified then the data may be returned in a different order, despite the Spark plan being identical. If the data is being subset in a non-specific way, e.g. with <code class="docutils literal notranslate"><span class="pre">.show()</span></code>/<code class="docutils literal notranslate"><span class="pre">head()</span> <span class="pre">%&gt;%</span> <span class="pre">collect()</span></code>, then different rows may be returned.</p>
+<p>The technical term for this is <em>non-determinism</em>, which is where the same algorithm can return different results for the same inputs. This can cause problems when regression testing (ensuring that results are identical after a code change) and unit testing your Spark code with <span class="xref myst">Pytest</span> or <span class="xref myst">testthat</span>.</p>
+<p>The main lesson from this is that if you want to rely on the order of a Spark DataFrame, you need to <span class="xref myst">explicitly specify the order</span>; this may involve using a column as a tie-breaker (e.g. a key column such as an ID, which is unique).</p>
 </div>
 <div class="section" id="does-the-order-really-matter">
 <h2>Does the order really matter?<a class="headerlink" href="#does-the-order-really-matter" title="Permalink to this headline">¶</a></h2>
-<p>Before looking at examples, it is worth remembering that often the order of the data does not matter. Ordering data in Spark is an expensive operation as it requires a <a class="reference internal" href="shuffling.html"><span class="doc std std-doc">shuffle of the data</span></a>, so try to avoid sorting if you can. You may want to aim for only ordering the data when <a class="reference internal" href="../spark-functions/writing-data.html"><span class="doc std std-doc">writing out final results</span></a> (e.g. to a CSV if you need the result to be human readable).</p>
+<p>Before looking at examples, it is worth remembering that often the order of the data does not matter. Ordering data in Spark is an expensive operation as it requires a <span class="xref myst">shuffle of the data</span>, so try to avoid sorting if you can. You may want to aim for only ordering the data when <span class="xref myst">writing out final results</span> (e.g. to a CSV if you need the result to be human readable).</p>
 </div>
 <div class="section" id="an-example-different-order-within-same-partition">
 <h2>An example: different order within same partition<a class="headerlink" href="#an-example-different-order-within-same-partition" title="Permalink to this headline">¶</a></h2>
 <p>First, create a new Spark session and a small DataFrame; this example uses the winners of the Six Nations rugby union tournament:</p>
-<div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-0-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-0-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">yaml</span>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
 
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -635,7 +650,9 @@ const thebe_selector_output = ".output, .cell_output"
 <span class="p">)</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-0-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
 <span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
 
 <span class="n">config</span> <span class="o">&lt;-</span> <span class="n">yaml</span><span class="o">::</span><span class="nf">yaml.load_file</span><span class="p">(</span><span class="s">&quot;ons-spark/config.yaml&quot;</span><span class="p">)</span>
@@ -674,28 +691,68 @@ const thebe_selector_output = ".output, .cell_output"
     <span class="n">repartition</span><span class="o">=</span><span class="m">2</span><span class="p">)</span>
 </pre></div>
 </div>
-</div></div>
 <p>Now order the data by <code class="docutils literal notranslate"><span class="pre">nation</span></code>. This will ensure that the first nation alphabetically will be returned (<code class="docutils literal notranslate"><span class="pre">England</span></code>), but as the <code class="docutils literal notranslate"><span class="pre">year</span></code> is not specified these may be returned in a different order.</p>
 <p>To demonstrate that these rows are all on the same partition, create a new column using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.spark_partition_id.html"><code class="docutils literal notranslate"><span class="pre">F.spark_partition_id()</span></code></a>/<a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#spark_partition_id"><code class="docutils literal notranslate"><span class="pre">spark_partition_id()</span></code></a>:</p>
-<div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-1-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-1-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">winners_ordered</span> <span class="o">=</span> <span class="p">(</span><span class="n">winners</span>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">winners_ordered</span> <span class="o">=</span> <span class="p">(</span><span class="n">winners</span>
                    <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;nation&quot;</span><span class="p">)</span>
                    <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;partition_id&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">spark_partition_id</span><span class="p">()))</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-1-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">winners_ordered</span> <span class="o">&lt;-</span> <span class="n">winners</span> <span class="o">%&gt;%</span>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">winners_ordered</span> <span class="o">&lt;-</span> <span class="n">winners</span> <span class="o">%&gt;%</span>
     <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_sort</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;nation&quot;</span><span class="p">))</span> <span class="o">%&gt;%</span>
     <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">partition_id</span> <span class="o">=</span> <span class="nf">spark_partition_id</span><span class="p">())</span>
 </pre></div>
 </div>
-</div></div>
 <p>Now preview this DataFrame several times. Remember that in Spark, the whole plan will be processed, so it will create and order the DataFrame by <code class="docutils literal notranslate"><span class="pre">nation</span></code> each time, but not the <code class="docutils literal notranslate"><span class="pre">year</span></code>, and so this may be different:</p>
-<div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-2-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-2-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">show_no</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">show_no</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
     <span class="n">winners_ordered</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-2-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">for</span><span class="p">(</span><span class="n">show_no</span> <span class="n">in</span> <span class="m">1</span><span class="o">:</span><span class="m">3</span><span class="p">){</span>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+----+-------+------------+
+|year| nation|partition_id|
++----+-------+------------+
+|2020|England|           0|
+|2017|England|           0|
+|2016|England|           0|
+|2011|England|           0|
+|2003|England|           0|
++----+-------+------------+
+only showing top 5 rows
+
++----+-------+------------+
+|year| nation|partition_id|
++----+-------+------------+
+|2011|England|           0|
+|2020|England|           0|
+|2016|England|           0|
+|2017|England|           0|
+|2003|England|           0|
++----+-------+------------+
+only showing top 5 rows
+
++----+-------+------------+
+|year| nation|partition_id|
++----+-------+------------+
+|2020|England|           0|
+|2017|England|           0|
+|2016|England|           0|
+|2011|England|           0|
+|2003|England|           0|
++----+-------+------------+
+only showing top 5 rows
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">for</span><span class="p">(</span><span class="n">show_no</span> <span class="n">in</span> <span class="m">1</span><span class="o">:</span><span class="m">3</span><span class="p">){</span>
     <span class="n">winners_ordered</span> <span class="o">%&gt;%</span>
     <span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span> <span class="o">%&gt;%</span>
     <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
@@ -703,69 +760,6 @@ const thebe_selector_output = ".output, .cell_output"
 <span class="p">}</span>
 </pre></div>
 </div>
-</div></div>
-<div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-3-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-3-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+----+-------+------------+
-|year| nation|partition_id|
-+----+-------+------------+
-|2020|England|           0|
-|2017|England|           0|
-|2016|England|           0|
-|2011|England|           0|
-|2003|England|           0|
-+----+-------+------------+
-only showing top 5 rows
-
-+----+-------+------------+
-|year| nation|partition_id|
-+----+-------+------------+
-|2011|England|           0|
-|2020|England|           0|
-|2016|England|           0|
-|2017|England|           0|
-|2003|England|           0|
-+----+-------+------------+
-only showing top 5 rows
-
-+----+-------+------------+
-|year| nation|partition_id|
-+----+-------+------------+
-|2020|England|           0|
-|2017|England|           0|
-|2016|England|           0|
-|2011|England|           0|
-|2003|England|           0|
-+----+-------+------------+
-only showing top 5 rows
-</pre></div>
-</div>
-</div><div aria-labelledby="tab-3-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># A tibble: 5 × 3
-   year nation  partition_id
-  &lt;int&gt; &lt;chr&gt;          &lt;int&gt;
-1  2001 England            0
-2  2011 England            0
-3  2003 England            0
-4  2000 England            0
-5  2016 England            0
-# A tibble: 5 × 3
-   year nation  partition_id
-  &lt;int&gt; &lt;chr&gt;          &lt;int&gt;
-1  2001 England            0
-2  2011 England            0
-3  2003 England            0
-4  2000 England            0
-5  2016 England            0
-# A tibble: 5 × 3
-   year nation  partition_id
-  &lt;int&gt; &lt;chr&gt;          &lt;int&gt;
-1  2011 England            0
-2  2020 England            0
-3  2016 England            0
-4  2017 England            0
-5  2003 England            0
-</pre></div>
-</div>
-</div></div>
 <p>The results not all the same. The data in the <code class="docutils literal notranslate"><span class="pre">nation</span></code> column is identical every time, as this was explicitly ordered, but the <code class="docutils literal notranslate"><span class="pre">year</span></code> is not.</p>
 <p>This demonstrates that the data is being returned in <code class="docutils literal notranslate"><span class="pre">partition_id</span></code> order for each <code class="docutils literal notranslate"><span class="pre">nation</span></code>, but there is no fixed ordering within each partition. If the DataFrame was also sorted by <code class="docutils literal notranslate"><span class="pre">year</span></code> the same result would be returned each time.</p>
 <p>Note that if you run the code again, you may get different results.</p>
@@ -774,8 +768,9 @@ only showing top 5 rows
 <h2>Another example: different <code class="docutils literal notranslate"><span class="pre">partition_id</span></code><a class="headerlink" href="#another-example-different-partition-id" title="Permalink to this headline">¶</a></h2>
 <p>During a shuffle the data can be sent to different partitions when executing the same Spark plan multiple times.</p>
 <p>First, import the Animal Rescue CSV data and do some data cleansing. The data is also being sorted by <code class="docutils literal notranslate"><span class="pre">AnimalGroup</span></code>; this causes a shuffle which will repartition the data:</p>
-<div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-4-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-4-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-4-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_path_csv</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path_csv&quot;</span><span class="p">]</span>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_path_csv</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path_csv&quot;</span><span class="p">]</span>
 <span class="n">rescue</span> <span class="o">=</span> <span class="p">(</span><span class="n">spark</span>
           <span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">rescue_path_csv</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
           <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;IncidentNumber&quot;</span><span class="p">,</span> <span class="s2">&quot;incident_number&quot;</span><span class="p">)</span>
@@ -785,7 +780,9 @@ only showing top 5 rows
          <span class="p">)</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-4-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_csv</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_csv</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span>
                                    <span class="n">config</span><span class="o">$</span><span class="n">rescue_path_csv</span><span class="p">,</span>
                                    <span class="n">header</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span>
                                    <span class="n">infer_schema</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span> <span class="o">%&gt;%</span>
@@ -796,10 +793,10 @@ only showing top 5 rows
     <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_sort</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;animal_group&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
-</div></div>
 <p>Now group the data by <code class="docutils literal notranslate"><span class="pre">animal_group</span></code>, which will cause another shuffle, count how many of each animal there are, and return <code class="docutils literal notranslate"><span class="pre">Fox</span></code>, <code class="docutils literal notranslate"><span class="pre">Goat</span></code> and <code class="docutils literal notranslate"><span class="pre">Hamster</span></code>, then show the result multiple times:</p>
-<div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-5-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-5-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-5-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">animal_counts</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">animal_counts</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
                  <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span>
                  <span class="o">.</span><span class="n">count</span><span class="p">()</span>
                  <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;partition_id&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">spark_partition_id</span><span class="p">())</span>
@@ -809,22 +806,9 @@ only showing top 5 rows
     <span class="n">animal_counts</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-5-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">animal_counts</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
-    <span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">animal_group</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">dplyr</span><span class="o">::</span><span class="nf">summarise</span><span class="p">(</span><span class="n">count</span> <span class="o">=</span> <span class="nf">n</span><span class="p">())</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">partition_id</span> <span class="o">=</span> <span class="nf">spark_partition_id</span><span class="p">())</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">animal_group</span> <span class="o">%in%</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;Fox&quot;</span><span class="p">,</span> <span class="s">&quot;Goat&quot;</span><span class="p">,</span> <span class="s">&quot;Hamster&quot;</span><span class="p">))</span>
-
-<span class="nf">for</span><span class="p">(</span><span class="n">show_no</span> <span class="n">in</span> <span class="m">1</span><span class="o">:</span><span class="m">3</span><span class="p">){</span>
-    <span class="n">animal_counts</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
-    <span class="nf">print</span><span class="p">()</span>
-<span class="p">}</span>
-</pre></div>
 </div>
-</div></div>
-<div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-6-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-6-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-6-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+------------+-----+------------+
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+------------+-----+------------+
 |animal_group|count|partition_id|
 +------------+-----+------------+
 |         Fox|  238|           7|
@@ -849,49 +833,43 @@ only showing top 5 rows
 +------------+-----+------------+
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-6-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># A tibble: 3 × 3
-  animal_group count partition_id
-  &lt;chr&gt;        &lt;dbl&gt;        &lt;int&gt;
-1 Fox            238            8
-2 Goat             1            9
-3 Hamster         14           10
-# A tibble: 3 × 3
-  animal_group count partition_id
-  &lt;chr&gt;        &lt;dbl&gt;        &lt;int&gt;
-1 Fox            238            8
-2 Goat             1            9
-3 Hamster         14            9
-# A tibble: 3 × 3
-  animal_group count partition_id
-  &lt;chr&gt;        &lt;dbl&gt;        &lt;int&gt;
-1 Fox            238            7
-2 Goat             1            8
-3 Hamster         14            8
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">animal_counts</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">animal_group</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">summarise</span><span class="p">(</span><span class="n">count</span> <span class="o">=</span> <span class="nf">n</span><span class="p">())</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">partition_id</span> <span class="o">=</span> <span class="nf">spark_partition_id</span><span class="p">())</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">animal_group</span> <span class="o">%in%</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;Fox&quot;</span><span class="p">,</span> <span class="s">&quot;Goat&quot;</span><span class="p">,</span> <span class="s">&quot;Hamster&quot;</span><span class="p">))</span>
+
+<span class="nf">for</span><span class="p">(</span><span class="n">show_no</span> <span class="n">in</span> <span class="m">1</span><span class="o">:</span><span class="m">3</span><span class="p">){</span>
+    <span class="n">animal_counts</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
+    <span class="nf">print</span><span class="p">()</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-</div></div>
 <p>Although the same plan is being executed each time, the <code class="docutils literal notranslate"><span class="pre">partition_id</span></code> can be different. The <code class="docutils literal notranslate"><span class="pre">partition_id</span></code> is allocated by the <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.groupBy.html"><code class="docutils literal notranslate"><span class="pre">.groupBy()</span></code></a>/<a class="reference external" href="https://dplyr.tidyverse.org/reference/group_by.html"><code class="docutils literal notranslate"><span class="pre">group_by()</span></code></a> operation, which causes a shuffle.</p>
 </div>
 <div class="section" id="final-thoughts">
 <h2>Final thoughts<a class="headerlink" href="#final-thoughts" title="Permalink to this headline">¶</a></h2>
-<p>Remember that sorting the data causes a <a class="reference internal" href="shuffling.html"><span class="doc std std-doc">shuffle</span></a>, which is an expensive operation. Try and only sort data when necessary.</p>
+<p>Remember that sorting the data causes a <span class="xref myst">shuffle</span>, which is an expensive operation. Try and only sort data when necessary.</p>
 <p>Sometimes you do want your code to be non-deterministic, e.g. when using random numbers. You can set a seed to replicate results if needed. You may also want to use <a class="reference external" href="../testing-debugging/unit-testing-pyspark.html#mocking">mocking</a> if unit testing in PySpark with random numbers.</p>
 </div>
 <div class="section" id="further-resources">
 <h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
 <p>Spark at the ONS Articles:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="partitions.html"><span class="doc std std-doc">Managing Partitions</span></a></p></li>
-<li><p><a class="reference internal" href="shuffling.html"><span class="doc std std-doc">Shuffling</span></a></p></li>
-<li><p><a class="reference internal" href="../spark-functions/sorting-data.html"><span class="doc std std-doc">Sorting Spark DataFrames</span></a></p></li>
-<li><p><a class="reference internal" href="../testing-debugging/unit-testing-pyspark.html"><span class="doc std std-doc">Unit Testing in PySpark</span></a></p>
+<li><p><span class="xref myst">Managing Partitions</span></p></li>
+<li><p><span class="xref myst">Shuffling</span></p></li>
+<li><p><span class="xref myst">Sorting Spark DataFrames</span></p></li>
+<li><p><span class="xref myst">Unit Testing in PySpark</span></p>
 <ul>
 <li><p><a class="reference external" href="../testing-debugging/unit-testing-pyspark.html#mocking">Mocking</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="../testing-debugging/unit-testing-sparklyr.html"><span class="doc std std-doc">Unit Testing in sparklyr</span></a></p></li>
-<li><p><a class="reference internal" href="cache.html"><span class="doc std std-doc">Caching</span></a></p></li>
-<li><p><a class="reference internal" href="../spark-functions/writing-data.html"><span class="doc std std-doc">Writing Data</span></a></p></li>
+<li><p><span class="xref myst">Unit Testing in sparklyr</span></p></li>
+<li><p><span class="xref myst">Caching</span></p></li>
+<li><p><span class="xref myst">Writing Data</span></p></li>
 </ul>
 <p>PySpark Documentation:</p>
 <ul class="simple">
@@ -924,7 +902,7 @@ only showing top 5 rows
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./spark-concepts"
+            path: "./raw-notebooks/df-order"
         },
         predefinedOutput: true
     }
@@ -935,21 +913,7 @@ only showing top 5 rows
               
             
                 <!-- Previous / next buttons -->
-<div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="garbage-collection.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Garbage Collection</p>
-        </div>
-    </a>
-    <a class='right-next' id="next-link" href="exercises.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Exercises</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
+<div class='prev-next-area'>
 </div>
             
         </div>
@@ -967,7 +931,7 @@ only showing top 5 rows
       </div>
     </div>
   
-  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+  <script src="../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
 
   </body>
 </html>
