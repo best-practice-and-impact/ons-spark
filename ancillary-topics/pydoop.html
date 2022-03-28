@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pydoop &#8212; Spark at the ONS</title>
+    <title>Pydoop: HDFS to pandas &#8212; Spark at the ONS</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -379,7 +379,7 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   Pydoop
+   Pydoop: HDFS to pandas
   </a>
  </li>
 </ul>
@@ -423,9 +423,9 @@ const thebe_selector_output = ".output, .cell_output"
         <!-- ipynb file if we had a myst markdown file -->
         
         <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/ancillary-topics/pydoop.md"><button type="button"
+        <a class="dropdown-buttons" href="../_sources/ancillary-topics/pydoop.ipynb"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.md</button></a>
+                data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
                 onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
@@ -459,6 +459,23 @@ const thebe_selector_output = ".output, .cell_output"
 
             <!-- Launch buttons -->
 
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+    <div class="dropdown-buttons">
+        
+        <a class="binder-button" href="https://mybinder.org/v2/gh/robertswh/Spark at the ONS/main?urlpath=tree/docs/ancillary-topics/pydoop.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="../_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
+        
+        
+        
+        
+    </div>
+</div>
+
         </div>
 
         <!-- Table of contents -->
@@ -469,6 +486,65 @@ const thebe_selector_output = ".output, .cell_output"
             </div>
             <nav id="bd-toc-nav" aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#pydoop-setup">
+   Pydoop Setup
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#reading-files">
+   Reading files
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#writing-files">
+   Writing files
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#other-useful-functions">
+   Other Useful Functions
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#isfile-isdir-and-ls-see-if-a-file-directory-exists-and-list-files">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       isfile()
+      </span>
+     </code>
+     ,
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       isdir()
+      </span>
+     </code>
+     and
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       ls()
+      </span>
+     </code>
+     : See if a file/directory exists and list files
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#getsize-file-size-in-bytes">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       getsize()
+      </span>
+     </code>
+     : File size in bytes
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#limitations">
+   Limitations
+  </a>
+ </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#further-resources">
    Further Resources
@@ -484,7 +560,7 @@ const thebe_selector_output = ".output, .cell_output"
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Pydoop</h1>
+                <h1>Pydoop: HDFS to pandas</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -494,6 +570,65 @@ const thebe_selector_output = ".output, .cell_output"
                         </div>
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#pydoop-setup">
+   Pydoop Setup
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#reading-files">
+   Reading files
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#writing-files">
+   Writing files
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#other-useful-functions">
+   Other Useful Functions
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#isfile-isdir-and-ls-see-if-a-file-directory-exists-and-list-files">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       isfile()
+      </span>
+     </code>
+     ,
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       isdir()
+      </span>
+     </code>
+     and
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       ls()
+      </span>
+     </code>
+     : See if a file/directory exists and list files
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#getsize-file-size-in-bytes">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       getsize()
+      </span>
+     </code>
+     : File size in bytes
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#limitations">
+   Limitations
+  </a>
+ </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#further-resources">
    Further Resources
@@ -508,14 +643,264 @@ const thebe_selector_output = ".output, .cell_output"
             
               <div>
                 
-  <div class="section" id="pydoop">
-<h1>Pydoop<a class="headerlink" href="#pydoop" title="Permalink to this headline">¶</a></h1>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This section is under construction.</p>
+  <div class="section" id="pydoop-hdfs-to-pandas">
+<h1>Pydoop: HDFS to pandas<a class="headerlink" href="#pydoop-hdfs-to-pandas" title="Permalink to this headline">¶</a></h1>
+<p>The usual way to interact with data stored in the Hadoop Distributed File System (HDFS) is to use Spark.</p>
+<p>Some datasets are small enough that they can be easily handled with pandas. One method is to start a Spark session, read in the data as PySpark DataFrame with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrameReader.csv.html"><code class="docutils literal notranslate"><span class="pre">spark.read.csv()</span></code></a>, then convert to a pandas DataFrame with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.toPandas.html"><code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code></a>.</p>
+<p>The <a class="reference external" href="https://crs4.github.io/pydoop/">Pydoop</a>
+package allows you to bypass Spark and read in the data directly to a pandas DataFrame. Remember that your data will have to be able to fit into the driver memory, so do not use this for big datasets. Guidance on when to use Spark and when to consider alternatives is in the <a class="reference internal" href="../spark-overview/when-to-use-spark.html"><span class="doc std std-doc">When To Use Spark</span></a> article.</p>
+<div class="section" id="pydoop-setup">
+<h2>Pydoop Setup<a class="headerlink" href="#pydoop-setup" title="Permalink to this headline">¶</a></h2>
+<p>Pydoop can be installed in the same way as any other package, e.g. with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pydoop</span></code>. If using CDSW you need to use <code class="docutils literal notranslate"><span class="pre">pip3</span> <span class="pre">install</span></code> to ensure that Python 3 is being used.</p>
+<p>Then import <code class="docutils literal notranslate"><span class="pre">hdfs</span></code> from Pydoop, as well as pandas; note that PySpark is not being imported:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pydoop.hdfs</span> <span class="k">as</span> <span class="nn">hdfs</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="reading-files">
+<h2>Reading files<a class="headerlink" href="#reading-files" title="Permalink to this headline">¶</a></h2>
+<p>This example will use a CSV stored in the ONS training area on HDFS. You can read in other file types that are supported by pandas, e.g. <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_json.html">json</a> or <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_excel.html">Excel</a>.</p>
+<p>Reading in the data is then a two stage process; first open the file with <code class="docutils literal notranslate"><span class="pre">hdfs.open()</span></code>, then read in as a pandas DataFrame with <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html"><code class="docutils literal notranslate"><span class="pre">pd.read_csv()</span></code></a>. If a <code class="docutils literal notranslate"><span class="pre">with</span></code> statement is used you do not need to explicitly close the file with <code class="docutils literal notranslate"><span class="pre">f.close()</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">file_path</span> <span class="o">=</span> <span class="s2">&quot;/training/animal_rescue.csv&quot;</span>
+<span class="k">with</span> <span class="n">hdfs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">pandas_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">pandas_df</span></code> is now a pandas DataFrame loaded in the driver memory and all the usual methods will work.</p>
+<p>e.g. we can preview the first five rows and columns of the DataFrame with <a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.iloc.html"><code class="docutils literal notranslate"><span class="pre">.iloc</span></code></a> and <a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.head.html"><code class="docutils literal notranslate"><span class="pre">.head()</span></code></a>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pandas_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>IncidentNumber</th>
+      <th>DateTimeOfCall</th>
+      <th>CalYear</th>
+      <th>FinYear</th>
+      <th>TypeOfIncident</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>139091</td>
+      <td>01/01/2009 03:01</td>
+      <td>2009</td>
+      <td>2008/09</td>
+      <td>Special Service</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>275091</td>
+      <td>01/01/2009 08:51</td>
+      <td>2009</td>
+      <td>2008/09</td>
+      <td>Special Service</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2075091</td>
+      <td>04/01/2009 10:07</td>
+      <td>2009</td>
+      <td>2008/09</td>
+      <td>Special Service</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2872091</td>
+      <td>05/01/2009 12:27</td>
+      <td>2009</td>
+      <td>2008/09</td>
+      <td>Special Service</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>3553091</td>
+      <td>06/01/2009 15:23</td>
+      <td>2009</td>
+      <td>2008/09</td>
+      <td>Special Service</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>Get count of rows and columns with <a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.shape.html"><code class="docutils literal notranslate"><span class="pre">.shape()</span></code></a>; as we are in pandas not Spark the concept of lazy evaluation does not apply:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pandas_df</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(5898, 26)
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="writing-files">
+<h2>Writing files<a class="headerlink" href="#writing-files" title="Permalink to this headline">¶</a></h2>
+<p>You can write files with Pydoop in a similar way to reading them. One advantage of this is that the CSV will be written as one file, whereas using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrameWriter.csv.html"><code class="docutils literal notranslate"><span class="pre">df.write.csv()</span></code></a> in PySpark will <a class="reference internal" href="../spark-functions/writing-data.html"><span class="doc std std-doc">write out a partitioned CSV</span></a>.</p>
+<p>Another difference is that CSV files from pandas will have an index written by default, which you may want to remove.</p>
+<p>First of all, get the path to write out to; e.g. if using the ONS development and testing environment the following code will get a path to your own user area on HDFS:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">username</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;HADOOP_USER_NAME&quot;</span><span class="p">)</span> 
+<span class="n">write_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/user/</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">/rescue_copy.csv&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Similar to reading, use <code class="docutils literal notranslate"><span class="pre">hdfs.open()</span></code>, then <a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_csv.html"><code class="docutils literal notranslate"><span class="pre">.to_csv()</span></code></a>. Importantly, we are using <code class="docutils literal notranslate"><span class="pre">wt</span></code> for the <code class="docutils literal notranslate"><span class="pre">mode</span></code> option when opening the file, where <code class="docutils literal notranslate"><span class="pre">w</span></code> means <code class="docutils literal notranslate"><span class="pre">write</span></code> and <code class="docutils literal notranslate"><span class="pre">t</span></code> means <code class="docutils literal notranslate"><span class="pre">text</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">hdfs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">write_path</span><span class="p">,</span> <span class="s2">&quot;wt&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">pandas_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The file will now be stored on HDFS; to check you can read it in, or open it using a user interface such as Hadoop User Experience (HUE).</p>
+</div>
+<div class="section" id="other-useful-functions">
+<h2>Other Useful Functions<a class="headerlink" href="#other-useful-functions" title="Permalink to this headline">¶</a></h2>
+<p>Pydoop has lots of functions; see the <a class="reference external" href="https://crs4.github.io/pydoop/index.html">documentation</a> for a full list. A couple of examples are given below.</p>
+<div class="section" id="isfile-isdir-and-ls-see-if-a-file-directory-exists-and-list-files">
+<h3><code class="docutils literal notranslate"><span class="pre">isfile()</span></code>, <code class="docutils literal notranslate"><span class="pre">isdir()</span></code> and <code class="docutils literal notranslate"><span class="pre">ls()</span></code>: See if a file/directory exists and list files<a class="headerlink" href="#isfile-isdir-and-ls-see-if-a-file-directory-exists-and-list-files" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">hdfs.path.isdir(dir_path)</span></code> will return <code class="docutils literal notranslate"><span class="pre">True</span></code> if a file exists:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hdfs</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">write_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+</div>
+</div>
+<p>It returns <code class="docutils literal notranslate"><span class="pre">False</span></code> if the file does not exist:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hdfs</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">&quot;/not/a_file&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>False
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">isdir()</span></code> works in a similar way, but for directories rather than files</p>
+<p><code class="docutils literal notranslate"><span class="pre">ls()</span></code> lists files in the specified directory. You may be familiar with the this command from Unix.</p>
+</div>
+<div class="section" id="getsize-file-size-in-bytes">
+<h3><code class="docutils literal notranslate"><span class="pre">getsize()</span></code>: File size in bytes<a class="headerlink" href="#getsize-file-size-in-bytes" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">getsize()</span></code> returns the file size in bytes. For large files, bytes are often not a practical unit to use so you may want to divide it to get it in KB or MB:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">size</span> <span class="o">=</span> <span class="n">hdfs</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">write_path</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1024</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2"> MB&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.79 MB
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">rm()</span></code> is used to delete files and directories, and is another command you may know from Unix. Be careful, there is no recovery option with this!</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hdfs</span><span class="o">.</span><span class="n">rm</span><span class="p">(</span><span class="n">write_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Verify that this has been removed by checking that <code class="docutils literal notranslate"><span class="pre">isfile()</span></code> returns <code class="docutils literal notranslate"><span class="pre">False</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hdfs</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">write_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>False
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="limitations">
+<h2>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h2>
+<p>Remember that your pandas DataFrame is stored in the driver memory, rather than the Spark cluster, so some larger datasets are not able to be read in in this way. You can read in the data using <code class="docutils literal notranslate"><span class="pre">spark.read.csv()</span></code> and then subset the data by filtering or <a class="reference internal" href="../spark-functions/sampling.html"><span class="doc std std-doc">taking a sample</span></a> first, then converting to pandas with <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code>.</p>
+<p>CSV files that are saved from PySpark will often be partitioned, so to use this method you would have to write a loop that reads in all the files in the directory, so in this case you may prefer to read and convert with PySpark first.</p>
+<p>This method works for reading in files from a directory on HDFS, but not for Hive tables. In theory you can read the underlying parquet files but it is much easier just to read in using PySpark using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrameReader.table.html"><code class="docutils literal notranslate"><span class="pre">spark.read.table()</span></code></a> then convert with <code class="docutils literal notranslate"><span class="pre">.toPandas</span></code>.</p>
 </div>
 <div class="section" id="further-resources">
 <h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
+<p>Spark at the ONS Articles:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../spark-overview/when-to-use-spark.html"><span class="doc std std-doc">When To Use Spark</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-functions/writing-data.html"><span class="doc std std-doc">Writing Data</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-functions/sampling.html"><span class="doc std std-doc">Sampling</span></a></p></li>
+</ul>
+<p>PySpark Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrameReader.csv.html"><code class="docutils literal notranslate"><span class="pre">spark.read.csv()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.toPandas.html"><code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrameWriter.csv.html"><code class="docutils literal notranslate"><span class="pre">.write.csv()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrameReader.table.html"><code class="docutils literal notranslate"><span class="pre">spark.read.table()</span></code></a></p></li>
+</ul>
+<p>Pydoop Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://crs4.github.io/pydoop/">Pydoop</a></p></li>
+</ul>
+<p>pandas Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html"><code class="docutils literal notranslate"><span class="pre">pd.read_csv()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_json.html"><code class="docutils literal notranslate"><span class="pre">pd.read_json()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_excel.html"><code class="docutils literal notranslate"><span class="pre">pd.read_excel()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.iloc.html"><code class="docutils literal notranslate"><span class="pre">.iloc</span></code></a></p></li>
+<li><p><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.head.html"><code class="docutils literal notranslate"><span class="pre">.head()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.shape.html"><code class="docutils literal notranslate"><span class="pre">.shape()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_csv.html"><code class="docutils literal notranslate"><span class="pre">.to_csv()</span></code></a></p></li>
+</ul>
 </div>
 </div>
 
