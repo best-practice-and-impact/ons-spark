@@ -315,3 +315,4 @@ Special thanks to:
 - [Mitch Edmunds](https://github.com/mitches-got-glitches) for sharing his unit testing [articles](https://mitches-got-glitches.medium.com/writing-good-unit-tests-in-python-with-ease-5fb6d7aa2b77) and [repository](https://github.com/mitches-got-glitches/testing-tips)
 - [Neil Currie](https://github.com/neilcuz) for his suggestions on using testthat for sparklyr
 - [Ian Banda](https://github.com/bandaian) for his suggestions on using testthat for sparklyr
+- [Dave Greasley](https://github.com/DaveGreasley) for writing the original version of [`assert_pyspark_df_equal()`](https://github.com/best-practice-and-impact/ons-spark/blob/main/ons-spark/pytest-for-pyspark/tests/helpers.py)

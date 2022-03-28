@@ -7,7 +7,8 @@ As it does not begin with "test", it will not be detected by the
 
 def assert_pyspark_df_equal(actual_df, expected_df):
     """
-    Tests if two DataFrames are equal.
+    Tests if two DataFrames are equal. Adapted from code originally
+        written by Dave Greasley (https://github.com/DaveGreasley).
     
     First tests that the columns are equal, including the column order. If
         not an AssertionError is raised.
