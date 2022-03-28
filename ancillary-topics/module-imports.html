@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Avoiding Module Import Conflicts &#8212; Spark at the ONS</title>
+    <title>Naming Conflicts in Module Imports &#8212; Spark at the ONS</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -44,6 +44,7 @@
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/tabs.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
@@ -375,7 +376,7 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   Avoiding Module Import Conflicts
+   Naming Conflicts in Module Imports
   </a>
  </li>
  <li class="toctree-l1">
@@ -471,6 +472,33 @@ const thebe_selector_output = ".output, .cell_output"
             <nav id="bd-toc-nav" aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#naming-variables">
+   Naming variables
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#keywords">
+   Keywords
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#built-in-functions-and-module-imports-in-python">
+   Built in functions and module imports in Python
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#python-example">
+     Python Example
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#built-in-functions-and-package-imports-in-r">
+   Built in functions and package imports in R
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#further-resources">
    Further Resources
   </a>
@@ -485,7 +513,7 @@ const thebe_selector_output = ".output, .cell_output"
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Avoiding Module Import Conflicts</h1>
+                <h1>Naming Conflicts in Module Imports</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -495,6 +523,33 @@ const thebe_selector_output = ".output, .cell_output"
                         </div>
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#naming-variables">
+   Naming variables
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#keywords">
+   Keywords
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#built-in-functions-and-module-imports-in-python">
+   Built in functions and module imports in Python
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#python-example">
+     Python Example
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#built-in-functions-and-package-imports-in-r">
+   Built in functions and package imports in R
+  </a>
+ </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#further-resources">
    Further Resources
@@ -509,17 +564,408 @@ const thebe_selector_output = ".output, .cell_output"
             
               <div>
                 
-  <div class="section" id="avoiding-module-import-conflicts">
-<h1>Avoiding Module Import Conflicts<a class="headerlink" href="#avoiding-module-import-conflicts" title="Permalink to this headline">¶</a></h1>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This section is under construction.</p>
+  <div class="section" id="naming-conflicts-in-module-imports">
+<h1>Naming Conflicts in Module Imports<a class="headerlink" href="#naming-conflicts-in-module-imports" title="Permalink to this headline">¶</a></h1>
+<p>Importing modules in Python and R can lead to naming conflicts if a function with that name already exists. This article demonstrates why you should be careful when importing modules to ensure that these conflicts do not occur.</p>
+<p>A common example in Python is using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql.html#functions"><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">pyspark.sql.functions</span> <span class="pre">import</span> <span class="pre">*</span></code></a>, which will overwrite some built-in Python functions (e.g. <code class="docutils literal notranslate"><span class="pre">sum()</span></code>). Instead, it is good practice to use <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">pyspark.sql</span> <span class="pre">import</span> <span class="pre">functions</span> <span class="pre">as</span> <span class="pre">F</span></code>, where you prefix the functions  with <code class="docutils literal notranslate"><span class="pre">F</span></code>, e.g. <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.sum.html"><code class="docutils literal notranslate"><span class="pre">F.sum()</span></code></a>.</p>
+<div class="section" id="naming-variables">
+<h2>Naming variables<a class="headerlink" href="#naming-variables" title="Permalink to this headline">¶</a></h2>
+<p>When writing code, it is important to give your variables sensible names, that are informative but not too long. A good reference on this is the <a class="reference external" href="https://best-practice-and-impact.github.io/qa-of-code-guidance/core_programming.html#clean-code">Clean Code</a> section from <a class="reference external" href="https://best-practice-and-impact.github.io/qa-of-code-guidance/intro.html">QA of Code for Analysis and Research</a>. <strong>You should avoid using the names of existing built in functions for user-defined variables</strong>.</p>
+</div>
+<div class="section" id="keywords">
+<h2>Keywords<a class="headerlink" href="#keywords" title="Permalink to this headline">¶</a></h2>
+<p>Some words are reserved: for instance, in Python you cannot have a variable called <code class="docutils literal notranslate"><span class="pre">def</span></code>, <code class="docutils literal notranslate"><span class="pre">False</span></code> or <code class="docutils literal notranslate"><span class="pre">lambda</span></code>. These are referred to as <em>keywords</em> and the code will not even compile if you try, raising a <code class="docutils literal notranslate"><span class="pre">SyntaxError</span></code>. You can generate a list of these with <a class="reference external" href="https://docs.python.org/3/library/keyword.html"><code class="docutils literal notranslate"><span class="pre">keyword.kwlist</span></code></a>.</p>
+<p>In R, use <code class="docutils literal notranslate"><span class="pre">?reserved</span></code> to get a list of the reserved words.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-0-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-0-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">keyword</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">keyword</span><span class="o">.</span><span class="n">kwlist</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="o">?</span><span class="n">reserved</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-1-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-1-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[&#39;False&#39;, &#39;None&#39;, &#39;True&#39;, &#39;and&#39;, &#39;as&#39;, &#39;assert&#39;, &#39;break&#39;, &#39;class&#39;, &#39;continue&#39;, &#39;def&#39;, &#39;del&#39;, &#39;elif&#39;, &#39;else&#39;, &#39;except&#39;, &#39;finally&#39;, &#39;for&#39;, &#39;from&#39;, &#39;global&#39;, &#39;if&#39;, &#39;import&#39;, &#39;in&#39;, &#39;is&#39;, &#39;lambda&#39;, &#39;nonlocal&#39;, &#39;not&#39;, &#39;or&#39;, &#39;pass&#39;, &#39;raise&#39;, &#39;return&#39;, &#39;try&#39;, &#39;while&#39;, &#39;with&#39;, &#39;yield&#39;]
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Reserved                 package:base                  R Documentation
+
+_R_e_s_e_r_v_e_d _W_o_r_d_s _i_n _R
+
+_D_e_s_c_r_i_p_t_i_o_n:
+
+     The reserved words in R&#39;s parser are
+
+     ‘if’ ‘else’ ‘repeat’ ‘while’ ‘function’ ‘for’ ‘in’ ‘next’ ‘break’
+
+     ‘TRUE’ ‘FALSE’ ‘NULL’ ‘Inf’ ‘NaN’ ‘NA’ ‘NA_integer_’ ‘NA_real_’
+     ‘NA_complex_’ ‘NA_character_’
+
+     ‘...’ and ‘..1’, ‘..2’ etc, which are used to refer to arguments
+     passed down from a calling function, see ‘...’.
+
+_D_e_t_a_i_l_s:
+
+     Reserved words outside quotes are always parsed to be references
+     to the objects linked to in the ‘Description’, and hence they are
+     not allowed as syntactic names (see ‘make.names’).  They *are*
+     allowed as non-syntactic names, e.g. inside backtick quotes.
+
+</pre></div>
+</div>
+</div></div>
+</div>
+<div class="section" id="built-in-functions-and-module-imports-in-python">
+<h2>Built in functions and module imports in Python<a class="headerlink" href="#built-in-functions-and-module-imports-in-python" title="Permalink to this headline">¶</a></h2>
+<details>
+<summary><b>Python Example</b></summary>
+<p>You might notice that the Python keyword list is quite short and that some common Python functionality is not listed, for instance, <code class="docutils literal notranslate"><span class="pre">sum()</span></code> or <code class="docutils literal notranslate"><span class="pre">round()</span></code>. This means that it is possible to overwrite these; obviously this is not good practice and should be avoided.</p>
+<p>This can be surprisingly easy to do in PySpark, and can be hard to debug if you do not know the reason for the error.</p>
+<div class="section" id="python-example">
+<h3>Python Example<a class="headerlink" href="#python-example" title="Permalink to this headline">¶</a></h3>
+<p>First, look at the documentation for <code class="docutils literal notranslate"><span class="pre">sum</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button></div><div aria-labelledby="tab-2-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="nb">sum</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button></div><div aria-labelledby="tab-3-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Help on built-in function sum in module builtins:
+
+sum(iterable, start=0, /)
+    Return the sum of a &#39;start&#39; value (default: 0) plus an iterable of numbers
+    
+    When the iterable is empty, return the start value.
+    This function is intended specifically for use with numeric values and may
+    reject non-numeric types.
+</pre></div>
+</div>
+</div></div>
+<p>Show that <code class="docutils literal notranslate"><span class="pre">sum</span></code> works with a simple example: adding three integers together:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-4-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button></div><div aria-labelledby="tab-4-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="nb">sum</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-5-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button></div><div aria-labelledby="tab-5-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>6
+</pre></div>
+</div>
+</div></div>
+<p>Now import the modules we need to use Spark. The recommended way to do this is <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">pyspark.sql.functions</span> <span class="pre">as</span> <span class="pre">F</span></code>, which means that whenever you want to access a function from this module you prefix it with <code class="docutils literal notranslate"><span class="pre">F</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">F.sum()</span></code>. Sometimes the best way to see why something is recommended is to try a different method and show it is a bad idea, in this case, importing all the <code class="docutils literal notranslate"><span class="pre">functions</span></code> as <code class="docutils literal notranslate"><span class="pre">*</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-6-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button></div><div aria-labelledby="tab-6-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+</div></div>
+<p>Attempting to sum the integers will now give an error:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-7-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button></div><div aria-labelledby="tab-7-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-7-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="nb">sum</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-8-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button></div><div aria-labelledby="tab-8-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-8-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>&#39;NoneType&#39; object has no attribute &#39;_jvm&#39;
+</pre></div>
+</div>
+</div></div>
+<p>To see why this error exists, take another look at <code class="docutils literal notranslate"><span class="pre">help(sum)</span></code>; we can see that the documentation is different to previously.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-9-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button></div><div aria-labelledby="tab-9-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-9-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="nb">sum</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-10-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button></div><div aria-labelledby="tab-10-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-10-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Help on function sum in module pyspark.sql.functions:
+
+sum(col)
+    Aggregate function: returns the sum of all values in the expression.
+    
+    .. versionadded:: 1.3
+</pre></div>
+</div>
+</div></div>
+<p>So by importing all the PySpark functions we have overwritten some key Python functionality. Note that this would also apply if you imported individual functions, e.g. <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">pyspark.sql.functions</span> <span class="pre">import</span> <span class="pre">sum</span></code>.</p>
+<p>You can also overwrite functions with your own variables, often unintentionally. As an example, first Start a Spark session:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-11-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button></div><div aria-labelledby="tab-11-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-11-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;module-imports&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
+</pre></div>
+</div>
+</div></div>
+<p>Create a small DataFrame:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-12-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button></div><div aria-labelledby="tab-12-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-12-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">sdf</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;double_id&quot;</span><span class="p">,</span> <span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">sdf</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-13-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button></div><div aria-labelledby="tab-13-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-13-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+---+---------+
+| id|double_id|
++---+---------+
+|  0|        0|
+|  1|        2|
+|  2|        4|
+|  3|        6|
+|  4|        8|
++---+---------+
+</pre></div>
+</div>
+</div></div>
+<p>Loop through the columns, using <code class="docutils literal notranslate"><span class="pre">col</span></code> as the control variable. This will work, but is not a good idea as it is overwriting <code class="docutils literal notranslate"><span class="pre">col()</span></code> from <code class="docutils literal notranslate"><span class="pre">functions</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-14-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-14-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button></div><div aria-labelledby="tab-14-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-14-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">sdf</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+    <span class="n">sdf</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">col</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-15-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-15-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button></div><div aria-labelledby="tab-15-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-15-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+---+
+| id|
++---+
+|  0|
+|  1|
+|  2|
+|  3|
+|  4|
++---+
+
++---------+
+|double_id|
++---------+
+|        0|
+|        2|
+|        4|
+|        6|
+|        8|
++---------+
+</pre></div>
+</div>
+</div></div>
+<p>If we try adding another column with <code class="docutils literal notranslate"><span class="pre">col()</span></code> then it will not work as we have now reassigned <code class="docutils literal notranslate"><span class="pre">col</span></code> to be <code class="docutils literal notranslate"><span class="pre">double_id</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-16-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-16-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button></div><div aria-labelledby="tab-16-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-16-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">sdf</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;triple_id&quot;</span><span class="p">,</span> <span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-17-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-17-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button></div><div aria-labelledby="tab-17-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-17-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>&#39;str&#39; object is not callable
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-18-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-18-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button></div><div aria-labelledby="tab-18-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-18-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">col</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-19-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-19-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button></div><div aria-labelledby="tab-19-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-19-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>&#39;double_id&#39;
+</pre></div>
+</div>
+</div></div>
+<p>Importing the PySpark <code class="docutils literal notranslate"><span class="pre">functions</span></code> as <code class="docutils literal notranslate"><span class="pre">F</span></code> and using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.col.html"><code class="docutils literal notranslate"><span class="pre">F.col()</span></code></a> solves this problem:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-20-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-20-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button></div><div aria-labelledby="tab-20-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-20-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span> 
+<span class="n">sdf</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;triple_id&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">sdf</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-21-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-21-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button></div><div aria-labelledby="tab-21-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-21-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+---+---------+---------+
+| id|double_id|triple_id|
++---+---------+---------+
+|  0|        0|        0|
+|  1|        2|        3|
+|  2|        4|        6|
+|  3|        6|        9|
+|  4|        8|       12|
++---+---------+---------+
+</pre></div>
+</div>
+</div></div>
+</details>
+</div>
+</div>
+<div class="section" id="built-in-functions-and-package-imports-in-r">
+<h2>Built in functions and package imports in R<a class="headerlink" href="#built-in-functions-and-package-imports-in-r" title="Permalink to this headline">¶</a></h2>
+<details>
+<summary><b>R Example</b></summary>
+<p>It is advised to use <code class="docutils literal notranslate"><span class="pre">::</span></code> to directly call a function from a package. For instance, there is a <code class="docutils literal notranslate"><span class="pre">filter</span></code> function in both <a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/filter.html"><code class="docutils literal notranslate"><span class="pre">stats</span></code></a> and <a class="reference external" href="https://dplyr.tidyverse.org/reference/filter.html"><code class="docutils literal notranslate"><span class="pre">dplyr</span></code></a>; you can specify exactly which to use with <code class="docutils literal notranslate"><span class="pre">dplyr::filter()</span></code> or <code class="docutils literal notranslate"><span class="pre">stats::filter()</span></code>.</p>
+<p>Note that despite being commonly used for an R DataFrame, <a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/Fdist.html"><code class="docutils literal notranslate"><span class="pre">df</span></code> is actually a built-in function for the F distribution</a>. As such, it is not recommended to use <code class="docutils literal notranslate"><span class="pre">df</span></code> for DataFrames.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-22-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-22-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-22-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-22-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="o">?</span><span class="n">df</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-23-UiBPdXRwdXQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-23-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="0">R Output</button></div><div aria-labelledby="tab-23-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-23-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>FDist                  package:stats                   R Documentation
+
+_T_h_e _F _D_i_s_t_r_i_b_u_t_i_o_n
+
+_D_e_s_c_r_i_p_t_i_o_n:
+
+     Density, distribution function, quantile function and random
+     generation for the F distribution with ‘df1’ and ‘df2’ degrees of
+     freedom (and optional non-centrality parameter ‘ncp’).
+
+_U_s_a_g_e:
+
+     df(x, df1, df2, ncp, log = FALSE)
+     pf(q, df1, df2, ncp, lower.tail = TRUE, log.p = FALSE)
+     qf(p, df1, df2, ncp, lower.tail = TRUE, log.p = FALSE)
+     rf(n, df1, df2, ncp)
+     
+_A_r_g_u_m_e_n_t_s:
+
+    x, q: vector of quantiles.
+
+       p: vector of probabilities.
+
+       n: number of observations. If ‘length(n) &gt; 1’, the length is
+          taken to be the number required.
+
+df1, df2: degrees of freedom.  ‘Inf’ is allowed.
+
+     ncp: non-centrality parameter. If omitted the central F is
+          assumed.
+
+log, log.p: logical; if TRUE, probabilities p are given as log(p).
+
+lower.tail: logical; if TRUE (default), probabilities are P[X &lt;= x],
+          otherwise, P[X &gt; x].
+
+_D_e_t_a_i_l_s:
+
+     The F distribution with ‘df1 =’ n1 and ‘df2 =’ n2 degrees of
+     freedom has density
+
+     f(x) = Gamma((n1 + n2)/2) / (Gamma(n1/2) Gamma(n2/2))
+         (n1/n2)^(n1/2) x^(n1/2 - 1)
+         (1 + (n1/n2) x)^-(n1 + n2)/2
+     
+     for x &gt; 0.
+
+     It is the distribution of the ratio of the mean squares of n1 and
+     n2 independent standard normals, and hence of the ratio of two
+     independent chi-squared variates each divided by its degrees of
+     freedom.  Since the ratio of a normal and the root mean-square of
+     m independent normals has a Student&#39;s t_m distribution, the square
+     of a t_m variate has a F distribution on 1 and m degrees of
+     freedom.
+
+     The non-central F distribution is again the ratio of mean squares
+     of independent normals of unit variance, but those in the
+     numerator are allowed to have non-zero means and ‘ncp’ is the sum
+     of squares of the means.  See Chisquare for further details on
+     non-central distributions.
+
+_V_a_l_u_e:
+
+     ‘df’ gives the density, ‘pf’ gives the distribution function ‘qf’
+     gives the quantile function, and ‘rf’ generates random deviates.
+
+     Invalid arguments will result in return value ‘NaN’, with a
+     warning.
+
+     The length of the result is determined by ‘n’ for ‘rf’, and is the
+     maximum of the lengths of the numerical arguments for the other
+     functions.
+
+     The numerical arguments other than ‘n’ are recycled to the length
+     of the result.  Only the first elements of the logical arguments
+     are used.
+
+_N_o_t_e:
+
+     Supplying ‘ncp = 0’ uses the algorithm for the non-central
+     distribution, which is not the same algorithm used if ‘ncp’ is
+     omitted.  This is to give consistent behaviour in extreme cases
+     with values of ‘ncp’ very near zero.
+
+     The code for non-zero ‘ncp’ is principally intended to be used for
+     moderate values of ‘ncp’: it will not be highly accurate,
+     especially in the tails, for large values.
+
+_S_o_u_r_c_e:
+
+     For the central case of ‘df’, computed _via_ a binomial
+     probability, code contributed by Catherine Loader (see ‘dbinom’);
+     for the non-central case computed _via_ ‘dbeta’, code contributed
+     by Peter Ruckdeschel.
+
+     For ‘pf’, _via_ ‘pbeta’ (or for large ‘df2’, _via_ ‘pchisq’).
+
+     For ‘qf’, _via_ ‘qchisq’ for large ‘df2’, else _via_ ‘qbeta’.
+
+_R_e_f_e_r_e_n_c_e_s:
+
+     Becker, R. A., Chambers, J. M. and Wilks, A. R. (1988) _The New S
+     Language_.  Wadsworth &amp; Brooks/Cole.
+
+     Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) _Continuous
+     Univariate Distributions_, volume 2, chapters 27 and 30.  Wiley,
+     New York.
+
+_S_e_e _A_l_s_o:
+
+     Distributions for other standard distributions, including ‘dchisq’
+     for chi-squared and ‘dt’ for Student&#39;s t distributions.
+
+_E_x_a_m_p_l_e_s:
+
+     ## Equivalence of pt(.,nu) with pf(.^2, 1,nu):
+     x &lt;- seq(0.001, 5, len = 100)
+     nu &lt;- 4
+     stopifnot(all.equal(2*pt(x,nu) - 1, pf(x^2, 1,nu)),
+               ## upper tails:
+               all.equal(2*pt(x,     nu, lower=FALSE),
+                           pf(x^2, 1,nu, lower=FALSE)))
+     
+     ## the density of the square of a t_m is 2*dt(x, m)/(2*x)
+     # check this is the same as the density of F_{1,m}
+     all.equal(df(x^2, 1, 5), dt(x, 5)/x)
+     
+     ## Identity:  qf(2*p - 1, 1, df) == qt(p, df)^2  for  p &gt;= 1/2
+     p &lt;- seq(1/2, .99, length = 50); df &lt;- 10
+     rel.err &lt;- function(x, y) ifelse(x == y, 0, abs(x-y)/mean(abs(c(x,y))))
+     quantile(rel.err(qf(2*p - 1, df1 = 1, df2 = df), qt(p, df)^2), .90)  # ~= 7e-9
+     
+</pre></div>
+</div>
+</div></div>
+</details>
 </div>
 <div class="section" id="further-resources">
 <h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
-<p>Spark at the ONS links:</p>
+<p>PySpark Documentation:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../spark-overview/data-types.html"><span class="doc std std-doc">Data Types</span></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql.html#functions"><code class="docutils literal notranslate"><span class="pre">pyspark.sql.functions</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.col.html"><code class="docutils literal notranslate"><span class="pre">F.col()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.sum.html"><code class="docutils literal notranslate"><span class="pre">F.sum()</span></code></a></p></li>
+</ul>
+<p>sparklyr and tidyverse Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://dplyr.tidyverse.org/reference/filter.html"><code class="docutils literal notranslate"><span class="pre">dplyr::filter()</span></code></a></p></li>
+</ul>
+<p>Python Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/keyword.html"><code class="docutils literal notranslate"><span class="pre">keyword.kwlist</span></code></a></p></li>
+</ul>
+<p>R Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/Fdist.html"><code class="docutils literal notranslate"><span class="pre">stats::df()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/filter.html"><code class="docutils literal notranslate"><span class="pre">stats::filter()</span></code></a></p></li>
 </ul>
 </div>
 </div>
