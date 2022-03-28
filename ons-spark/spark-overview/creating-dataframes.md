@@ -2,7 +2,7 @@
 
 Most Spark DataFrames are created by reading in data from another source, often a parquet file or Hive table, or a CSV file. It is also possible to manually create DataFrames without reading in from another source.
 
-One of the most common cases for manually creating DataFrames is for creating input data and expected output data while writing unit tests; examples are in the [Unit Testing for PySpark](../testing-debugging/unit-testing-pyspark) and [sparklyr](../testing-debugging/unit-testing-sparklyr) articles.
+One of the most common cases for manually creating DataFrames is for creating input data and expected output data while writing unit tests; see the [Unit Testing in Spark](../testing-debugging/unit-testing) article for more details.
 
 Remember that Spark DataFrames are processed on the Spark cluster, regardless of if they were read in from another source or created manually.
 
@@ -242,8 +242,7 @@ Although most manually created DataFrames are small, they are still partitioned 
 ### Further Resources
 
 Spark at the ONS Articles:
-- [Unit Testing in PySpark](../testing-debugging/unit-testing-pyspark)
-- [Unit Testing in sparklyr](../testing-debugging/unit-testing-sparklyr)
+- [Unit Testing in Spark](../testing-debugging/unit-testing)
 
 PySpark Documentation:
 - [`spark.createDataFrame()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.createDataFrame.html)
