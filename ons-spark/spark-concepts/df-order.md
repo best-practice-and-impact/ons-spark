@@ -125,7 +125,7 @@ winners_ordered <- winners %>%
 
 ```
 ````
-Now preview this DataFrame several times.Remember that in Spark, the whole plan will be processed, so it will create and order the DataFrame by `nation` each time, but not the `year`, and so this may be different:
+Now preview this DataFrame several times. Remember that in Spark, the whole plan will be processed, so it will create and order the DataFrame by `nation` each time, but not the `year`, and so this may be different:
 ````{tabs}
 ```{code-tab} py
 for show_no in range(3):
