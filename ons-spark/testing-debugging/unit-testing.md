@@ -81,7 +81,7 @@ There are several options that you can specify when using Pytest. `pytest -v` wi
 
 The example tests cover several common scenarios, although they are far from exhaustive. Note that these unit tests use [manually created DataFrames](../spark-overview/creating-dataframes).
 
-For Pytest to discover tests, they must begin with `test_`. Optionally they can be grouped into parent classes, which are in `CamelCase` and begin `Test`.
+For Pytest to discover tests, they must begin with `test_`. Optionally they can be grouped into parent classes, which are in `CamelCase` and begin with `Test`.
 
 [Basic Tests](https://github.com/best-practice-and-impact/ons-spark/blob/main/ons-spark/pytest-for-pyspark/tests/test_basic.py): gives some simple examples:
 - `test_count_animal`: simple scalar equality
