@@ -14,7 +14,7 @@ The most likely cause of an error is your code being incorrect in some way. Use 
 
 Remember that Spark uses the concept of lazy evaluation, which means that your error might be elsewhere in the code to where you think it is, since the plan will only be executed upon calling an action. If you suspect this is the case, try and put an action earlier in the code and see if it runs. Repeat this process until you have found the line of code which causes the error. With more experience of coding in Spark you will come to know which areas of your code could cause potential issues
 
-Errors which appear to be related to memory are important to mention here. The first solution should **not** be just to increase the amount of memory; instead see if other solutions can work, for instance breaking the lineage with [checkpointing or staging tables](../raw-notebooks/checkpoint-staging/checkpoint-staging). See the [Quick Guide to Optimisation](../spark-concepts/quick-optimisation) in the first instance. Increasing the memory should be the last resort.
+Errors which appear to be related to memory are important to mention here. The first solution should **not** be just to increase the amount of memory; instead see if other solutions can work, for instance breaking the lineage with [checkpointing or staging tables](../raw-notebooks/checkpoint-staging/checkpoint-staging). See the [Ideas for optimising Spark code](../spark-concepts/optimisation-tips) in the first instance. Increasing the memory should be the last resort.
 
 Occasionally your error may be because of a software or hardware issue with the Spark cluster rather than your code. It is worth resetting as much as possible, e.g. if you are using a Docker container then close and reopen a session. If there are still issues then raise a ticket with your organisations IT support department.
 
@@ -965,7 +965,7 @@ The `tryCatch()` function in R has two other options:
 
 Spark at the ONS Articles:
 - [Checkpointing and Staging Tables](../raw-notebooks/checkpoint-staging/checkpoint-staging)
-- [Quick Guide to Optimisation](../spark-concepts/quick-optimisation)
+- [Ideas for optimising Spark code](../spark-concepts/optimisation-tips)
 - [Getting Started with Spark](../spark-overview/spark-start)
 
 PySpark Documentation:
