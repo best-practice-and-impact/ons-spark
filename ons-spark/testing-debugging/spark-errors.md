@@ -505,7 +505,7 @@ Only the first error which is hit at runtime will be returned. Logically this ma
 This function uses some Python string methods to test for error message equality: [`str.find()`](https://docs.python.org/3/library/stdtypes.html#str.find) and slicing strings with `[:]`.
 
 ````{tabs}
-```{code-tab} python
+```{code-tab} py
 from py4j.protocol import Py4JJavaError
 from pyspark.sql.utils import AnalysisException
 
@@ -544,7 +544,7 @@ def read_csv_handle_exceptions(file_path):
 Stop the Spark session and try to read in a CSV:
 
 ````{tabs}
-```{code-tab} python
+```{code-tab} py
 spark.stop()
 no_df = read_csv_handle_exceptions("this/is_not/a/file_path.csv")
 ```
@@ -571,7 +571,7 @@ Exception: 'Path does not exist: hdfs://.../this/is_not/a/file_path.csv;'
 Fix the path; this will give the other error:
 
 ````{tabs}
-```{code-tab} python
+```{code-tab} py
 import yaml
 with open("ons-spark/config.yaml") as f:
     config = yaml.safe_load(f)
@@ -602,7 +602,7 @@ Exception: Spark session has been stopped. Please start a new Spark session.
 Correct both errors by starting a Spark session and reading the correct path:
 
 ````{tabs}
-```{code-tab} python
+```{code-tab} py
 spark = (SparkSession.builder.master("local[2]")
          .appName("errors")
          .getOrCreate())
@@ -764,7 +764,7 @@ This example counts the number of distinct values in a column, returning `0` and
 Define a Python function in the usual way:
 
 ````{tabs}
-```{code-tab} python
+```{code-tab} py
 def distinct_count(df, input_column):
     """
     Returns the number of unique values of a specified column in a Spark DF.
@@ -796,7 +796,7 @@ def distinct_count(df, input_column):
 Try one column which exists and one which does not:
 
 ````{tabs}
-```{code-tab} python
+```{code-tab} py
 rescue_path = config["rescue_path"]
 rescue = spark.read.parquet(rescue_path)
 
@@ -811,7 +811,7 @@ distinct_count(rescue, "incident_number")
 ````
 
 ````{tabs}
-```{code-tab} python
+```{code-tab} py
 distinct_count(rescue, "column_that_does_not_exist")
 ```
 ````
@@ -826,7 +826,7 @@ Column `column_that_does_not_exist` does not exist. Returning `0`
 A better way would be to avoid the error in the first place by checking if the column exists before the [`.distinct()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.distinct.html):
 
 ````{tabs}
-```{code-tab} python
+```{code-tab} py
 def distinct_count(df, input_column):
     # Test if column exists
     if input_column in df.columns:
@@ -887,7 +887,7 @@ Try one column which exists and one which does not:
 
 ````{tabs}
 ```{code-tab} r R
-incident_count <- distinct_count(sdf, "IncidentNumber")
+incident_count <- distinct_count(rescue, "IncidentNumber")
 incident_count
 ```
 ````
@@ -937,7 +937,7 @@ distinct_count <- function(sdf, input_column){
     }
 }
 
-zero_count <- distinct_count(sdf, "column_that_does_not_exist")
+zero_count <- distinct_count(rescue, "column_that_does_not_exist")
 zero_count
 ```
 ````
