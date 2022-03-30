@@ -4,8 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pivot tables in Spark &#8212; Spark at the ONS</title>
     
   <link href="../../_static/css/theme.css" rel="stylesheet">
@@ -39,17 +38,19 @@
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/togglebutton.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -277,6 +278,11 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-concepts/optimisation-tips.html">
+   Ideas for optimising Spark code
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="../../spark-concepts/spark-application-and-ui.html">
    Spark Application and UI
   </a>
@@ -431,7 +437,7 @@
                 data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -482,7 +488,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -527,10 +533,58 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Pivot tables in Spark</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#example-1-group-by-one-column-and-count">
+   Example 1: Group by one column and count
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#example-2-aggregate-by-another-column-and-specify-values">
+   Example 2: Aggregate by another column and specify values
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#example-3-multiple-groupings-and-aggregations-fill-nulls-and-sort">
+   Example 3: Multiple groupings and aggregations, fill nulls and sort
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#comparison-with-pivot-wider">
+   Comparison with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     pivot_wider()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
-  <section id="pivot-tables-in-spark">
+  <div class="section" id="pivot-tables-in-spark">
 <h1>Pivot tables in Spark<a class="headerlink" href="#pivot-tables-in-spark" title="Permalink to this headline">¶</a></h1>
 <p>A pivot table is a way of displaying the result of grouped and aggregated data as a two dimensional table, rather than in the list form that you get from regular grouping and aggregating. You might be familiar with them from Excel.</p>
 <p>The principles are the same in PySpark and sparklyr, although unlike some Spark functions that are used in both PySpark and sparklyr the syntax is very different.</p>
@@ -544,7 +598,7 @@
 <p>You can create pivot tables in sparklyr with <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_pivot.html"><code class="docutils literal notranslate"><span class="pre">sdf_pivot()</span></code></a>. This is a sparklyr specific function and so it cannot be used on base R DataFrames or tibbles. An example of <a class="reference external" href="#comparison-with-pivot-wider">pivoting on a tibble</a> is given at the end for comparison.</p>
 <p><code class="docutils literal notranslate"><span class="pre">sdf_pivot(x,</span> <span class="pre">formula,</span> <span class="pre">fun.aggregate)</span></code> has three arguments. The first, <code class="docutils literal notranslate"><span class="pre">x</span></code> is the sparklyr DataFrame, the second, formula is an R formula with grouped columns on the left and pivot column on the right, separated by a tilde (e.g. <code class="docutils literal notranslate"><span class="pre">col1</span> <span class="pre">+</span> <span class="pre">col2</span> <span class="pre">~</span> <span class="pre">pivot_col</span></code>), and the third, <code class="docutils literal notranslate"><span class="pre">fun.aggregate</span></code>, is the functions used for aggregation; by default it will count the rows if left blank. Be careful with pivoting data where your pivot column has a large number of distinct values; it will return a very wide DataFrame that will be untidy to view. It is recommended to <a class="reference external" href="https://dplyr.tidyverse.org/reference/filter.html"><code class="docutils literal notranslate"><span class="pre">filter()</span></code></a> the data first to only include the values you want in the output columns. The second example uses <code class="docutils literal notranslate"><span class="pre">filter()</span></code>.</p>
 </details>
-<section id="example-1-group-by-one-column-and-count">
+<div class="section" id="example-1-group-by-one-column-and-count">
 <h2>Example 1: Group by one column and count<a class="headerlink" href="#example-1-group-by-one-column-and-count" title="Permalink to this headline">¶</a></h2>
 <p>Create a new Spark session and read the Animal Rescue data. To make the example easier to read, just filter on a few animal groups:</p>
 <div class="cell docutils container">
@@ -693,8 +747,8 @@
 </pre></div>
 </div>
 </details>
-</section>
-<section id="example-2-aggregate-by-another-column-and-specify-values">
+</div>
+<div class="section" id="example-2-aggregate-by-another-column-and-specify-values">
 <h2>Example 2: Aggregate by another column and specify values<a class="headerlink" href="#example-2-aggregate-by-another-column-and-specify-values" title="Permalink to this headline">¶</a></h2>
 <details>
 <summary><b>Python Example</b></summary>
@@ -741,8 +795,8 @@
 </pre></div>
 </div>
 </details>
-</section>
-<section id="example-3-multiple-groupings-and-aggregations-fill-nulls-and-sort">
+</div>
+<div class="section" id="example-3-multiple-groupings-and-aggregations-fill-nulls-and-sort">
 <h2>Example 3: Multiple groupings and aggregations, fill nulls and sort<a class="headerlink" href="#example-3-multiple-groupings-and-aggregations-fill-nulls-and-sort" title="Permalink to this headline">¶</a></h2>
 <details>
 <summary><b>Python Example</b></summary>
@@ -812,8 +866,8 @@
 </pre></div>
 </div>
 </details>
-</section>
-<section id="comparison-with-pivot-wider">
+</div>
+<div class="section" id="comparison-with-pivot-wider">
 <h2>Comparison with <code class="docutils literal notranslate"><span class="pre">pivot_wider()</span></code><a class="headerlink" href="#comparison-with-pivot-wider" title="Permalink to this headline">¶</a></h2>
 <p>This section is just for those interested in R and dplyr.</p>
 <details>
@@ -842,8 +896,8 @@
 </pre></div>
 </div>
 </details>
-</section>
-<section id="further-resources">
+</div>
+<div class="section" id="further-resources">
 <h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
 <p>PySpark Documentation:</p>
 <ul class="simple">
@@ -863,8 +917,8 @@
 <li><p><a class="reference external" href="https://dplyr.tidyverse.org/reference/rename.html"><code class="docutils literal notranslate"><span class="pre">rename_with()</span></code></a></p></li>
 <li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_sort.html"><code class="docutils literal notranslate"><span class="pre">sdf_sort()</span></code></a></p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
     <script type="text/x-thebe-config">
     {
@@ -879,7 +933,7 @@
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./raw-notebooks\pivot-tables"
+            path: "./raw-notebooks/pivot-tables"
         },
         predefinedOutput: true
     }
@@ -888,22 +942,20 @@
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By Wil Roberts & Adrian Prince<br/>
-        
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By Wil Roberts & Adrian Prince<br/>
+    
+  </p>
+</footer>
 </main>
 
 

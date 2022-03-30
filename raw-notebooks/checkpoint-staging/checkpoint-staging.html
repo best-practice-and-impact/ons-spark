@@ -4,8 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Checkpoint &#8212; Spark at the ONS</title>
     
   <link href="../../_static/css/theme.css" rel="stylesheet">
@@ -39,17 +38,19 @@
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/togglebutton.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -279,6 +280,11 @@
 </p>
 <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-concepts/optimisation-tips.html">
+   Ideas for optimising Spark code
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="../../spark-concepts/spark-application-and-ui.html">
    Spark Application and UI
   </a>
@@ -433,7 +439,7 @@
                 data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -484,7 +490,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -531,18 +537,68 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Checkpoint</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#persisting-to-disk">
+   Persisting to disk
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#experiment">
+   Experiment
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#without-persisting">
+     Without persisting
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#with-checkpoints">
+     With checkpoints
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#how-often-should-i-checkpoint">
+   How often should I checkpoint?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
-  <section id="checkpoint">
+  <div class="section" id="checkpoint">
 <h1>Checkpoint<a class="headerlink" href="#checkpoint" title="Permalink to this headline">¶</a></h1>
-<section id="persisting-to-disk">
+<div class="section" id="persisting-to-disk">
 <h2>Persisting to disk<a class="headerlink" href="#persisting-to-disk" title="Permalink to this headline">¶</a></h2>
 <p>Spark uses lazy evaluation. As we build up many transformations Spark creates an execution plan for the DataFrame and the plan is executed when an action is called. This execution plan represents the DataFrame’s lineage.</p>
 <p>Sometimes the DataFrame’s lineage can grow long and complex, which will slow down the processing and maybe even return an error. However, we can get around this by breaking the lineage.</p>
 <p>There is more than one way of breaking the lineage, this is discussed in more detail in the <span class="xref myst">Persisting</span> article. In this article we cover a simple method of persisting to disk called checkpointing, which is essentially an out of the box shortcut to a write/read operation.</p>
-</section>
-<section id="experiment">
+</div>
+<div class="section" id="experiment">
 <h2>Experiment<a class="headerlink" href="#experiment" title="Permalink to this headline">¶</a></h2>
 <p>To demonstrate the benefit of checkpointing we’ll time how long it takes to create a DataFrame using an iterative calculation. We will run the process without persisting, then again using a checkpoint.</p>
 <p>We’ll create a new Spark session each time just in case there’s an advantage when processing the DataFrame a second time in the same session. We will also use the Python module <a class="reference external" href="https://docs.python.org/3/library/time.html"><code class="docutils literal notranslate"><span class="pre">time</span></code></a> to measure the time taken to create the DataFrame.</p>
@@ -567,7 +623,7 @@
 </div>
 </div>
 </div>
-<section id="without-persisting">
+<div class="section" id="without-persisting">
 <h3>Without persisting<a class="headerlink" href="#without-persisting" title="Permalink to this headline">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -612,8 +668,8 @@ Time taken to create the DataFrame:  8.401437520980835
 </div>
 </div>
 <p>The result above shows how long Spark took to create the plan and execute it to show the top 10 rows.</p>
-</section>
-<section id="with-checkpoints">
+</div>
+<div class="section" id="with-checkpoints">
 <h3>With checkpoints<a class="headerlink" href="#with-checkpoints" title="Permalink to this headline">¶</a></h3>
 <p>Next we will stop the Spark session and start a new one to repeat the operation using checkpoints.</p>
 <p>To perform a checkpoint we need to set up a checkpoint directory on the file system, which is where the checkpointed DataFrames will be stored. It’s important to practice good housekeeping with this directory because new files are created with every checkpoint, but they are <strong>not automatically deleted</strong>.</p>
@@ -691,15 +747,15 @@ Time taken to create the DataFrame:  1.0542099475860596
 </div>
 </div>
 </div>
-</section>
-</section>
-<section id="how-often-should-i-checkpoint">
+</div>
+</div>
+<div class="section" id="how-often-should-i-checkpoint">
 <h2>How often should I checkpoint?<a class="headerlink" href="#how-often-should-i-checkpoint" title="Permalink to this headline">¶</a></h2>
 <p>How did we come up with the number 3 for number of iterations to checkpoint? Trial and error. Unfortunately, you may not have the luxury of trying to find the optimum number, but have a go at checkpointing and see if you can get any improvements in performance.</p>
 <p>More frequent checkpointing means more writing and reading data, which does take some time, but the aim is to save some time by simplifying the execution plan.</p>
 <p>As mentioned above, the use of loops shown here is not considered good practice with Spark, but it was a convenient example of using checkpoints. Of course, checkpointing can also be used outside loops, see the <span class="xref myst">Persisting</span> article for more information on the different forms of persisting data in Spark and their applications.</p>
-</section>
-<section id="further-resources">
+</div>
+<div class="section" id="further-resources">
 <h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
 <p>Spark at the ONS Articles:</p>
 <ul class="simple">
@@ -713,8 +769,8 @@ Time taken to create the DataFrame:  1.0542099475860596
 <ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/time.html"><code class="docutils literal notranslate"><span class="pre">time</span></code></a></p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
     <script type="text/x-thebe-config">
     {
@@ -729,7 +785,7 @@ Time taken to create the DataFrame:  1.0542099475860596
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./raw-notebooks\checkpoint-staging"
+            path: "./raw-notebooks/checkpoint-staging"
         },
         predefinedOutput: true
     }
@@ -738,8 +794,8 @@ Time taken to create the DataFrame:  1.0542099475860596
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="../../spark-concepts/cache.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -756,18 +812,16 @@ Time taken to create the DataFrame:  1.0542099475860596
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By Wil Roberts & Adrian Prince<br/>
-        
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By Wil Roberts & Adrian Prince<br/>
+    
+  </p>
+</footer>
 </main>
 
 

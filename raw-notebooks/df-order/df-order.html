@@ -4,8 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Spark DataFrames Are Not Ordered &#8212; Spark at the ONS</title>
     
   <link href="../../_static/css/theme.css" rel="stylesheet">
@@ -39,17 +38,19 @@
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/togglebutton.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -277,6 +278,11 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-concepts/optimisation-tips.html">
+   Ideas for optimising Spark code
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="../../spark-concepts/spark-application-and-ui.html">
    Spark Application and UI
   </a>
@@ -431,7 +437,7 @@
                 data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -482,7 +488,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -532,26 +538,79 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Spark DataFrames Are Not Ordered</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#why-spark-dfs-are-not-ordered">
+   Why Spark DFs are not ordered
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#does-the-order-really-matter">
+   Does the order really matter?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#an-example-different-order-within-same-partition">
+   An example: different order within same partition
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#another-example-different-partition-id">
+   Another example: different
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     partition_id
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#final-thoughts">
+   Final thoughts
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
-  <section id="spark-dataframes-are-not-ordered">
+  <div class="section" id="spark-dataframes-are-not-ordered">
 <h1>Spark DataFrames Are Not Ordered<a class="headerlink" href="#spark-dataframes-are-not-ordered" title="Permalink to this headline">¶</a></h1>
 <p>Spark DataFrames do not have the order preserved in the same way as pandas or base R DataFrames. Subsetting a pandas or R DataFrame, e.g. with <code class="docutils literal notranslate"><span class="pre">head()</span></code>, will always return identical rows, whereas the rows returned may be different when subsetting PySpark or sparklyr DFs, e.g with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.show.html"><code class="docutils literal notranslate"><span class="pre">.show()</span></code></a> or <code class="docutils literal notranslate"><span class="pre">head()</span></code>.</p>
 <p>The reason for this is that Spark DataFrames are distributed across partitions. Some operations, such as joining, grouping or sorting, cause data to be moved between <span class="xref myst">partitions</span>, known as a <span class="xref myst"><em>shuffle</em></span>. Running the exact same Spark code can result in different data being on different partitions, as well as a different order within each partition.</p>
-<section id="why-spark-dfs-are-not-ordered">
+<div class="section" id="why-spark-dfs-are-not-ordered">
 <h2>Why Spark DFs are not ordered<a class="headerlink" href="#why-spark-dfs-are-not-ordered" title="Permalink to this headline">¶</a></h2>
 <p>The lack of an order in a Spark DataFrame is due to two related concepts: partitioning and lazy evaluation.</p>
 <p>A Spark DataFrame is distributed across partitions on the Spark cluster, rather than being one complete object stored in the driver memory. Executing an identical Spark plan can result in the same rows going to different partitions. Within these partitions, the rows can also be in a different order.</p>
 <p>The lazy evaluation will cause the DataFrame to be re-evaluated each time an action is called. Spark will only do the minimum required to return the result of the action specified, e.g. subsetting and previewing the data with <code class="docutils literal notranslate"><span class="pre">.show()</span></code>/<code class="docutils literal notranslate"><span class="pre">head()</span> <span class="pre">%&gt;%</span> </code> <a class="reference external" href="https://dplyr.tidyverse.org/reference/compute.html"><code class="docutils literal notranslate"><span class="pre">collect()</span></code></a> may not require evaluation of the whole DataFrame (this can be demonstrated when using <span class="xref myst">caching</span>, as the cache may only be partially filled with these operations). As such, if no order is specified then the data may be returned in a different order, despite the Spark plan being identical. If the data is being subset in a non-specific way, e.g. with <code class="docutils literal notranslate"><span class="pre">.show()</span></code>/<code class="docutils literal notranslate"><span class="pre">head()</span> <span class="pre">%&gt;%</span> <span class="pre">collect()</span></code>, then different rows may be returned.</p>
 <p>The technical term for this is <em>non-determinism</em>, which is where the same algorithm can return different results for the same inputs. This can cause problems when regression testing (ensuring that results are identical after a code change) and unit testing your Spark code with <span class="xref myst">Pytest</span> or <span class="xref myst">testthat</span>.</p>
 <p>The main lesson from this is that if you want to rely on the order of a Spark DataFrame, you need to <span class="xref myst">explicitly specify the order</span>; this may involve using a column as a tie-breaker (e.g. a key column such as an ID, which is unique).</p>
-</section>
-<section id="does-the-order-really-matter">
+</div>
+<div class="section" id="does-the-order-really-matter">
 <h2>Does the order really matter?<a class="headerlink" href="#does-the-order-really-matter" title="Permalink to this headline">¶</a></h2>
 <p>Before looking at examples, it is worth remembering that often the order of the data does not matter. Ordering data in Spark is an expensive operation as it requires a <span class="xref myst">shuffle of the data</span>, so try to avoid sorting if you can. You may want to aim for only ordering the data when <span class="xref myst">writing out final results</span> (e.g. to a CSV if you need the result to be human readable).</p>
-</section>
-<section id="an-example-different-order-within-same-partition">
+</div>
+<div class="section" id="an-example-different-order-within-same-partition">
 <h2>An example: different order within same partition<a class="headerlink" href="#an-example-different-order-within-same-partition" title="Permalink to this headline">¶</a></h2>
 <p>First, create a new Spark session and a small DataFrame; this example uses the winners of the Six Nations rugby union tournament:</p>
 <div class="cell docutils container">
@@ -709,8 +768,8 @@ only showing top 5 rows
 <p>The results not all the same. The data in the <code class="docutils literal notranslate"><span class="pre">nation</span></code> column is identical every time, as this was explicitly ordered, but the <code class="docutils literal notranslate"><span class="pre">year</span></code> is not.</p>
 <p>This demonstrates that the data is being returned in <code class="docutils literal notranslate"><span class="pre">partition_id</span></code> order for each <code class="docutils literal notranslate"><span class="pre">nation</span></code>, but there is no fixed ordering within each partition. If the DataFrame was also sorted by <code class="docutils literal notranslate"><span class="pre">year</span></code> the same result would be returned each time.</p>
 <p>Note that if you run the code again, you may get different results.</p>
-</section>
-<section id="another-example-different-partition-id">
+</div>
+<div class="section" id="another-example-different-partition-id">
 <h2>Another example: different <code class="docutils literal notranslate"><span class="pre">partition_id</span></code><a class="headerlink" href="#another-example-different-partition-id" title="Permalink to this headline">¶</a></h2>
 <p>During a shuffle the data can be sent to different partitions when executing the same Spark plan multiple times.</p>
 <p>First, import the Animal Rescue CSV data and do some data cleansing. The data is also being sorted by <code class="docutils literal notranslate"><span class="pre">AnimalGroup</span></code>; this causes a shuffle which will repartition the data:</p>
@@ -795,13 +854,13 @@ only showing top 5 rows
 </pre></div>
 </div>
 <p>Although the same plan is being executed each time, the <code class="docutils literal notranslate"><span class="pre">partition_id</span></code> can be different. The <code class="docutils literal notranslate"><span class="pre">partition_id</span></code> is allocated by the <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.groupBy.html"><code class="docutils literal notranslate"><span class="pre">.groupBy()</span></code></a>/<a class="reference external" href="https://dplyr.tidyverse.org/reference/group_by.html"><code class="docutils literal notranslate"><span class="pre">group_by()</span></code></a> operation, which causes a shuffle.</p>
-</section>
-<section id="final-thoughts">
+</div>
+<div class="section" id="final-thoughts">
 <h2>Final thoughts<a class="headerlink" href="#final-thoughts" title="Permalink to this headline">¶</a></h2>
 <p>Remember that sorting the data causes a <span class="xref myst">shuffle</span>, which is an expensive operation. Try and only sort data when necessary.</p>
 <p>Sometimes you do want your code to be non-deterministic, e.g. when using random numbers. You can set a seed to replicate results if needed. You may also want to use <a class="reference external" href="../testing-debugging/unit-testing-pyspark.html#mocking">mocking</a> if unit testing in PySpark with random numbers.</p>
-</section>
-<section id="further-resources">
+</div>
+<div class="section" id="further-resources">
 <h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
 <p>Spark at the ONS Articles:</p>
 <ul class="simple">
@@ -832,8 +891,8 @@ only showing top 5 rows
 <ul class="simple">
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#spark_partition_id"><code class="docutils literal notranslate"><span class="pre">spark_partition_id</span></code></a></p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
     <script type="text/x-thebe-config">
     {
@@ -848,7 +907,7 @@ only showing top 5 rows
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./raw-notebooks\df-order"
+            path: "./raw-notebooks/df-order"
         },
         predefinedOutput: true
     }
@@ -857,22 +916,20 @@ only showing top 5 rows
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By Wil Roberts & Adrian Prince<br/>
-        
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By Wil Roberts & Adrian Prince<br/>
+    
+  </p>
+</footer>
 </main>
 
 

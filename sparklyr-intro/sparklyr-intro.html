@@ -4,8 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Introduction to sparklyr &#8212; Spark at the ONS</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
@@ -39,18 +38,20 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/tabs.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -280,6 +281,11 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/optimisation-tips.html">
+   Ideas for optimising Spark code
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="../spark-concepts/spark-application-and-ui.html">
    Spark Application and UI
   </a>
@@ -434,7 +440,7 @@
                 data-placement="left">.md</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -468,7 +474,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -747,15 +753,297 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Introduction to sparklyr</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#sparklyr-a-quick-introduction">
+   sparklyr: a quick introduction
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-sparklyr-package">
+   The
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     sparklyr
+    </span>
+   </code>
+   package
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#create-a-spark-session-spark-connect">
+   Create a Spark session:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     spark_connect()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#reading-data-spark-read-csv">
+   Reading data:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     spark_read_csv()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#preview-data-glimpse">
+   Preview data:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     glimpse()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#implicitly-preview-data-print">
+   Implicitly Preview data:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     print()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#convert-to-a-tibble-collect-and-head">
+   Convert to a tibble:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     collect()
+    </span>
+   </code>
+   and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     head()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#select-and-drop-columns-select">
+   Select and drop columns:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     select()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#get-the-row-count-sdf-nrow">
+   Get the row count:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     sdf_nrow()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#rename-columns-rename">
+   Rename columns:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     rename()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercise-1">
+   Exercise 1
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-1a">
+     Exercise 1a
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-1b">
+     Exercise 1b
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-1c">
+     Exercise 1c
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#filter-rows-filter">
+   Filter rows:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     filter()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercise-2">
+   Exercise 2
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#adding-columns-mutate">
+   Adding Columns:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     mutate()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#using-spark-sql-functions-with-mutate">
+   Using Spark SQL Functions with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     mutate()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#sorting-arrange-and-sdf-sort">
+   Sorting:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     arrange()
+    </span>
+   </code>
+   and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     sdf_sort()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercise-3">
+   Exercise 3
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#grouping-and-aggregating-group-by-and-summarise">
+   Grouping and Aggregating:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     group_by()
+    </span>
+   </code>
+   and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     summarise()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#reading-data-from-a-parquet-file-spark-read-parquet">
+   Reading data from a Parquet file:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     spark_read_parquet()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#joining-data-left-join">
+   Joining Data
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     left_join()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#writing-data-file-choice">
+   Writing data: file choice
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#write-to-a-parquet-spark-write-parquet">
+   Write to a parquet:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     spark_write_parquet()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#write-to-a-csv-spark-write-csv-and-sdf-coalesce">
+   Write to a CSV:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     spark_write_csv()
+    </span>
+   </code>
+   and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     sdf_coalesce()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#removing-files">
+   Removing files
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#acknowledgements">
+     Acknowledgements
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
-  <section id="introduction-to-sparklyr">
+  <div class="section" id="introduction-to-sparklyr">
 <h1>Introduction to sparklyr<a class="headerlink" href="#introduction-to-sparklyr" title="Permalink to this headline">¶</a></h1>
 <p>This article aims to give hands on experience in working with the sparklyr package in R. You can download the raw R code used in this article from the <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/ons-spark/raw-notebooks/sparklyr-intro/r_input.R">ONS Spark repository</a>.</p>
 <p>We will not aim to cover all the sparklyr DataFrame functionality or go into detail of how Spark works, but instead focus on practicality by performing some common operations on an example dataset. There are a handful of exercises that you can complete while reading this article.</p>
 <p>Prerequisites for this article are some basic knowledge of R and dplyr. If you are completely new to R then it is recommended to complete an introductory course first; your organisation may have specific R training. Other resources include the <a class="reference external" href="https://dplyr.tidyverse.org/articles/dplyr.html">Introduction to dplyr</a> and <a class="reference external" href="https://r4ds.had.co.nz/">R for Data Science</a>.  If you are an Python user, the <a class="reference internal" href="../pyspark-intro/pyspark-intro.html"><span class="doc std std-doc">Introduction to PySpark</span></a> article follows similar format.</p>
-<section id="sparklyr-a-quick-introduction">
+<div class="section" id="sparklyr-a-quick-introduction">
 <h2>sparklyr: a quick introduction<a class="headerlink" href="#sparklyr-a-quick-introduction" title="Permalink to this headline">¶</a></h2>
 <p>Although this article focusses on practical usage to enable you to quickly use sparklyr, you do need to understand some basic theory of Spark and distributed computing.</p>
 <p>Spark is a powerful tool used to process huge data in an efficient way. We can access Spark in R with the sparklyr package. Spark has DataFrames, consisting of rows and columns, similar to base R DataFrames or tibbles. Many of the operations are also translated directly from dplyr, some with a <code class="docutils literal notranslate"><span class="pre">spark_</span></code> or <code class="docutils literal notranslate"><span class="pre">sdf_</span></code> prefix: e.g. you can use <a class="reference external" href="https://dplyr.tidyverse.org/reference/select.html"><code class="docutils literal notranslate"><span class="pre">select()</span></code></a>, <a class="reference external" href="https://dplyr.tidyverse.org/reference/mutate.html"><code class="docutils literal notranslate"><span class="pre">mutate()</span></code></a>, <a class="reference external" href="https://dplyr.tidyverse.org/reference/filter.html"><code class="docutils literal notranslate"><span class="pre">filter()</span></code></a> and <a class="reference external" href="https://dplyr.tidyverse.org/reference/summarise.html"><code class="docutils literal notranslate"><span class="pre">summarise()</span></code></a> as you would in dplyr.</p>
@@ -770,8 +1058,8 @@
 <li><p>In sparklyr, DataFrames are lazily evaluated. We give Spark a set of instructions, called transformations, which are only evaluated when necessary, for instance to get a row count or write out data to a file, referred to as an action. In the example above, the plan is triggered once the data are set to write out to a file.</p></li>
 </ul>
 <p>For more detail on how Spark works, you can refer to the articles in the Understanding and Optimising Spark chapter of this book. <a class="reference external" href="https://pages.databricks.com/rs/094-YMS-629/images/LearningSpark2.0.pdf">Databricks: Learning Spark</a> is another useful resource.</p>
-</section>
-<section id="the-sparklyr-package">
+</div>
+<div class="section" id="the-sparklyr-package">
 <h2>The <code class="docutils literal notranslate"><span class="pre">sparklyr</span></code> package<a class="headerlink" href="#the-sparklyr-package" title="Permalink to this headline">¶</a></h2>
 <p>To use Spark with R, we make use of the <a class="reference external" href="https://spark.rstudio.com/"><code class="docutils literal notranslate"><span class="pre">sparklyr</span></code></a> package. There is also the <a class="reference external" href="https://spark.apache.org/docs/latest/sparkr.html">SparkR</a> package which is an alternative, although this is not used at the ONS.</p>
 <p>It is recommended to install the full <a class="reference external" href="https://www.tidyverse.org/"><code class="docutils literal notranslate"><span class="pre">tidyverse</span></code></a> first before installing <code class="docutils literal notranslate"><span class="pre">sparklyr</span></code>, to ensure that you take take advantage of the full functionality of dplyr and related packages.</p>
@@ -788,8 +1076,8 @@
 </div>
 </div></div>
 <p>The help functionality in R works as usual with sparklyr functions, and can be accessed by prefixing a function with <code class="docutils literal notranslate"><span class="pre">?</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">?spark_read_csv</span></code>, although the easiest way is to look at the <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/">documentation</a>. There are a lot of functions in the sparklyr module and you will be very unlikely to use them all.</p>
-</section>
-<section id="create-a-spark-session-spark-connect">
+</div>
+<div class="section" id="create-a-spark-session-spark-connect">
 <h2>Create a Spark session: <code class="docutils literal notranslate"><span class="pre">spark_connect()</span></code><a class="headerlink" href="#create-a-spark-session-spark-connect" title="Permalink to this headline">¶</a></h2>
 <p>With the <code class="docutils literal notranslate"><span class="pre">sparklyr</span></code> package imported we now want to create a connection to the Spark cluster. We use <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html"><code class="docutils literal notranslate"><span class="pre">spark_connect()</span></code></a> and assign this to <code class="docutils literal notranslate"><span class="pre">sc</span></code>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">spark_connect()</span></code> takes a <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_config.html"><code class="docutils literal notranslate"><span class="pre">spark_config()</span></code></a> as an input and this has many options for controlling the size of the Spark session; see the <a class="reference internal" href="../spark-overview/spark-session-guidance.html"><span class="doc std std-doc">Guidance on Spark Sessions</span></a> and also <a class="reference internal" href="../spark-overview/example-spark-sessions.html"><span class="doc std std-doc">Example Spark Sessions</span></a> to get an idea of what sized session to use.</p>
@@ -809,8 +1097,8 @@
 <div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] TRUE
 </pre></div>
 </div>
-</section>
-<section id="reading-data-spark-read-csv">
+</div>
+<div class="section" id="reading-data-spark-read-csv">
 <h2>Reading data: <code class="docutils literal notranslate"><span class="pre">spark_read_csv()</span></code><a class="headerlink" href="#reading-data-spark-read-csv" title="Permalink to this headline">¶</a></h2>
 <p>For this article we will look at some open data on animal rescue incidents from the London Fire Brigade. The data are stored as a CSV, although the parquet file format is the most common when using Spark. The reason for using CSV in this article is because it is a familiar file format and allows you to adapt this code easily for your own sample data. See the article on <span class="xref myst">Reading Data in sparklyr</span> for more information.</p>
 <p>Often your data will be large and stored using Hadoop, on the Hadoop Distributed File System (HDFS). This example uses a local file, enabling us to get started quickly; see the article on <a class="reference internal" href="../spark-overview/data-storage.html"><span class="doc std std-doc">Data Storage</span></a> for more information.</p>
@@ -835,8 +1123,8 @@
 <div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] &quot;tbl_spark&quot; &quot;tbl_sql&quot;   &quot;tbl_lazy&quot;  &quot;tbl&quot;      
 </pre></div>
 </div>
-</section>
-<section id="preview-data-glimpse">
+</div>
+<div class="section" id="preview-data-glimpse">
 <h2>Preview data: <code class="docutils literal notranslate"><span class="pre">glimpse()</span></code><a class="headerlink" href="#preview-data-glimpse" title="Permalink to this headline">¶</a></h2>
 <p>To view the column names, data types and get a short preview of the data use <a class="reference external" href="https://pillar.r-lib.org/reference/glimpse.html"><code class="docutils literal notranslate"><span class="pre">glimpse()</span></code></a> from the <code class="docutils literal notranslate"><span class="pre">pillar</span></code> package. These will be transposed in the display, meaning this option is good for previewing DataFrames with a large number of columns.</p>
 <p>Note that <code class="docutils literal notranslate"><span class="pre">glimpse()</span></code> is an <em>action</em> and the DataFrame will get lazily evaluated when this is used. As such, <code class="docutils literal notranslate"><span class="pre">glimpse()</span></code> can take a long time when you have a lot of code. As we are only previewing a small DataFrame that is directly imported from CSV it will be relatively quick here.</p>
@@ -877,8 +1165,8 @@ $ Northing_rounded           &lt;int&gt; 170050, 167550, 164950, 190650, 192350,
 </pre></div>
 </div>
 <p>Note that when using <code class="docutils literal notranslate"><span class="pre">glimpse()</span></code> the number of rows are given as <code class="docutils literal notranslate"><span class="pre">??</span></code>. Spark uses lazy evaluation and it can return a preview of the data without having to derive the row count.</p>
-</section>
-<section id="implicitly-preview-data-print">
+</div>
+<div class="section" id="implicitly-preview-data-print">
 <h2>Implicitly Preview data: <code class="docutils literal notranslate"><span class="pre">print()</span></code><a class="headerlink" href="#implicitly-preview-data-print" title="Permalink to this headline">¶</a></h2>
 <p>The DataFrame can be implicitly previewed with <code class="docutils literal notranslate"><span class="pre">print()</span></code> or by supplying the DataFrame name without assignment or a function.</p>
 <p>These are interpreted as <em>actions</em>, meaning that all previous <em>transformations</em> will be ran on the Spark cluster; often this will have many <em>transformations</em>, but here we only have one, reading in the data.</p>
@@ -932,8 +1220,8 @@ $ Northing_rounded           &lt;int&gt; 170050, 167550, 164950, 190650, 192350,
 #   PostcodeDistrict &lt;chr&gt;, Easting_m &lt;dbl&gt;, Northing_m &lt;dbl&gt;, …
 </pre></div>
 </div>
-</section>
-<section id="convert-to-a-tibble-collect-and-head">
+</div>
+<div class="section" id="convert-to-a-tibble-collect-and-head">
 <h2>Convert to a tibble: <code class="docutils literal notranslate"><span class="pre">collect()</span></code> and <code class="docutils literal notranslate"><span class="pre">head()</span></code><a class="headerlink" href="#convert-to-a-tibble-collect-and-head" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">glimpse()</span></code> and <code class="docutils literal notranslate"><span class="pre">print()</span></code> both only give us a partial preview of the rows in the DataFrame, and do not assign the results to a variable. <a class="reference external" href="https://dplyr.tidyverse.org/reference/compute.html"><code class="docutils literal notranslate"><span class="pre">collect()</span></code></a> will bring the sparklyr DataFrame into the driver from the cluster as a tibble, and you can therefore take advantage of all the usual tibble and base R functionality. For instance, you may want to <a class="reference internal" href="../ancillary-topics/visualisation.html"><span class="doc std std-doc">visualise your results</span></a>.</p>
 <p>In some IDEs, printing a tibble will display a nicely formatted HTML table, so this is another option when previewing data.</p>
@@ -973,8 +1261,8 @@ $ Northing_rounded           &lt;int&gt; 170050, 167550, 164950, 190650, 192350,
 <div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;
 </pre></div>
 </div>
-</section>
-<section id="select-and-drop-columns-select">
+</div>
+<div class="section" id="select-and-drop-columns-select">
 <h2>Select and drop columns: <code class="docutils literal notranslate"><span class="pre">select()</span></code><a class="headerlink" href="#select-and-drop-columns-select" title="Permalink to this headline">¶</a></h2>
 <p>Often your data will have too many columns that are not relevant, so we can use <code class="docutils literal notranslate"><span class="pre">select()</span></code> to just get the ones that are of interest. In our example, we can reduce the number of columns returned so that the output of <code class="docutils literal notranslate"><span class="pre">print()</span></code> is much neater.</p>
 <p><a class="reference external" href="https://dplyr.tidyverse.org/reference/select.html"><code class="docutils literal notranslate"><span class="pre">select()</span></code></a> in sparklyr works in the same way as in dplyr; simply provide the names of the columns. There are no need for vectors, lists or quotes around column names. It is recommended to use the pipe (<code class="docutils literal notranslate"><span class="pre">%&gt;%</span></code>), which means the first argument is the result of the previous operation. Using <code class="docutils literal notranslate"><span class="pre">%&gt;%</span></code> makes the code easier to read and also more instinctive, since the only inputs to <code class="docutils literal notranslate"><span class="pre">select()</span></code> are the columns, not the DataFrame.</p>
@@ -1040,8 +1328,8 @@ $ StnGroundName              &lt;chr&gt; &quot;Norbury&quot;, &quot;Woodside&quo
 $ PostcodeDistrict           &lt;chr&gt; &quot;SE19&quot;, &quot;SE25&quot;, &quot;SM5&quot;, &quot;UB9&quot;, &quot;RM3&quot;, &quot;RM10&quot;…
 </pre></div>
 </div>
-</section>
-<section id="get-the-row-count-sdf-nrow">
+</div>
+<div class="section" id="get-the-row-count-sdf-nrow">
 <h2>Get the row count: <code class="docutils literal notranslate"><span class="pre">sdf_nrow()</span></code><a class="headerlink" href="#get-the-row-count-sdf-nrow" title="Permalink to this headline">¶</a></h2>
 <p>Sometimes your data will be small enough that you do not even need to use Spark. As such it is useful to know the row count, and then make the decision on whether to use Spark or just use base R or dplyr. One advantage of base R DataFrames is that there are more compatible packages available than there are with Spark.</p>
 <p>To get the row count in sparklyr, use <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_dim.html"><code class="docutils literal notranslate"><span class="pre">sdf_nrow()</span></code></a>. This will only work on sparklyr DFs, not tibbles or base R DFs.</p>
@@ -1055,8 +1343,8 @@ $ PostcodeDistrict           &lt;chr&gt; &quot;SE19&quot;, &quot;SE25&quot;, &qu
 <div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] 5898
 </pre></div>
 </div>
-</section>
-<section id="rename-columns-rename">
+</div>
+<div class="section" id="rename-columns-rename">
 <h2>Rename columns: <code class="docutils literal notranslate"><span class="pre">rename()</span></code><a class="headerlink" href="#rename-columns-rename" title="Permalink to this headline">¶</a></h2>
 <p>The source data has the column names in <code class="docutils literal notranslate"><span class="pre">CamelCase</span></code>, but when using R we generally prefer to use <code class="docutils literal notranslate"><span class="pre">snake_case</span></code>.</p>
 <p>To rename columns, use <a class="reference external" href="https://dplyr.tidyverse.org/reference/rename.html"><code class="docutils literal notranslate"><span class="pre">rename()</span></code></a>. Like <code class="docutils literal notranslate"><span class="pre">select()</span></code>, usage is the same as dplyr and is actually referenced directly with <code class="docutils literal notranslate"><span class="pre">dplyr::rename()</span></code>. Assign the new column name to be the old one with <code class="docutils literal notranslate"><span class="pre">=</span></code>, e.g <code class="docutils literal notranslate"><span class="pre">rename(incident_number</span> <span class="pre">=</span> <span class="pre">IncidentNumber)</span></code>. Once again we are re-assigning the DataFrame as it is immutable.</p>
@@ -1100,20 +1388,20 @@ $ StnGroundName              &lt;chr&gt; &quot;Norbury&quot;, &quot;Woodside&quo
 $ PostcodeDistrict           &lt;chr&gt; &quot;SE19&quot;, &quot;SE25&quot;, &quot;SM5&quot;, &quot;UB9&quot;, &quot;RM3&quot;, &quot;RM10&quot;…
 </pre></div>
 </div>
-</section>
-<section id="exercise-1">
+</div>
+<div class="section" id="exercise-1">
 <h2>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h2>
-<section id="exercise-1a">
+<div class="section" id="exercise-1a">
 <h3>Exercise 1a<a class="headerlink" href="#exercise-1a" title="Permalink to this headline">¶</a></h3>
 <p>Rename the following columns in the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame:</p>
 <p><code class="docutils literal notranslate"><span class="pre">FinalDescription</span></code> –&gt; <code class="docutils literal notranslate"><span class="pre">description</span></code></p>
 <p><code class="docutils literal notranslate"><span class="pre">PostcodeDistrict</span></code> –&gt; <code class="docutils literal notranslate"><span class="pre">postcode_district</span></code></p>
-</section>
-<section id="exercise-1b">
+</div>
+<div class="section" id="exercise-1b">
 <h3>Exercise 1b<a class="headerlink" href="#exercise-1b" title="Permalink to this headline">¶</a></h3>
 <p>Select these columns and the seven columns that were renamed in the cell above; you should have nine in total. Reassign the result to the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame.</p>
-</section>
-<section id="exercise-1c">
+</div>
+<div class="section" id="exercise-1c">
 <h3>Exercise 1c<a class="headerlink" href="#exercise-1c" title="Permalink to this headline">¶</a></h3>
 <p>Preview the structure of the DataFrame.</p>
 <details>
@@ -1160,9 +1448,9 @@ $ postcode_district &lt;chr&gt; &quot;SE19&quot;, &quot;SE25&quot;, &quot;SM5&qu
 </pre></div>
 </div>
 </details>
-</section>
-</section>
-<section id="filter-rows-filter">
+</div>
+</div>
+<div class="section" id="filter-rows-filter">
 <h2>Filter rows: <code class="docutils literal notranslate"><span class="pre">filter()</span></code><a class="headerlink" href="#filter-rows-filter" title="Permalink to this headline">¶</a></h2>
 <p>Rows of sparklyr DataFrames can be filtered with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.filter.html"><code class="docutils literal notranslate"><span class="pre">filter()</span></code></a>, which takes a logical condition. This works in an identical way to <code class="docutils literal notranslate"><span class="pre">dplyr::filter()</span></code>. Any column names can be referenced by name without quotes.</p>
 <p>For instance, if we want to select all the rows where <code class="docutils literal notranslate"><span class="pre">animal_group</span></code> is equal to <code class="docutils literal notranslate"><span class="pre">Hamster</span></code>, we can use <code class="docutils literal notranslate"><span class="pre">filter(animal_group</span> <span class="pre">==</span> <span class="pre">&quot;Hamster&quot;)</span></code>. Note the double equals sign used in a condition. We do not want to change the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame, so assign it to a new DF, <code class="docutils literal notranslate"><span class="pre">hamsters</span></code>, then preview a few of the columns:</p>
@@ -1222,8 +1510,8 @@ $ postcode_district &lt;chr&gt; &quot;SE19&quot;, &quot;SE25&quot;, &quot;SM5&qu
 5 64764121        Dog              2012       1040
 </pre></div>
 </div>
-</section>
-<section id="exercise-2">
+</div>
+<div class="section" id="exercise-2">
 <h2>Exercise 2<a class="headerlink" href="#exercise-2" title="Permalink to this headline">¶</a></h2>
 <p>Create a new DataFrame which consists of all the rows where <code class="docutils literal notranslate"><span class="pre">animal_group</span></code> is equal to <code class="docutils literal notranslate"><span class="pre">&quot;Fox&quot;</span></code>, then select <code class="docutils literal notranslate"><span class="pre">incident_number</span></code>, <code class="docutils literal notranslate"><span class="pre">animal_group</span></code>, <code class="docutils literal notranslate"><span class="pre">cal_year</span></code>, and <code class="docutils literal notranslate"><span class="pre">total_cost</span></code> and preview the first ten rows.</p>
 <details>
@@ -1260,8 +1548,8 @@ $ postcode_district &lt;chr&gt; &quot;SE19&quot;, &quot;SE25&quot;, &quot;SM5&qu
 </pre></div>
 </div>
 </details>
-</section>
-<section id="adding-columns-mutate">
+</div>
+<div class="section" id="adding-columns-mutate">
 <h2>Adding Columns: <code class="docutils literal notranslate"><span class="pre">mutate()</span></code><a class="headerlink" href="#adding-columns-mutate" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://dplyr.tidyverse.org/reference/mutate.html"><code class="docutils literal notranslate"><span class="pre">mutate()</span></code></a> can be used to create new columns and overwrite an existing ones. One <code class="docutils literal notranslate"><span class="pre">mutate()</span></code> statement can be used to create multiple columns, which can make the code easier to read. Just like the other dplyr commands, <code class="docutils literal notranslate"><span class="pre">sparklyr::mutate()</span></code> works in an identical way to <code class="docutils literal notranslate"><span class="pre">dplyr::mutate()</span></code>. Once again, just reference the columns by name, rather than using quotes.</p>
 <p>The statement to create each column should begin <code class="docutils literal notranslate"><span class="pre">column_name</span> <span class="pre">=</span> </code>; note that a single <code class="docutils literal notranslate"><span class="pre">=</span></code> is being used for assignment rather than <code class="docutils literal notranslate"><span class="pre">&lt;-</span></code>. Then just set this new column equal to a statement, which will often be derived from other columns. For instance, we do not have a column for how long an incident took in the data, but do have the columns available to derive this:</p>
@@ -1308,8 +1596,8 @@ $ postcode_district &lt;chr&gt; &quot;SE19&quot;, &quot;SE25&quot;, &quot;SM5&qu
 <li><p><strong>Actions</strong> trigger computation to be performed on the cluster and results returned to the driver. It is actions that trigger the execution plan.</p></li>
 </ul>
 <p>Multiple transformations can be combined, as we did to preprocess the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame above. Only when an action is called, for example <code class="docutils literal notranslate"><span class="pre">collect()</span></code> or implicitly printing the DF are these transformations and action executed on the cluster, after which the results are returned to the driver.</p>
-</section>
-<section id="using-spark-sql-functions-with-mutate">
+</div>
+<div class="section" id="using-spark-sql-functions-with-mutate">
 <h2>Using Spark SQL Functions with <code class="docutils literal notranslate"><span class="pre">mutate()</span></code><a class="headerlink" href="#using-spark-sql-functions-with-mutate" title="Permalink to this headline">¶</a></h2>
 <p>So far, writing sparklyr code has been very similar to using dplyr, the main difference being the consideration of where the DataFrame is being processed: either on the driver in the case of dplyr, or in the Spark cluster with sparklyr.</p>
 <p>One key difference is that when using <code class="docutils literal notranslate"><span class="pre">mutate()</span></code> you can also make use of Spark functions directly. See the article on <a class="reference internal" href="sparklyr-functions.html"><span class="doc std std-doc">Using Spark functions in sparklyr</span></a> for a full explanation.</p>
@@ -1343,8 +1631,8 @@ $ date_time_of_call &lt;date&gt; 2009-01-01, 2009-01-01, 2009-01-04, 2009-01-05,
 you could try ‘??to_date’
 </pre></div>
 </div>
-</section>
-<section id="sorting-arrange-and-sdf-sort">
+</div>
+<div class="section" id="sorting-arrange-and-sdf-sort">
 <span id="sort-data"></span><h2>Sorting: <code class="docutils literal notranslate"><span class="pre">arrange()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_sort()</span></code><a class="headerlink" href="#sorting-arrange-and-sdf-sort" title="Permalink to this headline">¶</a></h2>
 <p>An important Spark concept is that DataFrames are <a class="reference internal" href="../spark-concepts/df-order.html"><span class="doc std std-doc">not ordered by default</span></a>, unlike a base R DF or tibble, which have an index. Remember that a Spark DataFrame is distributed into partitions, and there is no guarantee of the order of the rows within these partitions, or which partition a particular row is on.</p>
 <p>There are two ways to sort data in sparklyr: with <a class="reference external" href="https://dplyr.tidyverse.org/reference/arrange.html"><code class="docutils literal notranslate"><span class="pre">dplyr::arrange()</span></code></a> and <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_sort.html"><code class="docutils literal notranslate"><span class="pre">sparklyr::sdf_sort()</span></code></a>. Neither are perfect implementations. <code class="docutils literal notranslate"><span class="pre">arrange()</span></code> will only actually be processed if the data is being subset or directly returned, as otherwise the sorting operation gets deemed superfluous by Spark. By default columns are sorted ascending; use <a class="reference external" href="https://dplyr.tidyverse.org/reference/desc.html"><code class="docutils literal notranslate"><span class="pre">desc()</span></code></a> to sort descending.</p>
@@ -1379,8 +1667,8 @@ you could try ‘??to_date’
 </pre></div>
 </div>
 <p>Horses make up a lot of the more expensive calls, which makes sense, given that they are large animals.</p>
-</section>
-<section id="exercise-3">
+</div>
+<div class="section" id="exercise-3">
 <h2>Exercise 3<a class="headerlink" href="#exercise-3" title="Permalink to this headline">¶</a></h2>
 <p>Sort the incidents in terms of their duration, look at the top 10 and the bottom 10. Do you notice anything strange?</p>
 <details>
@@ -1444,8 +1732,8 @@ you could try ‘??to_date’
 </pre></div>
 </div>
 </details>
-</section>
-<section id="grouping-and-aggregating-group-by-and-summarise">
+</div>
+<div class="section" id="grouping-and-aggregating-group-by-and-summarise">
 <h2>Grouping and Aggregating: <code class="docutils literal notranslate"><span class="pre">group_by()</span></code> and <code class="docutils literal notranslate"><span class="pre">summarise()</span></code><a class="headerlink" href="#grouping-and-aggregating-group-by-and-summarise" title="Permalink to this headline">¶</a></h2>
 <p>In most cases, we want to get insights into the raw data, for instance, by taking the sum or average of a column, or getting the largest or smallest values. This is key to what the Office for National Statistics does: we release statistics!</p>
 <p>In sparklyr, <a class="reference external" href="https://dplyr.tidyverse.org/reference/group_by.html"><code class="docutils literal notranslate"><span class="pre">group_by()</span></code></a> and <a class="reference external" href="https://dplyr.tidyverse.org/reference/summarise.html"><code class="docutils literal notranslate"><span class="pre">summarise()</span></code></a> can be referenced directly from dplyr and these functions work in an identical way. There is one key difference: inside <code class="docutils literal notranslate"><span class="pre">summmarise()</span></code> functions will be interpreted as Spark SQL functions where possible, e.g. <a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#sum"><code class="docutils literal notranslate"><span class="pre">sum()</span></code></a>, <a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#max"><code class="docutils literal notranslate"><span class="pre">max()</span></code></a> etc.</p>
@@ -1524,8 +1812,8 @@ you could try ‘??to_date’
 </pre></div>
 </div>
 <p>Note that although we used <code class="docutils literal notranslate"><span class="pre">collect()</span></code> we did not subset the data with <code class="docutils literal notranslate"><span class="pre">head()</span></code>. This is because we know the row count is tiny, and so there was no danger of overloading the driver with too much data.</p>
-</section>
-<section id="reading-data-from-a-parquet-file-spark-read-parquet">
+</div>
+<div class="section" id="reading-data-from-a-parquet-file-spark-read-parquet">
 <h2>Reading data from a Parquet file: <code class="docutils literal notranslate"><span class="pre">spark_read_parquet()</span></code><a class="headerlink" href="#reading-data-from-a-parquet-file-spark-read-parquet" title="Permalink to this headline">¶</a></h2>
 <p>The next section covers how to join data in Spark, but before we do, we need to read in another dataset. In our rescue data, we have a column for the postcode district, which represents the first part of the postcode. We have data for the population by postcode in another dataset, <code class="docutils literal notranslate"><span class="pre">population</span></code>.</p>
 <p>This data are stored as a parquet file. Parquet files the most efficient way to store data when using Spark. They are compressed and so take up much less storage space, and reading parquet files with Spark is many times quicker than reading CSVs. The drawback is that they are not human readable, although you can store them as a Hive table which means they can easily be interrogated with SQL. See the article on Parquet files for more information.</p>
@@ -1545,8 +1833,8 @@ $ postcode_district &lt;chr&gt; &quot;DH7&quot;, &quot;NW3&quot;, &quot;NR4&quot
 $ population        &lt;dbl&gt; 41076, 52376, 22331, 44742, 14357, 58658, 87171, 435…
 </pre></div>
 </div>
-</section>
-<section id="joining-data-left-join">
+</div>
+<div class="section" id="joining-data-left-join">
 <h2>Joining Data <code class="docutils literal notranslate"><span class="pre">left_join()</span></code><a class="headerlink" href="#joining-data-left-join" title="Permalink to this headline">¶</a></h2>
 <p>Now we have read the population data in, we can join it to the rescue data to get the population by postcode. Left joining in sparklyr uses the dplyr syntax of <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/join.tbl_spark.html"><code class="docutils literal notranslate"><span class="pre">left_join()</span></code></a>. Other joins use similar syntax, e.g. <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/join.tbl_spark.html"><code class="docutils literal notranslate"><span class="pre">right_join()</span></code></a>, <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/join.tbl_spark.html"><code class="docutils literal notranslate"><span class="pre">inner_join()</span></code></a>.</p>
 <p>This article assumes that you are familiar with joins. Those who know SQL will be familiar with this term, although pandas and R users sometimes use the term <em>merge</em>. If you do not know how a join works, please read about <a class="reference external" href="https://en.wikipedia.org/wiki/Join_(SQL)">joins in SQL</a> first; the principles are the same in Spark. Joins are expensive in Spark as they involve shuffling the data and this can make larger joins slow. See the article on <a class="reference internal" href="../spark-concepts/join-concepts.html"><span class="doc std std-doc">Optimising Joins</span></a> for more information on how to make them more efficient.</p>
@@ -1584,8 +1872,8 @@ $ population        &lt;dbl&gt; 41076, 52376, 22331, 44742, 14357, 58658, 87171,
 5 000477-01012017  Deer                             HA7                    36046
 </pre></div>
 </div>
-</section>
-<section id="writing-data-file-choice">
+</div>
+<div class="section" id="writing-data-file-choice">
 <h2>Writing data: file choice<a class="headerlink" href="#writing-data-file-choice" title="Permalink to this headline">¶</a></h2>
 <p>In this article so far, we have been calling actions to preview the data, bringing back only a handful of rows each time. This is useful when developing and debugging code, but in production pipelines you will want to write the results.</p>
 <p>The format in which the results are written out depends on what you want to do next with the data:</p>
@@ -1594,8 +1882,8 @@ $ population        &lt;dbl&gt; 41076, 52376, 22331, 44742, 14357, 58658, 87171,
 <li><p>If the data are intended to be used as an input to another Spark process, then use parquet or a Hive table.</p></li>
 </ul>
 <p>There are other use cases, e.g. JSON can be useful if you want the results to analysed with a different programming language, although here we only focus on CSV and parquet. See the article on <a class="reference internal" href="../spark-functions/writing-data.html"><span class="doc std std-doc">Writing Data</span></a> for more information.</p>
-</section>
-<section id="write-to-a-parquet-spark-write-parquet">
+</div>
+<div class="section" id="write-to-a-parquet-spark-write-parquet">
 <h2>Write to a parquet: <code class="docutils literal notranslate"><span class="pre">spark_write_parquet()</span></code><a class="headerlink" href="#write-to-a-parquet-spark-write-parquet" title="Permalink to this headline">¶</a></h2>
 <p>To write out our DataFrame as a parquet file, use <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_write_parquet.html"><code class="docutils literal notranslate"><span class="pre">spark_write_parquet()</span></code></a>. This has two compulsory arguments: <code class="docutils literal notranslate"><span class="pre">x</span></code>, the DataFrame to be written, and <code class="docutils literal notranslate"><span class="pre">path</span></code>, the path to the file. If using pipes for the DataFrame then you will only need the file path.</p>
 <p>The key difference between writing out data with Spark and writing out data with R is that the data will be distributed, which means that multiple files will be created, stored in a parent directory. Spark can read in these parent directories as one DataFrame. There will be one file written out per partition of the DataFrame.</p>
@@ -1609,8 +1897,8 @@ $ population        &lt;dbl&gt; 41076, 52376, 22331, 44742, 14357, 58658, 87171,
 </div></div>
 <p>It is worth looking at the raw data that is written out to see that it has been stored in several files in a parent directory.</p>
 <p>When reading the data in, Spark will treat every individual file as a partition. See the article on <a class="reference internal" href="../spark-concepts/partitions.html"><span class="doc std std-doc">Managing Partitions</span></a> for more information.</p>
-</section>
-<section id="write-to-a-csv-spark-write-csv-and-sdf-coalesce">
+</div>
+<div class="section" id="write-to-a-csv-spark-write-csv-and-sdf-coalesce">
 <h2>Write to a CSV: <code class="docutils literal notranslate"><span class="pre">spark_write_csv()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_coalesce()</span></code><a class="headerlink" href="#write-to-a-csv-spark-write-csv-and-sdf-coalesce" title="Permalink to this headline">¶</a></h2>
 <p>CSVs will also be written out in a distributed manner as multiple files. While this is desirable in a parquet, it is not very useful with CSV, as the main benefit is to make them human readable. First, write out the data with <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_write_csv.html"><code class="docutils literal notranslate"><span class="pre">spark_write_csv()</span></code></a>, using the path defined in the config:</p>
 <div class="sphinx-tabs docutils container">
@@ -1632,8 +1920,8 @@ $ population        &lt;dbl&gt; 41076, 52376, 22331, 44742, 14357, 58658, 87171,
 </div>
 </div></div>
 <p>Checking the file again, you can see that although the directory still exists, it will contain only one CSV file.</p>
-</section>
-<section id="removing-files">
+</div>
+<div class="section" id="removing-files">
 <h2>Removing files<a class="headerlink" href="#removing-files" title="Permalink to this headline">¶</a></h2>
 <p>Spark has no native way of removing files, so either use the standard R methods, or delete them manually through a file browser. If on a local file system, use <a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/base/html/unlink.html"><code class="docutils literal notranslate"><span class="pre">unlink()</span></code></a> to delete a file, setting <code class="docutils literal notranslate"><span class="pre">recursive=TRUE</span></code> to remove a directory. If using HDFS or similar, then use <a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/system.html"><code class="docutils literal notranslate"><span class="pre">system()</span></code></a>. Be careful when using the <code class="docutils literal notranslate"><span class="pre">system()</span></code> command as you will not get a warning before deleting files.</p>
 <div class="sphinx-tabs docutils container">
@@ -1651,8 +1939,8 @@ $ population        &lt;dbl&gt; 41076, 52376, 22331, 44742, 14357, 58658, 87171,
 </pre></div>
 </div>
 </div></div>
-</section>
-<section id="further-resources">
+</div>
+<div class="section" id="further-resources">
 <h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
 <p>Spark at the ONS Code and Articles:</p>
 <ul class="simple">
@@ -1713,12 +2001,12 @@ $ population        &lt;dbl&gt; 41076, 52376, 22331, 44742, 14357, 58658, 87171,
 <li><p><a class="reference external" href="https://pages.databricks.com/rs/094-YMS-629/images/LearningSpark2.0.pdf">Databricks: Learning Spark</a></p></li>
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/sparkr.html">SparkR</a>: not used at the ONS</p></li>
 </ul>
-<section id="acknowledgements">
+<div class="section" id="acknowledgements">
 <h3>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this headline">¶</a></h3>
 <p>Thanks to Karina Marks, Chris Musselle and Beth Ashlee for creating the initial version of this article.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
     <script type="text/x-thebe-config">
     {
@@ -1742,8 +2030,8 @@ $ population        &lt;dbl&gt; 41076, 52376, 22331, 44742, 14357, 58658, 87171,
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="../pyspark-intro/f-col.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -1760,18 +2048,16 @@ $ population        &lt;dbl&gt; 41076, 52376, 22331, 44742, 14357, 58658, 87171,
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By Wil Roberts & Adrian Prince<br/>
-        
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By Wil Roberts & Adrian Prince<br/>
+    
+  </p>
+</footer>
 </main>
 
 

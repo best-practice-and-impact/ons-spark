@@ -1,0 +1,898 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ideas for optimising Spark code &#8212; Spark at the ONS</title>
+    
+  <link href="../_static/css/theme.css" rel="stylesheet">
+  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Spark Application and UI" href="spark-application-and-ui.html" />
+    <link rel="prev" title="Set Spark Job Description" href="../spark-functions/job-description.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Spark at the ONS</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../intro.html">
+   Introduction
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Spark overview
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/when-to-use-spark.html">
+   When To Use Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/spark-session-guidance.html">
+   Guidance on Spark Sessions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/example-spark-sessions.html">
+   Example Spark Sessions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/spark-defaults.html">
+   Configuration Hierarchy and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     spark-defaults.conf
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/data-types.html">
+   Data Types in Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/creating-dataframes.html">
+   Creating DataFrames Manually
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/data-storage.html">
+   Data Storage
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to PySpark
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../pyspark-intro/pyspark-intro.html">
+   Introduction to PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../pyspark-intro/reading-data-pyspark.html">
+   Reading Data in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../pyspark-intro/returning-data.html">
+   Returning Data from Cluster to Driver
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../pyspark-intro/f-col.html">
+   Reference columns by name:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     F.col()
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to sparklyr
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../sparklyr-intro/sparklyr-intro.html">
+   Introduction to sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../sparklyr-intro/reading-data-sparklyr.html">
+   Reading Data in sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">
+   Using Spark functions in sparklyr
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Spark functions
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/union-dataframes-with-different-columns.html">
+   Union two DataFrames with different columns
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/padding.html">
+   Add leading zeros with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     lpad()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/sampling.html">
+   Sampling:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .sample()
+    </span>
+   </code>
+   and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     sdf_sample()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/pivot-tables.html">
+   Pivot tables in Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/rounding.html">
+   Rounding differences in Python, R and Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/window-functions.html">
+   Window Functions in Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/cross-joins.html">
+   Cross Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/arrays.html">
+   Arrays Functions in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/writing-data.html">
+   Writing Data
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/job-description.html">
+   Set Spark Job Description
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Understanding and Optimising Spark
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Ideas for optimising Spark code
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="spark-application-and-ui.html">
+   Spark Application and UI
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="shuffling.html">
+   Shuffling
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="join-concepts.html">
+   Optimising Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="salted-joins.html">
+   Salted Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="partitions.html">
+   Managing Partitions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="persistence.html">
+   Persisting in Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="cache.html">
+   Caching
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html">
+   Checkpoint
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="garbage-collection.html">
+   Garbage Collection
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="df-order.html">
+   Spark DataFrames Are Not Ordered
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="exercises.html">
+   Exercises
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Testing and Debugging
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/unit-testing.html">
+   Unit Testing in Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/errors-pyspark.html">
+   Understanding Errors in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/errors-sparklyr.html">
+   Understanding Errors in sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/handling-errors-pyspark.html">
+   Handling Errors in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/handling-errors-sparklyr.html">
+   Handling Errors in sparklyr
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Ancillary Topics
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/visualisation.html">
+   Spark and Visualisation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/module-imports.html">
+   Naming Conflicts in Module Imports
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/pydoop.html">
+   Pydoop: HDFS to pandas
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/spark-concepts/optimisation-tips.md"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.md</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/robertswh/Spark at the ONS"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/robertswh/Spark at the ONS/issues/new?title=Issue%20on%20page%20%2Fspark-concepts/optimisation-tips.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#assumptions">
+   Assumptions
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#get-the-basics-right">
+   Get the basics right
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#start-simple">
+     1. Start simple
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#use-the-correct-file-formats">
+     2. Use the correct file formats
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#get-rid-of-actions-that-are-not-needed">
+     3. Get rid of actions that are not needed
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#partitioning-and-shuffling">
+     4. Partitioning and shuffling
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#investigate-issues">
+   Investigate issues
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#investigate-wide-operations-in-the-spark-ui">
+     5. Investigate wide operations in the Spark UI
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#how-is-spark-processing-the-data">
+     6. How is Spark processing the data?
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#optimise">
+   Optimise
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#optimise-joins">
+     7. Optimise joins
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#avoid-udfs-in-pyspark">
+     8. Avoid UDFs in PySpark
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#caching">
+     9. Caching
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#spark-session-parameters">
+     10. Spark session parameters
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Ideas for optimising Spark code</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#assumptions">
+   Assumptions
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#get-the-basics-right">
+   Get the basics right
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#start-simple">
+     1. Start simple
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#use-the-correct-file-formats">
+     2. Use the correct file formats
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#get-rid-of-actions-that-are-not-needed">
+     3. Get rid of actions that are not needed
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#partitioning-and-shuffling">
+     4. Partitioning and shuffling
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#investigate-issues">
+   Investigate issues
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#investigate-wide-operations-in-the-spark-ui">
+     5. Investigate wide operations in the Spark UI
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#how-is-spark-processing-the-data">
+     6. How is Spark processing the data?
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#optimise">
+   Optimise
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#optimise-joins">
+     7. Optimise joins
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#avoid-udfs-in-pyspark">
+     8. Avoid UDFs in PySpark
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#caching">
+     9. Caching
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#spark-session-parameters">
+     10. Spark session parameters
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
+              <div>
+                
+  <div class="section" id="ideas-for-optimising-spark-code">
+<h1>Ideas for optimising Spark code<a class="headerlink" href="#ideas-for-optimising-spark-code" title="Permalink to this headline">¶</a></h1>
+<p>This article was created through a combination of experience, knowledge, frustration and Spark training courses. It is not an exhaustive list of optimisation techniques. It is a summary list of ideas for an intermediate level Spark engineer, analyst or data scientist to try when developing Spark applications.</p>
+<div class="section" id="assumptions">
+<h2>Assumptions<a class="headerlink" href="#assumptions" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>You have spent time getting to know your data, e.g. exploring <a class="reference external" href="https://www.gov.uk/government/publications/the-government-data-quality-framework/the-government-data-quality-framework#Data-quality-dimensions">data quality dimensions</a>, distributions within key variables, size of dataset on disk/memory etc.</p></li>
+<li><p>You are aware of good coding practices e.g. recommendations made in the <a class="reference external" href="https://best-practice-and-impact.github.io/qa-of-code-guidance/intro.html">Quality Assurance of Code for Analysis and Research</a> book (also known as <em>the Duck Book</em>).</p></li>
+</ul>
+</div>
+<div class="section" id="get-the-basics-right">
+<h2>Get the basics right<a class="headerlink" href="#get-the-basics-right" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="start-simple">
+<h3>1. Start simple<a class="headerlink" href="#start-simple" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Use a <a class="reference external" href="../spark-overview/example-spark-sessions.html#default-blank-session">default Spark session</a>. Do not copy Spark sessions from other projects.</p></li>
+<li><p>Consider taking a <a class="reference internal" href="../spark-functions/sampling.html"><span class="doc std std-doc">sample of your data</span></a> while you are developing the code for faster processing.</p></li>
+<li><p>Structure the code logically; not too much code in a single script.</p></li>
+<li><p>Use <a class="reference external" href="https://spark.apache.org/docs/latest/sql-performance-tuning.html#adaptive-query-execution">Adaptive Query Execution (AQE)</a> if available (Spark 3.x).</p></li>
+</ul>
+</div>
+<div class="section" id="use-the-correct-file-formats">
+<h3>2. Use the correct file formats<a class="headerlink" href="#use-the-correct-file-formats" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Do not store intermediate data as text or CSV files. These should only be used when outputs need to be human readable. When you need to read from these file types always specify a schema.</p></li>
+<li><p>Use parquet files or Hive tables stored as parquet.</p></li>
+<li><p>Make sure you do not have lots of small files on HDFS (bad for Hadoop and bad for Spark).</p></li>
+</ul>
+</div>
+<div class="section" id="get-rid-of-actions-that-are-not-needed">
+<h3>3. Get rid of actions that are not needed<a class="headerlink" href="#get-rid-of-actions-that-are-not-needed" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Get rid of intermediate actions put in during development (e.g. <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.show.html"><code class="docutils literal notranslate"><span class="pre">.show()</span></code></a>, <a class="reference external" href="https://pillar.r-lib.org/reference/glimpse.html"><code class="docutils literal notranslate"><span class="pre">glimpse()</span></code></a>, <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.count.html"><code class="docutils literal notranslate"><span class="pre">.count()</span></code></a>, <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_dim.html"><code class="docutils literal notranslate"><span class="pre">sdf_nrow()</span></code></a>); these make Spark reprocess the result.</p></li>
+<li><p>Is it possible to replace any remaining actions with some transformations?</p></li>
+<li><p>If there is a repeated action needed on a DataFrame consider persisting (memory or disk).</p></li>
+</ul>
+</div>
+<div class="section" id="partitioning-and-shuffling">
+<h3>4. Partitioning and shuffling<a class="headerlink" href="#partitioning-and-shuffling" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>If the amount of data you are processing is small for Spark, reduce the <code class="docutils literal notranslate"><span class="pre">spark.sql.shuffle.partitions</span></code> parameter.</p></li>
+<li><p>Use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.coalesce.html"><code class="docutils literal notranslate"><span class="pre">.coalesce()</span></code></a>/<a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html"><code class="docutils literal notranslate"><span class="pre">sdf_coalesce()</span></code></a> for small DataFrames, especially before writing them to disk.</p></li>
+<li><p>Shuffles are expensive, remove unnecessary shuffles.</p></li>
+</ul>
+<p><em>See guidance on <a class="reference internal" href="partitions.html"><span class="doc std std-doc">Partitioning</span></a> and <a class="reference internal" href="shuffling.html"><span class="doc std std-doc">Shuffling</span></a> for more details.</em></p>
+<p>Run code on full dataset(s). Need further optimisation? Grab a link to the Spark UI.</p>
+</div>
+</div>
+<div class="section" id="investigate-issues">
+<h2>Investigate issues<a class="headerlink" href="#investigate-issues" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="investigate-wide-operations-in-the-spark-ui">
+<h3>5. Investigate wide operations in the Spark UI<a class="headerlink" href="#investigate-wide-operations-in-the-spark-ui" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Set the <a class="reference external" href="../spark-concepts/partitions.html#run-the-jobs-and-investigate-ui">job description</a> in the code to help identify actions that relate to jobs in the UI.</p></li>
+<li><p>Look for task skew and spill to disk.</p></li>
+<li><p>Do a group by and count of join keys or window keys to look for the skew in the data.</p></li>
+</ul>
+<p><em>See articles on <a class="reference external" href="../spark-concepts/spark-application-and-ui.html#spark-application-overview">Spark Application and UI</a> and <a class="reference external" href="../spark-concepts/partitions.html#intermediate-partitions-in-wide-operations">Partitions</a> for more details.</em></p>
+</div>
+<div class="section" id="how-is-spark-processing-the-data">
+<h3>6. How is Spark processing the data?<a class="headerlink" href="#how-is-spark-processing-the-data" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Check the execution plan using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.explain.html"><code class="docutils literal notranslate"><span class="pre">.explain()</span></code></a>/<a class="reference external" href="https://dplyr.tidyverse.org/reference/explain.html"><code class="docutils literal notranslate"><span class="pre">explain()</span></code></a>.</p></li>
+<li><p>Find the relevant SQL DAG in the UI.</p></li>
+<li><p>Complex plans can be simplified using persistence</p></li>
+</ul>
+<p><em>See article on <a class="reference internal" href="cache.html"><span class="doc std std-doc">Cache</span></a> for more details</em>.</p>
+</div>
+</div>
+<div class="section" id="optimise">
+<h2>Optimise<a class="headerlink" href="#optimise" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="optimise-joins">
+<h3>7. Optimise joins<a class="headerlink" href="#optimise-joins" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Consider <a class="reference external" href="../spark-concepts/join-concepts.html#replacing-a-join-with-a-narrow-transformation">replacing a join with narrow transformation</a></p></li>
+<li><p><a class="reference external" href="../spark-concepts/join-concepts.html#broadcast-join">Use a broadcast join</a> when joining with small DataFrame.</p></li>
+<li><p>Consider a <a class="reference internal" href="salted-joins.html"><span class="doc std std-doc">salted join</span></a> if skew is a real issue. Alternatively, if there is just one over-represented key, use a separate join for this key and union later.</p></li>
+</ul>
+</div>
+<div class="section" id="avoid-udfs-in-pyspark">
+<h3>8. Avoid UDFs in PySpark<a class="headerlink" href="#avoid-udfs-in-pyspark" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">spark.sql.functions</span></code> by default.</p></li>
+<li><p>Use vectorised pandas/numpy UDFs when functionality is not available in <code class="docutils literal notranslate"><span class="pre">spark.sql.functions</span></code>.</p></li>
+<li><p>If you cannot avoid scalar UDFs at all consider increasing the proportion of off-head memory allocated to the executors.</p></li>
+</ul>
+</div>
+<div class="section" id="caching">
+<h3>9. Caching<a class="headerlink" href="#caching" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Persist when a repeated calculations are made on a DataFrame.</p></li>
+<li><p>Use memory for less frequent caching; use disk for frequent persisting.</p></li>
+<li><p>Keep track of executor storage and empty when a cache is not needed.</p></li>
+<li><p>Warning: caching an object can force the entire object to be materialised, even if only parts of it are used in your code (e.g. if you filter a persisted object). This can increase run-time over not using persist.</p></li>
+</ul>
+<p><em>See article on <a class="reference internal" href="persistence.html"><span class="doc std std-doc">Persistence in Spark</span></a> for more details.</em></p>
+</div>
+<div class="section" id="spark-session-parameters">
+<h3>10. Spark session parameters<a class="headerlink" href="#spark-session-parameters" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Explore some <a class="reference internal" href="../spark-overview/spark-session-guidance.html"><span class="doc std std-doc">Spark session parameters</span></a> to help tune the session to the particular job at hand.</p></li>
+<li><p>For troublesome joins, grouping or windows with a small number of larger keys try a smaller number of larger executors.</p></li>
+<li><p>For troublesome joins, grouping or windows with a large number of smaller keys try a larger number of smaller executors.</p></li>
+</ul>
+<p><em>See section on <a class="reference external" href="../spark-concepts/partitions.html#intermediate-partitions-in-wide-operations">Intermediate partitions in wide operations</a> for more details.</em></p>
+</div>
+</div>
+<div class="section" id="further-resources">
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
+<p>Spark at the ONS Articles:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../spark-overview/example-spark-sessions.html"><span class="doc std std-doc">Example Spark Sessions</span></a></p>
+<ul>
+<li><p><a class="reference external" href="../spark-overview/example-spark-sessions.html#default-blank-session">Default/Blank Session</a>.</p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="../spark-functions/sampling.html"><span class="doc std std-doc">Sampling</span></a></p></li>
+<li><p><a class="reference internal" href="partitions.html"><span class="doc std std-doc">Managing Partitions</span></a></p>
+<ul>
+<li><p><a class="reference external" href="../spark-concepts/partitions.html#intermediate-partitions-in-wide-operations">Intermediate partitions in wide operations</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="shuffling.html"><span class="doc std std-doc">Shuffling</span></a></p></li>
+<li><p><a class="reference internal" href="spark-application-and-ui.html"><span class="doc std std-doc">Spark Application and UI</span></a></p>
+<ul>
+<li><p><a class="reference external" href="../spark-concepts/spark-application-and-ui.html#spark-application-overview">Spark Application Overview</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="cache.html"><span class="doc std std-doc">Caching</span></a></p></li>
+<li><p><a class="reference internal" href="join-concepts.html"><span class="doc std std-doc">Optimising Joins</span></a></p>
+<ul>
+<li><p><a class="reference external" href="../spark-concepts/join-concepts.html#replacing-a-join-with-a-narrow-transformation">Replacing a join with a narrow transformation</a></p></li>
+<li><p><a class="reference internal" href="join-concepts.html"><span class="doc std std-doc">Broadcast Join</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="salted-joins.html"><span class="doc std std-doc">Salted Joins</span></a></p></li>
+<li><p><a class="reference internal" href="persistence.html"><span class="doc std std-doc">Persisting in Spark</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-overview/spark-session-guidance.html"><span class="doc std std-doc">Guidance on Spark Sessions</span></a></p></li>
+</ul>
+<p>PySpark Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.show.html"><code class="docutils literal notranslate"><span class="pre">.show()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.count.html"><code class="docutils literal notranslate"><span class="pre">.count()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.coalesce.html"><code class="docutils literal notranslate"><span class="pre">.coalesce()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.explain.html"><code class="docutils literal notranslate"><span class="pre">.explain()</span></code></a></p></li>
+</ul>
+<p>sparklyr and tidyverse Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://pillar.r-lib.org/reference/glimpse.html"><code class="docutils literal notranslate"><span class="pre">glimpse()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_dim.html"><code class="docutils literal notranslate"><span class="pre">sdf_nrow()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html"><code class="docutils literal notranslate"><span class="pre">sdf_coalesce()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://dplyr.tidyverse.org/reference/explain.html"><code class="docutils literal notranslate"><span class="pre">explain()</span></code></a></p></li>
+</ul>
+<p>Spark Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/sql-performance-tuning.html#adaptive-query-execution">Adaptive Query Execution (AQE)</a></p></li>
+</ul>
+<p>Other Links:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.gov.uk/government/publications/the-government-data-quality-framework/the-government-data-quality-framework#Data-quality-dimensions">The Government Data Quality Framework: Data quality dimensions</a></p></li>
+<li><p><a class="reference external" href="https://best-practice-and-impact.github.io/qa-of-code-guidance/intro.html">Quality Assurance of Code for Analysis and Research</a>: also known as <em>the Duck Book</em></p></li>
+</ul>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./spark-concepts"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="../spark-functions/job-description.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Set Spark Job Description</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="spark-application-and-ui.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Spark Application and UI</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            
+        </div>
+    </div>
+    <footer class="footer">
+  <p>
+    
+      By Wil Roberts & Adrian Prince<br/>
+    
+  </p>
+</footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>

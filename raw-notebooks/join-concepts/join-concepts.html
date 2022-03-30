@@ -4,8 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Optimising Joins &#8212; Spark at the ONS</title>
     
   <link href="../../_static/css/theme.css" rel="stylesheet">
@@ -39,17 +38,19 @@
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/togglebutton.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -277,6 +278,11 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
+  <a class="reference internal" href="../../spark-concepts/optimisation-tips.html">
+   Ideas for optimising Spark code
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="../../spark-concepts/spark-application-and-ui.html">
    Spark Application and UI
   </a>
@@ -431,7 +437,7 @@
                 data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -482,7 +488,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -563,16 +569,100 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Optimising Joins</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-join-algorithms-in-spark">
+   The Join Algorithms in Spark
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#shuffle-hash-join">
+   Shuffle Hash Join
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#sort-merge-join">
+   Sort Merge Join
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#sort-merge-join-example">
+     Sort Merge Join Example
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#understanding-sort-merge-join">
+     Understanding Sort Merge Join
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#broadcast-join">
+   Broadcast Join
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#example-using-a-broadcast-hint">
+     Example: Using a Broadcast Hint
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#replacing-a-join-with-a-narrow-transformation">
+   Replacing a join with a narrow transformation
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#example-narrow-transformations">
+     Example: Narrow Transformations
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#when-to-use-each-method">
+   When to use each method
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#salted-joins">
+   Salted Joins
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
-  <section id="optimising-joins">
+  <div class="section" id="optimising-joins">
 <h1>Optimising Joins<a class="headerlink" href="#optimising-joins" title="Permalink to this headline">¶</a></h1>
 <p>Joining DataFrames is a common and often essential operation in Spark. However, joins are one of the more expensive operations in terms of processing time. This is because by default both source DataFrames are first sorted, which is a <em>wide transformation</em>, causing a <em>shuffle</em> (or <em>exchange</em>). As such, it is worth paying extra attention to where joins occur in the code and trying to figure out which method to use to make them more efficient.</p>
 <p>This article describes the different join algorithms in Spark, explains how they work, when to use them, and shows examples of each. It also covers replacing joins entirely with narrow transformations, and gives a brief overview of <span class="xref myst"><em>salted joins</em></span>, that can be used when the data are skewed.</p>
 <p>Before reading this article ensure that you understand how to join two DataFrames in Spark. Knowledge of <span class="xref myst">shuffles</span> and the difference between wide and narrow transformations will also help understanding of why some methods are faster than others, although not mandatory. Useful resources on this include the <a class="reference external" href="https://databricks.com/glossary/what-are-transformations">DataBricks Transformations definition</a>, and the <span class="xref myst">Spark Application and UI</span>, <span class="xref myst">Shuffling</span> and <span class="xref myst">Partitions</span> articles in this book.</p>
 <p>It is important to note that in this notebook when we talk about different joins and the way they are processed we are not talking about left, right, inner or outer joins, but how it is processed on the cluster. The result of the join will always be the same, regardless of which of the algorithms described in this article is used.</p>
-<section id="the-join-algorithms-in-spark">
+<div class="section" id="the-join-algorithms-in-spark">
 <h2>The Join Algorithms in Spark<a class="headerlink" href="#the-join-algorithms-in-spark" title="Permalink to this headline">¶</a></h2>
 <p>You do not need to know how joins work when writing Spark code, but you can make them more efficient by understanding that there are different ways for them to be processed and coding appropriately. These are:</p>
 <ul class="simple">
@@ -582,14 +672,14 @@
 <li><p>Other Methods</p></li>
 </ul>
 <p>We will look at each in more detail, get a better idea of how they are processed by looking at the Spark UI. We will then compare them and give the advantages and disadvantages of using each.</p>
-</section>
-<section id="shuffle-hash-join">
+</div>
+<div class="section" id="shuffle-hash-join">
 <h2>Shuffle Hash Join<a class="headerlink" href="#shuffle-hash-join" title="Permalink to this headline">¶</a></h2>
 <p>In the development of Spark, the shuffle hash join was the original join implementation.</p>
 <p>This consists of two stages: <em>shuffle</em> and <em>hash</em>. First a <em>shuffle</em>, where data with the same keys from both DataFrames are moved to the same executors. Once all the data are on the relevant executors, they are joined using the hash join algorithm. This involves building a hash table in memory and may fail for some larger joins.</p>
 <p>Shuffle hash joins will not be explored further as they have been superseded by sort merge join, which is similar apart from the processing stage.</p>
-</section>
-<section id="sort-merge-join">
+</div>
+<div class="section" id="sort-merge-join">
 <h2>Sort Merge Join<a class="headerlink" href="#sort-merge-join" title="Permalink to this headline">¶</a></h2>
 <p>This is now the default method of joining two DataFrames in Spark.</p>
 <p>It consists of two key stages, as suggested by the name: <em>sort</em> and <em>merge</em>.</p>
@@ -598,7 +688,7 @@
 <p>This diagram should help explain this visually:</p>
 <p><img alt="Diagram showing how a sort merge join works" src="raw-notebooks/images/sort_merge_join.png" /></p>
 <p>Both sort merge joins and shuffle hash joins use a shuffle; the difference is in the processing stage, where the former uses a searching algorithm and the latter uses a hash table.</p>
-<section id="sort-merge-join-example">
+<div class="section" id="sort-merge-join-example">
 <h3>Sort Merge Join Example<a class="headerlink" href="#sort-merge-join-example" title="Permalink to this headline">¶</a></h3>
 <p>Let us see an example of a sort merge join and then look at the plan and the Spark UI. The example uses the Animal Rescue (as CSV) and Population (as parquet) datasets, left joining on the <code class="docutils literal notranslate"><span class="pre">postcode_district</span></code>. Note that we are disabling automatic broadcast joins by setting <code class="docutils literal notranslate"><span class="pre">spark.sql.autoBroadcastJoinThreshold</span></code> to <code class="docutils literal notranslate"><span class="pre">-1</span></code>; broadcast joins are covered in the next section. First, start a Spark session, read the data and select and rename the relevant columns:</p>
 <div class="cell docutils container">
@@ -776,14 +866,14 @@ only showing top 5 rows
 <p>See the <span class="xref myst">Spark Application and UI</span> article for details on how to access the Spark UI, and the <span class="xref myst">Persisting</span> article for more details on interpreting the information in the SQL tab.</p>
 <p><img alt="Spark UI for sort merge join, showing an exchange for both DataFrames" src="raw-notebooks/images/sort_merge_join_ui.png" /></p>
 <p>This diagram has the same information as the <code class="docutils literal notranslate"><span class="pre">explain()</span></code>, just presented in a much nicer way. Again, we can see that there is an <strong>Exchange</strong> for each DataFrame, before the <strong>SortMergeJoin</strong>, and a <strong>Filter</strong> when reading the parquet.</p>
-</section>
-<section id="understanding-sort-merge-join">
+</div>
+<div class="section" id="understanding-sort-merge-join">
 <h3>Understanding Sort Merge Join<a class="headerlink" href="#understanding-sort-merge-join" title="Permalink to this headline">¶</a></h3>
 <p>The sort merge join involves two <strong>Exchanges</strong> (also called <em>shuffles</em>), one for the sorting of each source DataFrame (see the Shuffles article for a full discussion of this topic). Spark is most powerful when it can process data in parallel (<em>narrow transformations</em>), and sorting is instead a <em>wide transformation</em>, causing a <em>shuffle</em>, meaning that a sort merge join can take significant time to process, depending on the size and composition of your data. There is a full discussion in the when to use each join method section.</p>
 <p>The sort merge join is the <em>default</em> join although not always chosen automatically; the next section on <em>broadcast joins</em> explains this further.</p>
-</section>
-</section>
-<section id="broadcast-join">
+</div>
+</div>
+<div class="section" id="broadcast-join">
 <h2>Broadcast Join<a class="headerlink" href="#broadcast-join" title="Permalink to this headline">¶</a></h2>
 <p>The other common method is the broadcast join. This can be used when you are joining a small DataFrame to a large one. The smaller DataFrame is copied to every node on the cluster and then a traditional hash join is performed. This avoids the need for the sorting step that exists in the sort merge join, and therefore the expensive shuffles.</p>
 <p>Broadcast joins are suitable when you are joining a small DataFrame to a larger one. As one DataFrame is pushed to several places, this may actually be too slow or impossible if you are joining two large DataFrames.</p>
@@ -794,7 +884,7 @@ only showing top 5 rows
 <li><p>Use the broadcast hint: <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.broadcast.html"><code class="docutils literal notranslate"><span class="pre">F.broadcast()</span></code></a> in PySpark or <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_broadcast.html"><code class="docutils literal notranslate"><span class="pre">sdf_broadcast()</span></code></a> in sparklyr</p></li>
 <li><p>Spark will use a broadcast join by default if the size of the DataFrame to be broadcast is known and smaller 10MB; this value can be changed with the <a class="reference external" href="https://spark.apache.org/docs/latest/sql-performance-tuning.html"><code class="docutils literal notranslate"><span class="pre">spark.sql.autoBroadcastJoinThreshold</span></code></a> configuration setting.</p></li>
 </ol>
-<section id="example-using-a-broadcast-hint">
+<div class="section" id="example-using-a-broadcast-hint">
 <h3>Example: Using a Broadcast Hint<a class="headerlink" href="#example-using-a-broadcast-hint" title="Permalink to this headline">¶</a></h3>
 <p>We can use the same source DataFrames as the sort merge join example, <code class="docutils literal notranslate"><span class="pre">rescue</span></code> and <code class="docutils literal notranslate"><span class="pre">population</span></code>. To perform a broadcast join, we just add the broadcast join hint <code class="docutils literal notranslate"><span class="pre">F.broadcast()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_broadcast()</span></code> around <code class="docutils literal notranslate"><span class="pre">population</span></code>.</p>
 <div class="cell docutils container">
@@ -975,14 +1065,14 @@ only showing top 5 rows
 </div>
 <p>Both ways of broadcasting give the same result. You can leave it to Spark to decide, or if you want more control over how you DataFrames are joined, turn off automatic broadcasting by setting <code class="docutils literal notranslate"><span class="pre">spark.sql.autoBroadcastJoinThreshold</span></code> to <code class="docutils literal notranslate"><span class="pre">-1</span></code>.</p>
 <p>Note that Spark will not always be able to determine the size of the data in which case it will default to a sort merge join, even when this would be significantly less efficient. Spark does have some non-instinctive behaviour when it comes to automatic broadcasting; generally, if the raw file is less than 10MB it will be broadcast regardless of file type. Large parquet files which are filtered or grouped to reduce the size should be broadcast but the same is not true of CSVs. If unsure, use <code class="docutils literal notranslate"><span class="pre">explain()</span></code> to check or manually broadcast with the broadcast hint.</p>
-</section>
-</section>
-<section id="replacing-a-join-with-a-narrow-transformation">
+</div>
+</div>
+<div class="section" id="replacing-a-join-with-a-narrow-transformation">
 <h2>Replacing a join with a narrow transformation<a class="headerlink" href="#replacing-a-join-with-a-narrow-transformation" title="Permalink to this headline">¶</a></h2>
 <p>If your second DataFrame is tiny, you could potentially even not do a join at all, and replace it with a series of <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.when.html"><code class="docutils literal notranslate"><span class="pre">F.when()</span></code></a> statements in PySpark or <a class="reference external" href="https://dplyr.tidyverse.org/reference/case_when.html"><code class="docutils literal notranslate"><span class="pre">case_when()</span></code></a> in sparklyr. These will be processed as a <em>narrow transformation</em> in parallel rather than a <em>wide transformation</em>, meaning that it should be quicker than joining using the usual methods.</p>
 <p>The following diagram from the  shows how this works visually; the <code class="docutils literal notranslate"><span class="pre">F.when()</span></code>/<code class="docutils literal notranslate"><span class="pre">case_when()</span></code> method is a narrow <em>narrow transformation</em> is within the same stage, rather than a <em>wide transformation</em> between stages:</p>
 <p><img alt="Diagram showing wide and narrow transformations" src="raw-notebooks/images/application_and_ui.png" /></p>
-<section id="example-narrow-transformations">
+<div class="section" id="example-narrow-transformations">
 <h3>Example: Narrow Transformations<a class="headerlink" href="#example-narrow-transformations" title="Permalink to this headline">¶</a></h3>
 <p>The rescue data has a column, <code class="docutils literal notranslate"><span class="pre">origin_of_call</span></code>, which contains information about who reported the incident.</p>
 <div class="cell docutils container">
@@ -1167,9 +1257,9 @@ only showing top 5 rows
 <p>This plan is far simpler than the other two we saw.</p>
 <p>Although it may be tempting to use this method be careful. It is trickier to code and harder to read than a conventional join and also will not work if the source data changes, so if a new value appeared in <code class="docutils literal notranslate"><span class="pre">origin_of_call</span></code> (e.g. the RSPCA or the army, which may want a different <code class="docutils literal notranslate"><span class="pre">origin_type</span></code>) we would have to change the actual code rather than adding new lines to a reference file.</p>
 <p>In production code, it is best practice to use unit tests. These are very important when making efficiency improvements, since it is important that any changes do not affect the functionality of the code. See the articles on <span class="xref myst">Unit Testing in Spark</span> for more details.</p>
-</section>
-</section>
-<section id="when-to-use-each-method">
+</div>
+</div>
+<div class="section" id="when-to-use-each-method">
 <h2>When to use each method<a class="headerlink" href="#when-to-use-each-method" title="Permalink to this headline">¶</a></h2>
 <p>We have seen examples of three ways of joining data:</p>
 <ul class="simple">
@@ -1185,12 +1275,12 @@ only showing top 5 rows
 <p>You can change the value of <code class="docutils literal notranslate"><span class="pre">spark.sql.autoBroadcastJoinThreshold</span></code>, which may be useful for those using either very small or very large Spark sessions.</p>
 <p>The narrow transformation method was shown mainly to demonstrate that you can replace a join with a narrow transformation in certain circumstances. In practice, as such DataFrames will be tiny they can be broadcast anyway so it is not recommended. Only use this if your source data will never change, and be careful to extensively test and comment your code.</p>
 <p>The analysis above assumes that the join keys in the DataFrames are roughly equally partitioned. If your DataFrame is skewed so that some partitions contain significantly more data than others, then the efficiency of the join could be affected. See the article on <span class="xref myst">partitions</span> for more detail. The solution here is to use a <em>salted join</em>.</p>
-</section>
-<section id="salted-joins">
+</div>
+<div class="section" id="salted-joins">
 <h2>Salted Joins<a class="headerlink" href="#salted-joins" title="Permalink to this headline">¶</a></h2>
 <p>A sort merge join will move all the data with the same join keys to the same partition, which can lead to skew in the DataFrame and cause the join to process inefficiently, or not at all in some cases. This can be resolved with a <em>salted join</em>: splitting the join keys, so that the DataFrame is distributed into more equal partition sizes. See the article on <span class="xref myst">salted joins</span> for more information.</p>
-</section>
-<section id="further-resources">
+</div>
+<div class="section" id="further-resources">
 <h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
 <p>Spark at the ONS Articles:</p>
 <ul class="simple">
@@ -1230,8 +1320,8 @@ only showing top 5 rows
 <ul class="simple">
 <li><p><a class="reference external" href="https://databricks.com/glossary/what-are-transformations">DataBricks Transformations definition</a></p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
     <script type="text/x-thebe-config">
     {
@@ -1246,7 +1336,7 @@ only showing top 5 rows
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./raw-notebooks\join-concepts"
+            path: "./raw-notebooks/join-concepts"
         },
         predefinedOutput: true
     }
@@ -1255,22 +1345,20 @@ only showing top 5 rows
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By Wil Roberts & Adrian Prince<br/>
-        
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By Wil Roberts & Adrian Prince<br/>
+    
+  </p>
+</footer>
 </main>
 
 
