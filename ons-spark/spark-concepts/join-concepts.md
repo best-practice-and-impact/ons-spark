@@ -832,7 +832,7 @@ This plan is far simpler than the other two we saw.
 
 Although it may be tempting to use this method be careful. It is trickier to code and harder to read than a conventional join and also will not work if the source data changes, so if a new value appeared in `origin_of_call` (e.g. the RSPCA or the army, which may want a different `origin_type`) we would have to change the actual code rather than adding new lines to a reference file.
 
-In production code, it is best practice to use unit tests. These are very important when making efficiency improvements, since it is important that any changes do not affect the functionality of the code. See the articles on [Unit Testing in PySpark] and [ sparklyr](../testing-debugging/unit-testing-sparklyr) for more details.
+In production code, it is best practice to use unit tests. These are very important when making efficiency improvements, since it is important that any changes do not affect the functionality of the code. See the articles on [Unit Testing in Spark](../testing-debugging/unit-testing) for more details.
 
 ### When to use each method
 
@@ -869,8 +869,7 @@ Spark at the ONS Articles:
 - [Spark Application and UI](../spark-concepts/spark-application-and-ui)
 - [Partitions](../spark-concepts/partitions)
 - [Persisting](../spark-concepts/persistence)
-- [Unit Testing in PySpark](../testing-debugging/unit-testing-pyspark)
-- [Unit Testing in sparklyr](../testing-debugging/unit-testing-sparklyr)
+- [Unit Testing in Spark](../testing-debugging/unit-testing)
 
 PySpark Documentation:
 - [`.join()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.join.html)
