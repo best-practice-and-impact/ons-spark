@@ -173,7 +173,7 @@ rescue
 ````
 
 ```plaintext
-# Source: spark<animal_rescue_529b4b4d_bd01_4e85_a02e_61ff629c9e9a> [?? x 26]
+# Source: spark<animal_rescue_f63c89cf_baf8_48c9_b6d8_bbeccadbc55f> [?? x 26]
    IncidentNumber DateTimeOfCall   CalYear FinYear TypeOfIncident  PumpCount
    <chr>          <chr>              <int> <chr>   <chr>               <dbl>
  1 139091         01/01/2009 03:01    2009 2008/09 Special Service         1
@@ -205,7 +205,7 @@ print(rescue, n=5)
 ````
 
 ```plaintext
-# Source: spark<animal_rescue_54c13d36_ea11_44d4_abdc_808f1c65b773> [?? x 26]
+# Source: spark<animal_rescue_205ed5b0_55ae_4fad_af90_b9b6ce17e094> [?? x 26]
   IncidentNumber DateTimeOfCall   CalYear FinYear TypeOfIncident  PumpCount
   <chr>          <chr>              <int> <chr>   <chr>               <dbl>
 1 139091         01/01/2009 03:01    2009 2008/09 Special Service         1
@@ -352,7 +352,7 @@ $ PostcodeDistrict           <chr> "SE19", "SE25", "SM5", "UB9", "RM3", "RM10"â€
 ```
 ### Get the row count: `sdf_nrow()`
 
-Sometimes you data will be small enough that you do not even need to use Spark. As such it is useful to know the row count, and then make the decision on whether to use Spark or just use base R or dplyr. One advantage of base R DataFrames is that there are more packages available than there are with Spark.
+Sometimes your data will be small enough that you do not even need to use Spark. As such it is useful to know the row count, and then make the decision on whether to use Spark or just use base R or dplyr. One advantage of base R DataFrames is that there are more compatible packages available than there are with Spark.
 
 To get the row count in sparklyr, use [`sdf_nrow()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_dim.html). This will only work on sparklyr DFs, not tibbles or base R DFs.
 
@@ -837,13 +837,13 @@ cost_by_animal %>%
 
 ```plaintext
 # Source: spark<?> [?? x 2]
-  animal_group average_cost
-  <chr>               <dbl>
-1 cat                  322.
-2 Bird                 326.
-3 Budgie               296.
-4 Deer                 424.
-5 Snake                322.
+  animal_group                     average_cost
+  <chr>                                   <dbl>
+1 Bird                                     326.
+2 Snake                                    322.
+3 Lizard                                   284.
+4 Fish                                     780 
+5 Unknown - Heavy Livestock Animal         363.
 ```
 Remember that sparklyr DFs are not ordered by unless we specifically do so; here we will sort the `average_cost` descending:
 ````{tabs}
@@ -863,8 +863,8 @@ cost_by_animal %>%
    animal_group                                     average_cost
    <chr>                                                   <dbl>
  1 Goat                                                    1180 
- 2 Fish                                                     780 
- 3 Bull                                                     780 
+ 2 Bull                                                     780 
+ 3 Fish                                                     780 
  4 Horse                                                    747.
  5 Unknown - Animal rescue from water - Farm animal         710.
  6 Cow                                                      624.
@@ -998,7 +998,7 @@ There are other use cases, e.g. JSON can be useful if you want the results to an
 
 To write out our DataFrame as a parquet file, use [`spark_write_parquet()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_write_parquet.html). This has two compulsory arguments: `x`, the DataFrame to be written, and `path`, the path to the file. If using pipes for the DataFrame then you will only need the file path.
 
-The key difference between writing out data with Spark and writing out data with R is that the data will be distributed, which means that multiple files will be created, stored in a parent folder. Spark can read in these parent folders as one DataFrame. There will be one file written out per partition of the DataFrame.
+The key difference between writing out data with Spark and writing out data with R is that the data will be distributed, which means that multiple files will be created, stored in a parent directory. Spark can read in these parent directories as one DataFrame. There will be one file written out per partition of the DataFrame.
 ````{tabs}
 
 ```{code-tab} r R
@@ -1010,7 +1010,7 @@ rescue_with_pop %>%
 
 ```
 ````
-It is worth looking at the raw data that is written out to see that it has been stored in several files in a parent folder.
+It is worth looking at the raw data that is written out to see that it has been stored in several files in a parent directory.
 
 When reading the data in, Spark will treat every individual file as a partition. See the article on [Managing Partitions](../spark-concepts/partitions) for more information.
 
@@ -1028,7 +1028,7 @@ rescue_with_pop %>%
 
 ```
 ````
-Again, look at the raw data in a file browser. You can see that it has written out a folder called `rescue_with_pop.csv`, with multiple files inside. Each of these on their own is a legitimate CSV file, with the correct headers.
+Again, look at the raw data in a file browser. You can see that it has written out a directory called `rescue_with_pop.csv`, with multiple files inside. Each of these on their own is a legitimate CSV file, with the correct headers.
 
 To reduce the number of partitions, pipe the data into [`sdf_coalesce(partitions)`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html); this will combine existing partitions. Setting `partitions` to `1` will put all of the data on the same partition. 
 
@@ -1043,7 +1043,7 @@ rescue_with_pop %>%
 
 ```
 ````
-Checking the file again, you can see that although the folder still exists, it will contain only one CSV file.
+Checking the file again, you can see that although the directory still exists, it will contain only one CSV file.
 
 ### Removing files
 
