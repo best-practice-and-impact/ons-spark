@@ -1,4 +1,4 @@
-## Array Functions in PySpark
+## Sorting Spark DataFrames
 
 ```{warning}
 This section is under construction.
@@ -7,4 +7,4 @@ This section is under construction.
 ### Further Resources
 
 Spark at the ONS links:
-- [Data Types](../spark-overview/data-types)
+- [Spark DataFrames Are Not Ordered](../spark-concepts/df-order)
