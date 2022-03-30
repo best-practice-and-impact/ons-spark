@@ -4,7 +4,8 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Caching &#8212; Spark at the ONS</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
@@ -38,20 +39,18 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script>let toggleHintShow = 'Click to show';</script>
-    <script>let toggleHintHide = 'Click to hide';</script>
-    <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/tabs.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script>
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -343,6 +342,11 @@ const thebe_selector_output = ".output, .cell_output"
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/unit-testing.html">
+   Unit Testing in Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="../testing-debugging/errors-pyspark.html">
    Understanding Errors in PySpark
   </a>
@@ -430,7 +434,7 @@ const thebe_selector_output = ".output, .cell_output"
                 data-placement="left">.md</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -464,7 +468,7 @@ const thebe_selector_output = ".output, .cell_output"
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+        <div class="d-none d-md-block col-md-2 bd-toc show">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -523,72 +527,10 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Caching</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#how-big-is-my-dataframe">
-   How big is my DataFrame?
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#persist">
-   Persist
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#using-cache-for-more-efficient-coding">
-   Using cache for more efficient coding
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#preparing-the-data">
-     Preparing the data
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#analysis">
-     Analysis
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#investigate-the-spark-ui">
-   Investigate the Spark UI
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#using-a-cache">
-     Using a cache
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#further-resources">
-   Further Resources
-  </a>
- </li>
-</ul>
-
-                        </nav>
-                    </div>
-                </div>
-            </div>
-            
+        
               <div>
                 
-  <div class="section" id="caching">
+  <section id="caching">
 <h1>Caching<a class="headerlink" href="#caching" title="Permalink to this headline">¶</a></h1>
 <p>Caching Spark DataFrames can be useful for two reasons:</p>
 <ol class="simple">
@@ -597,7 +539,7 @@ const thebe_selector_output = ".output, .cell_output"
 </ol>
 <p>In this article we will firstly introduce caching to estimate the size of a DataFrame then see an example of where caching is useful to remove repeated runs of an execution plan.</p>
 <p>For a more detailed discussion on persistence in Spark please see the <a class="reference internal" href="persistence.html"><span class="doc std std-doc">Persisting</span></a> article.</p>
-<div class="section" id="how-big-is-my-dataframe">
+<section id="how-big-is-my-dataframe">
 <h2>How big is my DataFrame?<a class="headerlink" href="#how-big-is-my-dataframe" title="Permalink to this headline">¶</a></h2>
 <p>A simple use of persistence in Spark is to find out how much memory is used to store a DataFrame. This is a tricky subject because the amount of memory or disk space a data set uses depends on many factors, including:</p>
 <ol class="simple">
@@ -660,8 +602,8 @@ const thebe_selector_output = ".output, .cell_output"
 <p><img alt="cached DataFrame in memory" src="../_images/cache_memory.png" /></p>
 <p>You can also click on the RDD name to get more information, such as how many executors are being used and the size of each partition.</p>
 <p><img alt="partition details of cached DataFrame" src="../_images/cache_memory_partitions.png" /></p>
-</div>
-<div class="section" id="persist">
+</section>
+<section id="persist">
 <h2>Persist<a class="headerlink" href="#persist" title="Permalink to this headline">¶</a></h2>
 <p>There is another function that can be used to persist DataFrames, <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.persist.html"><code class="docutils literal notranslate"><span class="pre">.persist()</span></code></a>/<a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_persist.html"><code class="docutils literal notranslate"><span class="pre">sdf_persist()</span></code></a> in PySpark/sparklyr. This is a general form of <code class="docutils literal notranslate"><span class="pre">.cache()</span></code>/<code class="docutils literal notranslate"><span class="pre">tbl_cache()</span></code>. It is similar to doing a cache but we are able to specify where to store the data, e.g. use memory but allow spill over to executor disk if the executor memory is full. <code class="docutils literal notranslate"><span class="pre">.persist()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_persist()</span></code> takes a <code class="docutils literal notranslate"><span class="pre">StorageLevel</span></code> argument to specify where to cache the data. Options for storage levels are:</p>
 <ul class="simple">
@@ -722,12 +664,12 @@ const thebe_selector_output = ".output, .cell_output"
 </pre></div>
 </div>
 </div></div>
-</div>
-<div class="section" id="using-cache-for-more-efficient-coding">
+</section>
+<section id="using-cache-for-more-efficient-coding">
 <h2>Using cache for more efficient coding<a class="headerlink" href="#using-cache-for-more-efficient-coding" title="Permalink to this headline">¶</a></h2>
 <p>Let’s take a look at caching to speed up some processing. The scenario is that we want to read in some data and apply some cleaning and preprocessing. Then using this <em>cleansed</em> DataFrame we want to produce three tables as outputs for a publication.</p>
 <p>The data we will use are the animal rescue data set collected by the London Fire Brigade.</p>
-<div class="section" id="preparing-the-data">
+<section id="preparing-the-data">
 <h3>Preparing the data<a class="headerlink" href="#preparing-the-data" title="Permalink to this headline">¶</a></h3>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-9-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-9-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-9-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-9-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span>
@@ -817,8 +759,8 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
 </div></div>
 <p>Note that the above cells executed very quickly. Remember this is because they’re all transformations, which means Spark hasn’t executed the code yet; take a look at the Spark UI if you need convincing. So far Spark has created an execution plan but is waiting for an action to implement the plan.</p>
-</div>
-<div class="section" id="analysis">
+</section>
+<section id="analysis">
 <h3>Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h3>
 <p>Now we have our cleansed DataFrame we can go on to produce some tables for our article on animal rescue costs for the London Fire Brigade. Here we will put the code into functions because we will rerun these snippets of code multiple times in this notebook.</p>
 <div class="sphinx-tabs docutils container">
@@ -1016,9 +958,9 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
 </div></div>
 <p>Great- we have our tables. Let’s take a look at the individual steps Spark carried out to create our outputs.</p>
-</div>
-</div>
-<div class="section" id="investigate-the-spark-ui">
+</section>
+</section>
+<section id="investigate-the-spark-ui">
 <h2>Investigate the Spark UI<a class="headerlink" href="#investigate-the-spark-ui" title="Permalink to this headline">¶</a></h2>
 <p>Go into the <a class="reference internal" href="spark-application-and-ui.html"><span class="doc std std-doc">Spark UI</span></a> and look at the <em>SQL</em> tab which lists the queries that are created from our PySpark code. Alternatively, we could use the <em>Jobs</em> tab, but the <em>SQL</em> tab has more detailed information for our needs here.</p>
 <p>Click on the query with a description that starts with ‘csv’ and look at the DAG diagram. DAG stands for Directed Acyclic Graph and is often used to describe a process.</p>
@@ -1033,7 +975,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li><p>Every single one starts with reading in the data (Scan csv).</p></li>
 </ul>
 <p>The last point above means that Spark is reading in the file at the beginning of the job, and assuming there are no skipped stages, Spark is repeating the cleaning process for each output table.</p>
-<div class="section" id="using-a-cache">
+<section id="using-a-cache">
 <h3>Using a cache<a class="headerlink" href="#using-a-cache" title="Permalink to this headline">¶</a></h3>
 <p>What we need to do is to persist the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame so when we start our analysis functions Spark will use the cleansed and persisted DataFrame as the starting point.</p>
 <p>Let’s cache the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame.</p>
@@ -1175,9 +1117,9 @@ const thebe_selector_output = ".output, .cell_output"
 <p>There are many factors that contribute towards the time taken for each query that make benchmarking in Spark complex. When running the source notebook, sometimes the processing will be faster after the cache, but sometimes it will be slower. If we run the last three code cells above once more and look at the times we see that the processing after the cache was generally quicker.</p>
 <p>Each function is labelled in the image below. The first run was without caching, the second was with caching and the third was a second run with cached data.</p>
 <p><img alt="comparison of query times using cache" src="../_images/cache_sql_compare.png" /></p>
-</div>
-</div>
-<div class="section" id="further-resources">
+</section>
+</section>
+<section id="further-resources">
 <h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
 <p>Spark at the ONS Articles:</p>
 <ul class="simple">
@@ -1211,8 +1153,8 @@ const thebe_selector_output = ".output, .cell_output"
 <ul class="simple">
 <li><p><a class="reference external" href="https://databricks.com/">Databricks</a></p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -1236,8 +1178,8 @@ const thebe_selector_output = ".output, .cell_output"
 
               </div>
               
-            
-                <!-- Previous / next buttons -->
+        
+            <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="persistence.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -1254,16 +1196,18 @@ const thebe_selector_output = ".output, .cell_output"
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-            
+        
         </div>
     </div>
     <footer class="footer">
-  <p>
-    
-      By Wil Roberts & Adrian Prince<br/>
-    
-  </p>
-</footer>
+    <div class="container">
+      <p>
+        
+          By Wil Roberts & Adrian Prince<br/>
+        
+      </p>
+    </div>
+  </footer>
 </main>
 
 

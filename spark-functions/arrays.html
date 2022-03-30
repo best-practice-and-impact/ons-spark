@@ -4,7 +4,8 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Arrays Functions in PySpark &#8212; Spark at the ONS</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
@@ -38,19 +39,17 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script>let toggleHintShow = 'Click to show';</script>
-    <script>let toggleHintHide = 'Click to hide';</script>
-    <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script>
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -342,6 +341,11 @@ const thebe_selector_output = ".output, .cell_output"
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/unit-testing.html">
+   Unit Testing in Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="../testing-debugging/errors-pyspark.html">
    Understanding Errors in PySpark
   </a>
@@ -429,7 +433,7 @@ const thebe_selector_output = ".output, .cell_output"
                 data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -480,7 +484,7 @@ const thebe_selector_output = ".output, .cell_output"
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+        <div class="d-none d-md-block col-md-2 bd-toc show">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -572,110 +576,15 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Arrays Functions in PySpark</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#creating-a-dataframe-with-arrays">
-   Creating a DataFrame with arrays
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#get-length-of-array-f-size">
-   Get length of array:
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     F.size()
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#convert-array-to-string-f-concat-ws">
-   Convert array to string:
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     F.concat_ws()
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#convert-string-to-array-f-split">
-   Convert string to array:
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     F.split()
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#create-a-new-row-for-each-array-element-f-explode-and-f-explode-outer">
-   Create a new row for each array element:
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     F.explode()
-    </span>
-   </code>
-   and
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     F.explode_outer()
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#explode-with-position-f-posexplode-and-f-posexplode-outer">
-   Explode with position:
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     F.posexplode()
-    </span>
-   </code>
-   and
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     F.posexplode_outer()
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#further-resources">
-   Further Resources
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#acknowledgements">
-   Acknowledgements
-  </a>
- </li>
-</ul>
-
-                        </nav>
-                    </div>
-                </div>
-            </div>
-            
+        
               <div>
                 
-  <div class="section" id="arrays-functions-in-pyspark">
+  <section id="arrays-functions-in-pyspark">
 <h1>Arrays Functions in PySpark<a class="headerlink" href="#arrays-functions-in-pyspark" title="Permalink to this headline">¶</a></h1>
 <p>PySpark DataFrames can contain array columns. You can think of a PySpark array column in a similar way to a Python list. Arrays can be useful if you have data of a variable length. They can be tricky to handle, so you may want to create new rows for each element in the array, or change them to a string.</p>
 <p>There are many functions for handling arrays. Here we will just demonstrate a few of them. For a full list, take a look at the <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.array.html">PySpark documentation</a>.</p>
 <p>Note that since Spark 3.0, arrays are supported in sparklyr, although they are not covered in this article. The relevant <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/">sparklyr functions</a> begin <code class="docutils literal notranslate"><span class="pre">hof_</span></code> (<em>higher order function</em>), e.g. <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/hof_transform.html"><code class="docutils literal notranslate"><span class="pre">hof_transform()</span></code></a></p>
-<div class="section" id="creating-a-dataframe-with-arrays">
+<section id="creating-a-dataframe-with-arrays">
 <h2>Creating a DataFrame with arrays<a class="headerlink" href="#creating-a-dataframe-with-arrays" title="Permalink to this headline">¶</a></h2>
 <p>You will encounter arrays most frequently when reading in data. Spark can read parquet files that contain array columns. For this example, we will create a small DataFrame manually with an array column. To do this, simply create the DataFrame in the usual way, but supply a Python list for the column values to <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.createDataFrame.html"><code class="docutils literal notranslate"><span class="pre">spark.createDataFrame()</span></code></a>. The lists do not have to have the same number of elements.</p>
 <p>If using a schema to create the DataFrame, import <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.types.ArrayType.html"><code class="docutils literal notranslate"><span class="pre">ArrayType()</span></code></a> or use <code class="docutils literal notranslate"><span class="pre">array&lt;type&gt;</span></code> if using <a class="reference internal" href="../spark-overview/data-types.html"><span class="doc std std-doc">DDL notation</span></a>, which is <code class="docutils literal notranslate"><span class="pre">array&lt;string&gt;</span></code> in this example.</p>
@@ -741,8 +650,8 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="get-length-of-array-f-size">
+</section>
+<section id="get-length-of-array-f-size">
 <h2>Get length of array: <code class="docutils literal notranslate"><span class="pre">F.size()</span></code><a class="headerlink" href="#get-length-of-array-f-size" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.size.html"><code class="docutils literal notranslate"><span class="pre">F.size()</span></code></a> returns the number of elements in the array. This returns <code class="docutils literal notranslate"><span class="pre">-1</span></code> for <code class="docutils literal notranslate"><span class="pre">null</span></code> values. In this example, we can see how many sets were played in each match:</p>
 <div class="cell docutils container">
@@ -771,8 +680,8 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="convert-array-to-string-f-concat-ws">
+</section>
+<section id="convert-array-to-string-f-concat-ws">
 <h2>Convert array to string: <code class="docutils literal notranslate"><span class="pre">F.concat_ws()</span></code><a class="headerlink" href="#convert-array-to-string-f-concat-ws" title="Permalink to this headline">¶</a></h2>
 <p>You may be familiar with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.concat_ws.html"><code class="docutils literal notranslate"><span class="pre">F.concat_ws()</span></code></a> to concatenate string columns. It can also be used with arrays. <code class="docutils literal notranslate"><span class="pre">null</span></code> values will be mapped to an empty string.</p>
 <p>The first argument is the separator, followed by the columns to concatenate.</p>
@@ -808,8 +717,8 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="convert-string-to-array-f-split">
+</section>
+<section id="convert-string-to-array-f-split">
 <h2>Convert string to array: <code class="docutils literal notranslate"><span class="pre">F.split()</span></code><a class="headerlink" href="#convert-string-to-array-f-split" title="Permalink to this headline">¶</a></h2>
 <p>The opposite of <code class="docutils literal notranslate"><span class="pre">F.concat_ws()</span></code> is <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.split.html"><code class="docutils literal notranslate"><span class="pre">F.split()</span></code></a>. This example uses the separator <code class="docutils literal notranslate"><span class="pre">&quot;,</span> <span class="pre">&quot;</span></code> (as above), but it can also handle regexes.</p>
 <p>Note that the empty strings (that were originally <code class="docutils literal notranslate"><span class="pre">null</span></code> values in the array column) have been mapped to empty arrays.</p>
@@ -842,8 +751,8 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="create-a-new-row-for-each-array-element-f-explode-and-f-explode-outer">
+</section>
+<section id="create-a-new-row-for-each-array-element-f-explode-and-f-explode-outer">
 <h2>Create a new row for each array element: <code class="docutils literal notranslate"><span class="pre">F.explode()</span></code> and <code class="docutils literal notranslate"><span class="pre">F.explode_outer()</span></code><a class="headerlink" href="#create-a-new-row-for-each-array-element-f-explode-and-f-explode-outer" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.explode.html"><code class="docutils literal notranslate"><span class="pre">F.explode()</span></code></a> is used to create a new row for each element in the array. It can be much easier to handle the data from the array in this format.</p>
 <p>In this example, <code class="docutils literal notranslate"><span class="pre">F.explode()</span></code> extracts the results of the individual sets, so the new column is called <code class="docutils literal notranslate"><span class="pre">set_score</span></code>.</p>
@@ -926,8 +835,8 @@ only showing top 20 rows
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="explode-with-position-f-posexplode-and-f-posexplode-outer">
+</section>
+<section id="explode-with-position-f-posexplode-and-f-posexplode-outer">
 <h2>Explode with position: <code class="docutils literal notranslate"><span class="pre">F.posexplode()</span></code> and <code class="docutils literal notranslate"><span class="pre">F.posexplode_outer()</span></code><a class="headerlink" href="#explode-with-position-f-posexplode-and-f-posexplode-outer" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.posexplode.html"><code class="docutils literal notranslate"><span class="pre">F.posexplode()</span></code></a> returns two columns, the position of the element within the array as well as the element itself. In common with Python lists, this starts at zero.</p>
 <p>Note that you have to use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.select.html"><code class="docutils literal notranslate"><span class="pre">.select()</span></code></a> with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Column.alias.html"><code class="docutils literal notranslate"><span class="pre">.alias()</span></code></a> rather than <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.withColumn.html"><code class="docutils literal notranslate"><span class="pre">.withColumn()</span></code></a>, due to the function returning two columns. <code class="docutils literal notranslate"><span class="pre">.select(&quot;*&quot;)</span></code> selects all the existing columns, similar to <code class="docutils literal notranslate"><span class="pre">SELECT</span> <span class="pre">*</span></code> in SQL.</p>
@@ -1040,8 +949,8 @@ only showing top 20 rows
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="further-resources">
+</section>
+<section id="further-resources">
 <h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
 <p>Spark at the ONS Articles:</p>
 <ul class="simple">
@@ -1069,12 +978,12 @@ only showing top 20 rows
 <ul class="simple">
 <li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/hof_transform.html"><code class="docutils literal notranslate"><span class="pre">hof_transform()</span></code></a></p></li>
 </ul>
-</div>
-<div class="section" id="acknowledgements">
+</section>
+<section id="acknowledgements">
 <h2>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this headline">¶</a></h2>
 <p>Thanks to <a class="reference external" href="https://github.com/JohannesHechler">Johannes Hechler</a> for his material on PySpark arrays.</p>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -1098,8 +1007,8 @@ only showing top 20 rows
 
               </div>
               
-            
-                <!-- Previous / next buttons -->
+        
+            <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="cross-joins.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -1116,16 +1025,18 @@ only showing top 20 rows
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-            
+        
         </div>
     </div>
     <footer class="footer">
-  <p>
-    
-      By Wil Roberts & Adrian Prince<br/>
-    
-  </p>
-</footer>
+    <div class="container">
+      <p>
+        
+          By Wil Roberts & Adrian Prince<br/>
+        
+      </p>
+    </div>
+  </footer>
 </main>
 
 

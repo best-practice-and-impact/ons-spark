@@ -1,0 +1,1552 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>PySpark, pandas and Koalas comparison &#8212; Spark at the ONS</title>
+    
+  <link href="../_static/css/theme.css" rel="stylesheet">
+  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/tabs.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script>
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Spark at the ONS</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../intro.html">
+   Introduction
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Spark overview
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/when-to-use-spark.html">
+   When To Use Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/spark-session-guidance.html">
+   Guidance on Spark Sessions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/example-spark-sessions.html">
+   Example Spark Sessions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/spark-defaults.html">
+   Configuration Hierarchy and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     spark-defaults.conf
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/data-types.html">
+   Data Types in Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/creating-dataframes.html">
+   Creating DataFrames Manually
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/data-storage.html">
+   Data Storage
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to PySpark
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="pyspark-intro.html">
+   Introduction to PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="reading-data-pyspark.html">
+   Reading Data in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="returning-data.html">
+   Returning Data from Cluster to Driver
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="f-col.html">
+   Reference columns by name:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     F.col()
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to sparklyr
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../sparklyr-intro/sparklyr-intro.html">
+   Introduction to sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../sparklyr-intro/reading-data-sparklyr.html">
+   Reading Data in sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">
+   Using Spark functions in sparklyr
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Spark functions
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/union-dataframes-with-different-columns.html">
+   Union two DataFrames with different columns
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/padding.html">
+   Add leading zeros with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     lpad()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/sampling.html">
+   Sampling:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .sample()
+    </span>
+   </code>
+   and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     sdf_sample()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/pivot-tables.html">
+   Pivot tables in Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/rounding.html">
+   Rounding differences in Python, R and Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/window-functions.html">
+   Window Functions in Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/cross-joins.html">
+   Cross Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/arrays.html">
+   Arrays Functions in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/writing-data.html">
+   Writing Data
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/job-description.html">
+   Set Spark Job Description
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Understanding and Optimising Spark
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/spark-application-and-ui.html">
+   Spark Application and UI
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/shuffling.html">
+   Shuffling
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/join-concepts.html">
+   Optimising Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/salted-joins.html">
+   Salted Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/partitions.html">
+   Managing Partitions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/persistence.html">
+   Persisting in Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/cache.html">
+   Caching
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html">
+   Checkpoint
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/garbage-collection.html">
+   Garbage Collection
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/df-order.html">
+   Spark DataFrames Are Not Ordered
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/exercises.html">
+   Exercises
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Testing and Debugging
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/unit-testing.html">
+   Unit Testing in Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/errors-pyspark.html">
+   Understanding Errors in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/errors-sparklyr.html">
+   Understanding Errors in sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/handling-errors-pyspark.html">
+   Handling Errors in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/handling-errors-sparklyr.html">
+   Handling Errors in sparklyr
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Ancillary Topics
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/visualisation.html">
+   Spark and Visualisation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/module-imports.html">
+   Naming Conflicts in Module Imports
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/pydoop.html">
+   Pydoop: HDFS to pandas
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/pyspark-intro/koalas_comparison.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/robertswh/Spark at the ONS"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/robertswh/Spark at the ONS/issues/new?title=Issue%20on%20page%20%2Fpyspark-intro/koalas_comparison.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+    <div class="dropdown-buttons">
+        
+        <a class="binder-button" href="https://mybinder.org/v2/gh/robertswh/Spark at the ONS/main?urlpath=tree/docs/pyspark-intro/koalas_comparison.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="../_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
+        
+        
+        
+        
+    </div>
+</div>
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   PySpark, pandas and Koalas comparison
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#reading-creating-and-converting-data">
+   Reading, creating and converting data
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#import-relevant-packages-and-setup">
+     Import relevant packages and setup
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#create-dataframe">
+     Create DataFrame
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#convert-dataframe-to-pandas">
+     Convert DataFrame to pandas
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#convert-dataframe-to-koalas">
+     Convert DataFrame to Koalas
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#convert-dataframe-to-pyspark">
+     Convert DataFrame to PySpark
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#read-csv-from-hdfs">
+     Read CSV from HDFS
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#selecting-and-renaming-columns">
+   Selecting and renaming columns
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#rename-one-column">
+     Rename one column
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#rename-multiple-columns">
+     Rename multiple columns
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#select-columns">
+     Select columns
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#drop-columns">
+     Drop columns
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#derive-new-column">
+     Derive new column
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#preview-data-and-structure">
+   Preview data and structure
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#preview-data">
+     Preview data
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#data-types">
+     Data types
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#row-count">
+     Row count
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#column-count">
+     Column count
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#count-distinct">
+     Count distinct
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#filter-rows">
+   Filter rows
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#filter-rows-on-values-from-one-column">
+     Filter rows on values from one column
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#filter-rows-on-values-from-multiple-columns">
+     Filter rows on values from multiple columns
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#handling-missing-values">
+   Handling missing values
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#filter-nulls">
+     Filter nulls
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#filter-non-nulls">
+     Filter non-nulls
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#fill-nulls">
+     Fill nulls
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#grouping-and-aggregating">
+   Grouping and aggregating
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#sum-a-column">
+     Sum a column
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#get-maximum-of-a-column">
+     Get maximum of a column
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#get-minimum-of-a-column">
+     Get minimum of a column
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#multiple-aggregations-to-every-column">
+     Multiple aggregations to every column
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#multiple-aggregations-to-specific-columns">
+     Multiple aggregations to specific columns
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#multiple-renamed-aggregations">
+     Multiple renamed aggregations
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pivot-table">
+     Pivot table
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#sorting">
+   Sorting
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#sorting-by-columns">
+     Sorting by columns
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#combining-two-dataframes">
+   Combining two DataFrames
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#join">
+     Join
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#append-union-all">
+     Append/Union All
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#create-another-df-for-pandas-koalas-and-pyspark-note-that-the-dogs-dfs-were-already-created-earlier">
+   Create another DF for pandas, Koalas and PySpark; note that the _dogs DFs were already created earlier
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#comparing-dataframes">
+     Comparing DataFrames
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#dataframe-element-wise-equality">
+       DataFrame element-wise equality
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#whole-dataframe-equality">
+       Whole DataFrame equality
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#custom-functions">
+     Custom functions
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#lambda-functions-udf">
+       Lambda functions/UDF
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#define-function">
+   Define function
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#other-useful-operations">
+     Other useful operations
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#rounding">
+       Rounding
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#close-spark-session">
+       Close Spark session
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#further-resources">
+       Further Resources
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <section id="pyspark-pandas-and-koalas-comparison">
+<h1>PySpark, pandas and Koalas comparison<a class="headerlink" href="#pyspark-pandas-and-koalas-comparison" title="Permalink to this headline">¶</a></h1>
+<p>This document compares how to manipulate a DataFrame with PySpark, pandas and Koalas.</p>
+<p>Koalas is a project by DataBricks, initially released in 2019, which aims to bridge the gap for those who know pandas and want to leverage the power of distributed computing, but who do not know PySpark. The syntax for most operations is the same as for pandas, so there is less need to learn PySpark from scratch.</p>
+<p>The Koalas project is still in development and not all pandas or PySpark functionality is available yet. As of June 2021, new versions of the package are being released on a regular basis.</p>
+<p>Koalas isn’t installed on CDSW by default so will require installation from <a class="reference external" href="http://np2rvlapxx507/DAP_CATS/guidance/-/blob/master/Artifactory.md">Artifactory</a>; please see the <a class="reference external" href="http://np2rvlapxx507/DAP_CATS/guidance/-/blob/master/koalas_setup.md">Koalas setup instructions</a> for more details.</p>
+<p>This document is not intended as a recommendation to learn one implementation over another.</p>
+<p>Throughout this document, to clearly distinguish between different types of DataFrames (DFs), pandas DFs are prefixed with <code class="docutils literal notranslate"><span class="pre">pdf</span></code>, Koalas DFs with <code class="docutils literal notranslate"><span class="pre">kdf</span></code>, and PySpark DFs with <code class="docutils literal notranslate"><span class="pre">sdf</span></code>. Derived scalar values are suffixed <code class="docutils literal notranslate"><span class="pre">_pandas</span></code>. <code class="docutils literal notranslate"><span class="pre">_koalas</span></code> and <code class="docutils literal notranslate"><span class="pre">_spark</span></code>. Prefixing or suffixing variable names with their data type in this way is generally not necessary when writing your own code; instead, choose short sensible names for your DFs. For more information on variable naming, please consult <a class="reference external" href="https://best-practice-and-impact.github.io/qa-of-code-guidance/core_programming.html#naming-variables">Core Programming: Naming Variables</a> from the <a class="reference external" href="https://best-practice-and-impact.github.io/qa-of-code-guidance/intro.html">QA of Code for Analysis and Research</a>.</p>
+</section>
+<section id="reading-creating-and-converting-data">
+<h1>Reading, creating and converting data<a class="headerlink" href="#reading-creating-and-converting-data" title="Permalink to this headline">¶</a></h1>
+<section id="import-relevant-packages-and-setup">
+<h2>Import relevant packages and setup<a class="headerlink" href="#import-relevant-packages-and-setup" title="Permalink to this headline">¶</a></h2>
+<p>Load packages into CDSW Python session.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button><button aria-controls="panel-0-UHlTcGFyaw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tab" tabindex="-1">PySpark</button><button aria-controls="panel-0-S29hbGFz" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-S29hbGFz" name="S29hbGFz" role="tab" tabindex="-1">Koalas</button></div><div aria-labelledby="tab-0-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-UHlTcGFyaw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-S29hbGFz" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-S29hbGFz" name="S29hbGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">databricks.koalas</span> <span class="k">as</span> <span class="nn">ks</span> <span class="c1"># Note the databricks prefix here for Koalas</span>
+</pre></div>
+</div>
+</div></div>
+<p>If you haven’t set the environment variables <code class="docutils literal notranslate"><span class="pre">ARROW_PRE_0_15_IPC_FORMAT</span></code> and <code class="docutils literal notranslate"><span class="pre">PYARROW_IGNORE_TIMEZONE</span></code> to <code class="docutils literal notranslate"><span class="pre">1</span></code> then you may get a warning when importing Koalas.</p>
+<p>Note that Koalas will use an existing Spark session if one exists, otherwise it will create one with the session name <code class="docutils literal notranslate"><span class="pre">Koalas</span></code> the first time a Koalas DataFrame is loaded.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-S29hbGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-S29hbGFz" name="S29hbGFz" role="tab" tabindex="0">Koalas</button><button aria-controls="panel-1-UHlTcGFyaw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tab" tabindex="-1">PySpark</button></div><div aria-labelledby="tab-1-S29hbGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-S29hbGFz" name="S29hbGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start a Spark session</span>
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;comparison&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-UHlTcGFyaw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;comparison&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="create-dataframe">
+<h2>Create DataFrame<a class="headerlink" href="#create-dataframe" title="Permalink to this headline">¶</a></h2>
+<p>Create pandas, Koalas or PySpark DataFrame based on rows and columns</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button><button aria-controls="panel-2-UHlTcGFyaw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tab" tabindex="-1">PySpark</button><button aria-controls="panel-2-S29hbGFz" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-S29hbGFz" name="S29hbGFz" role="tab" tabindex="-1">Koalas</button></div><div aria-labelledby="tab-2-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rows</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;SW1V&quot;</span><span class="p">,</span> <span class="mi">23153</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;PO15&quot;</span><span class="p">,</span> <span class="mi">22526</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;NP10&quot;</span><span class="p">,</span> <span class="mi">23424</span><span class="p">]]</span>
+<span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;postcode_district&quot;</span><span class="p">,</span> <span class="s2">&quot;population&quot;</span><span class="p">]</span>
+
+<span class="n">pdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-UHlTcGFyaw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rows</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;SW1V&quot;</span><span class="p">,</span> <span class="mi">23153</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;PO15&quot;</span><span class="p">,</span> <span class="mi">22526</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;NP10&quot;</span><span class="p">,</span> <span class="mi">23424</span><span class="p">]]</span>
+<span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;postcode_district&quot;</span><span class="p">,</span> <span class="s2">&quot;population&quot;</span><span class="p">]</span>
+
+<span class="n">sdf</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-S29hbGFz" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-S29hbGFz" name="S29hbGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rows</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;SW1V&quot;</span><span class="p">,</span> <span class="mi">23153</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;PO15&quot;</span><span class="p">,</span> <span class="mi">22526</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;NP10&quot;</span><span class="p">,</span> <span class="mi">23424</span><span class="p">]]</span>
+<span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;postcode_district&quot;</span><span class="p">,</span> <span class="s2">&quot;population&quot;</span><span class="p">]</span>
+
+<span class="n">kdf</span> <span class="o">=</span> <span class="n">ks</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="convert-dataframe-to-pandas">
+<h2>Convert DataFrame to pandas<a class="headerlink" href="#convert-dataframe-to-pandas" title="Permalink to this headline">¶</a></h2>
+<p>Convert from specified DataFrame type to pandas</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button><button aria-controls="panel-3-UHlTcGFyaw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tab" tabindex="-1">PySpark</button></div><div aria-labelledby="tab-3-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pdf</span> <span class="o">=</span> <span class="n">kdf</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-UHlTcGFyaw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pdf</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="convert-dataframe-to-koalas">
+<h2>Convert DataFrame to Koalas<a class="headerlink" href="#convert-dataframe-to-koalas" title="Permalink to this headline">¶</a></h2>
+<p>Convert from specified DataFrame type to Koalas</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-4-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button><button aria-controls="panel-4-UHlTcGFyaw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tab" tabindex="-1">PySpark</button></div><div aria-labelledby="tab-4-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kdf</span> <span class="o">=</span> <span class="n">ks</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">pdf</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-UHlTcGFyaw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kdf</span> <span class="o">=</span> <span class="n">ks</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">sdf</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="convert-dataframe-to-pyspark">
+<h2>Convert DataFrame to PySpark<a class="headerlink" href="#convert-dataframe-to-pyspark" title="Permalink to this headline">¶</a></h2>
+<p>Convert from specified DataFrame type to PySpark</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-5-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button><button aria-controls="panel-5-cGFuZGFz-1" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-cGFuZGFz-1" name="cGFuZGFz-1" role="tab" tabindex="-1">pandas</button></div><div aria-labelledby="tab-5-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sdf</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">pdf</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-cGFuZGFz-1" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-cGFuZGFz-1" name="cGFuZGFz-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sdf</span> <span class="o">=</span> <span class="n">kdf</span><span class="o">.</span><span class="n">to_spark</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="read-csv-from-hdfs">
+<h2>Read CSV from HDFS<a class="headerlink" href="#read-csv-from-hdfs" title="Permalink to this headline">¶</a></h2>
+<p>Read in a CSV from HDFS.</p>
+<p>For pandas you can read and write directly to HDFS with <a class="reference external" href="http://np2rvlapxx507/DAP_CATS/troubleshooting/tip-of-the-week/-/blob/master/tip_12_pydoop.ipynb">Pydoop</a> or go via PySpark.</p>
+<p>file_path = “/training/animal_rescue.csv”</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-6-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button><button aria-controls="panel-6-cGFuZGFz-1" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-cGFuZGFz-1" name="cGFuZGFz-1" role="tab" tabindex="-1">pandas</button><button aria-controls="panel-6-UHlTcGFyaw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tab" tabindex="-1">PySpark</button></div><div aria-labelledby="tab-6-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Easiest to read in with Koalas/Pyspark then convert</span>
+<span class="c1"># Be careful of file size since all the data needs to be able to fit on the driver (CDSW or notebook session)</span>
+<span class="n">sdf</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">pdf</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-6-cGFuZGFz-1" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-cGFuZGFz-1" name="cGFuZGFz-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kdf</span> <span class="o">=</span> <span class="n">ks</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-6-UHlTcGFyaw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sdf</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+<section id="selecting-and-renaming-columns">
+<h1>Selecting and renaming columns<a class="headerlink" href="#selecting-and-renaming-columns" title="Permalink to this headline">¶</a></h1>
+<section id="rename-one-column">
+<h2>Rename one column<a class="headerlink" href="#rename-one-column" title="Permalink to this headline">¶</a></h2>
+<p>Rename just one column</p>
+<p>old_col = “IncidentNumber”
+new_col = “incident_number”</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-7-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button><button aria-controls="panel-7-cGFuZGFz-1" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-cGFuZGFz-1" name="cGFuZGFz-1" role="tab" tabindex="-1">pandas</button><button aria-controls="panel-7-UHlTcGFyaw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tab" tabindex="-1">PySpark</button></div><div aria-labelledby="tab-7-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-7-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pdf</span> <span class="o">=</span> <span class="n">pdf</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="n">old_col</span><span class="p">:</span> <span class="n">new_col</span><span class="p">},</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-7-cGFuZGFz-1" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-7-cGFuZGFz-1" name="cGFuZGFz-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kdf</span> <span class="o">=</span> <span class="n">kdf</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="n">old_col</span><span class="p">:</span> <span class="n">new_col</span><span class="p">},</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-7-UHlTcGFyaw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-7-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sdf</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="n">old_col</span><span class="p">,</span> <span class="n">new_col</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="rename-multiple-columns">
+<h2>Rename multiple columns<a class="headerlink" href="#rename-multiple-columns" title="Permalink to this headline">¶</a></h2>
+<p>Use a dictionary to rename multiple columns</p>
+<p>columns_dict = {“HourlyNotionalCost(£)”: “total_cost”,
+“AnimalGroupParent”: “animal_group”,
+“CalYear”: “cal_year”,
+“PumpHoursTotal”: “job_hours”,
+“PumpCount”: “engine_count”,
+“OriginofCall”: “origin_of_call”,
+“PropertyType”: “property_type”,
+“PropertyCategory”: “property_category”
+}</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-8-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button><button aria-controls="panel-8-cGFuZGFz-1" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-cGFuZGFz-1" name="cGFuZGFz-1" role="tab" tabindex="-1">pandas</button><button aria-controls="panel-8-UHlTcGFyaw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tab" tabindex="-1">PySpark</button></div><div aria-labelledby="tab-8-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-8-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pdf</span> <span class="o">=</span> <span class="n">pdf</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns_dict</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-8-cGFuZGFz-1" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-8-cGFuZGFz-1" name="cGFuZGFz-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kdf</span> <span class="o">=</span> <span class="n">kdf</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns_dict</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-8-UHlTcGFyaw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-8-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>for old_col, new_col in columns_dict.items():
+    sdf = sdf.withColumnRenamed(old_col, new_col)
+    ```
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="select-columns">
+<h2>Select columns<a class="headerlink" href="#select-columns" title="Permalink to this headline">¶</a></h2>
+<p>Select a subset of columns</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-9-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button><button aria-controls="panel-9-cGFuZGFz-1" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-cGFuZGFz-1" name="cGFuZGFz-1" role="tab" tabindex="-1">pandas</button><button aria-controls="panel-9-UHlTcGFyaw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tab" tabindex="-1">PySpark</button></div><div aria-labelledby="tab-9-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-9-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;incident_number&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">new_col</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">new_col</span> <span class="ow">in</span> <span class="n">columns_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+
+<span class="n">pdf</span> <span class="o">=</span> <span class="n">pdf</span><span class="p">[</span><span class="n">columns</span><span class="p">]</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-9-cGFuZGFz-1" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-9-cGFuZGFz-1" name="cGFuZGFz-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;incident_number&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">new_col</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">new_col</span> <span class="ow">in</span> <span class="n">columns_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+
+<span class="n">kdf</span> <span class="o">=</span> <span class="n">kdf</span><span class="p">[</span><span class="n">columns</span><span class="p">]</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-9-UHlTcGFyaw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-9-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;incident_number&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">new_col</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">new_col</span> <span class="ow">in</span> <span class="n">columns_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+
+<span class="n">sdf</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="drop-columns">
+<h2>Drop columns<a class="headerlink" href="#drop-columns" title="Permalink to this headline">¶</a></h2>
+<p>Remove columns</p>
+<p>columns = [“property_type”, “property_category”]</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-10-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button><button aria-controls="panel-10-cGFuZGFz-1" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-cGFuZGFz-1" name="cGFuZGFz-1" role="tab" tabindex="-1">pandas</button><button aria-controls="panel-10-UHlTcGFyaw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tab" tabindex="-1">PySpark</button></div><div aria-labelledby="tab-10-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-10-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pdf</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-10-cGFuZGFz-1" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-10-cGFuZGFz-1" name="cGFuZGFz-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># axis=1 is the default value</span>
+<span class="n">kdf</span> <span class="o">=</span> <span class="n">kdf</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-10-UHlTcGFyaw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-10-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># If using a list, need to unpack the list with *</span>
+<span class="n">sdf</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="o">*</span><span class="n">columns</span><span class="p">)</span>
+<span class="c1"># This is not needed if passing the column names directly</span>
+<span class="n">sdf</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">columns</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="derive-new-column">
+<h2>Derive new column<a class="headerlink" href="#derive-new-column" title="Permalink to this headline">¶</a></h2>
+<p>Calculate a new column based on other columns. This will overwrite an existing column if one already exists with the same name.</p>
+<p>new_col = “incident_duration”
+numerator_col = “job_hours”
+denominator_col = “engine_count”</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-11-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button><button aria-controls="panel-11-cGFuZGFz-1" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-cGFuZGFz-1" name="cGFuZGFz-1" role="tab" tabindex="-1">pandas</button><button aria-controls="panel-11-UHlTcGFyaw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tab" tabindex="-1">PySpark</button></div><div aria-labelledby="tab-11-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-11-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pdf</span><span class="p">[</span><span class="n">new_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">pdf</span><span class="p">[</span><span class="n">numerator_col</span><span class="p">]</span> <span class="o">/</span> <span class="n">pdf</span><span class="p">[</span><span class="n">denominator_col</span><span class="p">]</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-11-cGFuZGFz-1" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-11-cGFuZGFz-1" name="cGFuZGFz-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kdf</span><span class="p">[</span><span class="n">new_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">kdf</span><span class="p">[</span><span class="n">numerator_col</span><span class="p">]</span> <span class="o">/</span> <span class="n">kdf</span><span class="p">[</span><span class="n">denominator_col</span><span class="p">]</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-11-UHlTcGFyaw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-11-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sdf</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="n">new_col</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="n">numerator_col</span><span class="p">)</span> <span class="o">/</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="n">denominator_col</span><span class="p">))</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+<section id="preview-data-and-structure">
+<h1>Preview data and structure<a class="headerlink" href="#preview-data-and-structure" title="Permalink to this headline">¶</a></h1>
+<section id="preview-data">
+<h2>Preview data<a class="headerlink" href="#preview-data" title="Permalink to this headline">¶</a></h2>
+<p>Display first n rows. PySpark and Koalas DataFrames are not ordered in the same way as pandas DFs, and so this may return different results unless explicitly ordered with <code class="docutils literal notranslate"><span class="pre">sdf.sort()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf.orderBy()</span></code> or <code class="docutils literal notranslate"><span class="pre">kdf.sort_values()</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">tail()</span></code> does not exist in Spark 2.4.0, even on an ordered DF, and so cannot be used on PySpark or Koalas DFs.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-12-cGFuZGFzIC0gZGVmYXVsdCA1" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-cGFuZGFzIC0gZGVmYXVsdCA1" name="cGFuZGFzIC0gZGVmYXVsdCA1" role="tab" tabindex="0">pandas - default 5</button><button aria-controls="panel-12-cGFuZGFzIC0gZGVmYXVsdCA1-1" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-cGFuZGFzIC0gZGVmYXVsdCA1-1" name="cGFuZGFzIC0gZGVmYXVsdCA1-1" role="tab" tabindex="-1">pandas - default 5</button><button aria-controls="panel-12-UHlTcGFyayAtIGRlZmF1bHQgMjA=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-UHlTcGFyayAtIGRlZmF1bHQgMjA=" name="UHlTcGFyayAtIGRlZmF1bHQgMjA=" role="tab" tabindex="-1">PySpark - default 20</button></div><div aria-labelledby="tab-12-cGFuZGFzIC0gZGVmYXVsdCA1" class="sphinx-tabs-panel code-tab group-tab" id="panel-12-cGFuZGFzIC0gZGVmYXVsdCA1" name="cGFuZGFzIC0gZGVmYXVsdCA1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">pdf</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-12-cGFuZGFzIC0gZGVmYXVsdCA1-1" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-12-cGFuZGFzIC0gZGVmYXVsdCA1-1" name="cGFuZGFzIC0gZGVmYXVsdCA1-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">kdf</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-12-UHlTcGFyayAtIGRlZmF1bHQgMjA=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-12-UHlTcGFyayAtIGRlZmF1bHQgMjA=" name="UHlTcGFyayAtIGRlZmF1bHQgMjA=" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">sdf</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="data-types">
+<h2>Data types<a class="headerlink" href="#data-types" title="Permalink to this headline">¶</a></h2>
+<p>Get data types</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-13-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button><button aria-controls="panel-13-cGFuZGFz-1" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-cGFuZGFz-1" name="cGFuZGFz-1" role="tab" tabindex="-1">pandas</button><button aria-controls="panel-13-UHlTcGFyaw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tab" tabindex="-1">PySpark</button></div><div aria-labelledby="tab-13-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-13-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">types_pandas</span> <span class="o">=</span> <span class="n">pdf</span><span class="o">.</span><span class="n">dtypes</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-13-cGFuZGFz-1" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-13-cGFuZGFz-1" name="cGFuZGFz-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">types_koalas</span> <span class="o">=</span> <span class="n">kdf</span><span class="o">.</span><span class="n">dtypes</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-13-UHlTcGFyaw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-13-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">types_spark</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">dtypes</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="row-count">
+<h2>Row count<a class="headerlink" href="#row-count" title="Permalink to this headline">¶</a></h2>
+<p>Get number of rows</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-14-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-14-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button><button aria-controls="panel-14-cGFuZGFz-1" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-14-cGFuZGFz-1" name="cGFuZGFz-1" role="tab" tabindex="-1">pandas</button><button aria-controls="panel-14-UHlTcGFyaw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-14-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tab" tabindex="-1">PySpark</button></div><div aria-labelledby="tab-14-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-14-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">row_ct_pandas</span> <span class="o">=</span> <span class="n">pdf</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-14-cGFuZGFz-1" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-14-cGFuZGFz-1" name="cGFuZGFz-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">row_ct_koalas</span> <span class="o">=</span> <span class="n">kdf</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-14-UHlTcGFyaw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-14-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">row_ct_spark</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="column-count">
+<h2>Column count<a class="headerlink" href="#column-count" title="Permalink to this headline">¶</a></h2>
+<p>Get number of columns</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-15-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-15-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button><button aria-controls="panel-15-cGFuZGFz-1" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-15-cGFuZGFz-1" name="cGFuZGFz-1" role="tab" tabindex="-1">pandas</button><button aria-controls="panel-15-UHlTcGFyaw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-15-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tab" tabindex="-1">PySpark</button></div><div aria-labelledby="tab-15-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-15-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">col_ct_pandas</span> <span class="o">=</span> <span class="n">pdf</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-15-cGFuZGFz-1" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-15-cGFuZGFz-1" name="cGFuZGFz-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">col_ct_koalas</span> <span class="o">=</span> <span class="n">pdf</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-15-UHlTcGFyaw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-15-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># This is not a function, so no () after columns</span>
+<span class="n">col_ct_spark</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sdf</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="count-distinct">
+<h2>Count distinct<a class="headerlink" href="#count-distinct" title="Permalink to this headline">¶</a></h2>
+<p>Count distinct number of entries</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-16-cGFuZGFzOiB0d28gcG9zc2libGUgbWV0aG9kcw==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-16-cGFuZGFzOiB0d28gcG9zc2libGUgbWV0aG9kcw==" name="cGFuZGFzOiB0d28gcG9zc2libGUgbWV0aG9kcw==" role="tab" tabindex="0">pandas: two possible methods</button><button aria-controls="panel-16-cGFuZGFz" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-16-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="-1">pandas</button><button aria-controls="panel-16-UHlTcGFyaw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-16-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tab" tabindex="-1">PySpark</button></div><div aria-labelledby="tab-16-cGFuZGFzOiB0d28gcG9zc2libGUgbWV0aG9kcw==" class="sphinx-tabs-panel code-tab group-tab" id="panel-16-cGFuZGFzOiB0d28gcG9zc2libGUgbWV0aG9kcw==" name="cGFuZGFzOiB0d28gcG9zc2libGUgbWV0aG9kcw==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">distinct_ct_pandas</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pdf</span><span class="p">[</span><span class="s2">&quot;animal_group&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+<span class="n">distinct_ct_pandas</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">pdf</span><span class="p">[</span><span class="s2">&quot;animal_group&quot;</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-16-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-16-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">distinct_ct_koalas</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">kdf</span><span class="p">[</span><span class="s2">&quot;animal_group&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-16-UHlTcGFyaw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-16-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">distinct_ct_spark</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">distinct</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+<section id="filter-rows">
+<h1>Filter rows<a class="headerlink" href="#filter-rows" title="Permalink to this headline">¶</a></h1>
+<p>Be careful not to confuse the <code class="docutils literal notranslate"><span class="pre">.filter()</span></code> operation; in pandas it will filter on a row index (which doesn’t exist in Spark), whereas in PySpark it will filter on values, the same as <code class="docutils literal notranslate"><span class="pre">.loc</span></code> in pandas.</p>
+<section id="filter-rows-on-values-from-one-column">
+<h2>Filter rows on values from one column<a class="headerlink" href="#filter-rows-on-values-from-one-column" title="Permalink to this headline">¶</a></h2>
+<p>Filter rows on values from one column</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-17-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-17-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button><button aria-controls="panel-17-cGFuZGFz-1" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-17-cGFuZGFz-1" name="cGFuZGFz-1" role="tab" tabindex="-1">pandas</button><button aria-controls="panel-17-UHlTcGFyaw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-17-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tab" tabindex="-1">PySpark</button></div><div aria-labelledby="tab-17-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-17-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pdf_dogs</span> <span class="o">=</span> <span class="n">pdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">pdf</span><span class="p">[</span><span class="s2">&quot;animal_group&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Dog&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-17-cGFuZGFz-1" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-17-cGFuZGFz-1" name="cGFuZGFz-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kdf_dogs</span> <span class="o">=</span> <span class="n">kdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">kdf</span><span class="p">[</span><span class="s2">&quot;animal_group&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Dog&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-17-UHlTcGFyaw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-17-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sdf_dogs</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Dog&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="filter-rows-on-values-from-multiple-columns">
+<h2>Filter rows on values from multiple columns<a class="headerlink" href="#filter-rows-on-values-from-multiple-columns" title="Permalink to this headline">¶</a></h2>
+<p>Filter rows on values from multiple columns; ensure you have each condition wrapped in brackets</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-18-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-18-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button><button aria-controls="panel-18-cGFuZGFz-1" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-18-cGFuZGFz-1" name="cGFuZGFz-1" role="tab" tabindex="-1">pandas</button><button aria-controls="panel-18-UHlTcGFyaw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-18-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tab" tabindex="-1">PySpark</button></div><div aria-labelledby="tab-18-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-18-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pdf_dogs_recent</span> <span class="o">=</span> <span class="n">pdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">pdf</span><span class="p">[</span><span class="s2">&quot;animal_group&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Dog&quot;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">pdf</span><span class="p">[</span><span class="s2">&quot;cal_year&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">2017</span><span class="p">)]</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-18-cGFuZGFz-1" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-18-cGFuZGFz-1" name="cGFuZGFz-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kdf_dogs_recent</span> <span class="o">=</span> <span class="n">kdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">kdf</span><span class="p">[</span><span class="s2">&quot;animal_group&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Dog&quot;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">kdf</span><span class="p">[</span><span class="s2">&quot;cal_year&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">2017</span><span class="p">)]</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-18-UHlTcGFyaw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-18-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sdf_dogs_recent</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">filter</span><span class="p">((</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Dog&quot;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">((</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2017</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+<section id="handling-missing-values">
+<h1>Handling missing values<a class="headerlink" href="#handling-missing-values" title="Permalink to this headline">¶</a></h1>
+<section id="filter-nulls">
+<h2>Filter nulls<a class="headerlink" href="#filter-nulls" title="Permalink to this headline">¶</a></h2>
+<p>Only return rows where specified column is null</p>
+<p>col_name = “job_hours”</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-19-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-19-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button><button aria-controls="panel-19-cGFuZGFz-1" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-19-cGFuZGFz-1" name="cGFuZGFz-1" role="tab" tabindex="-1">pandas</button><button aria-controls="panel-19-UHlTcGFyaw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-19-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tab" tabindex="-1">PySpark</button></div><div aria-labelledby="tab-19-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-19-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pdf_null_rows</span> <span class="o">=</span> <span class="n">pdf</span><span class="p">[</span><span class="n">pdf</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()]</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-19-cGFuZGFz-1" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-19-cGFuZGFz-1" name="cGFuZGFz-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kdf_null_rows</span> <span class="o">=</span> <span class="n">kdf</span><span class="p">[</span><span class="n">kdf</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()]</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-19-UHlTcGFyaw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-19-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sdf_null_rows</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="n">col_name</span><span class="p">)</span><span class="o">.</span><span class="n">isNull</span><span class="p">())</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="filter-non-nulls">
+<h2>Filter non-nulls<a class="headerlink" href="#filter-non-nulls" title="Permalink to this headline">¶</a></h2>
+<p>Only return rows where specified column is not null</p>
+<p>col_name = “job_hours”</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-20-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-20-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button><button aria-controls="panel-20-cGFuZGFz-1" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-20-cGFuZGFz-1" name="cGFuZGFz-1" role="tab" tabindex="-1">pandas</button><button aria-controls="panel-20-UHlTcGFyaw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-20-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tab" tabindex="-1">PySpark</button></div><div aria-labelledby="tab-20-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-20-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pdf</span> <span class="o">=</span> <span class="n">pdf</span><span class="p">[</span><span class="o">~</span><span class="n">pdf</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()]</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-20-cGFuZGFz-1" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-20-cGFuZGFz-1" name="cGFuZGFz-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kdf</span> <span class="o">=</span> <span class="n">kdf</span><span class="p">[</span><span class="o">~</span><span class="n">kdf</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()]</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-20-UHlTcGFyaw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-20-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sdf</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="n">col_name</span><span class="p">)</span><span class="o">.</span><span class="n">isNotNull</span><span class="p">())</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="fill-nulls">
+<h2>Fill nulls<a class="headerlink" href="#fill-nulls" title="Permalink to this headline">¶</a></h2>
+<p>Fill nulls with 0 (or other value)</p>
+<p>fill_value = 0</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-21-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-21-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button><button aria-controls="panel-21-cGFuZGFz-1" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-21-cGFuZGFz-1" name="cGFuZGFz-1" role="tab" tabindex="-1">pandas</button><button aria-controls="panel-21-UHlTcGFyaw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-21-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tab" tabindex="-1">PySpark</button></div><div aria-labelledby="tab-21-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-21-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pdf_nato0</span> <span class="o">=</span> <span class="n">pdf</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">fill_value</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-21-cGFuZGFz-1" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-21-cGFuZGFz-1" name="cGFuZGFz-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kdf_nato0</span> <span class="o">=</span> <span class="n">kdf</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">fill_value</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-21-UHlTcGFyaw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-21-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sdf_nato0</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">fill_value</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+<section id="grouping-and-aggregating">
+<h1>Grouping and aggregating<a class="headerlink" href="#grouping-and-aggregating" title="Permalink to this headline">¶</a></h1>
+<section id="sum-a-column">
+<h2>Sum a column<a class="headerlink" href="#sum-a-column" title="Permalink to this headline">¶</a></h2>
+<p>Returns sum of one column as a scalar value</p>
+<p>col_name = “total_cost”</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-22-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-22-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button><button aria-controls="panel-22-cGFuZGFz-1" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-22-cGFuZGFz-1" name="cGFuZGFz-1" role="tab" tabindex="-1">pandas</button><button aria-controls="panel-22-UHlTcGFyazogc2RmLmFnZygpIHdpdGggb25lIGNvbHVtbiB3aWxsIHJldHVybiBhIG9uZSByb3cgREYsIHVzZSAuY29sbGVjdCgpWzBdWzBdIHRvIGdldCBhIHNjYWxhcg==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-22-UHlTcGFyazogc2RmLmFnZygpIHdpdGggb25lIGNvbHVtbiB3aWxsIHJldHVybiBhIG9uZSByb3cgREYsIHVzZSAuY29sbGVjdCgpWzBdWzBdIHRvIGdldCBhIHNjYWxhcg==" name="UHlTcGFyazogc2RmLmFnZygpIHdpdGggb25lIGNvbHVtbiB3aWxsIHJldHVybiBhIG9uZSByb3cgREYsIHVzZSAuY29sbGVjdCgpWzBdWzBdIHRvIGdldCBhIHNjYWxhcg==" role="tab" tabindex="-1">PySpark: sdf.agg() with one column will return a one row DF, use .collect()[0][0] to get a scalar</button></div><div aria-labelledby="tab-22-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-22-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">col_sum_pandas</span> <span class="o">=</span> <span class="n">pdf</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-22-cGFuZGFz-1" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-22-cGFuZGFz-1" name="cGFuZGFz-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">col_sum_koalas</span> <span class="o">=</span> <span class="n">kdf</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-22-UHlTcGFyazogc2RmLmFnZygpIHdpdGggb25lIGNvbHVtbiB3aWxsIHJldHVybiBhIG9uZSByb3cgREYsIHVzZSAuY29sbGVjdCgpWzBdWzBdIHRvIGdldCBhIHNjYWxhcg==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-22-UHlTcGFyazogc2RmLmFnZygpIHdpdGggb25lIGNvbHVtbiB3aWxsIHJldHVybiBhIG9uZSByb3cgREYsIHVzZSAuY29sbGVjdCgpWzBdWzBdIHRvIGdldCBhIHNjYWxhcg==" name="UHlTcGFyazogc2RmLmFnZygpIHdpdGggb25lIGNvbHVtbiB3aWxsIHJldHVybiBhIG9uZSByb3cgREYsIHVzZSAuY29sbGVjdCgpWzBdWzBdIHRvIGdldCBhIHNjYWxhcg==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">col_sum_spark</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">col_name</span><span class="p">))</span><span class="o">.</span><span class="n">collect</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="get-maximum-of-a-column">
+<h2>Get maximum of a column<a class="headerlink" href="#get-maximum-of-a-column" title="Permalink to this headline">¶</a></h2>
+<p>Returns maximum of one column as a scalar value</p>
+<p>col_name = “total_cost”</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-23-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-23-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button><button aria-controls="panel-23-cGFuZGFz-1" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-23-cGFuZGFz-1" name="cGFuZGFz-1" role="tab" tabindex="-1">pandas</button><button aria-controls="panel-23-UHlTcGFyazogc2RmLmFnZygpIHdpdGggb25lIGNvbHVtbiB3aWxsIHJldHVybiBhIG9uZSByb3cgREYsIHVzZSAuY29sbGVjdCgpWzBdWzBdIHRvIGdldCBhIHNjYWxhcg==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-23-UHlTcGFyazogc2RmLmFnZygpIHdpdGggb25lIGNvbHVtbiB3aWxsIHJldHVybiBhIG9uZSByb3cgREYsIHVzZSAuY29sbGVjdCgpWzBdWzBdIHRvIGdldCBhIHNjYWxhcg==" name="UHlTcGFyazogc2RmLmFnZygpIHdpdGggb25lIGNvbHVtbiB3aWxsIHJldHVybiBhIG9uZSByb3cgREYsIHVzZSAuY29sbGVjdCgpWzBdWzBdIHRvIGdldCBhIHNjYWxhcg==" role="tab" tabindex="-1">PySpark: sdf.agg() with one column will return a one row DF, use .collect()[0][0] to get a scalar</button></div><div aria-labelledby="tab-23-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-23-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">col_max_pandas</span> <span class="o">=</span> <span class="n">pdf</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-23-cGFuZGFz-1" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-23-cGFuZGFz-1" name="cGFuZGFz-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">col_max_koalas</span> <span class="o">=</span> <span class="n">kdf</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-23-UHlTcGFyazogc2RmLmFnZygpIHdpdGggb25lIGNvbHVtbiB3aWxsIHJldHVybiBhIG9uZSByb3cgREYsIHVzZSAuY29sbGVjdCgpWzBdWzBdIHRvIGdldCBhIHNjYWxhcg==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-23-UHlTcGFyazogc2RmLmFnZygpIHdpdGggb25lIGNvbHVtbiB3aWxsIHJldHVybiBhIG9uZSByb3cgREYsIHVzZSAuY29sbGVjdCgpWzBdWzBdIHRvIGdldCBhIHNjYWxhcg==" name="UHlTcGFyazogc2RmLmFnZygpIHdpdGggb25lIGNvbHVtbiB3aWxsIHJldHVybiBhIG9uZSByb3cgREYsIHVzZSAuY29sbGVjdCgpWzBdWzBdIHRvIGdldCBhIHNjYWxhcg==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">col_max_spark</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">col_name</span><span class="p">))</span><span class="o">.</span><span class="n">collect</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="get-minimum-of-a-column">
+<h2>Get minimum of a column<a class="headerlink" href="#get-minimum-of-a-column" title="Permalink to this headline">¶</a></h2>
+<p>Returns minimum of one column as a scalar value</p>
+<p>col_name = “total_cost”</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-24-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-24-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button><button aria-controls="panel-24-cGFuZGFz-1" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-24-cGFuZGFz-1" name="cGFuZGFz-1" role="tab" tabindex="-1">pandas</button><button aria-controls="panel-24-UHlTcGFyazogc2RmLmFnZygpIHdpdGggb25lIGNvbHVtbiB3aWxsIHJldHVybiBhIG9uZSByb3cgREYsIHVzZSAuY29sbGVjdCgpWzBdWzBdIHRvIGdldCBhIHNjYWxhcg==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-24-UHlTcGFyazogc2RmLmFnZygpIHdpdGggb25lIGNvbHVtbiB3aWxsIHJldHVybiBhIG9uZSByb3cgREYsIHVzZSAuY29sbGVjdCgpWzBdWzBdIHRvIGdldCBhIHNjYWxhcg==" name="UHlTcGFyazogc2RmLmFnZygpIHdpdGggb25lIGNvbHVtbiB3aWxsIHJldHVybiBhIG9uZSByb3cgREYsIHVzZSAuY29sbGVjdCgpWzBdWzBdIHRvIGdldCBhIHNjYWxhcg==" role="tab" tabindex="-1">PySpark: sdf.agg() with one column will return a one row DF, use .collect()[0][0] to get a scalar</button></div><div aria-labelledby="tab-24-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-24-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">col_min_pandas</span> <span class="o">=</span> <span class="n">pdf</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-24-cGFuZGFz-1" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-24-cGFuZGFz-1" name="cGFuZGFz-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">col_min_koalas</span> <span class="o">=</span> <span class="n">kdf</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-24-UHlTcGFyazogc2RmLmFnZygpIHdpdGggb25lIGNvbHVtbiB3aWxsIHJldHVybiBhIG9uZSByb3cgREYsIHVzZSAuY29sbGVjdCgpWzBdWzBdIHRvIGdldCBhIHNjYWxhcg==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-24-UHlTcGFyazogc2RmLmFnZygpIHdpdGggb25lIGNvbHVtbiB3aWxsIHJldHVybiBhIG9uZSByb3cgREYsIHVzZSAuY29sbGVjdCgpWzBdWzBdIHRvIGdldCBhIHNjYWxhcg==" name="UHlTcGFyazogc2RmLmFnZygpIHdpdGggb25lIGNvbHVtbiB3aWxsIHJldHVybiBhIG9uZSByb3cgREYsIHVzZSAuY29sbGVjdCgpWzBdWzBdIHRvIGdldCBhIHNjYWxhcg==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">col_min_spark</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">col_name</span><span class="p">))</span><span class="o">.</span><span class="n">collect</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="multiple-aggregations-to-every-column">
+<h2>Multiple aggregations to every column<a class="headerlink" href="#multiple-aggregations-to-every-column" title="Permalink to this headline">¶</a></h2>
+<p>Multiple aggregations, applied to every non-grouped column</p>
+<p>group_col = “animal_group”</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-25-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-25-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button><button aria-controls="panel-25-cGFuZGFz-1" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-25-cGFuZGFz-1" name="cGFuZGFz-1" role="tab" tabindex="-1">pandas</button><button aria-controls="panel-25-UHlTcGFyaw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-25-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tab" tabindex="-1">PySpark</button></div><div aria-labelledby="tab-25-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-25-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pdf_agg</span> <span class="o">=</span> <span class="n">pdf</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">group_col</span><span class="p">])</span><span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-25-cGFuZGFz-1" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-25-cGFuZGFz-1" name="cGFuZGFz-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kdf_agg</span> <span class="o">=</span> <span class="n">kdf</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">group_col</span><span class="p">])</span><span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-25-UHlTcGFyaw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-25-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cols</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">columns</span>
+<span class="n">cols</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">group_col</span><span class="p">)</span>
+<span class="n">sdf_agg</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="n">group_col</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">F</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">],</span> <span class="o">*</span><span class="p">[</span><span class="n">F</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">])</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="multiple-aggregations-to-specific-columns">
+<h2>Multiple aggregations to specific columns<a class="headerlink" href="#multiple-aggregations-to-specific-columns" title="Permalink to this headline">¶</a></h2>
+<p>Multiple aggregations, applied to specific columns</p>
+<p>group_col = “animal_group”
+num_col_1 = “total_cost”
+num_col_2 = “job_hours”</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-26-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-26-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button><button aria-controls="panel-26-cGFuZGFz-1" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-26-cGFuZGFz-1" name="cGFuZGFz-1" role="tab" tabindex="-1">pandas</button><button aria-controls="panel-26-UHlTcGFyaw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-26-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tab" tabindex="-1">PySpark</button></div><div aria-labelledby="tab-26-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-26-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pdf_agg</span> <span class="o">=</span> <span class="n">pdf</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">group_col</span><span class="p">])</span><span class="o">.</span><span class="n">agg</span><span class="p">({</span><span class="n">num_col_1</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;sum&quot;</span><span class="p">],</span> <span class="n">num_col_2</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">]})</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-26-cGFuZGFz-1" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-26-cGFuZGFz-1" name="cGFuZGFz-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kdf_agg</span> <span class="o">=</span> <span class="n">kdf</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">group_col</span><span class="p">])</span><span class="o">.</span><span class="n">agg</span><span class="p">({</span><span class="n">num_col_1</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;sum&quot;</span><span class="p">],</span> <span class="n">num_col_2</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">]})</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-26-UHlTcGFyaw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-26-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sdf_agg</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="n">group_col</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">num_col_1</span><span class="p">),</span> <span class="n">F</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">num_col_2</span><span class="p">))</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="multiple-renamed-aggregations">
+<h2>Multiple renamed aggregations<a class="headerlink" href="#multiple-renamed-aggregations" title="Permalink to this headline">¶</a></h2>
+<p>Multiple aggregations, specify aggregate column names</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-27-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-27-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button><button aria-controls="panel-27-cGFuZGFz-1" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-27-cGFuZGFz-1" name="cGFuZGFz-1" role="tab" tabindex="-1">pandas</button><button aria-controls="panel-27-UHlTcGFyaw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-27-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tab" tabindex="-1">PySpark</button></div><div aria-labelledby="tab-27-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-27-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">group_col</span> <span class="o">=</span> <span class="s2">&quot;animal_group&quot;</span>
+<span class="n">num_col_1</span> <span class="o">=</span> <span class="s2">&quot;total_cost&quot;</span>
+<span class="n">num_col_2</span> <span class="o">=</span> <span class="s2">&quot;job_hours&quot;</span>
+<span class="n">num_col_1_alias</span> <span class="o">=</span> <span class="s2">&quot;total_cost_sum&quot;</span>
+<span class="n">num_col_2_alias</span> <span class="o">=</span> <span class="s2">&quot;job_hours_max&quot;</span>
+<span class="n">pdf_agg</span> <span class="o">=</span> <span class="n">pdf</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">group_col</span><span class="p">])</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">num_col_1_alias</span><span class="o">=</span><span class="p">(</span><span class="n">num_col_1</span><span class="p">,</span> <span class="s2">&quot;sum&quot;</span><span class="p">),</span> <span class="n">num_col_2_alias</span><span class="o">=</span><span class="p">(</span><span class="n">num_col_2</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-27-cGFuZGFz-1" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-27-cGFuZGFz-1" name="cGFuZGFz-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">group_col</span> <span class="o">=</span> <span class="s2">&quot;animal_group&quot;</span>
+<span class="n">num_col_1</span> <span class="o">=</span> <span class="s2">&quot;total_cost&quot;</span>
+<span class="n">num_col_2</span> <span class="o">=</span> <span class="s2">&quot;job_hours&quot;</span>
+<span class="n">num_col_1_alias</span> <span class="o">=</span> <span class="s2">&quot;total_cost_sum&quot;</span>
+<span class="n">num_col_2_alias</span> <span class="o">=</span> <span class="s2">&quot;job_hours_max&quot;</span>
+<span class="n">kdf_agg</span> <span class="o">=</span> <span class="n">kdf</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">group_col</span><span class="p">])</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">num_col_1_alias</span><span class="o">=</span><span class="p">(</span><span class="n">num_col_1</span><span class="p">,</span> <span class="s2">&quot;sum&quot;</span><span class="p">),</span> <span class="n">num_col_2_alias</span><span class="o">=</span><span class="p">(</span><span class="n">num_col_2</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-27-UHlTcGFyaw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-27-UHlTcGFyaw==" name="UHlTcGFyaw==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">group_col</span> <span class="o">=</span> <span class="s2">&quot;animal_group&quot;</span>
+<span class="n">num_col_1</span> <span class="o">=</span> <span class="s2">&quot;total_cost&quot;</span>
+<span class="n">num_col_2</span> <span class="o">=</span> <span class="s2">&quot;job_hours&quot;</span>
+<span class="n">num_col_1_alias</span> <span class="o">=</span> <span class="s2">&quot;total_cost_sum&quot;</span>
+<span class="n">num_col_2_alias</span> <span class="o">=</span> <span class="s2">&quot;job_hours_max&quot;</span>
+<span class="n">sdf_agg</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="n">group_col</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">num_col_1</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="n">num_col_1_alias</span><span class="p">),</span> <span class="n">F</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">num_col_2</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="n">num_col_2_alias</span><span class="p">))</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="pivot-table">
+<h2>Pivot table<a class="headerlink" href="#pivot-table" title="Permalink to this headline">¶</a></h2>
+<p>Create an Excel style pivot table</p>
+<p>index_col = [“animal_group”, “origin_of_call”]
+pivot_col = “cal_year”
+value_col = [“total_cost”]</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-28-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-28-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button></div><div aria-labelledby="tab-28-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-28-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span># Two methods: on the DataFrame or using pd.pivot_table
+pdf_pivot = pdf.pivot_table(index=index_col, columns=pivot_col, values=value_col, aggfunc=sum)
+pdf_pivot = pd.pivot_table(pdf, index=index_col, columns=pivot_col, values=value_col, aggfunc=sum)
+
+`````{code-tab} python pandas
+# Note that ks.pivot_table doesn’t exist
+# aggfunc must be a string
+kdf_pivot = kdf.pivot_table(index=index_col, columns=pivot_col, values=value_col, aggfunc=&quot;sum&quot;)
+
+``````{code-tab} python PySpark
+# The list inputs have been unpacked with *
+sdf_pivot = sdf.groupBy(*index_col).pivot(pivot_col).sum(*value_col)
+# Unpacking not needed if passing the column names directly
+sdf_pivot = sdf.groupBy(index_col[0], index_col[1]).pivot(pivot_col).sum(value_col[0])
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+<section id="sorting">
+<h1>Sorting<a class="headerlink" href="#sorting" title="Permalink to this headline">¶</a></h1>
+<section id="sorting-by-columns">
+<h2>Sorting by columns<a class="headerlink" href="#sorting-by-columns" title="Permalink to this headline">¶</a></h2>
+<p>Sort by specified columns. Note that in pandas and Koalas you can use <code class="docutils literal notranslate"><span class="pre">inplace=True</span></code> rather than having to reassign to the variable name.</p>
+<p>sort_col_1 = “total_cost”
+sort_col_2 = “incident_number”</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-29-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-29-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button></div><div aria-labelledby="tab-29-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-29-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>pdf.sort_values([sort_col_1, sort_col_2], ascending=[False, True], inplace=True)
+
+`````{code-tab} python pandas
+kdf.sort_values([sort_col_1, sort_col_2], ascending=[False, True], inplace=True)
+
+``````{code-tab} python PySpark
+sdf = sdf.sort([sort_col_1, sort_col_2], ascending=[False, True])
+sdf = sdf.orderBy([sort_col_1, sort_col_2], ascending=[False, True])
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+<section id="combining-two-dataframes">
+<h1>Combining two DataFrames<a class="headerlink" href="#combining-two-dataframes" title="Permalink to this headline">¶</a></h1>
+<section id="join">
+<h2>Join<a class="headerlink" href="#join" title="Permalink to this headline">¶</a></h2>
+<p>Join two DataFrames; must be same DataFrame type, e.g. you can’t join a PySpark DF and pandas DF without converting one of them first.</p>
+<p>rows = [[“Cat”, “Meow”],
+[“Dog”, “Woof”],
+[“Cow”, “Moo”]]</p>
+<p>columns = [“animal_group”, “animal_noise”]</p>
+<p>join_col = “animal_group”</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-30-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-30-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button></div><div aria-labelledby="tab-30-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-30-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>pdf_desc = pd.DataFrame(rows, columns=columns)
+pdf_joined = pdf.merge(pdf_desc, on=[join_col], how=&quot;left&quot;)
+
+`````{code-tab} python pandas
+kdf_desc = ks.DataFrame(rows, columns=columns)
+kdf_joined = kdf.merge(kdf_desc, on=[join_col], how=&quot;left&quot;)
+
+``````{code-tab} python PySpark
+sdf_desc = spark.createDataFrame(rows, columns)
+sdf_joined = sdf.join(sdf_desc, on=[join_col], how=&quot;left&quot;)
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="append-union-all">
+<h2>Append/Union All<a class="headerlink" href="#append-union-all" title="Permalink to this headline">¶</a></h2>
+<p>Append a DataFrame to another. Ensure the schema (column names and types) is identical and in the same order in both DataFrames first.</p>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="create-another-df-for-pandas-koalas-and-pyspark-note-that-the-dogs-dfs-were-already-created-earlier">
+<h1>Create another DF for pandas, Koalas and PySpark; note that the _dogs DFs were already created earlier<a class="headerlink" href="#create-another-df-for-pandas-koalas-and-pyspark-note-that-the-dogs-dfs-were-already-created-earlier" title="Permalink to this headline">¶</a></h1>
+<p>pdf_cats = pdf.loc[pdf[“animal_group”] == “Cat”]
+kdf_cats = kdf.loc[kdf[“animal_group”] == “Cat”]
+sdf_cats = sdf.filter(F.col(“animal_group”) == “Cat”)</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-31-cGFuZGFzOiB0d28gcG9zc2libGUgbWV0aG9kcw==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-31-cGFuZGFzOiB0d28gcG9zc2libGUgbWV0aG9kcw==" name="cGFuZGFzOiB0d28gcG9zc2libGUgbWV0aG9kcw==" role="tab" tabindex="0">pandas: two possible methods</button></div><div aria-labelledby="tab-31-cGFuZGFzOiB0d28gcG9zc2libGUgbWV0aG9kcw==" class="sphinx-tabs-panel code-tab group-tab" id="panel-31-cGFuZGFzOiB0d28gcG9zc2libGUgbWV0aG9kcw==" name="cGFuZGFzOiB0d28gcG9zc2libGUgbWV0aG9kcw==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>pdf_dogs_and_cats = pdf_dogs.append(pdf_cats)
+pdf_dogs_and_cats = pd.concat([pdf_dogs, pdf_cats])
+
+`````{code-tab} python pandas: two possible methods
+kdf_dogs_and_cats = kdf_dogs.append(kdf_cats)
+kdf_dogs_and_cats = ks.concat([kdf_dogs, kdf_cats])
+
+``````{code-tab} python PySpark
+# union will keep duplicates, equivalent to UNION ALL in SQL
+sdf_dogs_and_cats = sdf_dogs.union(sdf_cats)
+</pre></div>
+</div>
+</div></div>
+<section id="comparing-dataframes">
+<h2>Comparing DataFrames<a class="headerlink" href="#comparing-dataframes" title="Permalink to this headline">¶</a></h2>
+<section id="dataframe-element-wise-equality">
+<h3>DataFrame element-wise equality<a class="headerlink" href="#dataframe-element-wise-equality" title="Permalink to this headline">¶</a></h3>
+<p>Compare elements between two DataFrames, return True if identical, False otherwise.</p>
+<p>This cannot be done in PySpark without a custom function. For whole rows consider <code class="docutils literal notranslate"><span class="pre">sdf_v2.exceptAll(sdf)</span></code>.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-32-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-32-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button><button aria-controls="panel-32-S29hbGFz" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-32-S29hbGFz" name="S29hbGFz" role="tab" tabindex="-1">Koalas</button></div><div aria-labelledby="tab-32-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-32-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pdf_v2</span> <span class="o">=</span> <span class="n">pdf</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">pdf_equal</span> <span class="o">=</span> <span class="n">pdf_v2</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="n">pdf</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-32-S29hbGFz" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-32-S29hbGFz" name="S29hbGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kdf_v2</span> <span class="o">=</span> <span class="n">kdf</span>
+<span class="n">kdf_equal</span> <span class="o">=</span> <span class="n">kdf_v2</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="n">kdf</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="whole-dataframe-equality">
+<h3>Whole DataFrame equality<a class="headerlink" href="#whole-dataframe-equality" title="Permalink to this headline">¶</a></h3>
+<p>Compare equality of two DataFrames.</p>
+<p>This cannot be done in PySpark; see the <a class="reference external" href="http://np2rvlapxx507/DAP_CATS/Training/pytest-for-pyspark">Pytest for PySpark repository</a> for unit testing examples.</p>
+<p>Note that the Koalas behaviour for <code class="docutils literal notranslate"><span class="pre">kdf_equal</span> <span class="pre">=</span> <span class="pre">kdf_v2.equals(kdf)</span></code> gives the same result as <code class="docutils literal notranslate"><span class="pre">koalas.eq</span></code>. Consider converting to PySpark and using the unit testing examples.</p>
+<p>pdf_v2 = pdf.copy()</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-33-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-33-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button></div><div aria-labelledby="tab-33-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-33-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">equality_pandas</span> <span class="o">=</span> <span class="n">pdf_v2</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">pdf</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+<section id="custom-functions">
+<h2>Custom functions<a class="headerlink" href="#custom-functions" title="Permalink to this headline">¶</a></h2>
+<section id="lambda-functions-udf">
+<h3>Lambda functions/UDF<a class="headerlink" href="#lambda-functions-udf" title="Permalink to this headline">¶</a></h3>
+<p>Apply custom functions.</p>
+<p>In general try and avoid these and use the in-built functionality wherever possible as it will be far more efficient.</p>
+<p>Lambda functions should work in Koalas but currently do not at the time of writing.</p>
+</section>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="define-function">
+<h1>Define function<a class="headerlink" href="#define-function" title="Permalink to this headline">¶</a></h1>
+<p>def job_minutes(job_hours):
+return job_hours * 60</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-34-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-34-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button></div><div aria-labelledby="tab-34-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-34-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span>pdf[&quot;job_minutes&quot;] = pdf.apply(lambda x: job_minutes(x[&quot;job_hours&quot;]), axis=1)
+
+``````{code-tab} python PySpark
+from pyspark.sql.functions import udf
+from pyspark.sql.types import DoubleType
+
+# Register UDF
+spark.udf.register(&quot;job_minutes_udf_reg&quot;, job_minutes)
+job_minutes_udf = udf(job_minutes, DoubleType())
+                       
+sdf = sdf.withColumn(&quot;job_minutes&quot;, job_minutes_udf(F.col(&quot;job_hours&quot;)))
+</pre></div>
+</div>
+</div></div>
+<section id="other-useful-operations">
+<h2>Other useful operations<a class="headerlink" href="#other-useful-operations" title="Permalink to this headline">¶</a></h2>
+<section id="rounding">
+<h3>Rounding<a class="headerlink" href="#rounding" title="Permalink to this headline">¶</a></h3>
+<p>Note that PySpark and pandas round numbers ending in <code class="docutils literal notranslate"><span class="pre">.5</span></code> differently; PySpark and Koalas will round away from zero whereas pandas rounds to the nearest even integer. This is explained in more detail in the <a class="reference external" href="http://np2rvlapxx507/DAP_CATS/troubleshooting/tip-of-the-week/-/blob/master/tip_32_rounding.ipynb">Tip: Rounding differences in Python, R and Spark</a>.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-35-cGFuZGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-35-cGFuZGFz" name="cGFuZGFz" role="tab" tabindex="0">pandas</button></div><div aria-labelledby="tab-35-cGFuZGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-35-cGFuZGFz" name="cGFuZGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span># Rounds .5 to nearest even integer
+pdf[&quot;incident_duration_round&quot;] = pdf[&quot;incident_duration&quot;].round()
+
+`````{code-tab} python pandas
+# Uses the Spark method of rounding (.5 is away from zero)
+kdf[&quot;incident_duration_round&quot;] = kdf[&quot;incident_duration&quot;].round()
+
+``````{code-tab} python PySpark
+# Default round for .5 is away from zero, F.bround is idential to pandas
+sdf = sdf.withColumn(&quot;incident_duration_round&quot;, F.round(&quot;incident_duration&quot;))
+sdf = sdf.withColumn(&quot;incident_duration_round&quot;, F.bround(&quot;incident_duration&quot;))
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="close-spark-session">
+<h3>Close Spark session<a class="headerlink" href="#close-spark-session" title="Permalink to this headline">¶</a></h3>
+<p>Disconnect from the Spark session. This is good practice to free up resources on the Spark cluster for other users.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-36-UHlTcGFyayBhbmQgS29hbGFz" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-36-UHlTcGFyayBhbmQgS29hbGFz" name="UHlTcGFyayBhbmQgS29hbGFz" role="tab" tabindex="0">PySpark and Koalas</button></div><div aria-labelledby="tab-36-UHlTcGFyayBhbmQgS29hbGFz" class="sphinx-tabs-panel code-tab group-tab" id="panel-36-UHlTcGFyayBhbmQgS29hbGFz" name="UHlTcGFyayBhbmQgS29hbGFz" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="further-resources">
+<h3>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.databricks.com/languages/koalas.html">10 Minutes to Koalas</a>: Introduction to Koalas from Databricks</p></li>
+<li><p><a class="reference external" href="http://np2rvlapxx507/DAP_CATS/guidance/-/blob/master/Artifactory.md">Artifactory setup</a></p></li>
+<li><p><a class="reference external" href="http://np2rvlapxx507/DAP_CATS/guidance/-/blob/master/koalas_setup.md">Koalas setup instructions</a></p></li>
+<li><p><a class="reference external" href="http://np2rvlapxx507/DAP_CATS/Training/pytest-for-pyspark">Pytest for PySpark repository</a></p></li>
+<li><p><a class="reference external" href="https://best-practice-and-impact.github.io/qa-of-code-guidance/intro.html">QA of Code for Analysis and Research</a>:</p>
+<ul>
+<li><p><a class="reference external" href="https://best-practice-and-impact.github.io/qa-of-code-guidance/core_programming.html#naming-variables">Core Programming: Naming Variables</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="http://np2rvlapxx507/DAP_CATS/troubleshooting/tip-of-the-week">Tip of the Week</a>:</p>
+<ul>
+<li><p><a class="reference external" href="http://np2rvlapxx507/DAP_CATS/troubleshooting/tip-of-the-week/-/blob/master/tip_32_rounding.ipynb">Rounding differences in Python, R and Spark</a></p></li>
+<li><p><a class="reference external" href="http://np2rvlapxx507/DAP_CATS/troubleshooting/tip-of-the-week/-/blob/master/tip_12_pydoop.ipynb">Pydoop</a></p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./pyspark-intro"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        
+            <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+        
+        </div>
+    </div>
+    <footer class="footer">
+    <div class="container">
+      <p>
+        
+          By Wil Roberts & Adrian Prince<br/>
+        
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>

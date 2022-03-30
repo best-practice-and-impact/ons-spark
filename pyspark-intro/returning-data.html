@@ -4,7 +4,8 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Returning Data from Cluster to Driver &#8212; Spark at the ONS</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
@@ -38,22 +39,20 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script>let toggleHintShow = 'Click to show';</script>
-    <script>let toggleHintHide = 'Click to hide';</script>
-    <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
-    <script async="async" src="../_static/sphinx-thebe.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script>
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Reference columns by name: F.col()" href="f-col.html" />
@@ -344,6 +343,11 @@ const thebe_selector_output = ".output, .cell_output"
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/unit-testing.html">
+   Unit Testing in Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="../testing-debugging/errors-pyspark.html">
    Understanding Errors in PySpark
   </a>
@@ -431,7 +435,7 @@ const thebe_selector_output = ".output, .cell_output"
                 data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -482,7 +486,7 @@ const thebe_selector_output = ".output, .cell_output"
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+        <div class="d-none d-md-block col-md-2 bd-toc show">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -593,124 +597,10 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Returning Data from Cluster to Driver</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#lazy-evaluation-and-printschema">
-   Lazy Evaluation and
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     .printSchema()
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#show">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     .show()
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#topandas">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     .toPandas()
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#eager-evaluation">
-   Eager Evaluation
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#collect-and-variations">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     .collect()
-    </span>
-   </code>
-   and variations
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#take-combine-limit-and-collect">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       .take()
-      </span>
-     </code>
-     : combine
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       .limit()
-      </span>
-     </code>
-     and
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       .collect()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#first-return-one-row">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       .first()
-      </span>
-     </code>
-     : return one row
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#head-a-confusing-function">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       .head()
-      </span>
-     </code>
-     : a confusing function
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#source-code">
-     Source Code
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#further-resources">
-   Further Resources
-  </a>
- </li>
-</ul>
-
-                        </nav>
-                    </div>
-                </div>
-            </div>
-            
+        
               <div>
                 
-  <div class="section" id="returning-data-from-cluster-to-driver">
+  <section id="returning-data-from-cluster-to-driver">
 <h1>Returning Data from Cluster to Driver<a class="headerlink" href="#returning-data-from-cluster-to-driver" title="Permalink to this headline">¶</a></h1>
 <p>This article explores different ways of moving small amounts of data from a PySpark DataFrame, which is lazily evaluated on the Spark <em>cluster</em>, into the <em>driver</em>. Remember that the Spark cluster will have more memory than the driver, so be careful about the amount of data that you are returning.</p>
 <p>There are lots of ways to do this; most users will use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.show.html"><code class="docutils literal notranslate"><span class="pre">.show()</span></code></a>, the <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.limit.html"><code class="docutils literal notranslate"><span class="pre">.limit()</span></code></a>
@@ -727,7 +617,7 @@ const thebe_selector_output = ".output, .cell_output"
 </ul>
 </li>
 </ul>
-<div class="section" id="lazy-evaluation-and-printschema">
+<section id="lazy-evaluation-and-printschema">
 <h2>Lazy Evaluation and <code class="docutils literal notranslate"><span class="pre">.printSchema()</span></code><a class="headerlink" href="#lazy-evaluation-and-printschema" title="Permalink to this headline">¶</a></h2>
 <p>Before looking at each of the methods in turn, it is worth revisiting the concept of lazy evaluation. Spark DataFrames are not evaluated by default. An <em>action</em> has to be called in order for the cluster to process the Spark plan. <code class="docutils literal notranslate"><span class="pre">.show()</span></code>, <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code> and <code class="docutils literal notranslate"><span class="pre">.collect()</span></code> are all examples of <em>actions</em>.</p>
 <p>Note that if you implicitly try and print the DataFrame it will just return the schema, rather than evaluating the DataFrame. First, start a Spark session and load the Animal Rescue data:</p>
@@ -804,8 +694,8 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="show">
+</section>
+<section id="show">
 <h2><code class="docutils literal notranslate"><span class="pre">.show()</span></code><a class="headerlink" href="#show" title="Permalink to this headline">¶</a></h2>
 <p>Using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.show.html"><code class="docutils literal notranslate"><span class="pre">.show()</span></code></a> is the easiest way to preview a PySpark DataFrame. By default it will print out <span class="math notranslate nohighlight">\(20\)</span> rows of the DataFrame.</p>
 <p>You cannot assign the results of <code class="docutils literal notranslate"><span class="pre">.show()</span></code> to a variable, so it is purely for information.</p>
@@ -879,8 +769,8 @@ only showing top 3 rows
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="topandas">
+</section>
+<section id="topandas">
 <h2><code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code><a class="headerlink" href="#topandas" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.toPandas.html"><code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code></a> converts a PySpark DataFrame into a pandas DataFrame. You can then use all the usual methods on a pandas DataFrame and it will have the standard pandas properties of being mutable, with a fixed row order.</p>
 <p>Be careful with <code class="docutils literal notranslate"><span class="pre">toPandas()</span></code> as it will convert the whole DF, which is an issue when you are dealing with large data on the Spark cluster. Calling <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.limit.html"><code class="docutils literal notranslate"><span class="pre">limit()</span></code></a> before <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code> is a good way to ensure that you do not overload the driver.</p>
@@ -1048,8 +938,8 @@ only showing top 3 rows
 </table>
 </div></div></div>
 </div>
-</div>
-<div class="section" id="eager-evaluation">
+</section>
+<section id="eager-evaluation">
 <h2>Eager Evaluation<a class="headerlink" href="#eager-evaluation" title="Permalink to this headline">¶</a></h2>
 <p>By default, Spark does not display the contents of your DataFrame when you type the name of your DataFrame to implicitly print, instead returning the column name and type; we saw the output from printing <code class="docutils literal notranslate"><span class="pre">rescue</span></code> earlier.</p>
 <p>There is a way to change this behaviour so that typing the name of your DataFrame returns a nicely formatted preview of the results: add <code class="docutils literal notranslate"><span class="pre">.config(&quot;spark.sql.repl.eagerEval.enabled&quot;,</span> <span class="pre">'true')</span></code> to the Spark session builder. This will make the behaviour of typing the DF similar to <code class="docutils literal notranslate"><span class="pre">.show()</span></code>. The number of rows returned will be limited automatically so there is no need to apply the <code class="docutils literal notranslate"><span class="pre">.limit()</span></code> command to your DataFrame. You can set the number of rows to be returned with <code class="docutils literal notranslate"><span class="pre">.config(&quot;spark.sql.repl.eagerEval.maxNumRows&quot;,</span> <span class="pre">number_of_rows)</span></code>; by default this is <code class="docutils literal notranslate"><span class="pre">20</span></code>. Columns are truncated to <code class="docutils literal notranslate"><span class="pre">20</span></code> characters by default; this can be changed with <code class="docutils literal notranslate"><span class="pre">spark.sql.repl.eagerEval.truncate</span></code>. More information is in the <a class="reference external" href="https://spark.apache.org/docs/latest/configuration.html#runtime-sql-configuration">Spark Configuration</a> documentation.</p>
@@ -1092,8 +982,8 @@ only showing top 3 rows
 only showing top 10 rows
 </div></div>
 </div>
-</div>
-<div class="section" id="collect-and-variations">
+</section>
+<section id="collect-and-variations">
 <h2><code class="docutils literal notranslate"><span class="pre">.collect()</span></code> and variations<a class="headerlink" href="#collect-and-variations" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.collect.html"><code class="docutils literal notranslate"><span class="pre">.collect()</span></code></a> is the original way of converting Spark DataFrames from the cluster to the driver and can also be used directly on <a class="reference external" href="../spark-concepts/shuffling.html#a-quick-note-on-rdds">RDDs (Resilient Distributed Datasets)</a> as well as DataFrames. Like with <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code> this will bring back the whole DataFrame to the driver, so either combine with <code class="docutils literal notranslate"><span class="pre">.limit()</span></code> or verify that the DF is not too large with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.count.html"><code class="docutils literal notranslate"><span class="pre">.count()</span></code></a> first.</p>
 <p>Manipulating the output of <code class="docutils literal notranslate"><span class="pre">.collect()</span></code> is quite awkward, as it returns a list of <code class="docutils literal notranslate"><span class="pre">Row</span></code> objects. It is generally better to just use <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code>, as pandas DataFrames are easy to manipulate and have built in methods to convert to other data structures if desired.</p>
@@ -1191,7 +1081,7 @@ only showing top 10 rows
 </div>
 </div>
 </div>
-<div class="section" id="take-combine-limit-and-collect">
+<section id="take-combine-limit-and-collect">
 <h3><code class="docutils literal notranslate"><span class="pre">.take()</span></code>: combine <code class="docutils literal notranslate"><span class="pre">.limit()</span></code> and <code class="docutils literal notranslate"><span class="pre">.collect()</span></code><a class="headerlink" href="#take-combine-limit-and-collect" title="Permalink to this headline">¶</a></h3>
 <p>An alternative to <code class="docutils literal notranslate"><span class="pre">.collect()</span></code> is to use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.take.html"><code class="docutils literal notranslate"><span class="pre">.take(num)</span></code></a> which will only return a maximum of <code class="docutils literal notranslate"><span class="pre">num</span></code> rows (or the whole DataFrame if the number of rows is less than <code class="docutils literal notranslate"><span class="pre">num</span></code>). This is equivalent to <code class="docutils literal notranslate"><span class="pre">.limit(num).collect()</span></code>. Remember that using <code class="docutils literal notranslate"><span class="pre">.collect()</span></code> will bring the entire DataFrame into the driver, so if it is large you need to reduce the size first. Using <code class="docutils literal notranslate"><span class="pre">.take()</span></code> removes this problem.</p>
 <p><code class="docutils literal notranslate"><span class="pre">.take()</span></code> has no default value, so you must supply <code class="docutils literal notranslate"><span class="pre">num</span></code> (unlike <code class="docutils literal notranslate"><span class="pre">.show()</span></code>, which has a default of <code class="docutils literal notranslate"><span class="pre">20</span></code>).</p>
@@ -1213,8 +1103,8 @@ only showing top 10 rows
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="first-return-one-row">
+</section>
+<section id="first-return-one-row">
 <h3><code class="docutils literal notranslate"><span class="pre">.first()</span></code>: return one row<a class="headerlink" href="#first-return-one-row" title="Permalink to this headline">¶</a></h3>
 <p>If you only want one row, use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.first.html"><code class="docutils literal notranslate"><span class="pre">.first()</span></code></a>. The advantage of <code class="docutils literal notranslate"><span class="pre">.first()</span></code> over <code class="docutils literal notranslate"><span class="pre">.take(1)</span></code> or <code class="docutils literal notranslate"><span class="pre">.limit(1).collect()</span></code> is that a single <code class="docutils literal notranslate"><span class="pre">Row</span></code> object is returned, rather than a <code class="docutils literal notranslate"><span class="pre">Row</span></code> object within a list of length 1. This means the code looks neater if you only want to extract one value.</p>
 <p>As PySpark DataFrames are not ordered by default <code class="docutils literal notranslate"><span class="pre">.first()</span></code> is non-deterministic, and so it is generally combined with <code class="docutils literal notranslate"><span class="pre">.orderBy()</span></code>:</p>
@@ -1280,8 +1170,8 @@ only showing top 10 rows
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="head-a-confusing-function">
+</section>
+<section id="head-a-confusing-function">
 <h3><code class="docutils literal notranslate"><span class="pre">.head()</span></code>: a confusing function<a class="headerlink" href="#head-a-confusing-function" title="Permalink to this headline">¶</a></h3>
 <p>Another method included for completeness is <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.head.html"><code class="docutils literal notranslate"><span class="pre">.head()</span></code></a>. This works in the same way as <code class="docutils literal notranslate"><span class="pre">.take()</span></code> if you specify the number of rows (returns a list of <code class="docutils literal notranslate"><span class="pre">Row</span></code> objects, even if it only has one row), or <code class="docutils literal notranslate"><span class="pre">.first()</span></code> if not (returns a single <code class="docutils literal notranslate"><span class="pre">Row</span></code> object). This could potentially get confusing so it is better to just use <code class="docutils literal notranslate"><span class="pre">.take()</span></code> or <code class="docutils literal notranslate"><span class="pre">.first()</span></code> instead.</p>
 <div class="cell docutils container">
@@ -1316,13 +1206,13 @@ only showing top 10 rows
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="source-code">
+</section>
+<section id="source-code">
 <h3>Source Code<a class="headerlink" href="#source-code" title="Permalink to this headline">¶</a></h3>
 <p>For these functions it is interesting to take a look at the PySpark source code; normally all you need is in the documentation, but here you can see how the methods actually work. For instance, <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/_modules/pyspark/sql/dataframe.html#DataFrame.take"><code class="docutils literal notranslate"><span class="pre">df.take(10)</span></code> is the same as <code class="docutils literal notranslate"><span class="pre">df.limit(10).collect()</span></code></a>.</p>
-</div>
-</div>
-<div class="section" id="further-resources">
+</section>
+</section>
+<section id="further-resources">
 <h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
 <p>Spark at the ONS Articles:</p>
 <ul class="simple">
@@ -1352,8 +1242,8 @@ only showing top 10 rows
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/_modules/pyspark/sql/dataframe.html#DataFrame.first"><code class="docutils literal notranslate"><span class="pre">.first()</span></code></a></p></li>
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/_modules/pyspark/sql/dataframe.html#DataFrame.head"><code class="docutils literal notranslate"><span class="pre">.head()</span></code></a></p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -1377,8 +1267,8 @@ only showing top 10 rows
 
               </div>
               
-            
-                <!-- Previous / next buttons -->
+        
+            <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="reading-data-pyspark.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -1395,16 +1285,18 @@ only showing top 10 rows
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-            
+        
         </div>
     </div>
     <footer class="footer">
-  <p>
-    
-      By Wil Roberts & Adrian Prince<br/>
-    
-  </p>
-</footer>
+    <div class="container">
+      <p>
+        
+          By Wil Roberts & Adrian Prince<br/>
+        
+      </p>
+    </div>
+  </footer>
 </main>
 
 
