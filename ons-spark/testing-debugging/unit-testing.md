@@ -311,7 +311,7 @@ UK Civil Service Learning:
 ### Acknowledgements
 
 Special thanks to:
-- Peter Derrick for contributing the `test_mock_methods.py` and `mock_methods.py` modules
+- Peter Derrick for contributing the [`test_mock_methods.py`](https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/tests/test_mock_methods.py) and [`mock_methods.py`](https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/functions/mock_methods.py) modules
 - [Mitch Edmunds](https://github.com/mitches-got-glitches) for sharing his unit testing [articles](https://mitches-got-glitches.medium.com/writing-good-unit-tests-in-python-with-ease-5fb6d7aa2b77) and [repository](https://github.com/mitches-got-glitches/testing-tips)
 - [Neil Currie](https://github.com/neilcuz) for his suggestions on using testthat for sparklyr
 - [Ian Banda](https://github.com/bandaian) for his suggestions on using testthat for sparklyr
