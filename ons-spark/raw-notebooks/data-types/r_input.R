@@ -33,7 +33,10 @@ rescue_from_parquet <- sparklyr::spark_read_parquet(sc, config$rescue_path) %>%
 
 pillar::glimpse(rescue_from_parquet)
 
-rescue_from_csv <- sparklyr::spark_read_csv(sc, config$rescue_path_csv, header=TRUE, infer_schema=TRUE) %>%
+rescue_from_csv <- sparklyr::spark_read_csv(sc,
+                                            config$rescue_path_csv,
+                                            header=TRUE,
+                                            infer_schema=TRUE) %>%
     sparklyr::select(IncidentNumber, DateTimeOfCall, CalYear, FinYear)
     
 pillar::glimpse(rescue_from_csv)
