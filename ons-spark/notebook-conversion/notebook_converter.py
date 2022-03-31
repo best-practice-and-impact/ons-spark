@@ -96,7 +96,8 @@ class MarkdownFromNotebook():
                         f"hdfs dfs -rm -r -skipTrash {checkpoint_path}",
                         shell=True, stdout=stderr)
 
-    def run_r(self, r_path, show_warnings, checkpoint_path=None):
+    def run_r(self, r_path, show_warnings,
+              checkpoint_path=None, extra_r_path=None):
         """
         Run the R code and attach results to cells
         
@@ -105,6 +106,10 @@ class MarkdownFromNotebook():
         
         Optionally clears checkpoint cache, which is needed when running some
             R scripts
+            
+        Optionally runs an R script before the run of each group of cells.
+            Used to delete files that are generated on every run without write
+            mode being set to overwrite.
         """
         self._remove_r_path(r_path)
         
@@ -119,10 +124,19 @@ class MarkdownFromNotebook():
             stderr = subprocess.DEVNULL
         else:
             stderr = None
-                
-        for cell in r_cells:
+
+        for cell_no, cell in enumerate(r_cells):
+            # Update on progress of R code
+            print(f"Running R cell {cell_no + 1} of {len(r_cells)}")
+            
             # Delete old checkpoint files before running next cell
             self._delete_checkpoint(checkpoint_path, stderr)
+            
+            # Run additional R code if needed
+            if extra_r_path:
+                subprocess.check_output(f"Rscript {extra_r_path}",
+                                        shell=True,
+                                        stderr=stderr)
             
             # Append R code cell to previous input and run 
             r_code = cell["r_code"]
@@ -323,7 +337,8 @@ def markdown_from_notebook(notebook_path,
                            output_csv,
                            show_warnings=True,
                            output_type="python",
-                           checkpoint_path=None):
+                           checkpoint_path=None,
+                           extra_r_path=None):
     """
     Creates a Markdown file with code tabs for Python and R saved as
         output_path, from which a Jupyterbook can be created.
@@ -352,12 +367,16 @@ def markdown_from_notebook(notebook_path,
             * None: no outputs will be returned
         checkpoint_path (string): clears checkpoints in this directory if
             specified when running each R cell
+        extra_r_path (string): additional R code to run before every run of
+            the R cells. Main use case is to clear up files, e.g. if a file
+            is created in cell 1 but not deleted until cell 2, on the second
+            run of the code an error would be raised if the file exists
         
     Returns:
         MarkdownFromNotebook
     """
     md_notebook = MarkdownFromNotebook(notebook_path)
-    md_notebook.run_r(r_path, show_warnings, checkpoint_path)
+    md_notebook.run_r(r_path, show_warnings, checkpoint_path, extra_r_path)
     md_notebook.create_markdown_output(output_type)
     md_notebook.write_markdown_file(output_path)
     md_notebook.write_outputs_csv(output_csv)
