@@ -20,7 +20,7 @@ The **Spark Overview** section introduces some basic concepts like distributed c
 
 The next part of your Spark journey is to learn more functions so you can perform more interesting analysis. These are covered in the **Spark Functions** section. As you build more experience you will begin to think more like a Spark developer, choosing certain strategies that suits how Spark processes data.
 
-The most advanced section of the book is **Understanding and Optimising Spark**. It begins with  a short summary page before diving into more complex optimisation topics.
+The most advanced section of the book is **Understanding and Optimising Spark**. It begins with a short summary page before diving into more complex optimisation topics.
 
 The latter two sections, **Testing and Debugging** and **Ancillary Topics**, are included for completeness.
 
