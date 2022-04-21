@@ -18,7 +18,7 @@ The materials in this book assume the reader is familiar with Python or R and is
 
 The **Spark Overview** section introduces some basic concepts like distributed computing, when to use Spark, creating Spark sessions and simple interaction with data storage. There is then a section for **Introduction to PySpark** and **Introduction to sparklyr**. That covers the basics.
 
-The next part if your Spark journey is to learn more functions so you can perform more interesting analysis. These are covered in the **Spark Functions** section. As you build more experience you will begin to think more like a Spark developer, choosing certain strategies that suits how Spark processes data.
+The next part of your Spark journey is to learn more functions so you can perform more interesting analysis. These are covered in the **Spark Functions** section. As you build more experience you will begin to think more like a Spark developer, choosing certain strategies that suits how Spark processes data.
 
 The most advanced section of the book is **Understanding and Optimising Spark**. It begins with  a short summary page before diving into more complex optimisation topics.
 
