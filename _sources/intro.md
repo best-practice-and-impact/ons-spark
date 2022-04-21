@@ -4,25 +4,19 @@
 This book is under construction.
 ```
 
-This Government Analysis Function guidance is produced by the Data Access Platform capability team in the Methods and Quality directorate of the [Office for National Statistics](https://www.ons.gov.uk/).
+Our **vision** is to fill the gap between Spark text books, official documentation and online examples as the go-to guide for analysts, data scientists and data engineers using PySpark and sparklyr.
 
-This book has been written to fill the gap between Spark text books, official documentation and online examples as the go-to guide for analysts, data scientists and data engineers using PySpark and sparklyr.
+Our **mission** is to share knowledge and experience across government to harness the potential of big data for [statistics for the public good](https://uksa.statisticsauthority.gov.uk/statistics-for-the-public-good/).
 
-The material is a living document, so will be updated over time. We are keen to hear your thoughts and feedback on the book, you can get in touch via [GitHub Issues](https://github.com/best-practice-and-impact/ons-spark/issues). This book is also open to contributions from anyone across UK Government and beyond.
+Some of our core **values** are:
+- Openness and transparency
+- Diversity and collaboration
+- Good coding practices
+- Efficiency and value for money
+
+This book is open to contributions from anyone across UK Government and beyond.
 
 ONS staff should also look at our GitLab pages for organisation and platform-specific information.
-
-## How to use the book
-
-The materials in this book assume the reader is familiar with Python or R and is looking to process big data using PySpark or sparklyr. There are Python and R code cells throughout the book to help explain the topics.
-
-The **Spark Overview** section introduces some basic concepts like distributed computing, when to use Spark, creating Spark sessions and simple interaction with data storage. There is then a section for **Introduction to PySpark** and **Introduction to sparklyr**. That covers the basics.
-
-The next part of your Spark journey is to learn more functions so you can perform more interesting analysis. These are covered in the **Spark Functions** section. As you build more experience you will begin to think more like a Spark developer, choosing certain strategies that suits how Spark processes data.
-
-The most advanced section of the book is **Understanding and Optimising Spark**. It begins with a short summary page before diving into more complex optimisation topics.
-
-The latter two sections, **Testing and Debugging** and **Ancillary Topics**, are included for completeness.
 
 ## Further resources
 

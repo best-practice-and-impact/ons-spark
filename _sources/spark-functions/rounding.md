@@ -254,12 +254,13 @@ Both Excel and SPSS Statistics use the Spark method of rounding away from zero. 
 
 #### Testing
 
-Given that there are different ways of rounding depending on the language used, it is a good idea to thoroughly [unit test](../testing-debugging/unit-testing) your functions to ensure that they behave as expected.
+Given that there are different ways of rounding depending on the language used, it is a good idea to thoroughly unit test your functions with [Pytest](../testing-debugging/unit-testing-pyspark) or [testthat](../testing-debugging/unit-testing-sparklyr) to ensure that they behave as expected.
 
 ### Further Resources
 
 Spark at the ONS Articles:
-- [Unit Testing in Spark](../testing-debugging/unit-testing)
+- [Unit Testing in PySpark](../testing-debugging/unit-testing-pyspark)
+- [Unit Testing in sparklyr](../testing-debugging/unit-testing-sparklyr)
 
 PySpark Documentation:
 - [`spark.range()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.range.html)
