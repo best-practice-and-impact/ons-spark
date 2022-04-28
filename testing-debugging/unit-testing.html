@@ -1,0 +1,1013 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Unit Testing in Spark &#8212; Spark at the ONS</title>
+    
+  <link href="../_static/css/theme.css" rel="stylesheet">
+  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script>
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Spark and Visualisation" href="../ancillary-topics/visualisation.html" />
+    <link rel="prev" title="Understanding and Handling Spark Errors" href="spark-errors.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+<script>
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){ dataLayer.push(arguments); }
+                    gtag('js', new Date());
+                    gtag('config', 'G-95MGHSRD0S');
+                </script>
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Spark at the ONS</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../intro.html">
+   Introduction
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Spark overview
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/spark-start.html">
+   Getting Started with Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/when-to-use-spark.html">
+   When To Use Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/spark-session-guidance.html">
+   Guidance on Spark Sessions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/example-spark-sessions.html">
+   Example Spark Sessions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/spark-defaults.html">
+   Configuration Hierarchy and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     spark-defaults.conf
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/data-types.html">
+   Data Types in Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/creating-dataframes.html">
+   Creating DataFrames Manually
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/data-storage.html">
+   Data Storage
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to PySpark
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../pyspark-intro/pyspark-intro.html">
+   Introduction to PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../pyspark-intro/reading-data-pyspark.html">
+   Reading Data in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../pyspark-intro/returning-data.html">
+   Returning Data from Cluster to Driver
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../pyspark-intro/f-col.html">
+   Reference columns by name:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     F.col()
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to sparklyr
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../sparklyr-intro/sparklyr-intro.html">
+   Introduction to sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../sparklyr-intro/reading-data-sparklyr.html">
+   Reading Data in sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">
+   Using Spark functions in sparklyr
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Spark functions
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/union-dataframes-with-different-columns.html">
+   Union two DataFrames with different columns
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/padding.html">
+   Add leading zeros with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     lpad()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/sampling.html">
+   Sampling:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .sample()
+    </span>
+   </code>
+   and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     sdf_sample()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/pivot-tables.html">
+   Pivot tables in Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/rounding.html">
+   Rounding differences in Python, R and Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/window-functions.html">
+   Window Functions in Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/cross-joins.html">
+   Cross Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/arrays.html">
+   Arrays Functions in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/writing-data.html">
+   Writing Data
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/job-description.html">
+   Set Spark Job Description
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Understanding and Optimising Spark
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/optimisation-tips.html">
+   Ideas for optimising Spark code
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/spark-application-and-ui.html">
+   Spark Application and UI
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/shuffling.html">
+   Shuffling
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/join-concepts.html">
+   Optimising Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/salted-joins.html">
+   Salted Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/partitions.html">
+   Managing Partitions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/persistence.html">
+   Persisting in Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/cache.html">
+   Caching
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html">
+   Checkpoint
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/garbage-collection.html">
+   Garbage Collection
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/df-order.html">
+   Spark DataFrames Are Not Ordered
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/exercises.html">
+   Exercises
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Testing and Debugging
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="spark-errors.html">
+   Understanding and Handling Spark Errors
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Unit Testing in Spark
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Ancillary Topics
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/visualisation.html">
+   Spark and Visualisation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/module-imports.html">
+   Naming Conflicts in Module Imports
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/pydoop.html">
+   Pydoop: HDFS to pandas
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/testing-debugging/unit-testing.md"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.md</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/robertswh/Spark at the ONS"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/robertswh/Spark at the ONS/issues/new?title=Issue%20on%20page%20%2Ftesting-debugging/unit-testing.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#what-is-unit-testing">
+   What is unit testing?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#unit-testing-in-pyspark">
+   Unit Testing in PySpark
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#why-use-pytest">
+     Why use Pytest?
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#test-structure">
+     Test Structure
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#writing-tests">
+     Writing Tests
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#running-tests">
+     Running Tests
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#example-tests">
+     Example Tests
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#ignoring-warnings">
+     Ignoring Warnings
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#mocking">
+     Mocking
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#parametrisation">
+     Parametrisation
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#coverage">
+     Coverage
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#chispa-checking-dataframe-equality">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       chispa
+      </span>
+     </code>
+     : Checking DataFrame Equality
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#sparklyr-unit-testing">
+   sparklyr Unit Testing
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#why-use-testthat">
+     Why use testthat?
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id1">
+     Test Structure
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id2">
+     Writing Tests
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#running-tests-sparklyr">
+     Running Tests
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id4">
+     Example Tests
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id5">
+     Parametrisation
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#coverage-sparklyr">
+     Coverage
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#other-tests">
+   Other Tests
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#acknowledgements">
+   Acknowledgements
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="unit-testing-in-spark">
+<h1>Unit Testing in Spark<a class="headerlink" href="#unit-testing-in-spark" title="Permalink to this headline">¶</a></h1>
+<p>This article gives an overview of the <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/">Pytest for PySpark</a> and <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/testthat-for-sparklyr/">testthat for sparklyr</a> repositories, which give examples of unit testing in Spark. These are stored in the same <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/">GitHub repository</a> as the raw files for this book.</p>
+<div class="section" id="what-is-unit-testing">
+<h2>What is unit testing?<a class="headerlink" href="#what-is-unit-testing" title="Permalink to this headline">¶</a></h2>
+<p>Unit testing is where individual functions are tested to ensure that example inputs produce outputs that match expected outputs. For example, if writing a function that returns the square of a number, you may check some small examples covering different scenarios, e.g. that <span class="math notranslate nohighlight">\(f(4) = 16\)</span>, <span class="math notranslate nohighlight">\(f(-1) = 1\)</span>, etc. If the function returns the expected outputs then the unit tests pass and you can be confident that your function works correctly. Ease of testing is one of many good reasons to write your code as <a class="reference external" href="https://best-practice-and-impact.github.io/qa-of-code-guidance/core_programming.html#functions">functions</a> where possible.</p>
+<p>Pytest and testthat both allow automation of unit tests, so rather than having to run testing functions manually you can set up testing functions in code files and run all the tests with a simple command. It is also possible to automate unit testing as part of a <a class="reference external" href="https://www.atlassian.com/continuous-delivery/principles/continuous-integration-vs-delivery-vs-deployment">CI/CD</a> workflow; the tests will get automatically ran when pushed and the updated software can be delivered to the customer automatically.</p>
+<p>Many programmers already informally test their functions when coding. For instance, you may work with a small sample of the data and check that the outcome is as expected at different stages. Unit testing just adds a formal structure around this to assist you and your colleagues.</p>
+<p>A full explanation of unit testing is not given in this book, although the examples given should be enough for a Spark programmer to get started even if they have not written a unit test before. Instead, the repositories focus on practical usage and assumes that you are aware of the basic concept of unit testing. If you are new to unit testing, the following are recommended, which includes links from the <a class="reference external" href="https://best-practice-and-impact.github.io/qa-of-code-guidance/testing_code.html#unit-testing">QA of Code for Analysis and Research: Unit Testing</a>:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://learninghub.ons.gov.uk/enrol/index.php?id=539">Introduction to Unit Testing</a>: available to UK Civil Servants only; your organisation may have similar introductory training</p></li>
+<li><p><a class="reference external" href="https://mitches-got-glitches.medium.com/writing-good-unit-tests-in-python-with-ease-5fb6d7aa2b77">Writing good unit tests in Python with ease</a> by <a class="reference external" href="https://github.com/mitches-got-glitches">Mitch Edmunds</a>. Although this uses Python, R users may also find this useful as the general principles apply to unit tests in any programming language. There is an accompanying <a class="reference external" href="https://github.com/mitches-got-glitches/testing-tips">repository</a>.</p></li>
+<li><p><a class="reference external" href="https://vita.had.co.nz/papers/testthat.pdf">testthat: getting started with testing</a> by Hadley Wickham</p></li>
+<li><p><a class="reference external" href="https://r-pkgs.org/tests.html">R Packages: Testing</a>: overview of testthat</p></li>
+<li><p><a class="reference external" href="https://docs.pytest.org/en/latest/getting-started.html">Pytest: Get Started</a></p></li>
+<li><p><a class="reference external" href="https://realpython.com/python-testing/">Real Python: Getting Started With Testing in Python</a></p></li>
+</ul>
+<p>Some developers take the concept of unit testing a stage further, and develop their code without the actual source data and instead write a series of functions that are unit tested. This is referred to as <a class="reference external" href="https://www.agilealliance.org/glossary/tdd"><em>test driven development</em></a>.</p>
+</div>
+<div class="section" id="unit-testing-in-pyspark">
+<h2>Unit Testing in PySpark<a class="headerlink" href="#unit-testing-in-pyspark" title="Permalink to this headline">¶</a></h2>
+<p>The following section is for PySpark users and explains how to use <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/">Pytest for PySpark</a>.</p>
+<details>
+<summary><b>Unit Testing in PySpark</b></summary>
+<br>
+<div class="section" id="why-use-pytest">
+<h3>Why use Pytest?<a class="headerlink" href="#why-use-pytest" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://docs.pytest.org/en/stable/">Pytest</a> is easier to use than Pythons default <a class="reference external" href="https://docs.python.org/3/library/unittest.html"><code class="docutils literal notranslate"><span class="pre">unittest</span></code></a> module. The issue with unit testing PySpark code is that you need to set up a Spark session; Pytest lets you easily do this with a <a class="reference external" href="https://docs.pytest.org/en/6.2.x/fixture.html"><em>fixture</em></a>.</p>
+<p>Pytest can be installed in the usual way. You will also want to ensure that <a class="reference external" href="https://pypi.org/project/pytest-mock/"><code class="docutils literal notranslate"><span class="pre">pytest-mock</span></code></a> and <a class="reference external" href="https://docs.python.org/3/library/unittest.mock.html"><code class="docutils literal notranslate"><span class="pre">mock</span></code></a> are installed for mocking, and <a class="reference external" href="https://pytest-cov.readthedocs.io/en/latest/"><code class="docutils literal notranslate"><span class="pre">pytest-cov</span></code></a> to look at code coverage. All four of these can be installed with the <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/requirements.txt">requirements</a> file within this repository using <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-r</span> <span class="pre">requirements.txt</span></code>. If you are using CDSW at the ONS, ensure that you are installing with Python 3 with <code class="docutils literal notranslate"><span class="pre">pip3</span> <span class="pre">install</span> <span class="pre">requirements.txt</span></code>.</p>
+</div>
+<div class="section" id="test-structure">
+<h3>Test Structure<a class="headerlink" href="#test-structure" title="Permalink to this headline">¶</a></h3>
+<p>This example has four modules, stored in a directory named <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/functions/"><code class="docutils literal notranslate"><span class="pre">functions</span></code></a>. Each has a suite of tests, stored in a <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/tests/"><code class="docutils literal notranslate"><span class="pre">tests</span></code></a> directory, as well as configuration files and a <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/README.md"><code class="docutils literal notranslate"><span class="pre">README</span></code></a> at the top level:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/functions/"><code class="docutils literal notranslate"><span class="pre">functions</span></code></a>:</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/functions/basic_functions.py"><code class="docutils literal notranslate"><span class="pre">basic_functions.py</span></code></a></p></li>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/functions/dataframe_functions.py"><code class="docutils literal notranslate"><span class="pre">dataframe_functions.py</span></code></a></p></li>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/functions/mock_methods.py"><code class="docutils literal notranslate"><span class="pre">mock_methods.py</span></code></a></p></li>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/functions/more_functions.py"><code class="docutils literal notranslate"><span class="pre">more_functions.py</span></code></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/tests/"><code class="docutils literal notranslate"><span class="pre">tests</span></code></a>:</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/tests/__init__.py"><code class="docutils literal notranslate"><span class="pre">__init__.py</span></code></a></p></li>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/tests/conftest.py"><code class="docutils literal notranslate"><span class="pre">conftest.py</span></code></a></p></li>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/tests/helpers.py"><code class="docutils literal notranslate"><span class="pre">helpers.py</span></code></a></p></li>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/tests/test_basic.py"><code class="docutils literal notranslate"><span class="pre">test_basic.py</span></code></a></p></li>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/tests/test_dataframe.py"><code class="docutils literal notranslate"><span class="pre">test_dataframe.py</span></code></a></p></li>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/tests/test_mock_methods.py"><code class="docutils literal notranslate"><span class="pre">test_mock_methods.py</span></code></a></p></li>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/tests/test_more.py"><code class="docutils literal notranslate"><span class="pre">test_more.py</span></code></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/pytest.ini"><code class="docutils literal notranslate"><span class="pre">pytest.ini</span></code></a></p></li>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/README.md"><code class="docutils literal notranslate"><span class="pre">README.md</span></code></a></p></li>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/requirements.txt"><code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code></a></p></li>
+</ul>
+<p>Note that all the test modules begin with <code class="docutils literal notranslate"><span class="pre">test_*</span></code>; Pytest will also discover them if they end in <code class="docutils literal notranslate"><span class="pre">*_test</span></code>. The tests in <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/tests/test_mock_methods.py"><code class="docutils literal notranslate"><span class="pre">test_mock_methods.py</span></code></a> are organised into <em>classes</em>; this is optional in Pytest but can make your code easier to read.</p>
+<p>If you are using this structure it is essential that you include an <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/tests/__init__.py"><code class="docutils literal notranslate"><span class="pre">__init__.py</span></code></a> file in the tests directory. This can be blank. Without it, Pytest will not be able to correctly import modules and your tests will not even compile.</p>
+<p>Fixtures contained in <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/tests/conftest.py"><code class="docutils literal notranslate"><span class="pre">conftest.py</span></code></a> can be used in any of the testing modules, without having to be specifically imported. This is the most logical place to put fixtures which have a <code class="docutils literal notranslate"><span class="pre">session</span></code> scope, including the fixture which defines the Spark session. As we want to store the test data as close to the test as possible, if your fixtures are not used in more than one module store them in that module rather than <code class="docutils literal notranslate"><span class="pre">conftest.py</span></code>.</p>
+<p>Custom functions are stored in <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/tests/helpers.py"><code class="docutils literal notranslate"><span class="pre">helpers.py</span></code></a>. The key difference between this and <code class="docutils literal notranslate"><span class="pre">conftest.py</span></code> is that these are functions, not fixtures, and are imported in the usual way, e.g. <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">tests.helpers</span> <span class="pre">import</span> <span class="pre">assert_pyspark_df_equal</span></code>.</p>
+</div>
+<div class="section" id="writing-tests">
+<h3>Writing Tests<a class="headerlink" href="#writing-tests" title="Permalink to this headline">¶</a></h3>
+<p>Writing unit tests for PySpark with Pytest is the same as writing a normal unit test, just with the additional challenge that a Spark session is needed to run the tests. To adapt Pytest for PySpark, a <em>fixture</em> needs to be added with scope <code class="docutils literal notranslate"><span class="pre">session</span></code> in <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/tests/conftest.py"><code class="docutils literal notranslate"><span class="pre">conftest.py</span></code></a> that defines the Spark session. You can then pass this into each test. See the example code for more information on this.</p>
+</div>
+<div class="section" id="running-tests">
+<h3>Running Tests<a class="headerlink" href="#running-tests" title="Permalink to this headline">¶</a></h3>
+<p>To run the unit tests when in a container, open a terminal window and run <code class="docutils literal notranslate"><span class="pre">pytest</span></code>. This will automatically discover the tests and run them. You can also run them through the Python console with <code class="docutils literal notranslate"><span class="pre">!pytest</span></code>.</p>
+<p>You can run a single module of tests with <code class="docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">test_module_name.py</span></code> and run an individual test with <code class="docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">test_module_name.py::test_name</span></code>. This can be useful when you have a large test suite and are only changing one module or function.</p>
+<p>There are several options that you can specify when using Pytest. <code class="docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">-v</span></code> will list the full names of the tests and if they passed or not and <code class="docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">-vv</span></code> will give you the full output. You can find a full list of options with <code class="docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">-h</span></code>.</p>
+</div>
+<div class="section" id="example-tests">
+<h3>Example Tests<a class="headerlink" href="#example-tests" title="Permalink to this headline">¶</a></h3>
+<p>The example tests cover several common scenarios, although they are far from exhaustive. Note that these unit tests use <a class="reference internal" href="../spark-overview/creating-dataframes.html"><span class="doc std std-doc">manually created DataFrames</span></a>.</p>
+<p>For Pytest to discover tests, they must begin with <code class="docutils literal notranslate"><span class="pre">test_</span></code>. Optionally they can be grouped into parent classes, which are in <code class="docutils literal notranslate"><span class="pre">CamelCase</span></code> and begin with <code class="docutils literal notranslate"><span class="pre">Test</span></code>.</p>
+<p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/tests/test_basic.py">Basic Tests</a>: gives some simple examples:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">test_count_animal</span></code>: simple scalar equality</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_format_columns</span></code>: checks that the output columns have the correct name and order</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_format_columns_unordered</span></code>: as above, but columns can be in any order</p></li>
+</ul>
+<p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/tests/test_dataframe.py">DataFrame Tests</a>: shows three different ways to test PySpark DF equality:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">test_group_animal_collect</span></code>: tests DF equality using <code class="docutils literal notranslate"><span class="pre">.collect()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_group_animal_toPandas</span></code>: tests DF equality by using <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code> then <code class="docutils literal notranslate"><span class="pre">assert_frame_equal()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_group_animal_pyspark</span></code>: tests DF equality with a function that can be customised</p></li>
+</ul>
+<p>You may want to investigate the <a class="reference external" href="https://github.com/MrPowers/chispa"><code class="docutils literal notranslate"><span class="pre">chispa</span></code></a> package for another way to check DataFrame equality if using Spark 3.0 or above.</p>
+<p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/tests/test_mock_methods.py">Mocking Tests</a>: provides examples using the <code class="docutils literal notranslate"><span class="pre">mock</span></code> module; these are grouped into classes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">TestCheckIsFirstOfMonth</span></code>:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_check_if_first_of_month</span></code>: mocks <code class="docutils literal notranslate"><span class="pre">datetime</span></code> to return <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_check_if_not_first_of_month</span></code>: mocks <code class="docutils literal notranslate"><span class="pre">datetime</span></code> to return <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TestReadCsvFromCdsw</span></code>:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_read_csv_from_cdsw</span></code>: uses <code class="docutils literal notranslate"><span class="pre">assert_called_with</span></code> a mocked file name, to verify that the function is called</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TestReadCsvFromHdfs</span></code>:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_read_csv_from_hdfs</span></code>: as above, but uses Spark rather than pandas</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TestOpenJson</span></code>:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_open_json</span></code>: as above, but reading a JSON file</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TestJsonToDictionary</span></code>:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_json_to_dictionary</span></code>: mocks the reading of the dictionary with the one specified in <code class="docutils literal notranslate"><span class="pre">keywords</span></code></p></li>
+</ul>
+</li>
+</ul>
+<p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/tests/test_more.py">More Tests</a>: covers errors, mocking, data types, parametrisation and an example of Test Driven Development:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">test_analysis_exception</span></code>: tests that the code raises an error</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_read_and_format_rescue</span></code>: uses mocking instead of reading from HDFS and tests data types</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_count_animal_parametrise</span></code>: example of parametrisation; generalised version of <code class="docutils literal notranslate"><span class="pre">test_count_animal</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TestAddSquareColumn</span></code>: this class contains six tests, all of the same format, which were written using <a class="reference external" href="https://www.agilealliance.org/glossary/tdd"><em>test driven development</em></a>, where the tests are written <em>before</em> the code:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_add_square_column_small</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_add_square_column_null_identity</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_add_square_column_large</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_add_square_column_decimal</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_add_square_column_negative</span></code></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="ignoring-warnings">
+<h3>Ignoring Warnings<a class="headerlink" href="#ignoring-warnings" title="Permalink to this headline">¶</a></h3>
+<p>Your tests will return either <code class="docutils literal notranslate"><span class="pre">passed</span></code> or <code class="docutils literal notranslate"><span class="pre">failed</span></code> for each test. In addition, you may get warnings. Sometimes these contain useful information about the code, that prompts you to correct some potential problems. They warnings can however be superfluous, for instance, if the warning is not relevant to you or is from another package. You can create a <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/pytest.ini"><code class="docutils literal notranslate"><span class="pre">pytest.ini</span></code></a> file in the parent directory, with instructions to ignore certain types of warnings. If running this example at the ONS with CDSW, there is a <code class="docutils literal notranslate"><span class="pre">DeprecationWarning</span></code> from a built in Cloudera package, plus a <code class="docutils literal notranslate"><span class="pre">RuntimeWarning</span></code>; both are ignored through providing a partial string match. Do not just ignore entire classes of errors; warnings exist for a reason!</p>
+</div>
+<div class="section" id="mocking">
+<h3>Mocking<a class="headerlink" href="#mocking" title="Permalink to this headline">¶</a></h3>
+<p>Unit testing functions which take an input and produce an output, without any side effects, are relatively straightforward and when developing with unit tests in mind it is useful to try and write functions in this way. Some functions do have side effects; for instance, reading from a file on HDFS or another data source, or writing out to a log file. When unit testing we do not want to read or write files; instead, we can use the concept of <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/tests/test_mock_methods.py"><em>mocking</em></a>.</p>
+<p>Mocking enables you to alter the behaviour of objects in your code. So for instance, rather than read a file which returns a PySpark DataFrame, you can specify a different DataFrame which will be returned instead. See the example in <code class="docutils literal notranslate"><span class="pre">test_read_and_format_rescue</span></code>. Another use of mocking is to replace calls to the current date and time with a fixed value (see <code class="docutils literal notranslate"><span class="pre">test_check_if_first_of_month</span></code>).</p>
+<p>The example in <code class="docutils literal notranslate"><span class="pre">test_read_and_format_rescue</span></code> uses the <code class="docutils literal notranslate"><span class="pre">pytest-mock</span></code> module which can be installed with pip. This works essentially as a wrapper to the <code class="docutils literal notranslate"><span class="pre">mock</span></code> module used in <code class="docutils literal notranslate"><span class="pre">test_mock_methods.py</span></code>; which one to use is personal preference.</p>
+<p>This only scratches the surface of what mocking can do. The documentation for <a class="reference external" href="https://pypi.org/project/pytest-mock/">pytest-mock</a> and <a class="reference external" href="https://docs.python.org/3/library/unittest.mock.html">mock</a> give more detail on this.</p>
+</div>
+<div class="section" id="parametrisation">
+<h3>Parametrisation<a class="headerlink" href="#parametrisation" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">test_count_animal_parametrise</span></code> is an example of parametrisation. Whereas <code class="docutils literal notranslate"><span class="pre">test_count_animal</span></code> only checked that <code class="docutils literal notranslate"><span class="pre">&quot;Cat&quot;</span></code> was 3, here the test is generalised to check other animals too in a succinct manner.</p>
+</div>
+<div class="section" id="coverage">
+<h3>Coverage<a class="headerlink" href="#coverage" title="Permalink to this headline">¶</a></h3>
+<p>Ideally unit tests should cover as much of your code as possible. There is an automated way to check what percentage of each module is covered, using the <a class="reference external" href="https://pytest-cov.readthedocs.io/en/latest/"><code class="docutils literal notranslate"><span class="pre">pytest-cov</span></code></a> module.</p>
+<p>To run, open a terminal window and run <code class="docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">--cov</span> <span class="pre">functions</span></code>, where <code class="docutils literal notranslate"><span class="pre">functions</span></code> is the name of the directory where your modules are stored.</p>
+<p>This will return a report showing what percentage of each module is covered by unit tests. Obviously, the higher the percentage the better, but there is no standard percentage to aim for: each project is different and some will have more coverage than others. For instance, a module which covers reading and writing data from HDFS or another data source will often have less coverage than one with pure statistical functions.</p>
+</div>
+<div class="section" id="chispa-checking-dataframe-equality">
+<h3><code class="docutils literal notranslate"><span class="pre">chispa</span></code>: Checking DataFrame Equality<a class="headerlink" href="#chispa-checking-dataframe-equality" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference external" href="https://github.com/MrPowers/chispa"><code class="docutils literal notranslate"><span class="pre">chispa</span></code></a> package contains methods that can be used to test PySpark DataFrame equality. However, as a dependency it will install Spark 3, so if you are using Spark 2.4 or earlier you will have to manually uninstall this and revert back. If you are an experienced user or are using Spark 3 you may want to investigate this package further.</p>
+</details>
+</div>
+</div>
+<div class="section" id="sparklyr-unit-testing">
+<h2>sparklyr Unit Testing<a class="headerlink" href="#sparklyr-unit-testing" title="Permalink to this headline">¶</a></h2>
+<p>The following section is for sparklyr users and explains how to use <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/testthat-for-sparklyr/">testthat for sparklyr</a>.</p>
+<details>
+<summary><b>Unit Testing in sparklyr</b></summary>
+<br>
+<p>There is only a small amount of information available online for best practice when unit testing sparklyr code. As such this repository is in development and we encourage any contributions or suggestions; please do this by raising an <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/issues">issue</a> or <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/pulls">pull request</a> on <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark">GitHub</a>.</p>
+<div class="section" id="why-use-testthat">
+<h3>Why use testthat?<a class="headerlink" href="#why-use-testthat" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://testthat.r-lib.org/"><code class="docutils literal notranslate"><span class="pre">testthat</span></code></a> is the most popular unit testing package available for R. It is connected to the <a class="reference external" href="https://www.tidyverse.org/"><code class="docutils literal notranslate"><span class="pre">tidyverse</span></code></a> suite of packages, along with <a class="reference external" href="https://dplyr.tidyverse.org/"><code class="docutils literal notranslate"><span class="pre">dplyr</span></code></a> and <a class="reference external" href="https://spark.rstudio.com/"><code class="docutils literal notranslate"><span class="pre">sparklyr</span></code></a>. <code class="docutils literal notranslate"><span class="pre">testthat</span></code> can be used with sparklyr code by setting up a local Spark connection in a setup file.</p>
+<p>You can install <code class="docutils literal notranslate"><span class="pre">testthat</span></code> in the usual way with <code class="docutils literal notranslate"><span class="pre">install.packages(&quot;testthat&quot;)</span></code>. It is recommended to install <code class="docutils literal notranslate"><span class="pre">tidyverse</span></code> first; also ensure that you have installed <code class="docutils literal notranslate"><span class="pre">sparklyr</span></code>. You can also install <a class="reference external" href="https://github.com/r-lib/covr#readme"><code class="docutils literal notranslate"><span class="pre">covr</span></code></a> if you want to check <a class="reference external" href="#Coverage">code coverage</a>.</p>
+</div>
+<div class="section" id="id1">
+<h3>Test Structure<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>This example has three modules, stored in a <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/testthat-for-sparklyr/functions/"><code class="docutils literal notranslate"><span class="pre">functions</span></code></a> directory. Each has a suite of tests, stored in a <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/testthat-for-sparklyr/tests/"><code class="docutils literal notranslate"><span class="pre">tests</span></code></a> directory:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/testthat-for-sparklyr/functions/"><code class="docutils literal notranslate"><span class="pre">functions</span></code></a></p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/testthat-for-sparklyr/functions/basic_functions.R"><code class="docutils literal notranslate"><span class="pre">basic_functions.R</span></code></a></p></li>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/testthat-for-sparklyr/functions/dataframe_functions.R"><code class="docutils literal notranslate"><span class="pre">dataframe_functions.R</span></code></a></p></li>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/testthat-for-sparklyr/functions/more_functions.R"><code class="docutils literal notranslate"><span class="pre">more_functions.R</span></code></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/testthat-for-sparklyr/tests/"><code class="docutils literal notranslate"><span class="pre">tests</span></code></a></p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/testthat-for-sparklyr/tests/setup_spark.R"><code class="docutils literal notranslate"><span class="pre">setup_spark.R</span></code></a></p></li>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/testthat-for-sparklyr/tests/test_basic.R"><code class="docutils literal notranslate"><span class="pre">test_basic.R</span></code></a></p></li>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/testthat-for-sparklyr/tests/test_dataframe.R"><code class="docutils literal notranslate"><span class="pre">test_dataframe.R</span></code></a></p></li>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/testthat-for-sparklyr/tests/test_more.R"><code class="docutils literal notranslate"><span class="pre">test_more.R</span></code></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/testthat-for-sparklyr/coverage.R"><code class="docutils literal notranslate"><span class="pre">coverage.R</span></code></a></p></li>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/testthat-for-sparklyr/README.md"><code class="docutils literal notranslate"><span class="pre">README.md</span></code></a></p></li>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/testthat-for-sparklyr/run_tests.R"><code class="docutils literal notranslate"><span class="pre">run_tests.R</span></code></a></p></li>
+</ul>
+<p>Note that all the test modules begin with <code class="docutils literal notranslate"><span class="pre">test_*</span></code>. <code class="docutils literal notranslate"><span class="pre">testthat</span></code> will discover any file that begins <code class="docutils literal notranslate"><span class="pre">test*</span></code>; adding the underscore makes the context clearer (more detail in <a class="reference internal" href="#running-tests-sparklyr"><span class="std std-ref">Running Tests</span></a>). Unlike unit testing in Python, the files will not be discovered if they end solely in <code class="docutils literal notranslate"><span class="pre">*test</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">testthat</span></code> will import functions in any file beginning <code class="docutils literal notranslate"><span class="pre">setup_*</span></code>, without having to individually source them in the test modules. This is the most logical place to put a function that contains the local Spark setup. As we want to store the test data as close to the test as possible, if the intention of your functions is to only use them in one module store them in that module rather than in <code class="docutils literal notranslate"><span class="pre">setup_*</span></code>; <code class="docutils literal notranslate"><span class="pre">test_sum_animal()</span></code> is therefore contained only in <code class="docutils literal notranslate"><span class="pre">test_more</span></code>, whereas <code class="docutils literal notranslate"><span class="pre">expect_sdf_equal()</span></code> is in <code class="docutils literal notranslate"><span class="pre">setup_spark</span></code> as this is a wrapper for testing DataFrame equality in Spark and therefore it is desirable to have this available globally.</p>
+<p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/testthat-for-sparklyr/coverage.R"><code class="docutils literal notranslate"><span class="pre">coverage.R</span></code></a> can be ran to check code coverage. See the section on <a class="reference internal" href="#coverage-sparklyr"><span class="std std-ref">Coverage</span></a> for more details.</p>
+</div>
+<div class="section" id="id2">
+<h3>Writing Tests<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference external" href="https://r-pkgs.org/">R Packages</a> chapter on <a class="reference external" href="https://r-pkgs.org/tests.html#test-tests">testing</a> covers how to write a unit test using testthat. To adapt this to sparklyr, a local Spark session needs to be created for each test, using <code class="docutils literal notranslate"><span class="pre">testthat_spark_connection()</span></code> in <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/testthat-for-sparklyr/tests/setup_spark.R"><code class="docutils literal notranslate"><span class="pre">setup_spark.R</span></code></a>. See the example code for more information on this.</p>
+</div>
+<div class="section" id="running-tests-sparklyr">
+<span id="id3"></span><h3>Running Tests<a class="headerlink" href="#running-tests-sparklyr" title="Permalink to this headline">¶</a></h3>
+<p>To run the unit tests, ensure that your working directory is set correctly (if cloning the <code class="docutils literal notranslate"><span class="pre">ons-spark</span></code> repository, that will be <code class="docutils literal notranslate"><span class="pre">setwd(&quot;./ons-spark/testthat-for-sparklyr&quot;)</span></code>, then type <code class="docutils literal notranslate"><span class="pre">testthat::test_dir(&quot;./tests&quot;)</span></code> into the R console (if using a container ensure that you are not using the terminal window). Referencing the package directly with <code class="docutils literal notranslate"><span class="pre">::</span></code> means it does not have to be imported using <code class="docutils literal notranslate"><span class="pre">library()</span></code> or <code class="docutils literal notranslate"><span class="pre">require()</span></code> and can therefore be ran with one simple command.</p>
+<p>The wrapper code in <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/testthat-for-sparklyr/run_tests.R"><code class="docutils literal notranslate"><span class="pre">run_tests.R</span></code></a> script will automatically set the working directory and run the tests.</p>
+<p>The output lists the number of tests that passed, failed, warned and skipped for each file in turn, plus the duration:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>testthat::test_dir(&quot;./tests&quot;)
+✔ |  OK F W S | Context
+✔ |   3       | basic [22.9 s]
+✔ |   2       | dataframe [6.0 s]
+✔ |   7       | more [7.6 s]
+
+══ Results ═════════════════════════════════════════════════════════════════════
+Duration: 36.5 s
+
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 12 ]
+</pre></div>
+</div>
+<p>The full name of the module will be listed under <code class="docutils literal notranslate"><span class="pre">Context</span></code>, unless it begins with <code class="docutils literal notranslate"><span class="pre">test_</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">test_basic.R</span></code> becomes <code class="docutils literal notranslate"><span class="pre">basic</span></code>. The duration of the first test took longer, this is due to the setting up of the Spark session, <code class="docutils literal notranslate"><span class="pre">sc</span></code>. Future tests are able to reuse the same session and so run faster.</p>
+<p>To run a single test module, use <code class="docutils literal notranslate"><span class="pre">testthat::test_file()</span></code>.  This can be useful when you have a large test suite and are only changing one module or function.</p>
+</div>
+<div class="section" id="id4">
+<h3>Example Tests<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>The example tests cover several common scenarios, although they are far from exhaustive.  Note that these unit tests use <a class="reference internal" href="../spark-overview/creating-dataframes.html"><span class="doc std std-doc">manually created DataFrames</span></a>.</p>
+<p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/testthat-for-sparklyr/tests/test_basic.R">Basic Tests</a>: gives some simple examples</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">test</span> <span class="pre">count_animal</span></code>: simple scalar equality</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test</span> <span class="pre">format_columns</span></code>: checks that the output columns have the correct name and order</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test</span> <span class="pre">format_columns</span> <span class="pre">unordered</span></code>: as above, but columns can be in any order</p></li>
+</ul>
+<p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/testthat-for-sparklyr/tests/test_dataframe.R">DataFrame Tests</a>: shows two different ways to test sparklyr DF equality</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">test</span> <span class="pre">group_animal</span></code>: tests DF equality using <a class="reference external" href="https://dplyr.tidyverse.org/reference/compute.html"><code class="docutils literal notranslate"><span class="pre">collect()</span></code></a> and <a class="reference external" href="https://dplyr.tidyverse.org/reference/arrange.html"><code class="docutils literal notranslate"><span class="pre">arrange()</span></code></a>, to ensure the DFs are sorted identically</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test</span> <span class="pre">group_animal</span> <span class="pre">using</span> <span class="pre">function</span></code>: uses a wrapper for <a class="reference external" href="https://testthat.r-lib.org/reference/equality-expectations.html"><code class="docutils literal notranslate"><span class="pre">expect_equal()</span></code></a>, <code class="docutils literal notranslate"><span class="pre">expect_sdf_equal()</span></code>, which takes sparklyr DFs as an input and will collect and arrange</p></li>
+</ul>
+<p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/testthat-for-sparklyr/tests/test_more.R">More Tests</a>: covers errors and parameterisation</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">test</span> <span class="pre">analysis</span> <span class="pre">exception</span></code>: tests that the code raises an error</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test</span> <span class="pre">sum_animal</span> <span class="pre">with</span> <span class="pre">multiple</span> <span class="pre">expectations</span></code>: example of multiple <code class="docutils literal notranslate"><span class="pre">expect_equal()</span></code> in the same test, including comparing <code class="docutils literal notranslate"><span class="pre">NA</span></code> values</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test</span> <span class="pre">sum_animal</span> <span class="pre">parameterised</span></code>: example of parameterisation</p></li>
+</ul>
+</div>
+<div class="section" id="id5">
+<h3>Parametrisation<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">test</span> <span class="pre">sum_animal</span> <span class="pre">parameterised</span></code> is an example of parametrisation. You can use the <code class="docutils literal notranslate"><span class="pre">apply</span></code> family of functions from base R, or make use of the <a class="reference external" href="https://purrr.tidyverse.org/index.html"><code class="docutils literal notranslate"><span class="pre">purrr</span></code></a> package depending on your preference. This example uses <a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/mapply.html"><code class="docutils literal notranslate"><span class="pre">mapply()</span></code></a> with two input vectors; <a class="reference external" href="https://purrr.tidyverse.org/reference/map2.html"><code class="docutils literal notranslate"><span class="pre">walk2()</span></code></a> is the <code class="docutils literal notranslate"><span class="pre">purrr</span></code> equivalent.</p>
+</div>
+<div class="section" id="coverage-sparklyr">
+<span id="id6"></span><h3>Coverage<a class="headerlink" href="#coverage-sparklyr" title="Permalink to this headline">¶</a></h3>
+<p>Ideally unit tests should cover as much of your code as possible. There is an automated way to check what percentage of each module is covered, using the <a class="reference external" href="https://github.com/r-lib/covr#readme"><code class="docutils literal notranslate"><span class="pre">covr</span></code></a> package.</p>
+<p><code class="docutils literal notranslate"><span class="pre">covr</span></code> is designed for full packages but can be adapted for files using <code class="docutils literal notranslate"><span class="pre">covr::file_coverage</span></code> with <code class="docutils literal notranslate"><span class="pre">mapply()</span></code> or <a class="reference external" href="https://purrr.tidyverse.org/reference/map.html"><code class="docutils literal notranslate"><span class="pre">purrr::pmap()</span></code></a>, with a list of files and tests as inputs. This is contained in the <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/testthat-for-sparklyr/coverage.R"><code class="docutils literal notranslate"><span class="pre">coverage.R</span></code></a> script. It will return a report for each file, showing what percentage of each module is covered by unit tests. Obviously, the higher the percentage the better, but there is no standard percentage to aim for: each project is different and some will have more coverage than others. For instance, a module which covers reading and writing data from HDFS or another data source will often have less coverage than one with pure statistical functions.</p>
+</details>
+</div>
+</div>
+<div class="section" id="other-tests">
+<h2>Other Tests<a class="headerlink" href="#other-tests" title="Permalink to this headline">¶</a></h2>
+<p>Your code should also be tested in other ways. This is important as your individual functions could all be fully unit tested, but do not work when ran together; you would perform an integration test to check for this. Other common tests include user acceptance testing (UAT), where users of the system verify that it fits their requirements, and regression testing, where you compare outputs between existing and new code. Some tests are very simple: checking that the outputs are sensible is called a sanity test.</p>
+<p>The <a class="reference external" href="https://best-practice-and-impact.github.io/qa-of-code-guidance">QA of Code for Analysis and Research</a> has a good <a class="reference external" href="https://best-practice-and-impact.github.io/qa-of-code-guidance/testing_code.html">overview of testing code</a> which gives an introduction to the different types of tests.</p>
+</div>
+<div class="section" id="further-resources">
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
+<p>Spark at the ONS Articles:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../spark-overview/creating-dataframes.html"><span class="doc std std-doc">Creating DataFrames Manually</span></a></p></li>
+</ul>
+<p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark">Spark at the ONS GitHub repository</a>:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/">Pytest for PySpark</a></p></li>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/testthat-for-sparklyr/">testthat for sparklyr</a></p></li>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/issues">Issues</a>: if you notice something that you believe needs improving then submit an issue</p></li>
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/pulls">Pull Requests</a>: submit a pull request to contribute your own code to the repository</p></li>
+</ul>
+<p><a class="reference external" href="https://best-practice-and-impact.github.io/qa-of-code-guidance/">QA of Code for Analysis and Research</a>:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://best-practice-and-impact.github.io/qa-of-code-guidance/testing_code.html#unit-testing">Unit Testing</a></p></li>
+<li><p><a class="reference external" href="https://best-practice-and-impact.github.io/qa-of-code-guidance/core_programming.html#functions">Functions</a></p></li>
+</ul>
+<p>Unit Testing Background Reading:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.atlassian.com/continuous-delivery/principles/continuous-integration-vs-delivery-vs-deployment">Atlassian: CI/CD</a></p></li>
+<li><p><a class="reference external" href="https://mitches-got-glitches.medium.com/writing-good-unit-tests-in-python-with-ease-5fb6d7aa2b77">Writing good unit tests in Python with ease</a></p></li>
+<li><p><a class="reference external" href="https://github.com/mitches-got-glitches/testing-tips">Testing Tips repository</a></p></li>
+<li><p><a class="reference external" href="https://vita.had.co.nz/papers/testthat.pdf">testthat: getting started with testing</a> by Hadley Wickham</p></li>
+<li><p><a class="reference external" href="https://r-pkgs.org/tests.html">R Packages: Testing</a>: overview of testthat</p></li>
+<li><p><a class="reference external" href="https://docs.pytest.org/en/latest/getting-started.html">Pytest: Get Started</a></p></li>
+<li><p><a class="reference external" href="https://realpython.com/python-testing/">Real Python: Getting Started With Testing in Python</a></p></li>
+<li><p><a class="reference external" href="https://www.agilealliance.org/glossary/tdd">Agile Alliance: TDD</a>: linked through from the <a class="reference external" href="https://gds.blog.gov.uk/2018/02/06/how-to-pair-program-effectively-in-6-steps/">Government Data Service blog on pair programming</a></p></li>
+</ul>
+<p>Python Packages Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.pytest.org/en/stable/">Pytest</a>:</p>
+<ul>
+<li><p><a class="reference external" href="https://docs.pytest.org/en/6.2.x/fixture.html">Fixtures</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/unittest.html"><code class="docutils literal notranslate"><span class="pre">unittest</span></code></a></p></li>
+<li><p><a class="reference external" href="https://pypi.org/project/pytest-mock/"><code class="docutils literal notranslate"><span class="pre">pytest-mock</span></code></a></p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/unittest.mock.html"><code class="docutils literal notranslate"><span class="pre">mock</span></code></a></p></li>
+<li><p><a class="reference external" href="https://pytest-cov.readthedocs.io/en/latest/"><code class="docutils literal notranslate"><span class="pre">pytest-cov</span></code></a></p></li>
+<li><p><a class="reference external" href="https://github.com/MrPowers/chispa"><code class="docutils literal notranslate"><span class="pre">chispa</span></code></a></p></li>
+</ul>
+<p>R Package Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://testthat.r-lib.org/"><code class="docutils literal notranslate"><span class="pre">testthat</span></code></a></p></li>
+<li><p><a class="reference external" href="https://www.tidyverse.org/"><code class="docutils literal notranslate"><span class="pre">tidyverse</span></code></a></p></li>
+<li><p><a class="reference external" href="https://dplyr.tidyverse.org/"><code class="docutils literal notranslate"><span class="pre">dplyr</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.rstudio.com/"><code class="docutils literal notranslate"><span class="pre">sparklyr</span></code></a></p></li>
+<li><p><a class="reference external" href="https://github.com/r-lib/covr#readme"><code class="docutils literal notranslate"><span class="pre">covr</span></code></a></p></li>
+</ul>
+<p>sparklyr and tidyverse documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://testthat.r-lib.org/reference/equality-expectations.html"><code class="docutils literal notranslate"><span class="pre">expect_equal()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://dplyr.tidyverse.org/reference/compute.html"><code class="docutils literal notranslate"><span class="pre">collect()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://dplyr.tidyverse.org/reference/arrange.html"><code class="docutils literal notranslate"><span class="pre">arrange()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://purrr.tidyverse.org/reference/map.html"><code class="docutils literal notranslate"><span class="pre">pmap()</span></code></a></p></li>
+</ul>
+<p>UK Civil Service Learning:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://learninghub.ons.gov.uk/enrol/index.php?id=539">Introduction to Unit Testing</a>: available to UK Civil Servants only</p></li>
+</ul>
+</div>
+<div class="section" id="acknowledgements">
+<h2>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this headline">¶</a></h2>
+<p>Special thanks to:</p>
+<ul class="simple">
+<li><p>Peter Derrick for contributing the <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/tests/test_mock_methods.py"><code class="docutils literal notranslate"><span class="pre">test_mock_methods.py</span></code></a> and <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/functions/mock_methods.py"><code class="docutils literal notranslate"><span class="pre">mock_methods.py</span></code></a> modules</p></li>
+<li><p><a class="reference external" href="https://github.com/mitches-got-glitches">Mitch Edmunds</a> for sharing his unit testing <a class="reference external" href="https://mitches-got-glitches.medium.com/writing-good-unit-tests-in-python-with-ease-5fb6d7aa2b77">articles</a> and <a class="reference external" href="https://github.com/mitches-got-glitches/testing-tips">repository</a></p></li>
+<li><p><a class="reference external" href="https://github.com/neilcuz">Neil Currie</a> for his suggestions on using testthat for sparklyr</p></li>
+<li><p><a class="reference external" href="https://github.com/bandaian">Ian Banda</a> for his suggestions on using testthat for sparklyr</p></li>
+<li><p><a class="reference external" href="https://github.com/DaveGreasley">Dave Greasley</a> for writing the original version of <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/pytest-for-pyspark/tests/helpers.py"><code class="docutils literal notranslate"><span class="pre">assert_pyspark_df_equal()</span></code></a></p></li>
+</ul>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./testing-debugging"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        
+            <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="spark-errors.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Understanding and Handling Spark Errors</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="../ancillary-topics/visualisation.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Spark and Visualisation</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+        
+        </div>
+    </div>
+    <footer class="footer">
+    <div class="container">
+      <p>
+        
+          By Wil Roberts & Adrian Prince<br/>
+        
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>

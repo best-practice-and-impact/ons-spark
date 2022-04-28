@@ -159,7 +159,7 @@ Distinct year count: 11
 [1] "Distinct year count: 11"
 ```
 ````
-There can be issues in Spark when joining values from a DF to itself, which can be resolved by checkpointing to break the lineage of the DataFrame. See the article on [checkpointings](../raw-notebooks/checkpoint-staging/checkpoint-staging) for more information.
+There can be issues in Spark when joining values from a DF to itself, which can be resolved by checkpointing to break the lineage of the DataFrame. See the article on [checkpointing](../raw-notebooks/checkpoint-staging/checkpoint-staging) for more information.
 ````{tabs}
 ```{code-tab} py
 checkpoint_path = config["checkpoint_path"]

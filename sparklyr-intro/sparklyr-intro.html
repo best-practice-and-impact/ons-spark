@@ -1,0 +1,1786 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Introduction to sparklyr &#8212; Spark at the ONS</title>
+    
+  <link href="../_static/css/theme.css" rel="stylesheet">
+  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/tabs.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script>
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Reading Data in sparklyr" href="reading-data-sparklyr.html" />
+    <link rel="prev" title="Reference columns by name: F.col()" href="../pyspark-intro/f-col.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+<script>
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){ dataLayer.push(arguments); }
+                    gtag('js', new Date());
+                    gtag('config', 'G-95MGHSRD0S');
+                </script>
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Spark at the ONS</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../intro.html">
+   Introduction
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Spark overview
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/spark-start.html">
+   Getting Started with Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/when-to-use-spark.html">
+   When To Use Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/spark-session-guidance.html">
+   Guidance on Spark Sessions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/example-spark-sessions.html">
+   Example Spark Sessions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/spark-defaults.html">
+   Configuration Hierarchy and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     spark-defaults.conf
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/data-types.html">
+   Data Types in Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/creating-dataframes.html">
+   Creating DataFrames Manually
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/data-storage.html">
+   Data Storage
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to PySpark
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../pyspark-intro/pyspark-intro.html">
+   Introduction to PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../pyspark-intro/reading-data-pyspark.html">
+   Reading Data in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../pyspark-intro/returning-data.html">
+   Returning Data from Cluster to Driver
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../pyspark-intro/f-col.html">
+   Reference columns by name:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     F.col()
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to sparklyr
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Introduction to sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="reading-data-sparklyr.html">
+   Reading Data in sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="sparklyr-functions.html">
+   Using Spark functions in sparklyr
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Spark functions
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/union-dataframes-with-different-columns.html">
+   Union two DataFrames with different columns
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/padding.html">
+   Add leading zeros with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     lpad()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/sampling.html">
+   Sampling:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     .sample()
+    </span>
+   </code>
+   and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     sdf_sample()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/pivot-tables.html">
+   Pivot tables in Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/rounding.html">
+   Rounding differences in Python, R and Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/window-functions.html">
+   Window Functions in Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/cross-joins.html">
+   Cross Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/arrays.html">
+   Arrays Functions in PySpark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/writing-data.html">
+   Writing Data
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-functions/job-description.html">
+   Set Spark Job Description
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Understanding and Optimising Spark
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/optimisation-tips.html">
+   Ideas for optimising Spark code
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/spark-application-and-ui.html">
+   Spark Application and UI
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/shuffling.html">
+   Shuffling
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/join-concepts.html">
+   Optimising Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/salted-joins.html">
+   Salted Joins
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/partitions.html">
+   Managing Partitions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/persistence.html">
+   Persisting in Spark
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/cache.html">
+   Caching
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html">
+   Checkpoint
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/garbage-collection.html">
+   Garbage Collection
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/df-order.html">
+   Spark DataFrames Are Not Ordered
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-concepts/exercises.html">
+   Exercises
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Testing and Debugging
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/spark-errors.html">
+   Understanding and Handling Spark Errors
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../testing-debugging/unit-testing.html">
+   Unit Testing in Spark
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Ancillary Topics
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/visualisation.html">
+   Spark and Visualisation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/module-imports.html">
+   Naming Conflicts in Module Imports
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../ancillary-topics/pydoop.html">
+   Pydoop: HDFS to pandas
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/sparklyr-intro/sparklyr-intro.md"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.md</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/robertswh/Spark at the ONS"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/robertswh/Spark at the ONS/issues/new?title=Issue%20on%20page%20%2Fsparklyr-intro/sparklyr-intro.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#sparklyr-a-quick-introduction">
+   sparklyr: a quick introduction
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-sparklyr-package">
+   The
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     sparklyr
+    </span>
+   </code>
+   package
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#create-a-spark-session-spark-connect">
+   Create a Spark session:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     spark_connect()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#reading-data-spark-read-csv">
+   Reading data:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     spark_read_csv()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#preview-data-glimpse">
+   Preview data:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     glimpse()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#implicitly-preview-data-print">
+   Implicitly Preview data:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     print()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#convert-to-a-tibble-collect-and-head">
+   Convert to a tibble:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     collect()
+    </span>
+   </code>
+   and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     head()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#select-and-drop-columns-select">
+   Select and drop columns:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     select()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#get-the-row-count-sdf-nrow">
+   Get the row count:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     sdf_nrow()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#rename-columns-rename">
+   Rename columns:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     rename()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercise-1">
+   Exercise 1
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-1a">
+     Exercise 1a
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-1b">
+     Exercise 1b
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-1c">
+     Exercise 1c
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#filter-rows-filter">
+   Filter rows:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     filter()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercise-2">
+   Exercise 2
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#adding-columns-mutate">
+   Adding Columns:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     mutate()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#using-spark-sql-functions-with-mutate">
+   Using Spark SQL Functions with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     mutate()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#sorting-arrange-and-sdf-sort">
+   Sorting:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     arrange()
+    </span>
+   </code>
+   and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     sdf_sort()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercise-3">
+   Exercise 3
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#grouping-and-aggregating-group-by-and-summarise">
+   Grouping and Aggregating:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     group_by()
+    </span>
+   </code>
+   and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     summarise()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#reading-data-from-a-parquet-file-spark-read-parquet">
+   Reading data from a Parquet file:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     spark_read_parquet()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#joining-data-left-join">
+   Joining Data
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     left_join()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#writing-data-file-choice">
+   Writing data: file choice
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#write-to-a-parquet-spark-write-parquet">
+   Write to a parquet:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     spark_write_parquet()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#write-to-a-csv-spark-write-csv-and-sdf-coalesce">
+   Write to a CSV:
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     spark_write_csv()
+    </span>
+   </code>
+   and
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     sdf_coalesce()
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#removing-files">
+   Removing files
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#acknowledgements">
+     Acknowledgements
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="introduction-to-sparklyr">
+<h1>Introduction to sparklyr<a class="headerlink" href="#introduction-to-sparklyr" title="Permalink to this headline">¶</a></h1>
+<p>This article aims to give hands on experience in working with the sparklyr package in R. You can download the raw R code used in this article from the <a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/ons-spark/raw-notebooks/sparklyr-intro/r_input.R">ONS Spark repository</a>.</p>
+<p>We will not aim to cover all the sparklyr DataFrame functionality or go into detail of how Spark works, but instead focus on practicality by performing some common operations on an example dataset. There are a handful of exercises that you can complete while reading this article.</p>
+<p>Prerequisites for this article are some basic knowledge of R and dplyr. If you are completely new to R then it is recommended to complete an introductory course first; your organisation may have specific R training. Other resources include the <a class="reference external" href="https://dplyr.tidyverse.org/articles/dplyr.html">Introduction to dplyr</a> and <a class="reference external" href="https://r4ds.had.co.nz/">R for Data Science</a>.  If you are an Python user, the <a class="reference internal" href="../pyspark-intro/pyspark-intro.html"><span class="doc std std-doc">Introduction to PySpark</span></a> article follows similar format.</p>
+<div class="section" id="sparklyr-a-quick-introduction">
+<h2>sparklyr: a quick introduction<a class="headerlink" href="#sparklyr-a-quick-introduction" title="Permalink to this headline">¶</a></h2>
+<p>Although this article focusses on practical usage to enable you to quickly use sparklyr, you do need to understand some basic theory of Spark and distributed computing.</p>
+<p>Spark is a powerful tool used to process huge data in an efficient way. We can access Spark in R with the sparklyr package. Spark has DataFrames, consisting of rows and columns, similar to base R DataFrames or tibbles. Many of the operations are also translated directly from dplyr, some with a <code class="docutils literal notranslate"><span class="pre">spark_</span></code> or <code class="docutils literal notranslate"><span class="pre">sdf_</span></code> prefix: e.g. you can use <a class="reference external" href="https://dplyr.tidyverse.org/reference/select.html"><code class="docutils literal notranslate"><span class="pre">select()</span></code></a>, <a class="reference external" href="https://dplyr.tidyverse.org/reference/mutate.html"><code class="docutils literal notranslate"><span class="pre">mutate()</span></code></a>, <a class="reference external" href="https://dplyr.tidyverse.org/reference/filter.html"><code class="docutils literal notranslate"><span class="pre">filter()</span></code></a> and <a class="reference external" href="https://dplyr.tidyverse.org/reference/summarise.html"><code class="docutils literal notranslate"><span class="pre">summarise()</span></code></a> as you would in dplyr.</p>
+<p>The key difference between sparklyr and base R is where the DataFrame is processed:</p>
+<ul class="simple">
+<li><p>base R DataFrames and tibbles are processed on the driver; this could be on a local machine using a desktop IDE such as RStudio, or on a server, e.g. in a dedicated Docker container (such as a CDSW session). The amount of data you can process is limited to the driver memory, so base R is suitable for smaller data.</p></li>
+<li><p>sparklyr DataFrames are processed on the Spark cluster. This is a big pool of linked machines, called nodes. sparklyr DataFrames are distributed into partitions, and are processed in parallel on the nodes in the Spark cluster. You can have much greater memory capacity with Spark and so is suitable for big data.</p></li>
+</ul>
+<p>The DataFrame is also processed differently:</p>
+<ul class="simple">
+<li><p>In base R and dplyr, the DataFrame changes in memory at each point, e.g. you could create a DataFrame by reading from a CSV file, select some columns, filter the rows, add a column with <code class="docutils literal notranslate"><span class="pre">mutate()</span></code> and then write the data out. With each operation, the DataFrame is physically changing in memory. This can be useful for debugging as it is easy to see intermediate outputs.</p></li>
+<li><p>In sparklyr, DataFrames are lazily evaluated. We give Spark a set of instructions, called transformations, which are only evaluated when necessary, for instance to get a row count or write out data to a file, referred to as an action. In the example above, the plan is triggered once the data are set to write out to a file.</p></li>
+</ul>
+<p>For more detail on how Spark works, you can refer to the articles in the Understanding and Optimising Spark chapter of this book. <a class="reference external" href="https://pages.databricks.com/rs/094-YMS-629/images/LearningSpark2.0.pdf">Databricks: Learning Spark</a> is another useful resource.</p>
+</div>
+<div class="section" id="the-sparklyr-package">
+<h2>The <code class="docutils literal notranslate"><span class="pre">sparklyr</span></code> package<a class="headerlink" href="#the-sparklyr-package" title="Permalink to this headline">¶</a></h2>
+<p>To use Spark with R, we make use of the <a class="reference external" href="https://spark.rstudio.com/"><code class="docutils literal notranslate"><span class="pre">sparklyr</span></code></a> package. There is also the <a class="reference external" href="https://spark.apache.org/docs/latest/sparkr.html">SparkR</a> package which is an alternative, although this is not used at the ONS.</p>
+<p>It is recommended to install the full <a class="reference external" href="https://www.tidyverse.org/"><code class="docutils literal notranslate"><span class="pre">tidyverse</span></code></a> first before installing <code class="docutils literal notranslate"><span class="pre">sparklyr</span></code>, to ensure that you take take advantage of the full functionality of dplyr and related packages.</p>
+<p>When referencing functions from <code class="docutils literal notranslate"><span class="pre">sparklyr</span></code>, you can either import the package with <code class="docutils literal notranslate"><span class="pre">library()</span></code> or <code class="docutils literal notranslate"><span class="pre">require()</span></code>, or reference the function directly with <code class="docutils literal notranslate"><span class="pre">::</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">sparklyr::select()</span></code>. If you reference directly you will need to import <code class="docutils literal notranslate"><span class="pre">magrittr</span></code> to take advantage of the <code class="docutils literal notranslate"><span class="pre">%&gt;%</span></code> pipes. See the article on <a class="reference internal" href="../ancillary-topics/module-imports.html"><span class="doc std std-doc">Avoiding Module Import Conflicts</span></a> for more information on referencing packages.</p>
+<p>In this article we both reference the packages directly and also import the packages, so if you run the raw code you can use either method. Knowing where a package comes from can be tricky when using sparklyr, so although the generally accepted good practice is to directly reference with <code class="docutils literal notranslate"><span class="pre">::</span></code> you may find it easier to just import the packages and use the functions without referencing.</p>
+<p>We also import <code class="docutils literal notranslate"><span class="pre">dplyr</span></code>, as we will frequently be converting sparklyr DataFrames to tibbles. As part of the setup we also read in a config file using <code class="docutils literal notranslate"><span class="pre">yaml</span></code> although as this is only being used once the package is directly referenced.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-0-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">magrittr</span><span class="p">)</span>
+
+<span class="n">config</span> <span class="o">&lt;-</span> <span class="n">yaml</span><span class="o">::</span><span class="nf">yaml.load_file</span><span class="p">(</span><span class="s">&quot;ons-spark/config.yaml&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<p>The help functionality in R works as usual with sparklyr functions, and can be accessed by prefixing a function with <code class="docutils literal notranslate"><span class="pre">?</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">?spark_read_csv</span></code>, although the easiest way is to look at the <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/">documentation</a>. There are a lot of functions in the sparklyr module and you will be very unlikely to use them all.</p>
+</div>
+<div class="section" id="create-a-spark-session-spark-connect">
+<h2>Create a Spark session: <code class="docutils literal notranslate"><span class="pre">spark_connect()</span></code><a class="headerlink" href="#create-a-spark-session-spark-connect" title="Permalink to this headline">¶</a></h2>
+<p>With the <code class="docutils literal notranslate"><span class="pre">sparklyr</span></code> package imported we now want to create a connection to the Spark cluster. We use <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html"><code class="docutils literal notranslate"><span class="pre">spark_connect()</span></code></a> and assign this to <code class="docutils literal notranslate"><span class="pre">sc</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">spark_connect()</span></code> takes a <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_config.html"><code class="docutils literal notranslate"><span class="pre">spark_config()</span></code></a> as an input and this has many options for controlling the size of the Spark session; see the <a class="reference internal" href="../spark-overview/spark-session-guidance.html"><span class="doc std std-doc">Guidance on Spark Sessions</span></a> and also <a class="reference internal" href="../spark-overview/example-spark-sessions.html"><span class="doc std std-doc">Example Spark Sessions</span></a> to get an idea of what sized session to use.</p>
+<p>For this article, we are using a tiny dataset by Spark standards, and so are using a local session. This also means that you can run this code without having access to a Spark cluster.</p>
+<p>Note that only one Spark session can be running at once. If a session already exists then a new one will not be created, instead the connection to the existing session will be used.</p>
+<p>We can confirm that we have a running Spark session by checking that the output of <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html"><code class="docutils literal notranslate"><span class="pre">spark_connection_is_open()</span></code></a> is <code class="docutils literal notranslate"><span class="pre">TRUE</span></code>.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-1-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
+  <span class="n">master</span> <span class="o">=</span> <span class="s">&quot;local[2]&quot;</span><span class="p">,</span>
+  <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;sparklyr-intro&quot;</span><span class="p">,</span>
+  <span class="n">config</span> <span class="o">=</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">())</span>
+  
+<span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connection_is_open</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] TRUE
+</pre></div>
+</div>
+</div>
+<div class="section" id="reading-data-spark-read-csv">
+<h2>Reading data: <code class="docutils literal notranslate"><span class="pre">spark_read_csv()</span></code><a class="headerlink" href="#reading-data-spark-read-csv" title="Permalink to this headline">¶</a></h2>
+<p>For this article we will look at some open data on animal rescue incidents from the London Fire Brigade. The data are stored as a CSV, although the parquet file format is the most common when using Spark. The reason for using CSV in this article is because it is a familiar file format and allows you to adapt this code easily for your own sample data. See the article on <span class="xref myst">Reading Data in sparklyr</span> for more information.</p>
+<p>Often your data will be large and stored using Hadoop, on the Hadoop Distributed File System (HDFS). This example uses a local file, enabling us to get started quickly; see the article on <a class="reference internal" href="../spark-overview/data-storage.html"><span class="doc std std-doc">Data Storage</span></a> for more information.</p>
+<p>To read in from a CSV file, use <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_read_csv.html"><code class="docutils literal notranslate"><span class="pre">spark_read_csv()</span></code></a>. The first argument is to supply <code class="docutils literal notranslate"><span class="pre">sc</span></code>, which is the open Spark connection defined from <code class="docutils literal notranslate"><span class="pre">spark_connect()</span></code> previously. The file path is stored in the config file as <code class="docutils literal notranslate"><span class="pre">rescue_path_csv</span></code>. Using <code class="docutils literal notranslate"><span class="pre">header=TRUE</span></code> means that the DataFrame will use the column headers from the CSV as the column names. CSV files do not contain information about the <a class="reference internal" href="../spark-overview/data-types.html"><span class="doc std std-doc">data types</span></a>, so use <code class="docutils literal notranslate"><span class="pre">infer_schema=TRUE</span></code> which makes Spark scan the file to infer the data types.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-2-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_path</span> <span class="o">=</span> <span class="n">config</span><span class="o">$</span><span class="n">rescue_path_csv</span>
+
+<span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_csv</span><span class="p">(</span>
+    <span class="n">sc</span><span class="p">,</span>
+    <span class="n">path</span><span class="o">=</span><span class="n">rescue_path</span><span class="p">,</span> 
+    <span class="n">header</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span>
+    <span class="n">infer_schema</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<p>We can use <a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/class.html"><code class="docutils literal notranslate"><span class="pre">class(rescue)</span></code></a> to see that <code class="docutils literal notranslate"><span class="pre">rescue</span></code> is now a sparklyr DataFrame:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-3-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">class</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] &quot;tbl_spark&quot; &quot;tbl_sql&quot;   &quot;tbl_lazy&quot;  &quot;tbl&quot;      
+</pre></div>
+</div>
+</div>
+<div class="section" id="preview-data-glimpse">
+<h2>Preview data: <code class="docutils literal notranslate"><span class="pre">glimpse()</span></code><a class="headerlink" href="#preview-data-glimpse" title="Permalink to this headline">¶</a></h2>
+<p>To view the column names, data types and get a short preview of the data use <a class="reference external" href="https://pillar.r-lib.org/reference/glimpse.html"><code class="docutils literal notranslate"><span class="pre">glimpse()</span></code></a> from the <code class="docutils literal notranslate"><span class="pre">pillar</span></code> package. These will be transposed in the display, meaning this option is good for previewing DataFrames with a large number of columns.</p>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">glimpse()</span></code> is an <em>action</em> and the DataFrame will get lazily evaluated when this is used. As such, <code class="docutils literal notranslate"><span class="pre">glimpse()</span></code> can take a long time when you have a lot of code. As we are only previewing a small DataFrame that is directly imported from CSV it will be relatively quick here.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-4-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-4-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">pillar</span><span class="o">::</span><span class="nf">glimpse</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Rows: ??
+Columns: 26
+Database: spark_connection
+$ IncidentNumber             &lt;chr&gt; &quot;139091&quot;, &quot;275091&quot;, &quot;2075091&quot;, &quot;2872091&quot;, &quot;…
+$ DateTimeOfCall             &lt;chr&gt; &quot;01/01/2009 03:01&quot;, &quot;01/01/2009 08:51&quot;, &quot;04…
+$ CalYear                    &lt;int&gt; 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2…
+$ FinYear                    &lt;chr&gt; &quot;2008/09&quot;, &quot;2008/09&quot;, &quot;2008/09&quot;, &quot;2008/09&quot;,…
+$ TypeOfIncident             &lt;chr&gt; &quot;Special Service&quot;, &quot;Special Service&quot;, &quot;Spec…
+$ PumpCount                  &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+$ PumpHoursTotal             &lt;dbl&gt; 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1…
+$ HourlyNotionalCostGBP      &lt;int&gt; 255, 255, 255, 255, 255, 255, 255, 255, 255…
+$ IncidentNotionalCostGBP    &lt;dbl&gt; 510, 255, 255, 255, 255, 255, 255, 255, 255…
+$ FinalDescription           &lt;chr&gt; &quot;DOG WITH JAW TRAPPED IN MAGAZINE RACK,B15&quot;…
+$ AnimalGroupParent          &lt;chr&gt; &quot;Dog&quot;, &quot;Fox&quot;, &quot;Dog&quot;, &quot;Horse&quot;, &quot;Rabbit&quot;, &quot;Un…
+$ OriginofCall               &lt;chr&gt; &quot;Person (land line)&quot;, &quot;Person (land line)&quot;,…
+$ PropertyType               &lt;chr&gt; &quot;House - single occupancy &quot;, &quot;Railings&quot;, &quot;P…
+$ PropertyCategory           &lt;chr&gt; &quot;Dwelling&quot;, &quot;Outdoor Structure&quot;, &quot;Outdoor S…
+$ SpecialServiceTypeCategory &lt;chr&gt; &quot;Other animal assistance&quot;, &quot;Other animal as…
+$ SpecialServiceType         &lt;chr&gt; &quot;Animal assistance involving livestock - Ot…
+$ WardCode                   &lt;chr&gt; &quot;E05011467&quot;, &quot;E05000169&quot;, &quot;E05000558&quot;, &quot;E05…
+$ Ward                       &lt;chr&gt; &quot;Crystal Palace &amp; Upper Norwood&quot;, &quot;Woodside…
+$ BoroughCode                &lt;chr&gt; &quot;E09000008&quot;, &quot;E09000008&quot;, &quot;E09000029&quot;, &quot;E09…
+$ Borough                    &lt;chr&gt; &quot;Croydon&quot;, &quot;Croydon&quot;, &quot;Sutton&quot;, &quot;Hillingdon…
+$ StnGroundName              &lt;chr&gt; &quot;Norbury&quot;, &quot;Woodside&quot;, &quot;Wallington&quot;, &quot;Ruisl…
+$ PostcodeDistrict           &lt;chr&gt; &quot;SE19&quot;, &quot;SE25&quot;, &quot;SM5&quot;, &quot;UB9&quot;, &quot;RM3&quot;, &quot;RM10&quot;…
+$ Easting_m                  &lt;dbl&gt; NA, 534785, 528041, 504689, NA, NA, 539013,…
+$ Northing_m                 &lt;dbl&gt; NA, 167546, 164923, 190685, NA, NA, 186162,…
+$ Easting_rounded            &lt;int&gt; 532350, 534750, 528050, 504650, 554650, 549…
+$ Northing_rounded           &lt;int&gt; 170050, 167550, 164950, 190650, 192350, 184…
+</pre></div>
+</div>
+<p>Note that when using <code class="docutils literal notranslate"><span class="pre">glimpse()</span></code> the number of rows are given as <code class="docutils literal notranslate"><span class="pre">??</span></code>. Spark uses lazy evaluation and it can return a preview of the data without having to derive the row count.</p>
+</div>
+<div class="section" id="implicitly-preview-data-print">
+<h2>Implicitly Preview data: <code class="docutils literal notranslate"><span class="pre">print()</span></code><a class="headerlink" href="#implicitly-preview-data-print" title="Permalink to this headline">¶</a></h2>
+<p>The DataFrame can be implicitly previewed with <code class="docutils literal notranslate"><span class="pre">print()</span></code> or by supplying the DataFrame name without assignment or a function.</p>
+<p>These are interpreted as <em>actions</em>, meaning that all previous <em>transformations</em> will be ran on the Spark cluster; often this will have many <em>transformations</em>, but here we only have one, reading in the data.</p>
+<p>By default 10 rows will be displayed; this can be changed by setting <code class="docutils literal notranslate"><span class="pre">n</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">n=5</span></code>. When there are many columns the output will be truncated, so this option is often not practical.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-5-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-5-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span>
+</pre></div>
+</div>
+</div></div>
+<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># Source: spark&lt;animal_rescue_f63c89cf_baf8_48c9_b6d8_bbeccadbc55f&gt; [?? x 26]
+   IncidentNumber DateTimeOfCall   CalYear FinYear TypeOfIncident  PumpCount
+   &lt;chr&gt;          &lt;chr&gt;              &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;               &lt;dbl&gt;
+ 1 139091         01/01/2009 03:01    2009 2008/09 Special Service         1
+ 2 275091         01/01/2009 08:51    2009 2008/09 Special Service         1
+ 3 2075091        04/01/2009 10:07    2009 2008/09 Special Service         1
+ 4 2872091        05/01/2009 12:27    2009 2008/09 Special Service         1
+ 5 3553091        06/01/2009 15:23    2009 2008/09 Special Service         1
+ 6 3742091        06/01/2009 19:30    2009 2008/09 Special Service         1
+ 7 4011091        07/01/2009 06:29    2009 2008/09 Special Service         1
+ 8 4211091        07/01/2009 11:55    2009 2008/09 Special Service         1
+ 9 4306091        07/01/2009 13:48    2009 2008/09 Special Service         1
+10 4715091        07/01/2009 21:24    2009 2008/09 Special Service         1
+# … with more rows, and 20 more variables: PumpHoursTotal &lt;dbl&gt;,
+#   HourlyNotionalCostGBP &lt;int&gt;, IncidentNotionalCostGBP &lt;dbl&gt;,
+#   FinalDescription &lt;chr&gt;, AnimalGroupParent &lt;chr&gt;, OriginofCall &lt;chr&gt;,
+#   PropertyType &lt;chr&gt;, PropertyCategory &lt;chr&gt;,
+#   SpecialServiceTypeCategory &lt;chr&gt;, SpecialServiceType &lt;chr&gt;, WardCode &lt;chr&gt;,
+#   Ward &lt;chr&gt;, BoroughCode &lt;chr&gt;, Borough &lt;chr&gt;, StnGroundName &lt;chr&gt;,
+#   PostcodeDistrict &lt;chr&gt;, Easting_m &lt;dbl&gt;, Northing_m &lt;dbl&gt;, …
+</pre></div>
+</div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-6-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-6-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">print</span><span class="p">(</span><span class="n">rescue</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="m">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># Source: spark&lt;animal_rescue_205ed5b0_55ae_4fad_af90_b9b6ce17e094&gt; [?? x 26]
+  IncidentNumber DateTimeOfCall   CalYear FinYear TypeOfIncident  PumpCount
+  &lt;chr&gt;          &lt;chr&gt;              &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;               &lt;dbl&gt;
+1 139091         01/01/2009 03:01    2009 2008/09 Special Service         1
+2 275091         01/01/2009 08:51    2009 2008/09 Special Service         1
+3 2075091        04/01/2009 10:07    2009 2008/09 Special Service         1
+4 2872091        05/01/2009 12:27    2009 2008/09 Special Service         1
+5 3553091        06/01/2009 15:23    2009 2008/09 Special Service         1
+# … with more rows, and 20 more variables: PumpHoursTotal &lt;dbl&gt;,
+#   HourlyNotionalCostGBP &lt;int&gt;, IncidentNotionalCostGBP &lt;dbl&gt;,
+#   FinalDescription &lt;chr&gt;, AnimalGroupParent &lt;chr&gt;, OriginofCall &lt;chr&gt;,
+#   PropertyType &lt;chr&gt;, PropertyCategory &lt;chr&gt;,
+#   SpecialServiceTypeCategory &lt;chr&gt;, SpecialServiceType &lt;chr&gt;, WardCode &lt;chr&gt;,
+#   Ward &lt;chr&gt;, BoroughCode &lt;chr&gt;, Borough &lt;chr&gt;, StnGroundName &lt;chr&gt;,
+#   PostcodeDistrict &lt;chr&gt;, Easting_m &lt;dbl&gt;, Northing_m &lt;dbl&gt;, …
+</pre></div>
+</div>
+</div>
+<div class="section" id="convert-to-a-tibble-collect-and-head">
+<h2>Convert to a tibble: <code class="docutils literal notranslate"><span class="pre">collect()</span></code> and <code class="docutils literal notranslate"><span class="pre">head()</span></code><a class="headerlink" href="#convert-to-a-tibble-collect-and-head" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">glimpse()</span></code> and <code class="docutils literal notranslate"><span class="pre">print()</span></code> both only give us a partial preview of the rows in the DataFrame, and do not assign the results to a variable. <a class="reference external" href="https://dplyr.tidyverse.org/reference/compute.html"><code class="docutils literal notranslate"><span class="pre">collect()</span></code></a> will bring the sparklyr DataFrame into the driver from the cluster as a tibble, and you can therefore take advantage of all the usual tibble and base R functionality. For instance, you may want to <a class="reference internal" href="../ancillary-topics/visualisation.html"><span class="doc std std-doc">visualise your results</span></a>.</p>
+<p>In some IDEs, printing a tibble will display a nicely formatted HTML table, so this is another option when previewing data.</p>
+<p>Be careful: the DataFrame is currently on the <em>Spark cluster</em> with lots of memory capacity, whereas tibbles are stored on the <em>driver</em>, which will have much less. Trying to use <code class="docutils literal notranslate"><span class="pre">collect()</span></code> and a huge sparklyr DF will not work. If converting to a tibble just to view the data, use <code class="docutils literal notranslate"><span class="pre">head()</span></code> to just bring back a small number of rows. Note that <a class="reference internal" href="../spark-concepts/df-order.html"><span class="doc std std-doc">sparklyr DataFrames are not ordered by default</span></a>, and <code class="docutils literal notranslate"><span class="pre">head()</span></code> on a sparklyr DataFrame will <strong>not</strong> always return the same rows. This is <a class="reference internal" href="#sort-data"><span class="std std-ref">discussed in more detail later</span></a>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">collect()</span></code> is an <em>action</em> and will process the whole plan on the Spark cluster. In this example, it will read the CSV file, return three rows, and then convert the result to the driver as a tibble. Note that the number of rows is now <code class="docutils literal notranslate"><span class="pre">3</span></code> rather than <code class="docutils literal notranslate"><span class="pre">??</span></code>, as tibbles have known dimensions.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-7-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-7-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-7-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_tibble</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="nf">head</span><span class="p">(</span><span class="m">3</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span>
+    
+<span class="n">rescue_tibble</span> <span class="o">%&gt;%</span>
+    <span class="nf">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># A tibble: 3 × 26
+  IncidentNumber DateTimeOfCall   CalYear FinYear TypeOfIncident  PumpCount
+  &lt;chr&gt;          &lt;chr&gt;              &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;               &lt;dbl&gt;
+1 139091         01/01/2009 03:01    2009 2008/09 Special Service         1
+2 275091         01/01/2009 08:51    2009 2008/09 Special Service         1
+3 2075091        04/01/2009 10:07    2009 2008/09 Special Service         1
+# … with 20 more variables: PumpHoursTotal &lt;dbl&gt;, HourlyNotionalCostGBP &lt;int&gt;,
+#   IncidentNotionalCostGBP &lt;dbl&gt;, FinalDescription &lt;chr&gt;,
+#   AnimalGroupParent &lt;chr&gt;, OriginofCall &lt;chr&gt;, PropertyType &lt;chr&gt;,
+#   PropertyCategory &lt;chr&gt;, SpecialServiceTypeCategory &lt;chr&gt;,
+#   SpecialServiceType &lt;chr&gt;, WardCode &lt;chr&gt;, Ward &lt;chr&gt;, BoroughCode &lt;chr&gt;,
+#   Borough &lt;chr&gt;, StnGroundName &lt;chr&gt;, PostcodeDistrict &lt;chr&gt;,
+#   Easting_m &lt;dbl&gt;, Northing_m &lt;dbl&gt;, Easting_rounded &lt;int&gt;, …
+</pre></div>
+</div>
+<p>As the syntax in sparklyr inherits so much from dplyr new users can sometimes get confused over what type of DataFrame they have. <code class="docutils literal notranslate"><span class="pre">class()</span></code> is useful here. We can confirm that <code class="docutils literal notranslate"><span class="pre">rescue_tibble</span></code> is indeed a tibble:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-8-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-8-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-8-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">class</span><span class="p">(</span><span class="n">rescue_tibble</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;
+</pre></div>
+</div>
+</div>
+<div class="section" id="select-and-drop-columns-select">
+<h2>Select and drop columns: <code class="docutils literal notranslate"><span class="pre">select()</span></code><a class="headerlink" href="#select-and-drop-columns-select" title="Permalink to this headline">¶</a></h2>
+<p>Often your data will have too many columns that are not relevant, so we can use <code class="docutils literal notranslate"><span class="pre">select()</span></code> to just get the ones that are of interest. In our example, we can reduce the number of columns returned so that the output of <code class="docutils literal notranslate"><span class="pre">print()</span></code> is much neater.</p>
+<p><a class="reference external" href="https://dplyr.tidyverse.org/reference/select.html"><code class="docutils literal notranslate"><span class="pre">select()</span></code></a> in sparklyr works in the same way as in dplyr; simply provide the names of the columns. There are no need for vectors, lists or quotes around column names. It is recommended to use the pipe (<code class="docutils literal notranslate"><span class="pre">%&gt;%</span></code>), which means the first argument is the result of the previous operation. Using <code class="docutils literal notranslate"><span class="pre">%&gt;%</span></code> makes the code easier to read and also more instinctive, since the only inputs to <code class="docutils literal notranslate"><span class="pre">select()</span></code> are the columns, not the DataFrame.</p>
+<p>Selecting columns is a <em>transformation</em>, and so will only be processed once an <em>action</em> is called. As such we are chaining this with <code class="docutils literal notranslate"><span class="pre">collect()</span></code>, which will bring the data into the driver. Remember to use <code class="docutils literal notranslate"><span class="pre">head()</span></code> if collecting the data:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-9-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-9-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-9-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">IncidentNumber</span><span class="p">,</span> <span class="n">DateTimeOfCall</span><span class="p">,</span> <span class="n">FinalDescription</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
+    <span class="nf">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># A tibble: 5 × 3
+  IncidentNumber DateTimeOfCall   FinalDescription                         
+  &lt;chr&gt;          &lt;chr&gt;            &lt;chr&gt;                                    
+1 139091         01/01/2009 03:01 DOG WITH JAW TRAPPED IN MAGAZINE RACK,B15
+2 275091         01/01/2009 08:51 ASSIST RSPCA WITH FOX TRAPPED,B15        
+3 2075091        04/01/2009 10:07 DOG CAUGHT IN DRAIN,B15                  
+4 2872091        05/01/2009 12:27 HORSE TRAPPED IN LAKE,J17                
+5 3553091        06/01/2009 15:23 RABBIT TRAPPED UNDER SOFA,B15            
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">select()</span></code> can also be used to drop columns. Simply specify <code class="docutils literal notranslate"><span class="pre">-</span></code> before a column name to remove it. There are a lot of columns related to the location of the animal rescue incidents that we will not use that can be removed with <code class="docutils literal notranslate"><span class="pre">select(-column)</span></code>.</p>
+<p>Note that we have written over the our previous DataFrame by re-assiging to <code class="docutils literal notranslate"><span class="pre">rescue</span></code>; Spark DFs are <em>immutable</em>.</p>
+<p>We then use <code class="docutils literal notranslate"><span class="pre">glimpse()</span></code> to verify that the columns have been removed.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-10-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-10-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-10-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span>
+        <span class="o">-</span><span class="n">WardCode</span><span class="p">,</span>
+        <span class="o">-</span><span class="n">BoroughCode</span><span class="p">,</span>
+        <span class="o">-</span><span class="n">Easting_m</span><span class="p">,</span>
+        <span class="o">-</span><span class="n">Northing_m</span><span class="p">,</span>
+        <span class="o">-</span><span class="n">Easting_rounded</span><span class="p">,</span>
+        <span class="o">-</span><span class="n">Northing_rounded</span><span class="p">)</span>
+        
+<span class="n">pillar</span><span class="o">::</span><span class="nf">glimpse</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Rows: ??
+Columns: 20
+Database: spark_connection
+$ IncidentNumber             &lt;chr&gt; &quot;139091&quot;, &quot;275091&quot;, &quot;2075091&quot;, &quot;2872091&quot;, &quot;…
+$ DateTimeOfCall             &lt;chr&gt; &quot;01/01/2009 03:01&quot;, &quot;01/01/2009 08:51&quot;, &quot;04…
+$ CalYear                    &lt;int&gt; 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2…
+$ FinYear                    &lt;chr&gt; &quot;2008/09&quot;, &quot;2008/09&quot;, &quot;2008/09&quot;, &quot;2008/09&quot;,…
+$ TypeOfIncident             &lt;chr&gt; &quot;Special Service&quot;, &quot;Special Service&quot;, &quot;Spec…
+$ PumpCount                  &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+$ PumpHoursTotal             &lt;dbl&gt; 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1…
+$ HourlyNotionalCostGBP      &lt;int&gt; 255, 255, 255, 255, 255, 255, 255, 255, 255…
+$ IncidentNotionalCostGBP    &lt;dbl&gt; 510, 255, 255, 255, 255, 255, 255, 255, 255…
+$ FinalDescription           &lt;chr&gt; &quot;DOG WITH JAW TRAPPED IN MAGAZINE RACK,B15&quot;…
+$ AnimalGroupParent          &lt;chr&gt; &quot;Dog&quot;, &quot;Fox&quot;, &quot;Dog&quot;, &quot;Horse&quot;, &quot;Rabbit&quot;, &quot;Un…
+$ OriginofCall               &lt;chr&gt; &quot;Person (land line)&quot;, &quot;Person (land line)&quot;,…
+$ PropertyType               &lt;chr&gt; &quot;House - single occupancy &quot;, &quot;Railings&quot;, &quot;P…
+$ PropertyCategory           &lt;chr&gt; &quot;Dwelling&quot;, &quot;Outdoor Structure&quot;, &quot;Outdoor S…
+$ SpecialServiceTypeCategory &lt;chr&gt; &quot;Other animal assistance&quot;, &quot;Other animal as…
+$ SpecialServiceType         &lt;chr&gt; &quot;Animal assistance involving livestock - Ot…
+$ Ward                       &lt;chr&gt; &quot;Crystal Palace &amp; Upper Norwood&quot;, &quot;Woodside…
+$ Borough                    &lt;chr&gt; &quot;Croydon&quot;, &quot;Croydon&quot;, &quot;Sutton&quot;, &quot;Hillingdon…
+$ StnGroundName              &lt;chr&gt; &quot;Norbury&quot;, &quot;Woodside&quot;, &quot;Wallington&quot;, &quot;Ruisl…
+$ PostcodeDistrict           &lt;chr&gt; &quot;SE19&quot;, &quot;SE25&quot;, &quot;SM5&quot;, &quot;UB9&quot;, &quot;RM3&quot;, &quot;RM10&quot;…
+</pre></div>
+</div>
+</div>
+<div class="section" id="get-the-row-count-sdf-nrow">
+<h2>Get the row count: <code class="docutils literal notranslate"><span class="pre">sdf_nrow()</span></code><a class="headerlink" href="#get-the-row-count-sdf-nrow" title="Permalink to this headline">¶</a></h2>
+<p>Sometimes your data will be small enough that you do not even need to use Spark. As such it is useful to know the row count, and then make the decision on whether to use Spark or just use base R or dplyr. One advantage of base R DataFrames is that there are more compatible packages available than there are with Spark.</p>
+<p>To get the row count in sparklyr, use <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_dim.html"><code class="docutils literal notranslate"><span class="pre">sdf_nrow()</span></code></a>. This will only work on sparklyr DFs, not tibbles or base R DFs.</p>
+<p>We saw earlier that unlike tibbles the row count is not automatically determined when the data are read in as a sparklyr DataFrame; remember that <code class="docutils literal notranslate"><span class="pre">glimpse()</span></code> had a row count of <code class="docutils literal notranslate"><span class="pre">??</span></code>. This is an example of <em>lazy evaluation</em>. As such, <code class="docutils literal notranslate"><span class="pre">sdf_nrow()</span></code> is an <em>action</em> and has to be explicitly called.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-11-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-11-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-11-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] 5898
+</pre></div>
+</div>
+</div>
+<div class="section" id="rename-columns-rename">
+<h2>Rename columns: <code class="docutils literal notranslate"><span class="pre">rename()</span></code><a class="headerlink" href="#rename-columns-rename" title="Permalink to this headline">¶</a></h2>
+<p>The source data has the column names in <code class="docutils literal notranslate"><span class="pre">CamelCase</span></code>, but when using R we generally prefer to use <code class="docutils literal notranslate"><span class="pre">snake_case</span></code>.</p>
+<p>To rename columns, use <a class="reference external" href="https://dplyr.tidyverse.org/reference/rename.html"><code class="docutils literal notranslate"><span class="pre">rename()</span></code></a>. Like <code class="docutils literal notranslate"><span class="pre">select()</span></code>, usage is the same as dplyr and is actually referenced directly with <code class="docutils literal notranslate"><span class="pre">dplyr::rename()</span></code>. Assign the new column name to be the old one with <code class="docutils literal notranslate"><span class="pre">=</span></code>, e.g <code class="docutils literal notranslate"><span class="pre">rename(incident_number</span> <span class="pre">=</span> <span class="pre">IncidentNumber)</span></code>. Once again we are re-assigning the DataFrame as it is immutable.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-12-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-12-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-12-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">rename</span><span class="p">(</span>
+        <span class="n">incident_number</span> <span class="o">=</span> <span class="n">IncidentNumber</span><span class="p">,</span>
+        <span class="n">date_time_of_call</span> <span class="o">=</span> <span class="n">DateTimeOfCall</span><span class="p">,</span>
+        <span class="n">animal_group</span> <span class="o">=</span> <span class="n">AnimalGroupParent</span><span class="p">,</span>
+        <span class="n">cal_year</span> <span class="o">=</span> <span class="n">CalYear</span><span class="p">,</span>
+        <span class="n">total_cost</span> <span class="o">=</span> <span class="n">IncidentNotionalCostGBP</span><span class="p">,</span>
+        <span class="n">job_hours</span> <span class="o">=</span> <span class="n">PumpHoursTotal</span><span class="p">,</span>
+        <span class="n">engine_count</span> <span class="o">=</span> <span class="n">PumpCount</span><span class="p">)</span>
+
+<span class="n">pillar</span><span class="o">::</span><span class="nf">glimpse</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Rows: ??
+Columns: 20
+Database: spark_connection
+$ incident_number            &lt;chr&gt; &quot;139091&quot;, &quot;275091&quot;, &quot;2075091&quot;, &quot;2872091&quot;, &quot;…
+$ date_time_of_call          &lt;chr&gt; &quot;01/01/2009 03:01&quot;, &quot;01/01/2009 08:51&quot;, &quot;04…
+$ cal_year                   &lt;int&gt; 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2…
+$ FinYear                    &lt;chr&gt; &quot;2008/09&quot;, &quot;2008/09&quot;, &quot;2008/09&quot;, &quot;2008/09&quot;,…
+$ TypeOfIncident             &lt;chr&gt; &quot;Special Service&quot;, &quot;Special Service&quot;, &quot;Spec…
+$ engine_count               &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+$ job_hours                  &lt;dbl&gt; 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1…
+$ HourlyNotionalCostGBP      &lt;int&gt; 255, 255, 255, 255, 255, 255, 255, 255, 255…
+$ total_cost                 &lt;dbl&gt; 510, 255, 255, 255, 255, 255, 255, 255, 255…
+$ FinalDescription           &lt;chr&gt; &quot;DOG WITH JAW TRAPPED IN MAGAZINE RACK,B15&quot;…
+$ animal_group               &lt;chr&gt; &quot;Dog&quot;, &quot;Fox&quot;, &quot;Dog&quot;, &quot;Horse&quot;, &quot;Rabbit&quot;, &quot;Un…
+$ OriginofCall               &lt;chr&gt; &quot;Person (land line)&quot;, &quot;Person (land line)&quot;,…
+$ PropertyType               &lt;chr&gt; &quot;House - single occupancy &quot;, &quot;Railings&quot;, &quot;P…
+$ PropertyCategory           &lt;chr&gt; &quot;Dwelling&quot;, &quot;Outdoor Structure&quot;, &quot;Outdoor S…
+$ SpecialServiceTypeCategory &lt;chr&gt; &quot;Other animal assistance&quot;, &quot;Other animal as…
+$ SpecialServiceType         &lt;chr&gt; &quot;Animal assistance involving livestock - Ot…
+$ Ward                       &lt;chr&gt; &quot;Crystal Palace &amp; Upper Norwood&quot;, &quot;Woodside…
+$ Borough                    &lt;chr&gt; &quot;Croydon&quot;, &quot;Croydon&quot;, &quot;Sutton&quot;, &quot;Hillingdon…
+$ StnGroundName              &lt;chr&gt; &quot;Norbury&quot;, &quot;Woodside&quot;, &quot;Wallington&quot;, &quot;Ruisl…
+$ PostcodeDistrict           &lt;chr&gt; &quot;SE19&quot;, &quot;SE25&quot;, &quot;SM5&quot;, &quot;UB9&quot;, &quot;RM3&quot;, &quot;RM10&quot;…
+</pre></div>
+</div>
+</div>
+<div class="section" id="exercise-1">
+<h2>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="exercise-1a">
+<h3>Exercise 1a<a class="headerlink" href="#exercise-1a" title="Permalink to this headline">¶</a></h3>
+<p>Rename the following columns in the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame:</p>
+<p><code class="docutils literal notranslate"><span class="pre">FinalDescription</span></code> –&gt; <code class="docutils literal notranslate"><span class="pre">description</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">PostcodeDistrict</span></code> –&gt; <code class="docutils literal notranslate"><span class="pre">postcode_district</span></code></p>
+</div>
+<div class="section" id="exercise-1b">
+<h3>Exercise 1b<a class="headerlink" href="#exercise-1b" title="Permalink to this headline">¶</a></h3>
+<p>Select these columns and the seven columns that were renamed in the cell above; you should have nine in total. Reassign the result to the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame.</p>
+</div>
+<div class="section" id="exercise-1c">
+<h3>Exercise 1c<a class="headerlink" href="#exercise-1c" title="Permalink to this headline">¶</a></h3>
+<p>Preview the structure of the DataFrame.</p>
+<details>
+<summary><b>Exercise 1: Solution</b></summary>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-13-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-13-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-13-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1a: Use rename. Remember to put the name of the new column first.</span>
+<span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">rename</span><span class="p">(</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="n">FinalDescription</span><span class="p">,</span>
+        <span class="n">postcode_district</span> <span class="o">=</span> <span class="n">PostcodeDistrict</span><span class="p">)</span>
+
+<span class="c1"># 1b: Select the nine columns and assign to rescue</span>
+<span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span>
+        <span class="n">incident_number</span><span class="p">,</span>
+        <span class="n">date_time_of_call</span><span class="p">,</span>
+        <span class="n">animal_group</span><span class="p">,</span>
+        <span class="n">cal_year</span><span class="p">,</span>
+        <span class="n">total_cost</span><span class="p">,</span>
+        <span class="n">job_hours</span><span class="p">,</span>
+        <span class="n">engine_count</span><span class="p">,</span>
+        <span class="n">description</span><span class="p">,</span>
+        <span class="n">postcode_district</span><span class="p">)</span>
+
+<span class="c1"># 1c Preview with glimpse()</span>
+<span class="c1"># As we have nine columns it is easier to view the transposed output</span>
+<span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">pillar</span><span class="o">::</span><span class="nf">glimpse</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Rows: ??
+Columns: 9
+Database: spark_connection
+$ incident_number   &lt;chr&gt; &quot;139091&quot;, &quot;275091&quot;, &quot;2075091&quot;, &quot;2872091&quot;, &quot;3553091&quot;,…
+$ date_time_of_call &lt;chr&gt; &quot;01/01/2009 03:01&quot;, &quot;01/01/2009 08:51&quot;, &quot;04/01/2009 …
+$ animal_group      &lt;chr&gt; &quot;Dog&quot;, &quot;Fox&quot;, &quot;Dog&quot;, &quot;Horse&quot;, &quot;Rabbit&quot;, &quot;Unknown - H…
+$ cal_year          &lt;int&gt; 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009…
+$ total_cost        &lt;dbl&gt; 510, 255, 255, 255, 255, 255, 255, 255, 255, 255, 25…
+$ job_hours         &lt;dbl&gt; 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1…
+$ engine_count      &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+$ description       &lt;chr&gt; &quot;DOG WITH JAW TRAPPED IN MAGAZINE RACK,B15&quot;, &quot;ASSIST…
+$ postcode_district &lt;chr&gt; &quot;SE19&quot;, &quot;SE25&quot;, &quot;SM5&quot;, &quot;UB9&quot;, &quot;RM3&quot;, &quot;RM10&quot;, &quot;E11&quot;, …
+</pre></div>
+</div>
+</details>
+</div>
+</div>
+<div class="section" id="filter-rows-filter">
+<h2>Filter rows: <code class="docutils literal notranslate"><span class="pre">filter()</span></code><a class="headerlink" href="#filter-rows-filter" title="Permalink to this headline">¶</a></h2>
+<p>Rows of sparklyr DataFrames can be filtered with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.filter.html"><code class="docutils literal notranslate"><span class="pre">filter()</span></code></a>, which takes a logical condition. This works in an identical way to <code class="docutils literal notranslate"><span class="pre">dplyr::filter()</span></code>. Any column names can be referenced by name without quotes.</p>
+<p>For instance, if we want to select all the rows where <code class="docutils literal notranslate"><span class="pre">animal_group</span></code> is equal to <code class="docutils literal notranslate"><span class="pre">Hamster</span></code>, we can use <code class="docutils literal notranslate"><span class="pre">filter(animal_group</span> <span class="pre">==</span> <span class="pre">&quot;Hamster&quot;)</span></code>. Note the double equals sign used in a condition. We do not want to change the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame, so assign it to a new DF, <code class="docutils literal notranslate"><span class="pre">hamsters</span></code>, then preview a few of the columns:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-14-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-14-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-14-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-14-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">hamsters</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">animal_group</span> <span class="o">==</span> <span class="s">&quot;Hamster&quot;</span><span class="p">)</span>
+
+<span class="n">hamsters</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span>
+        <span class="n">incident_number</span><span class="p">,</span>
+        <span class="n">animal_group</span><span class="p">,</span>
+        <span class="n">cal_year</span><span class="p">,</span>
+        <span class="n">total_cost</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># Source: spark&lt;?&gt; [?? x 4]
+   incident_number animal_group cal_year total_cost
+   &lt;chr&gt;           &lt;chr&gt;           &lt;int&gt;      &lt;dbl&gt;
+ 1 37009101        Hamster          2010        260
+ 2 58746101        Hamster          2010        260
+ 3 212716101       Hamster          2010        260
+ 4 140677111       Hamster          2011        260
+ 5 157873111       Hamster          2011        260
+ 6 164240111       Hamster          2011        260
+ 7 94146131        Hamster          2013        290
+ 8 105214131       Hamster          2013        290
+ 9 134157131       Hamster          2013        290
+10 145232141       Hamster          2014        295
+# … with more rows
+</pre></div>
+</div>
+<p>For multiple conditions putting each condition on a new line makes the code easier to read:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-15-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-15-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-15-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-15-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">expensive_olympic_dogs</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span>
+        <span class="n">animal_group</span> <span class="o">==</span> <span class="s">&quot;Dog&quot;</span> <span class="o">&amp;</span>
+        <span class="n">total_cost</span> <span class="o">&gt;=</span> <span class="m">750</span> <span class="o">&amp;</span>
+        <span class="n">cal_year</span> <span class="o">==</span> <span class="s">&quot;2012&quot;</span><span class="p">)</span>
+
+<span class="n">expensive_olympic_dogs</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span>
+        <span class="n">incident_number</span><span class="p">,</span>
+        <span class="n">animal_group</span><span class="p">,</span>
+        <span class="n">cal_year</span><span class="p">,</span>
+        <span class="n">total_cost</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># Source: spark&lt;?&gt; [?? x 4]
+  incident_number animal_group cal_year total_cost
+  &lt;chr&gt;           &lt;chr&gt;           &lt;int&gt;      &lt;dbl&gt;
+1 16209121        Dog              2012        780
+2 17531121        Dog              2012        780
+3 20818121        Dog              2012        780
+4 38636121        Dog              2012        780
+5 64764121        Dog              2012       1040
+</pre></div>
+</div>
+</div>
+<div class="section" id="exercise-2">
+<h2>Exercise 2<a class="headerlink" href="#exercise-2" title="Permalink to this headline">¶</a></h2>
+<p>Create a new DataFrame which consists of all the rows where <code class="docutils literal notranslate"><span class="pre">animal_group</span></code> is equal to <code class="docutils literal notranslate"><span class="pre">&quot;Fox&quot;</span></code>, then select <code class="docutils literal notranslate"><span class="pre">incident_number</span></code>, <code class="docutils literal notranslate"><span class="pre">animal_group</span></code>, <code class="docutils literal notranslate"><span class="pre">cal_year</span></code>, and <code class="docutils literal notranslate"><span class="pre">total_cost</span></code> and preview the first ten rows.</p>
+<details>
+<summary><b>Exercise 2: Solution</b></summary>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-16-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-16-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-16-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-16-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use filter(), ensuring that a new DataFrame is created</span>
+<span class="n">foxes</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">animal_group</span> <span class="o">==</span> <span class="s">&quot;Fox&quot;</span><span class="p">)</span>
+
+<span class="c1"># Preview with head(10)</span>
+<span class="n">foxes</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span>
+        <span class="n">incident_number</span><span class="p">,</span>
+        <span class="n">animal_group</span><span class="p">,</span>
+        <span class="n">cal_year</span><span class="p">,</span>
+        <span class="n">total_cost</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="nf">head</span><span class="p">(</span><span class="m">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># Source: spark&lt;?&gt; [?? x 4]
+   incident_number animal_group cal_year total_cost
+   &lt;chr&gt;           &lt;chr&gt;           &lt;int&gt;      &lt;dbl&gt;
+ 1 275091          Fox              2009        255
+ 2 12451091        Fox              2009        765
+ 3 12770091        Fox              2009        255
+ 4 18386091        Fox              2009        255
+ 5 20027091        Fox              2009        255
+ 6 30133091        Fox              2009        255
+ 7 73167091        Fox              2009        260
+ 8 80733091        Fox              2009        780
+ 9 105324091       Fox              2009        520
+10 116595091       Fox              2009        260
+</pre></div>
+</div>
+</details>
+</div>
+<div class="section" id="adding-columns-mutate">
+<h2>Adding Columns: <code class="docutils literal notranslate"><span class="pre">mutate()</span></code><a class="headerlink" href="#adding-columns-mutate" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://dplyr.tidyverse.org/reference/mutate.html"><code class="docutils literal notranslate"><span class="pre">mutate()</span></code></a> can be used to create new columns and overwrite an existing ones. One <code class="docutils literal notranslate"><span class="pre">mutate()</span></code> statement can be used to create multiple columns, which can make the code easier to read. Just like the other dplyr commands, <code class="docutils literal notranslate"><span class="pre">sparklyr::mutate()</span></code> works in an identical way to <code class="docutils literal notranslate"><span class="pre">dplyr::mutate()</span></code>. Once again, just reference the columns by name, rather than using quotes.</p>
+<p>The statement to create each column should begin <code class="docutils literal notranslate"><span class="pre">column_name</span> <span class="pre">=</span> </code>; note that a single <code class="docutils literal notranslate"><span class="pre">=</span></code> is being used for assignment rather than <code class="docutils literal notranslate"><span class="pre">&lt;-</span></code>. Then just set this new column equal to a statement, which will often be derived from other columns. For instance, we do not have a column for how long an incident took in the data, but do have the columns available to derive this:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">job_hours</span></code> gives the total number of hours for engines attending the incident, e.g. if 2 engines attended for an hour <code class="docutils literal notranslate"><span class="pre">job_hours</span></code> will be <code class="docutils literal notranslate"><span class="pre">2</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">engine_count</span></code> gives the number of engines in attendance</p></li>
+</ul>
+<p>So to get the duration of the incident, which we will call <code class="docutils literal notranslate"><span class="pre">incident_duration</span></code>, we have to divide <code class="docutils literal notranslate"><span class="pre">job_hours</span></code> by <code class="docutils literal notranslate"><span class="pre">engine_count</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-17-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-17-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-17-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-17-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span>
+        <span class="n">incident_duration</span> <span class="o">=</span> <span class="n">job_hours</span> <span class="o">/</span> <span class="n">engine_count</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<p>Now preview the data with <code class="docutils literal notranslate"><span class="pre">head(5)</span> <span class="pre">%&gt;%</span> <span class="pre">collect()</span></code> after selecting a few relevant columns, then print out the DataFrame:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-18-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-18-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-18-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-18-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span>
+        <span class="n">incident_number</span><span class="p">,</span>
+        <span class="n">animal_group</span><span class="p">,</span>
+        <span class="n">incident_duration</span><span class="p">,</span>
+        <span class="n">job_hours</span><span class="p">,</span>
+        <span class="n">engine_count</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
+    <span class="nf">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># A tibble: 5 × 5
+  incident_number animal_group incident_duration job_hours engine_count
+  &lt;chr&gt;           &lt;chr&gt;                    &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
+1 139091          Dog                          2         2            1
+2 275091          Fox                          1         1            1
+3 2075091         Dog                          1         1            1
+4 2872091         Horse                        1         1            1
+5 3553091         Rabbit                       1         1            1
+</pre></div>
+</div>
+<p>Although the source data here is small, note that previewing the data will still take longer to process than defining the new column. Why? Remember that Spark is built on the concept of <strong>transformations</strong> and <strong>actions</strong>:</p>
+<ul class="simple">
+<li><p><strong>Transformations</strong> are lazily evaluated expressions. These form the set of instructions called the execution plan.</p></li>
+<li><p><strong>Actions</strong> trigger computation to be performed on the cluster and results returned to the driver. It is actions that trigger the execution plan.</p></li>
+</ul>
+<p>Multiple transformations can be combined, as we did to preprocess the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame above. Only when an action is called, for example <code class="docutils literal notranslate"><span class="pre">collect()</span></code> or implicitly printing the DF are these transformations and action executed on the cluster, after which the results are returned to the driver.</p>
+</div>
+<div class="section" id="using-spark-sql-functions-with-mutate">
+<h2>Using Spark SQL Functions with <code class="docutils literal notranslate"><span class="pre">mutate()</span></code><a class="headerlink" href="#using-spark-sql-functions-with-mutate" title="Permalink to this headline">¶</a></h2>
+<p>So far, writing sparklyr code has been very similar to using dplyr, the main difference being the consideration of where the DataFrame is being processed: either on the driver in the case of dplyr, or in the Spark cluster with sparklyr.</p>
+<p>One key difference is that when using <code class="docutils literal notranslate"><span class="pre">mutate()</span></code> you can also make use of Spark functions directly. See the article on <a class="reference internal" href="sparklyr-functions.html"><span class="doc std std-doc">Using Spark functions in sparklyr</span></a> for a full explanation.</p>
+<p>One example is casting columns from one data type to another, e.g. from string to date. In sparklyr we can use <a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#to_date"><code class="docutils literal notranslate"><span class="pre">to_date()</span></code></a>. Note that this is <strong>not</strong> referenced with <code class="docutils literal notranslate"><span class="pre">::</span></code>. We then verify the column type has changed with <code class="docutils literal notranslate"><span class="pre">glimpse()</span></code>.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-19-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-19-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-19-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-19-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">date_time_of_call</span> <span class="o">=</span> <span class="nf">to_date</span><span class="p">(</span><span class="n">date_time_of_call</span><span class="p">,</span> <span class="s">&quot;dd/MM/yyyy&quot;</span><span class="p">))</span>
+
+<span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span>
+        <span class="n">incident_number</span><span class="p">,</span>
+        <span class="n">date_time_of_call</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">pillar</span><span class="o">::</span><span class="nf">glimpse</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Rows: ??
+Columns: 2
+Database: spark_connection
+$ incident_number   &lt;chr&gt; &quot;139091&quot;, &quot;275091&quot;, &quot;2075091&quot;, &quot;2872091&quot;, &quot;3553091&quot;,…
+$ date_time_of_call &lt;date&gt; 2009-01-01, 2009-01-01, 2009-01-04, 2009-01-05, 200…
+</pre></div>
+</div>
+<p>You will need to consult the <a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html">documentation</a> for Spark SQL functions as they are not exposed to R directly; this can be demonstrated by a lack of available help for them in R. You can also only use them on sparklyr DFs, not base R DFs or tibbles.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-20-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-20-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-20-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-20-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="o">?</span><span class="n">to_date</span>
+</pre></div>
+</div>
+</div></div>
+<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>No documentation for ‘to_date’ in specified packages and libraries:
+you could try ‘??to_date’
+</pre></div>
+</div>
+</div>
+<div class="section" id="sorting-arrange-and-sdf-sort">
+<span id="sort-data"></span><h2>Sorting: <code class="docutils literal notranslate"><span class="pre">arrange()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_sort()</span></code><a class="headerlink" href="#sorting-arrange-and-sdf-sort" title="Permalink to this headline">¶</a></h2>
+<p>An important Spark concept is that DataFrames are <a class="reference internal" href="../spark-concepts/df-order.html"><span class="doc std std-doc">not ordered by default</span></a>, unlike a base R DF or tibble, which have an index. Remember that a Spark DataFrame is distributed into partitions, and there is no guarantee of the order of the rows within these partitions, or which partition a particular row is on.</p>
+<p>There are two ways to sort data in sparklyr: with <a class="reference external" href="https://dplyr.tidyverse.org/reference/arrange.html"><code class="docutils literal notranslate"><span class="pre">dplyr::arrange()</span></code></a> and <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_sort.html"><code class="docutils literal notranslate"><span class="pre">sparklyr::sdf_sort()</span></code></a>. Neither are perfect implementations. <code class="docutils literal notranslate"><span class="pre">arrange()</span></code> will only actually be processed if the data is being subset or directly returned, as otherwise the sorting operation gets deemed superfluous by Spark. By default columns are sorted ascending; use <a class="reference external" href="https://dplyr.tidyverse.org/reference/desc.html"><code class="docutils literal notranslate"><span class="pre">desc()</span></code></a> to sort descending.</p>
+<p><code class="docutils literal notranslate"><span class="pre">sdf_sort()</span></code> is better, but columns can only be sorted ascending and the syntax involves adding the column names as strings in a vector like in base R which makes it less readable. You can sort columns that are entirely numeric descending by creating a new column of negative values, sorting by this with <code class="docutils literal notranslate"><span class="pre">sdf_sort()</span></code>, then dropping it, but this will not work correctly with strings or <code class="docutils literal notranslate"><span class="pre">NA</span></code> values. You could also use an SQL expression for sorting. The most important principle here is consistency; try and use the same syntax as your colleagues to make the code easier to read.</p>
+<p>Note that sorting the DataFrame is an expensive operation, as the rows move between partitions. This is a key Spark concept called a <a class="reference internal" href="../spark-concepts/shuffling.html"><span class="doc std std-doc"><em>shuffle</em></span></a>. When you are ready to optimise your Spark code you will want to read the article on Shuffling.</p>
+<p>To show the ten highest cost incidents, use <code class="docutils literal notranslate"><span class="pre">arrange(desc(total_cost))</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-21-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-21-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-21-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-21-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span>
+        <span class="n">incident_number</span><span class="p">,</span>
+        <span class="n">animal_group</span><span class="p">,</span>
+        <span class="n">total_cost</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">arrange</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">total_cost</span><span class="p">))</span> <span class="o">%&gt;%</span>
+    <span class="nf">head</span><span class="p">(</span><span class="m">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># Source:     spark&lt;?&gt; [?? x 3]
+# Ordered by: desc(total_cost)
+   incident_number animal_group          total_cost
+   &lt;chr&gt;           &lt;chr&gt;                      &lt;dbl&gt;
+ 1 098141-28072016 Cat                         3912
+ 2 48360131        Horse                       3480
+ 3 62700151        Horse                       2980
+ 4 092389-09072018 Horse                       2664
+ 5 49076141        Cat                         2655
+ 6 82423111        Horse                       2340
+ 7 101755111       Deer                        2340
+ 8 49189111        Horse                       2340
+ 9 030477-09032018 Unknown - Wild Animal       2296
+10 028258-08032017 Cat                         2282
+</pre></div>
+</div>
+<p>Horses make up a lot of the more expensive calls, which makes sense, given that they are large animals.</p>
+</div>
+<div class="section" id="exercise-3">
+<h2>Exercise 3<a class="headerlink" href="#exercise-3" title="Permalink to this headline">¶</a></h2>
+<p>Sort the incidents in terms of their duration, look at the top 10 and the bottom 10. Do you notice anything strange?</p>
+<details>
+<summary><b>Exercise 3: Solution</b></summary>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-22-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-22-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-22-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-22-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># To get the top 10, sort the DF descending</span>
+<span class="n">top10</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span>
+        <span class="n">incident_number</span><span class="p">,</span>
+        <span class="n">animal_group</span><span class="p">,</span>
+        <span class="n">total_cost</span><span class="p">,</span>
+        <span class="n">incident_duration</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">arrange</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">incident_duration</span><span class="p">))</span> <span class="o">%&gt;%</span>
+    <span class="nf">head</span><span class="p">(</span><span class="m">10</span><span class="p">)</span>
+
+<span class="n">top10</span>
+
+<span class="c1"># The bottom 10 can just be sorted ascending, so in this example we have used sdf_sort</span>
+<span class="c1"># Note that .tail() does not exist in Spark 2.4</span>
+<span class="n">bottom10</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span>
+        <span class="n">incident_number</span><span class="p">,</span>
+        <span class="n">animal_group</span><span class="p">,</span>
+        <span class="n">total_cost</span><span class="p">,</span>
+        <span class="n">incident_duration</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_sort</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;incident_duration&quot;</span><span class="p">))</span> <span class="o">%&gt;%</span>
+    <span class="nf">head</span><span class="p">(</span><span class="m">10</span><span class="p">)</span>
+
+<span class="c1"># When previewing the results, the incident_duration are all null</span>
+<span class="n">bottom10</span>
+</pre></div>
+</div>
+</div></div>
+<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># Source:     spark&lt;?&gt; [?? x 4]
+# Ordered by: desc(incident_duration)
+   incident_number animal_group                     total_cost incident_duration
+   &lt;chr&gt;           &lt;chr&gt;                                 &lt;dbl&gt;             &lt;dbl&gt;
+ 1 48360131        Horse                                  3480               6  
+ 2 18627122        Horse                                  1300               5  
+ 3 92423121        Unknown - Domestic Animal Or Pet       1300               5  
+ 4 137525091       Horse                                  1300               5  
+ 5 62700151        Horse                                  2980               5  
+ 6 125704-02092018 Horse                                  1665               5  
+ 7 126939-05092018 Horse                                  1665               5  
+ 8 955141          Horse                                  1450               5  
+ 9 49076141        Cat                                    2655               4.5
+10 64764121        Dog                                    1040               4  
+# Source: spark&lt;?&gt; [?? x 4]
+   incident_number animal_group total_cost incident_duration
+   &lt;chr&gt;           &lt;chr&gt;             &lt;dbl&gt;             &lt;dbl&gt;
+ 1 35453121        Cat                  NA                NA
+ 2 4920141         Bird                 NA                NA
+ 3 36995121        Horse                NA                NA
+ 4 194986111       Horse                NA                NA
+ 5 51412121        Cat                  NA                NA
+ 6 208663091       Horse                NA                NA
+ 7 18325122        Dog                  NA                NA
+ 8 43265111        Dog                  NA                NA
+ 9 2602131         Cat                  NA                NA
+10 118613121       Cat                  NA                NA
+</pre></div>
+</div>
+</details>
+</div>
+<div class="section" id="grouping-and-aggregating-group-by-and-summarise">
+<h2>Grouping and Aggregating: <code class="docutils literal notranslate"><span class="pre">group_by()</span></code> and <code class="docutils literal notranslate"><span class="pre">summarise()</span></code><a class="headerlink" href="#grouping-and-aggregating-group-by-and-summarise" title="Permalink to this headline">¶</a></h2>
+<p>In most cases, we want to get insights into the raw data, for instance, by taking the sum or average of a column, or getting the largest or smallest values. This is key to what the Office for National Statistics does: we release statistics!</p>
+<p>In sparklyr, <a class="reference external" href="https://dplyr.tidyverse.org/reference/group_by.html"><code class="docutils literal notranslate"><span class="pre">group_by()</span></code></a> and <a class="reference external" href="https://dplyr.tidyverse.org/reference/summarise.html"><code class="docutils literal notranslate"><span class="pre">summarise()</span></code></a> can be referenced directly from dplyr and these functions work in an identical way. There is one key difference: inside <code class="docutils literal notranslate"><span class="pre">summmarise()</span></code> functions will be interpreted as Spark SQL functions where possible, e.g. <a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#sum"><code class="docutils literal notranslate"><span class="pre">sum()</span></code></a>, <a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#max"><code class="docutils literal notranslate"><span class="pre">max()</span></code></a> etc.</p>
+<p>For instance, to find the average cost by <code class="docutils literal notranslate"><span class="pre">animal_group</span></code> we use <a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#mean"><code class="docutils literal notranslate"><span class="pre">mean()</span></code></a>. Remember to assign the result of the aggregation to a column name:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-23-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-23-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-23-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-23-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">cost_by_animal</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">animal_group</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">summarise</span><span class="p">(</span><span class="n">average_cost</span> <span class="o">=</span> <span class="nf">mean</span><span class="p">(</span><span class="n">total_cost</span><span class="p">))</span>
+
+<span class="n">cost_by_animal</span> <span class="o">%&gt;%</span>
+    <span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># Source: spark&lt;?&gt; [?? x 2]
+  animal_group                     average_cost
+  &lt;chr&gt;                                   &lt;dbl&gt;
+1 Bird                                     326.
+2 Snake                                    322.
+3 Lizard                                   284.
+4 Fish                                     780 
+5 Unknown - Heavy Livestock Animal         363.
+</pre></div>
+</div>
+<p>Remember that sparklyr DFs are not ordered by unless we specifically do so; here we will sort the <code class="docutils literal notranslate"><span class="pre">average_cost</span></code> descending:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-24-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-24-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-24-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-24-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">cost_by_animal</span> <span class="o">%&gt;%</span>
+    <span class="n">dplyr</span><span class="o">::</span><span class="nf">arrange</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">average_cost</span><span class="p">))</span> <span class="o">%&gt;%</span>
+       <span class="nf">head</span><span class="p">(</span><span class="m">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># Source:     spark&lt;?&gt; [?? x 2]
+# Ordered by: desc(average_cost)
+   animal_group                                     average_cost
+   &lt;chr&gt;                                                   &lt;dbl&gt;
+ 1 Goat                                                    1180 
+ 2 Bull                                                     780 
+ 3 Fish                                                     780 
+ 4 Horse                                                    747.
+ 5 Unknown - Animal rescue from water - Farm animal         710.
+ 6 Cow                                                      624.
+ 7 Lamb                                                     520 
+ 8 Hedgehog                                                 520 
+ 9 Deer                                                     424.
+10 Unknown - Wild Animal                                    390.
+</pre></div>
+</div>
+<p>It looks like <code class="docutils literal notranslate"><span class="pre">Goat</span></code> could be an outlier as it is significantly higher than the other higher average cost incidents. We can investigate this in more detail using <code class="docutils literal notranslate"><span class="pre">filter()</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-25-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-25-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-25-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-25-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">goats</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">animal_group</span> <span class="o">==</span> <span class="s">&quot;Goat&quot;</span><span class="p">)</span>
+    
+<span class="n">goats</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] 1
+</pre></div>
+</div>
+<p>Just one expensive goat incident! Lets see the description:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-26-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-26-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-26-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-26-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">goat</span> <span class="o">&lt;-</span> <span class="n">goats</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">incident_number</span><span class="p">,</span> <span class="n">animal_group</span><span class="p">,</span> <span class="n">description</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span>
+
+<span class="n">goat</span>
+</pre></div>
+</div>
+</div></div>
+<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># A tibble: 1 × 3
+  incident_number animal_group description                             
+  &lt;chr&gt;           &lt;chr&gt;        &lt;chr&gt;                                   
+1 72214141        Goat         GOAT TRAPPED BELOW GROUND LEVEL ON LEDGE
+</pre></div>
+</div>
+<p>Note that although we used <code class="docutils literal notranslate"><span class="pre">collect()</span></code> we did not subset the data with <code class="docutils literal notranslate"><span class="pre">head()</span></code>. This is because we know the row count is tiny, and so there was no danger of overloading the driver with too much data.</p>
+</div>
+<div class="section" id="reading-data-from-a-parquet-file-spark-read-parquet">
+<h2>Reading data from a Parquet file: <code class="docutils literal notranslate"><span class="pre">spark_read_parquet()</span></code><a class="headerlink" href="#reading-data-from-a-parquet-file-spark-read-parquet" title="Permalink to this headline">¶</a></h2>
+<p>The next section covers how to join data in Spark, but before we do, we need to read in another dataset. In our rescue data, we have a column for the postcode district, which represents the first part of the postcode. We have data for the population by postcode in another dataset, <code class="docutils literal notranslate"><span class="pre">population</span></code>.</p>
+<p>This data are stored as a parquet file. Parquet files the most efficient way to store data when using Spark. They are compressed and so take up much less storage space, and reading parquet files with Spark is many times quicker than reading CSVs. The drawback is that they are not human readable, although you can store them as a Hive table which means they can easily be interrogated with SQL. See the article on Parquet files for more information.</p>
+<p>The syntax for reading in a parquet file is similar to a CSV: <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_read_parquet.html"><code class="docutils literal notranslate"><span class="pre">spark_read_parquet()</span></code></a>. Specify <code class="docutils literal notranslate"><span class="pre">sc</span></code> first, then the <code class="docutils literal notranslate"><span class="pre">path</span></code>. There is no need for the <code class="docutils literal notranslate"><span class="pre">header</span></code> or <code class="docutils literal notranslate"><span class="pre">infer_schema</span></code> argument as unlike CSVs parquet files already have the schema defined. We can then preview the data with <code class="docutils literal notranslate"><span class="pre">glimpse()</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-27-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-27-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-27-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-27-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">population_path</span> <span class="o">&lt;-</span> <span class="n">config</span><span class="o">$</span><span class="n">population_path</span>
+<span class="n">population</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_parquet</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">population_path</span><span class="p">)</span>
+
+<span class="n">pillar</span><span class="o">::</span><span class="nf">glimpse</span><span class="p">(</span><span class="n">population</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Rows: ??
+Columns: 2
+Database: spark_connection
+$ postcode_district &lt;chr&gt; &quot;DH7&quot;, &quot;NW3&quot;, &quot;NR4&quot;, &quot;SO31&quot;, &quot;CT18&quot;, &quot;NG2&quot;, &quot;NG5&quot;, &quot;…
+$ population        &lt;dbl&gt; 41076, 52376, 22331, 44742, 14357, 58658, 87171, 435…
+</pre></div>
+</div>
+</div>
+<div class="section" id="joining-data-left-join">
+<h2>Joining Data <code class="docutils literal notranslate"><span class="pre">left_join()</span></code><a class="headerlink" href="#joining-data-left-join" title="Permalink to this headline">¶</a></h2>
+<p>Now we have read the population data in, we can join it to the rescue data to get the population by postcode. Left joining in sparklyr uses the dplyr syntax of <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/join.tbl_spark.html"><code class="docutils literal notranslate"><span class="pre">left_join()</span></code></a>. Other joins use similar syntax, e.g. <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/join.tbl_spark.html"><code class="docutils literal notranslate"><span class="pre">right_join()</span></code></a>, <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/join.tbl_spark.html"><code class="docutils literal notranslate"><span class="pre">inner_join()</span></code></a>.</p>
+<p>This article assumes that you are familiar with joins. Those who know SQL will be familiar with this term, although pandas and R users sometimes use the term <em>merge</em>. If you do not know how a join works, please read about <a class="reference external" href="https://en.wikipedia.org/wiki/Join_(SQL)">joins in SQL</a> first; the principles are the same in Spark. Joins are expensive in Spark as they involve shuffling the data and this can make larger joins slow. See the article on <a class="reference internal" href="../spark-concepts/join-concepts.html"><span class="doc std std-doc">Optimising Joins</span></a> for more information on how to make them more efficient.</p>
+<p>Assuming that you are using the pipe notation for the DataFrame on the left hand side of the join, the other</p>
+<p><code class="docutils literal notranslate"><span class="pre">left_join()</span></code> has three arguments that you will use:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: the left hand side of the join; this will most frequently be piped in</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: the right hand side of the join; if using pipes this is the first argument</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">by</span></code>: which specifies the mapping. Here we have a common column name and so can simply supply the column name. Note that we use a string for the column name. If joining on multiple columns, use a vector.</p></li>
+</ul>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-28-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-28-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-28-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-28-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_pop</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">left_join</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">population</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s">&quot;postcode_district&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<p>Once again, note how quick this code runs. This is because although a join is an expensive operation, we have only created the plan at this point. We need an action to run the plan and return a result; sort the joined DataFrame, subset the columns and then use <code class="docutils literal notranslate"><span class="pre">head(5)</span></code> to implicitly print:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-29-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-29-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-29-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-29-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_pop</span> <span class="o">&lt;-</span> <span class="n">rescue_with_pop</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_sort</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;incident_number&quot;</span><span class="p">))</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">incident_number</span><span class="p">,</span> <span class="n">animal_group</span><span class="p">,</span> <span class="n">postcode_district</span><span class="p">,</span> <span class="n">population</span><span class="p">)</span>
+
+<span class="n">rescue_with_pop</span> <span class="o">%&gt;%</span>
+    <span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># Source: spark&lt;?&gt; [?? x 4]
+  incident_number  animal_group                     postcode_district population
+  &lt;chr&gt;            &lt;chr&gt;                            &lt;chr&gt;                  &lt;dbl&gt;
+1 000014-03092018M Unknown - Heavy Livestock Animal CR8                    32307
+2 000099-01012017  Dog                              BR2                    44958
+3 000260-01012017  Bird                             CR0                   153812
+4 000375-01012017  Dog                              TW8                    20330
+5 000477-01012017  Deer                             HA7                    36046
+</pre></div>
+</div>
+</div>
+<div class="section" id="writing-data-file-choice">
+<h2>Writing data: file choice<a class="headerlink" href="#writing-data-file-choice" title="Permalink to this headline">¶</a></h2>
+<p>In this article so far, we have been calling actions to preview the data, bringing back only a handful of rows each time. This is useful when developing and debugging code, but in production pipelines you will want to write the results.</p>
+<p>The format in which the results are written out depends on what you want to do next with the data:</p>
+<ul class="simple">
+<li><p>If the data are intended to be human readable, e.g. as the basis for a presentation, or as a publication on the ONS website, then you will likely want to output the data as a CSV</p></li>
+<li><p>If the data are intended to be used as an input to another Spark process, then use parquet or a Hive table.</p></li>
+</ul>
+<p>There are other use cases, e.g. JSON can be useful if you want the results to analysed with a different programming language, although here we only focus on CSV and parquet. See the article on <a class="reference internal" href="../spark-functions/writing-data.html"><span class="doc std std-doc">Writing Data</span></a> for more information.</p>
+</div>
+<div class="section" id="write-to-a-parquet-spark-write-parquet">
+<h2>Write to a parquet: <code class="docutils literal notranslate"><span class="pre">spark_write_parquet()</span></code><a class="headerlink" href="#write-to-a-parquet-spark-write-parquet" title="Permalink to this headline">¶</a></h2>
+<p>To write out our DataFrame as a parquet file, use <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_write_parquet.html"><code class="docutils literal notranslate"><span class="pre">spark_write_parquet()</span></code></a>. This has two compulsory arguments: <code class="docutils literal notranslate"><span class="pre">x</span></code>, the DataFrame to be written, and <code class="docutils literal notranslate"><span class="pre">path</span></code>, the path to the file. If using pipes for the DataFrame then you will only need the file path.</p>
+<p>The key difference between writing out data with Spark and writing out data with R is that the data will be distributed, which means that multiple files will be created, stored in a parent directory. Spark can read in these parent directories as one DataFrame. There will be one file written out per partition of the DataFrame.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-30-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-30-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-30-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-30-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">output_path_parquet</span> <span class="o">&lt;-</span> <span class="n">config</span><span class="o">$</span><span class="n">rescue_with_pop_path_parquet</span>
+
+<span class="n">rescue_with_pop</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_write_parquet</span><span class="p">(</span><span class="n">output_path_parquet</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<p>It is worth looking at the raw data that is written out to see that it has been stored in several files in a parent directory.</p>
+<p>When reading the data in, Spark will treat every individual file as a partition. See the article on <a class="reference internal" href="../spark-concepts/partitions.html"><span class="doc std std-doc">Managing Partitions</span></a> for more information.</p>
+</div>
+<div class="section" id="write-to-a-csv-spark-write-csv-and-sdf-coalesce">
+<h2>Write to a CSV: <code class="docutils literal notranslate"><span class="pre">spark_write_csv()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_coalesce()</span></code><a class="headerlink" href="#write-to-a-csv-spark-write-csv-and-sdf-coalesce" title="Permalink to this headline">¶</a></h2>
+<p>CSVs will also be written out in a distributed manner as multiple files. While this is desirable in a parquet, it is not very useful with CSV, as the main benefit is to make them human readable. First, write out the data with <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_write_csv.html"><code class="docutils literal notranslate"><span class="pre">spark_write_csv()</span></code></a>, using the path defined in the config:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-31-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-31-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-31-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-31-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">output_path_csv</span> <span class="o">&lt;-</span> <span class="n">config</span><span class="o">$</span><span class="n">rescue_with_pop_path_csv</span>
+
+<span class="n">rescue_with_pop</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_write_csv</span><span class="p">(</span><span class="n">output_path_csv</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<p>Again, look at the raw data in a file browser. You can see that it has written out a directory called <code class="docutils literal notranslate"><span class="pre">rescue_with_pop.csv</span></code>, with multiple files inside. Each of these on their own is a legitimate CSV file, with the correct headers.</p>
+<p>To reduce the number of partitions, pipe the data into <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html"><code class="docutils literal notranslate"><span class="pre">sdf_coalesce(partitions)</span></code></a>; this will combine existing partitions. Setting <code class="docutils literal notranslate"><span class="pre">partitions</span></code> to <code class="docutils literal notranslate"><span class="pre">1</span></code> will put all of the data on the same partition.</p>
+<p>As the file will already exist, we need to tell Spark to overwrite the existing file. Use <code class="docutils literal notranslate"><span class="pre">mode=&quot;overwrite&quot;</span></code> to do this:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-32-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-32-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-32-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-32-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_pop</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_coalesce</span><span class="p">(</span><span class="m">1</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_write_csv</span><span class="p">(</span><span class="n">output_path_csv</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&quot;overwrite&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<p>Checking the file again, you can see that although the directory still exists, it will contain only one CSV file.</p>
+</div>
+<div class="section" id="removing-files">
+<h2>Removing files<a class="headerlink" href="#removing-files" title="Permalink to this headline">¶</a></h2>
+<p>Spark has no native way of removing files, so either use the standard R methods, or delete them manually through a file browser. If on a local file system, use <a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/base/html/unlink.html"><code class="docutils literal notranslate"><span class="pre">unlink()</span></code></a> to delete a file, setting <code class="docutils literal notranslate"><span class="pre">recursive=TRUE</span></code> to remove a directory. If using HDFS or similar, then use <a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/system.html"><code class="docutils literal notranslate"><span class="pre">system()</span></code></a>. Be careful when using the <code class="docutils literal notranslate"><span class="pre">system()</span></code> command as you will not get a warning before deleting files.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-33-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-33-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-33-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-33-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">delete_file</span> <span class="o">&lt;-</span> <span class="nf">function</span><span class="p">(</span><span class="n">file_path</span><span class="p">){</span>
+    <span class="n">cmd</span> <span class="o">&lt;-</span> <span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;hdfs dfs -rm -r -skipTrash &quot;</span><span class="p">,</span>
+                  <span class="n">file_path</span><span class="p">)</span>
+    
+    <span class="nf">system</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span>
+           <span class="n">ignore.stdout</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span>
+           <span class="n">ignore.stderr</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="nf">delete_file</span><span class="p">(</span><span class="n">output_path_parquet</span><span class="p">)</span>
+<span class="nf">delete_file</span><span class="p">(</span><span class="n">output_path_csv</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+</div>
+<div class="section" id="further-resources">
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
+<p>Spark at the ONS Code and Articles:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/main/ons-spark/raw-notebooks/sparklyr-intro/r_input.R">R Code used in this article</a></p></li>
+<li><p><a class="reference internal" href="../pyspark-intro/pyspark-intro.html"><span class="doc std std-doc">Introduction to PySpark</span></a></p></li>
+<li><p><a class="reference internal" href="../ancillary-topics/module-imports.html"><span class="doc std std-doc">Avoiding Module Import Conflicts</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-overview/spark-session-guidance.html"><span class="doc std std-doc">Guidance on Spark Sessions</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-overview/example-spark-sessions.html"><span class="doc std std-doc">Example Spark Sessions</span></a></p></li>
+<li><p><a class="reference internal" href="reading-data-sparklyr.html"><span class="doc std std-doc">Reading Data in sparklyr</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-overview/data-storage.html"><span class="doc std std-doc">Data Storage</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-overview/data-types.html"><span class="doc std std-doc">Data Types in Spark</span></a></p></li>
+<li><p><a class="reference internal" href="../ancillary-topics/visualisation.html"><span class="doc std std-doc">Spark and Visualisation</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-concepts/df-order.html"><span class="doc std std-doc">Spark DataFrames Are Not Ordered</span></a></p></li>
+<li><p><a class="reference internal" href="sparklyr-functions.html"><span class="doc std std-doc">Using Spark functions in sparklyr</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-concepts/shuffling.html"><span class="doc std std-doc">Shuffling</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-concepts/join-concepts.html"><span class="doc std std-doc">Optimising Joins</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-functions/writing-data.html"><span class="doc std std-doc">Writing Data</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-concepts/partitions.html"><span class="doc std std-doc">Managing Partitions</span></a></p></li>
+</ul>
+<p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/">sparklyr</a> and <a class="reference external" href="https://www.tidyverse.org/">tidyverse</a> Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://dplyr.tidyverse.org/reference/select.html"><code class="docutils literal notranslate"><span class="pre">select()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://dplyr.tidyverse.org/reference/mutate.html"><code class="docutils literal notranslate"><span class="pre">mutate()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://dplyr.tidyverse.org/reference/filter.html"><code class="docutils literal notranslate"><span class="pre">filter()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://dplyr.tidyverse.org/reference/summarise.html"><code class="docutils literal notranslate"><span class="pre">summarise()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html">Spark connections</a>: covers <code class="docutils literal notranslate"><span class="pre">spark_connect()</span></code> and <code class="docutils literal notranslate"><span class="pre">spark_connection_is_open()</span></code></p></li>
+<li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_config.html"><code class="docutils literal notranslate"><span class="pre">spark_config()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://pillar.r-lib.org/reference/glimpse.html"><code class="docutils literal notranslate"><span class="pre">glimpse()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://dplyr.tidyverse.org/reference/compute.html"><code class="docutils literal notranslate"><span class="pre">collect()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_dim.html"><code class="docutils literal notranslate"><span class="pre">sdf_nrow()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://dplyr.tidyverse.org/reference/rename.html"><code class="docutils literal notranslate"><span class="pre">rename()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://dplyr.tidyverse.org/reference/arrange.html"><code class="docutils literal notranslate"><span class="pre">arrange()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_sort.html"><code class="docutils literal notranslate"><span class="pre">sdf_sort()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://dplyr.tidyverse.org/reference/desc.html"><code class="docutils literal notranslate"><span class="pre">desc()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://dplyr.tidyverse.org/reference/group_by.html"><code class="docutils literal notranslate"><span class="pre">group_by()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/join.tbl_spark.html">Joins</a>: covers all joins, including <code class="docutils literal notranslate"><span class="pre">left_join()</span></code>, <code class="docutils literal notranslate"><span class="pre">right_join()</span></code> and <code class="docutils literal notranslate"><span class="pre">inner_join()</span></code></p></li>
+<li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_write_parquet.html"><code class="docutils literal notranslate"><span class="pre">spark_write_parquet()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_write_csv.html"><code class="docutils literal notranslate"><span class="pre">spark_write_csv()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html"><code class="docutils literal notranslate"><span class="pre">sdf_coalesce()</span></code></a></p></li>
+</ul>
+<p>Base R Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/class.html"><code class="docutils literal notranslate"><span class="pre">class()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/base/html/unlink.html"><code class="docutils literal notranslate"><span class="pre">unlink()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/system.html"><code class="docutils literal notranslate"><span class="pre">system()</span></code></a></p></li>
+</ul>
+<p>Spark SQL Functions Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#to_date"><code class="docutils literal notranslate"><span class="pre">to_date</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#sum"><code class="docutils literal notranslate"><span class="pre">sum</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#max"><code class="docutils literal notranslate"><span class="pre">max</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#mean"><code class="docutils literal notranslate"><span class="pre">mean</span></code></a></p></li>
+</ul>
+<p>Other Links:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://dplyr.tidyverse.org/articles/dplyr.html">Introduction to dplyr</a></p></li>
+<li><p><a class="reference external" href="https://r4ds.had.co.nz/">R for Data Science</a></p></li>
+<li><p><a class="reference external" href="https://pages.databricks.com/rs/094-YMS-629/images/LearningSpark2.0.pdf">Databricks: Learning Spark</a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/sparkr.html">SparkR</a>: not used at the ONS</p></li>
+</ul>
+<div class="section" id="acknowledgements">
+<h3>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this headline">¶</a></h3>
+<p>Thanks to Karina Marks, Chris Musselle and Beth Ashlee for creating the initial version of this article.</p>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./sparklyr-intro"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        
+            <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="../pyspark-intro/f-col.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Reference columns by name: <code class="docutils literal notranslate"><span class="pre">F.col()</span></code></p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="reading-data-sparklyr.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Reading Data in sparklyr</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+        
+        </div>
+    </div>
+    <footer class="footer">
+    <div class="container">
+      <p>
+        
+          By Wil Roberts & Adrian Prince<br/>
+        
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>

@@ -96,10 +96,14 @@ The types given by [`glimpse()`](https://pillar.r-lib.org/reference/glimpse.html
 ````{tabs}
 ```{code-tab} py
 numeric_df = (spark.range(5)
-              .withColumn("really_big_number_long", F.col("id") * 10**9)
-              .withColumn("really_big_number_int", F.col("really_big_number_long").cast(IntegerType()))
-              .withColumn("small_number", (F.col("id") + 9998) / 100)
-              .withColumn("small_number_decimal", F.col("small_number").cast(DecimalType(5,2)))
+              .withColumn("really_big_number_long",
+                          F.col("id") * 10**9)
+              .withColumn("really_big_number_int",
+                          F.col("really_big_number_long").cast(IntegerType()))
+              .withColumn("small_number",
+                          (F.col("id") + 9998) / 100)
+              .withColumn("small_number_decimal",
+                          F.col("small_number").cast(DecimalType(5,2)))
               .drop("id"))
 
 numeric_df.printSchema()
@@ -296,7 +300,10 @@ rescue_from_csv.printSchema()
 
 ```{code-tab} r R
 
-rescue_from_csv <- sparklyr::spark_read_csv(sc, config$rescue_path_csv, header=TRUE, infer_schema=TRUE) %>%
+rescue_from_csv <- sparklyr::spark_read_csv(sc,
+                                            config$rescue_path_csv,
+                                            header=TRUE,
+                                            infer_schema=TRUE) %>%
     sparklyr::select(IncidentNumber, DateTimeOfCall, CalYear, FinYear)
     
 pillar::glimpse(rescue_from_csv)
@@ -504,6 +511,6 @@ sparklyr Source Code:
 Other links:
 - [DataBricks blog: A Comprehensive Look at Dates and Timestamps in Apache Spark™ 3.0](https://databricks.com/blog/2020/07/22/a-comprehensive-look-at-dates-and-timestamps-in-apache-spark-3-0.html)
 
-#### Acknowledgments
+#### Acknowledgements
 
 Thanks to Diogo Marques for assistance with the differences between dates in Spark 2.4 and 3.

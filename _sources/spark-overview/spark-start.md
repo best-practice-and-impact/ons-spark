@@ -1,4 +1,4 @@
-## Understanding Errors in sparklyr
+## Getting Started with Spark
 
 ```{warning}
 This section is under construction.

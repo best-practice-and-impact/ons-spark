@@ -53,7 +53,7 @@
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Using Spark functions in sparklyr" href="../sparklyr-intro/sparklyr-functions.html" />
+    <link rel="next" title="Introduction to sparklyr" href="../sparklyr-intro/sparklyr-intro.html" />
     <link rel="prev" title="Returning Data from Cluster to Driver" href="returning-data.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
@@ -61,6 +61,14 @@
 
     <!-- Google Analytics -->
     
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+<script>
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){ dataLayer.push(arguments); }
+                    gtag('js', new Date());
+                    gtag('config', 'G-95MGHSRD0S');
+                </script>
+
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
     
@@ -104,6 +112,11 @@
  </span>
 </p>
 <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/spark-start.html">
+   Getting Started with Spark
+  </a>
+ </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../spark-overview/when-to-use-spark.html">
    When To Use Spark
@@ -184,6 +197,16 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
+  <a class="reference internal" href="../sparklyr-intro/sparklyr-intro.html">
+   Introduction to sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../sparklyr-intro/reading-data-sparklyr.html">
+   Reading Data in sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">
    Using Spark functions in sparklyr
   </a>
@@ -261,11 +284,6 @@
    Set Spark Job Description
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/sorting-data.html">
-   Sorting Spark DataFrames
-  </a>
- </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
@@ -341,33 +359,13 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/unit-testing-pyspark.html">
-   Unit Testing in PySpark
+  <a class="reference internal" href="../testing-debugging/spark-errors.html">
+   Understanding and Handling Spark Errors
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/unit-testing-sparklyr.html">
-   Unit Testing in sparklyr
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/errors-pyspark.html">
-   Understanding Errors in PySpark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/errors-sparklyr.html">
-   Understanding Errors in sparklyr
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/handling-errors-pyspark.html">
-   Handling Errors in PySpark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/handling-errors-sparklyr.html">
-   Handling Errors in sparklyr
+  <a class="reference internal" href="../testing-debugging/unit-testing.html">
+   Unit Testing in Spark
   </a>
  </li>
 </ul>
@@ -596,7 +594,7 @@ only showing top 5 rows
 </div>
 </div></div>
 <p>Create a new column, <code class="docutils literal notranslate"><span class="pre">animal_group_upper</span></code>, which consists of the <code class="docutils literal notranslate"><span class="pre">animal_group</span></code> in uppercase.</p>
-<p>If we try and immediately filter on this column using <code class="docutils literal notranslate"><span class="pre">rescue.animal_group_upper</span></code>, it will not work. This is because we have yet to define the column in <code class="docutils literal notranslate"><span class="pre">rescue</span></code>. Error handling is being used here; for more information see the article on <a class="reference internal" href="../testing-debugging/handling-errors-pyspark.html"><span class="doc std std-doc">Handling Errors in PySpark</span></a>.</p>
+<p>If we try and immediately filter on this column using <code class="docutils literal notranslate"><span class="pre">rescue.animal_group_upper</span></code>, it will not work. This is because we have yet to define the column in <code class="docutils literal notranslate"><span class="pre">rescue</span></code>. Error handling is being used here; for more information see the article on <span class="xref myst">Handling Errors in PySpark</span>.</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-4-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button></div><div aria-labelledby="tab-4-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
     <span class="p">(</span><span class="n">rescue</span>
@@ -756,7 +754,7 @@ only showing top 5 rows
 <h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
 <p>Spark at the ONS Articles:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../testing-debugging/handling-errors-pyspark.html"><span class="doc std std-doc">Handling Errors in PySpark</span></a></p></li>
+<li><p><span class="xref myst">Handling Errors in PySpark</span></p></li>
 <li><p><a class="reference internal" href="../spark-functions/writing-data.html"><span class="doc std std-doc">Writing Data</span></a></p>
 <ul>
 <li><p><a class="reference external" href="../spark-functions/writing-data.html#writing-data-to-a-parquet-file">Writing Data to a Parquet File</a></p></li>
@@ -804,10 +802,10 @@ only showing top 5 rows
             <p class="prev-next-title">Returning Data from Cluster to Driver</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="../sparklyr-intro/sparklyr-functions.html" title="next page">
+    <a class='right-next' id="next-link" href="../sparklyr-intro/sparklyr-intro.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Using Spark functions in sparklyr</p>
+        <p class="prev-next-title">Introduction to sparklyr</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

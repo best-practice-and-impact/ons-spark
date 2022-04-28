@@ -113,3 +113,7 @@ Spark Documentation:
 Other Links:
 - [The Government Data Quality Framework: Data quality dimensions](https://www.gov.uk/government/publications/the-government-data-quality-framework/the-government-data-quality-framework#Data-quality-dimensions)
 - [Quality Assurance of Code for Analysis and Research](https://best-practice-and-impact.github.io/qa-of-code-guidance/intro.html): also known as *the Duck Book*
+
+#### Acknowledgements
+
+Many thanks to Andy Sutton and David Foster for contributing and reviewing this material.

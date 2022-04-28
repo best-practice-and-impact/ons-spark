@@ -61,6 +61,14 @@
 
     <!-- Google Analytics -->
     
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+<script>
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){ dataLayer.push(arguments); }
+                    gtag('js', new Date());
+                    gtag('config', 'G-95MGHSRD0S');
+                </script>
+
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
     
@@ -104,6 +112,11 @@
  </span>
 </p>
 <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/spark-start.html">
+   Getting Started with Spark
+  </a>
+ </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../spark-overview/when-to-use-spark.html">
    When To Use Spark
@@ -184,6 +197,16 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
+  <a class="reference internal" href="../sparklyr-intro/sparklyr-intro.html">
+   Introduction to sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../sparklyr-intro/reading-data-sparklyr.html">
+   Reading Data in sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">
    Using Spark functions in sparklyr
   </a>
@@ -261,11 +284,6 @@
    Set Spark Job Description
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/sorting-data.html">
-   Sorting Spark DataFrames
-  </a>
- </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
@@ -341,33 +359,13 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/unit-testing-pyspark.html">
-   Unit Testing in PySpark
+  <a class="reference internal" href="../testing-debugging/spark-errors.html">
+   Understanding and Handling Spark Errors
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/unit-testing-sparklyr.html">
-   Unit Testing in sparklyr
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/errors-pyspark.html">
-   Understanding Errors in PySpark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/errors-sparklyr.html">
-   Understanding Errors in sparklyr
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/handling-errors-pyspark.html">
-   Handling Errors in PySpark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/handling-errors-sparklyr.html">
-   Handling Errors in sparklyr
+  <a class="reference internal" href="../testing-debugging/unit-testing.html">
+   Unit Testing in Spark
   </a>
  </li>
 </ul>
@@ -534,7 +532,7 @@
 <p>The lack of an order in a Spark DataFrame is due to two related concepts: partitioning and lazy evaluation.</p>
 <p>A Spark DataFrame is distributed across partitions on the Spark cluster, rather than being one complete object stored in the driver memory. Executing an identical Spark plan can result in the same rows going to different partitions. Within these partitions, the rows can also be in a different order.</p>
 <p>The lazy evaluation will cause the DataFrame to be re-evaluated each time an action is called. Spark will only do the minimum required to return the result of the action specified, e.g. subsetting and previewing the data with <code class="docutils literal notranslate"><span class="pre">.show()</span></code>/<code class="docutils literal notranslate"><span class="pre">head()</span> <span class="pre">%&gt;%</span> </code> <a class="reference external" href="https://dplyr.tidyverse.org/reference/compute.html"><code class="docutils literal notranslate"><span class="pre">collect()</span></code></a> may not require evaluation of the whole DataFrame (this can be demonstrated when using <a class="reference internal" href="cache.html"><span class="doc std std-doc">caching</span></a>, as the cache may only be partially filled with these operations). As such, if no order is specified then the data may be returned in a different order, despite the Spark plan being identical. If the data is being subset in a non-specific way, e.g. with <code class="docutils literal notranslate"><span class="pre">.show()</span></code>/<code class="docutils literal notranslate"><span class="pre">head()</span> <span class="pre">%&gt;%</span> <span class="pre">collect()</span></code>, then different rows may be returned.</p>
-<p>The technical term for this is <em>non-determinism</em>, which is where the same algorithm can return different results for the same inputs. This can cause problems when regression testing (ensuring that results are identical after a code change) and unit testing your Spark code with <a class="reference internal" href="../testing-debugging/unit-testing-pyspark.html"><span class="doc std std-doc">Pytest</span></a> or <a class="reference internal" href="../testing-debugging/unit-testing-sparklyr.html"><span class="doc std std-doc">testthat</span></a>.</p>
+<p>The technical term for this is <em>non-determinism</em>, which is where the same algorithm can return different results for the same inputs. This can cause problems when regression testing (ensuring that results are identical after a code change) and unit testing your Spark code with <span class="xref myst">Pytest</span> or <span class="xref myst">testthat</span>.</p>
 <p>The main lesson from this is that if you want to rely on the order of a Spark DataFrame, you need to <a class="reference internal" href="../spark-functions/sorting-data.html"><span class="doc std std-doc">explicitly specify the order</span></a>; this may involve using a column as a tie-breaker (e.g. a key column such as an ID, which is unique).</p>
 </div>
 <div class="section" id="does-the-order-really-matter">
@@ -834,12 +832,12 @@ only showing top 5 rows
 <li><p><a class="reference internal" href="partitions.html"><span class="doc std std-doc">Managing Partitions</span></a></p></li>
 <li><p><a class="reference internal" href="shuffling.html"><span class="doc std std-doc">Shuffling</span></a></p></li>
 <li><p><a class="reference internal" href="../spark-functions/sorting-data.html"><span class="doc std std-doc">Sorting Spark DataFrames</span></a></p></li>
-<li><p><a class="reference internal" href="../testing-debugging/unit-testing-pyspark.html"><span class="doc std std-doc">Unit Testing in PySpark</span></a></p>
+<li><p><span class="xref myst">Unit Testing in PySpark</span></p>
 <ul>
 <li><p><a class="reference external" href="../testing-debugging/unit-testing-pyspark.html#mocking">Mocking</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="../testing-debugging/unit-testing-sparklyr.html"><span class="doc std std-doc">Unit Testing in sparklyr</span></a></p></li>
+<li><p><span class="xref myst">Unit Testing in sparklyr</span></p></li>
 <li><p><a class="reference internal" href="cache.html"><span class="doc std std-doc">Caching</span></a></p></li>
 <li><p><a class="reference internal" href="../spark-functions/writing-data.html"><span class="doc std std-doc">Writing Data</span></a></p></li>
 </ul>

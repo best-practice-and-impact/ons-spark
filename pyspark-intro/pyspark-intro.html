@@ -60,6 +60,14 @@
 
     <!-- Google Analytics -->
     
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+<script>
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){ dataLayer.push(arguments); }
+                    gtag('js', new Date());
+                    gtag('config', 'G-95MGHSRD0S');
+                </script>
+
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
     
@@ -103,6 +111,11 @@
  </span>
 </p>
 <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spark-overview/spark-start.html">
+   Getting Started with Spark
+  </a>
+ </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../spark-overview/when-to-use-spark.html">
    When To Use Spark
@@ -183,6 +196,16 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
+  <a class="reference internal" href="../sparklyr-intro/sparklyr-intro.html">
+   Introduction to sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../sparklyr-intro/reading-data-sparklyr.html">
+   Reading Data in sparklyr
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">
    Using Spark functions in sparklyr
   </a>
@@ -260,11 +283,6 @@
    Set Spark Job Description
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/sorting-data.html">
-   Sorting Spark DataFrames
-  </a>
- </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
@@ -340,33 +358,13 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/unit-testing-pyspark.html">
-   Unit Testing in PySpark
+  <a class="reference internal" href="../testing-debugging/spark-errors.html">
+   Understanding and Handling Spark Errors
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/unit-testing-sparklyr.html">
-   Unit Testing in sparklyr
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/errors-pyspark.html">
-   Understanding Errors in PySpark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/errors-sparklyr.html">
-   Understanding Errors in sparklyr
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/handling-errors-pyspark.html">
-   Handling Errors in PySpark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/handling-errors-sparklyr.html">
-   Handling Errors in sparklyr
+  <a class="reference internal" href="../testing-debugging/unit-testing.html">
+   Unit Testing in Spark
   </a>
  </li>
 </ul>
@@ -753,8 +751,8 @@
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#acknowledgments">
-     Acknowledgments
+    <a class="reference internal nav-link" href="#acknowledgements">
+     Acknowledgements
     </a>
    </li>
   </ul>
@@ -774,7 +772,7 @@
 <h1>Introduction to PySpark<a class="headerlink" href="#introduction-to-pyspark" title="Permalink to this headline">¶</a></h1>
 <p>This article aims to give hands on experience in working with the DataFrame API in PySpark. You can download this article as a notebook and run the code yourself by clicking on the download button above and selecting <code class="docutils literal notranslate"><span class="pre">.ipynb</span></code>.</p>
 <p>We will not aim to cover all the PySpark DataFrame functionality or go into detail of how Spark works, but instead focus on practicality by performing some common operations on an example dataset. There are a handful of exercises that you can complete while reading this article.</p>
-<p>Prerequisites for this article are some basic knowledge of Python and pandas. If you are completely new to Python then it is recommended to complete an introductory course first; your organisation may have specific Python training. Other resources include the <a class="reference external" href="https://docs.python.org/3/tutorial/">Python Tutorial</a> and <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/user_guide/10min.html">10 Minutes to pandas</a>.</p>
+<p>Prerequisites for this article are some basic knowledge of Python and pandas. If you are completely new to Python then it is recommended to complete an introductory course first; your organisation may have specific Python training. Other resources include the <a class="reference external" href="https://docs.python.org/3/tutorial/">Python Tutorial</a> and <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/user_guide/10min.html">10 Minutes to pandas</a>. If you are an R user, the <a class="reference internal" href="../sparklyr-intro/sparklyr-intro.html"><span class="doc std std-doc">Introduction to sparklyr</span></a> article follows similar format.</p>
 <div class="section" id="pyspark-a-quick-introduction">
 <h2>PySpark: a quick introduction<a class="headerlink" href="#pyspark-a-quick-introduction" title="Permalink to this headline">¶</a></h2>
 <p>Although this article focusses on practical usage to enable you to quickly use PySpark, you do need to understand some basic theory of Spark and distributed computing.</p>
@@ -2020,9 +2018,9 @@ only showing top 10 rows
 <li><p><a class="reference external" href="https://pages.databricks.com/rs/094-YMS-629/images/LearningSpark2.0.pdf">Databricks: Learning Spark</a></p></li>
 <li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Join_(SQL)">Wikipedia; Join (SQL)</a></p></li>
 </ul>
-<div class="section" id="acknowledgments">
-<h3>Acknowledgments<a class="headerlink" href="#acknowledgments" title="Permalink to this headline">¶</a></h3>
-<p>Thanks to Karina Marks, Chris Musselle and Dave Beech for creating the initial version of this article.</p>
+<div class="section" id="acknowledgements">
+<h3>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this headline">¶</a></h3>
+<p>Thanks to Karina Marks, Chris Musselle, Greg Payne and Dave Beech for creating the initial version of this article.</p>
 </div>
 </div>
 </div>
