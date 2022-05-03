@@ -105,12 +105,12 @@ Note that [`sparkContext`](https://spark.apache.org/docs/latest/api/python/refer
 
 *Note that the values shown in brackets are common default values* 
 
-**App Name:**  
+**App Name**  
 `.appName()`  
 The Spark session is often referred to as a Spark application. This option gives your Spark session a meaningful name, which can be used to help others identify the purpose of your app.  
 You should enter your app name as a string, so within 'single' or "double" inverted commas.  
 
-**Executor Memory:**  
+**Executor Memory**  
 `.config("spark.executor.memory", 1g)`  
 This is the amount of memory per Spark executor. Can be given in mebibytes (m) or gibibytes (g).
 
