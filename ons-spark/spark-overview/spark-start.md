@@ -18,7 +18,7 @@ Here is how Spark is defined on the Apache Spark website and Wikipedia:
 
 Spark is efficient for processing big data for a number of reasons. One reason is that it chunks up data to be [processed in parallel](https://en.wikipedia.org/wiki/Parallel_computing) (where possible). Another reason is it has some built in optimisations that make processing large amounts of data much quicker and using fewer resources.
 
-As analysts we do not necessarrily need to know exactly how Spark processes data, but when something goes wrong it is useful to understand a little more about what Spark is doing "under the hood". Debugging Spark issues often requires some basic understanding of how Spark works, and we hope to cover these details in this book without getting too technical. In this section there is enough to get started. There are links below to other parts of the book that cover these topics in more detail.
+As analysts we do not necessarily need to know exactly how Spark processes data, but when something goes wrong it is useful to understand a little more about what Spark is doing "under the hood". Debugging Spark issues often requires some basic understanding of how Spark works, and we hope to cover these details in this book without getting too technical. In this section there is enough to get started. There are links below to other parts of the book that cover these topics in more detail.
 
 #### Spark DataFrames
 
