@@ -53,8 +53,8 @@ External links:
 - [Apache Spark](https://spark.apache.org/)
 - [Databricks community edition](https://databricks.com/try-databricks)
 - [Databricks glossary](https://databricks.com/glossary)
-- [Datacamp - Install PySpark on your laptop](https://www.datacamp.com/community/tutorials/installation-of-pyspark)
-- [Mastering Spark with R - Install sparklyr on your laptop](https://therinspark.com/starting.html)
+- [Datacamp - Install PySpark for local mode](https://www.datacamp.com/community/tutorials/installation-of-pyspark)
+- [Mastering Spark with R - Install sparklyr for local mode](https://therinspark.com/starting.html)
 - [Wikipedia (Apache Spark)](https://en.wikipedia.org/wiki/Apache_Spark)
 - [Wikipedia (Parallel computing)](https://en.wikipedia.org/wiki/Parallel_computing)
  
@@ -65,7 +65,4 @@ Links within this book:
 - [Persisting in Spark](../spark-concepts/persistence)
 - [Shuffling](../spark-concepts/shuffling)
 - [Spark application and UI](../spark-concepts/spark-application-and-ui)
-
-
-
 - [Spark DataFrames are not ordered](../spark-concepts/df-order)
