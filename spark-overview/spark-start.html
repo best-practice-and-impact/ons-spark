@@ -38,17 +38,19 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -435,7 +437,7 @@
                 data-placement="left">.md</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -469,13 +471,35 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
             </div>
             <nav id="bd-toc-nav" aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#what-is-spark">
+   What is Spark?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#basic-principles">
+   Basic principles
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#spark-dataframes">
+     Spark DataFrames
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#setting-up-resources">
+   Setting up resources
+  </a>
+ </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#further-resources">
    Further Resources
@@ -489,17 +513,124 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Getting Started with Spark</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#what-is-spark">
+   What is Spark?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#basic-principles">
+   Basic principles
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#spark-dataframes">
+     Spark DataFrames
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#setting-up-resources">
+   Setting up resources
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
   <div class="section" id="getting-started-with-spark">
 <h1>Getting Started with Spark<a class="headerlink" href="#getting-started-with-spark" title="Permalink to this headline">¶</a></h1>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This section is under construction.</p>
+<div class="section" id="what-is-spark">
+<h2>What is Spark?<a class="headerlink" href="#what-is-spark" title="Permalink to this headline">¶</a></h2>
+<p>Spark is a distributed computing engine for processing big data. Spark has interfaces for Python (PySpark) and R (sparklyr), examples of which are given throughout this book.</p>
+<p>Here is how Spark is defined on the Apache Spark website and Wikipedia:</p>
+<blockquote>
+<div><p>Apache Spark™ is a multi-language engine for executing data engineering, data science, and machine learning on single-node machines or clusters.</p>
+<p><em><a class="reference external" href="https://spark.apache.org/">Apache Spark</a> (2022)</em></p>
+</div></blockquote>
+<blockquote>
+<div><p>Apache Spark is an open-source unified analytics engine for large-scale data processing. Spark provides an interface for programming clusters with implicit data parallelism and fault tolerance.</p>
+<p><em><a class="reference external" href="https://en.wikipedia.org/wiki/Apache_Spark">Wikipedia (Apache Spark)</a> (2022)</em></p>
+</div></blockquote>
+</div>
+<div class="section" id="basic-principles">
+<h2>Basic principles<a class="headerlink" href="#basic-principles" title="Permalink to this headline">¶</a></h2>
+<p>Spark is efficient for processing big data for a number of reasons. One reason is that it chunks up data to be <a class="reference external" href="https://en.wikipedia.org/wiki/Parallel_computing">processed in parallel</a> (where possible). Another reason is it has some built in optimisations that make processing large amounts of data much quicker and using fewer resources.</p>
+<p>As analysts we do not necessarily need to know exactly how Spark processes data, but when something goes wrong it is useful to understand a little more about what Spark is doing “under the hood”. Debugging Spark issues often requires some basic understanding of how Spark works, and we hope to cover these details in this book without getting too technical. In this section there is enough to get started. There are links below to other parts of the book that cover these topics in more detail.</p>
+<div class="section" id="spark-dataframes">
+<h3>Spark DataFrames<a class="headerlink" href="#spark-dataframes" title="Permalink to this headline">¶</a></h3>
+<p>If you look online or in text books you might read that the basic data structure in Spark is Resilient Distributed Dataset (RDD), but these are combined with <a class="reference internal" href="data-types.html"><span class="doc std std-doc">data types</span></a> to create <strong>DataFrames</strong> meaning we can often ignore the low-level RDD. If you have used Python (specifically pandas) or R before you should be familiar with DataFrames, but there are some key differences between DataFrames in Python/R and Spark, here are the important ones:</p>
+<ul class="simple">
+<li><p>Spark DataFrames are chunked up into <strong>partitions</strong>. This means that Spark can process data in parallel; sometimes distributed over many nodes within the cluster.</p></li>
+<li><p>Although Spark DataFrames are processed in memory, they do not exist in memory by default. If we create a DataFrame in Python/R the data will be <strong>persisted</strong> in memory as we run the code. This is not the case in Spark where operations are classed as either <strong>transformations</strong> or <strong>actions</strong>. An <strong>execution plan</strong> is created as we run transformations and this plan is executed when we run an action. This is called <strong>lazy evaluation</strong> and allows Spark to apply optimisations to our code for more efficient processing.</p></li>
+<li><p>Spark DataFrames are not ordered and do not have an index. The reason for this is that Spark DataFrames are distributed across partitions. Some operations, such as joining, grouping or sorting, cause data to be moved between partitions, known as a <strong>shuffle</strong>. Running the exact same Spark code can result in different data being on different partitions, as well as a different order within each partition.</p></li>
+</ul>
+<p>Some links to more advanced reading on the above topics:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../spark-concepts/spark-application-and-ui.html"><span class="doc std std-doc">Spark application and UI</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-concepts/partitions.html"><span class="doc std std-doc">Managing partitions</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-concepts/persistence.html"><span class="doc std std-doc">Persisting in Spark</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-concepts/shuffling.html"><span class="doc std std-doc">Shuffling</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-concepts/df-order.html"><span class="doc std std-doc">Spark DataFrames are not ordered</span></a></p></li>
+<li><p><a class="reference external" href="https://databricks.com/glossary/catalyst-optimizer">Catalyst optimiser</a></p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="setting-up-resources">
+<h2>Setting up resources<a class="headerlink" href="#setting-up-resources" title="Permalink to this headline">¶</a></h2>
+<p>If you want to try using PySpark or sparklyr and have not got access to a data platform that supports Spark, you can try one of the following options:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://databricks.com/try-databricks">Databricks community edition</a> to use a small cluster on databricks infrastructure</p></li>
+<li><p><a class="reference external" href="https://www.datacamp.com/community/tutorials/installation-of-pyspark">Install PySpark on your laptop</a> to run PySpark in local mode</p></li>
+<li><p><a class="reference external" href="https://therinspark.com/starting.html">Install sparklyr on your laptop</a> to run sparklyr in local mode</p></li>
+</ul>
+<p>The code in this book was executed using local mode so it will work on a laptop, Databricks or another platform that supports Spark. More details on local vs cluster mode in the <a class="reference internal" href="spark-session-guidance.html"><span class="doc std std-doc">Guidance on Spark Sessions</span></a>.</p>
 </div>
 <div class="section" id="further-resources">
 <h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
+<p>External links:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.apache.org/">Apache Spark</a></p></li>
+<li><p><a class="reference external" href="https://databricks.com/try-databricks">Databricks community edition</a></p></li>
+<li><p><a class="reference external" href="https://databricks.com/glossary">Databricks glossary</a></p></li>
+<li><p><a class="reference external" href="https://www.datacamp.com/community/tutorials/installation-of-pyspark">Datacamp - Install PySpark for local mode</a></p></li>
+<li><p><a class="reference external" href="https://therinspark.com/starting.html">Mastering Spark with R - Install sparklyr for local mode</a></p></li>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Apache_Spark">Wikipedia (Apache Spark)</a></p></li>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Parallel_computing">Wikipedia (Parallel computing)</a></p></li>
+</ul>
+<p>Links within this book:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="data-types.html"><span class="doc std std-doc">Data types</span></a></p></li>
+<li><p><a class="reference internal" href="spark-session-guidance.html"><span class="doc std std-doc">Guidance on Spark Sessions</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-concepts/partitions.html"><span class="doc std std-doc">Managing partitions</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-concepts/persistence.html"><span class="doc std std-doc">Persisting in Spark</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-concepts/shuffling.html"><span class="doc std std-doc">Shuffling</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-concepts/spark-application-and-ui.html"><span class="doc std std-doc">Spark application and UI</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-concepts/df-order.html"><span class="doc std std-doc">Spark DataFrames are not ordered</span></a></p></li>
+</ul>
 </div>
 </div>
 
@@ -525,8 +656,8 @@
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="../intro.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -543,18 +674,16 @@
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By Wil Roberts & Adrian Prince<br/>
-        
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By Wil Roberts & Adrian Prince<br/>
+    
+  </p>
+</footer>
 </main>
 
 
