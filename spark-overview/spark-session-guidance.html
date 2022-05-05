@@ -38,20 +38,18 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script>let toggleHintShow = 'Click to show';</script>
-    <script>let toggleHintHide = 'Click to hide';</script>
-    <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/tabs.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script>
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -438,7 +436,7 @@ const thebe_selector_output = ".output, .cell_output"
                 data-placement="left">.md</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -472,7 +470,7 @@ const thebe_selector_output = ".output, .cell_output"
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+        <div class="d-none d-md-block col-md-2 bd-toc show">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -532,70 +530,7 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Guidance on Spark Sessions</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#architecture-for-cluster-mode">
-   Architecture for cluster mode
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#creating-a-spark-session">
-   Creating a Spark Session
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#using-default-parameters">
-   Using default parameters
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#specifying-configs">
-   Specifying configs
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#config-glossary">
-   Config Glossary
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#calculating-resource-allocation">
-   Calculating Resource Allocation
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#resource-allocation">
-   Resource allocation
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#reserving-resource">
-   Reserving resource
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#further-resources">
-   Further Resources
-  </a>
- </li>
-</ul>
-
-                        </nav>
-                    </div>
-                </div>
-            </div>
-            
+        
               <div>
                 
   <div class="section" id="guidance-on-spark-sessions">
@@ -607,7 +542,7 @@ const thebe_selector_output = ".output, .cell_output"
 <p>Below is a simplified version of the architecture for a brief discussion on how a Spark session is set up. As always in this book, we assume the reader is using Python or R.</p>
 <div class="figure align-default" id="architecture">
 <a class="reference internal image-reference" href="../_images/simple_spark_cluster.PNG"><img alt="Diagram that shows a driver program on an edge node linking to a resource manager and multiple worker nodes containing executors." src="../_images/simple_spark_cluster.PNG" style="width: 100%;" /></a>
-<p class="caption"><span class="caption-number">Fig. 1 </span><span class="caption-text">Simple container running on YARN</span><a class="headerlink" href="#architecture" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Fig. 1 </span><span class="caption-text">Simplified Spark cluster running on YARN</span><a class="headerlink" href="#architecture" title="Permalink to this image">¶</a></p>
 </div>
 <p>Each element in a cluster is referred to as a node. In a Spark cluster, the <em>edge node</em> is where the user interacts with the cluster through the driver program. There is also the aptly named <em>resource manager</em> within this architecture and some <em>worker nodes</em> where the processing of data happens.</p>
 <ol class="simple">
@@ -622,7 +557,7 @@ job. It will also shut them down when they are not needed. This process of switc
 <div class="section" id="creating-a-spark-session">
 <h2>Creating a Spark Session<a class="headerlink" href="#creating-a-spark-session" title="Permalink to this headline">¶</a></h2>
 <p>There are many options when it comes to creating a Spark session. We recommend using the default parameters when getting started, you can then start adding other parameters when you learn more about how Spark works and how to tune your session to your specific needs.</p>
-<p>Remember we should stop the Spark session when we are finished to free up the cluster resource for others. This is often done automatically when we stop our driver program, or you can also do it by running <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.stop.html"><code class="docutils literal notranslate"><span class="pre">spark.stop()</span></code></a>/<a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html"><code class="docutils literal notranslate"><span class="pre">spark_disconnect()</span></code></a>.</p>
+<p>Remember we should stop the Spark session when we are finished to free up the cluster resource for others. This is often done automatically when we stop our driver program, or you can also do it by running <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.stop.html"><code class="docutils literal notranslate"><span class="pre">spark.stop()</span></code></a>/<a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html"><code class="docutils literal notranslate"><span class="pre">spark_disconnect()</span></code></a> in Python/R.</p>
 </div>
 <div class="section" id="using-default-parameters">
 <h2>Using default parameters<a class="headerlink" href="#using-default-parameters" title="Permalink to this headline">¶</a></h2>
@@ -679,7 +614,7 @@ job. It will also shut them down when they are not needed. This process of switc
 <p>ONS runs Spark on YARN, that entails another <a class="reference external" href="https://spark.apache.org/docs/latest/running-on-yarn.html">set of configuration options</a> documented here.</p>
 <p>To view all of the parameters, both default and custom, associated with your Spark session use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.SparkConf.getAll.html"><code class="docutils literal notranslate"><span class="pre">spark.sparkContext.getConf().getAll()</span></code></a>.</p>
 <p>Note that <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.SparkContext.html"><code class="docutils literal notranslate"><span class="pre">sparkContext</span></code></a> is created automatically when calling <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html"><code class="docutils literal notranslate"><span class="pre">SparkSession</span></code></a></p>
-<p><em>Note that the values shown in brackets are common default values</em></p>
+<p><em>The values shown in brackets are common default values</em></p>
 <p><strong>App Name</strong><br />
 <code class="docutils literal notranslate"><span class="pre">.appName()</span></code><br />
 The Spark session is often referred to as a Spark application. This option gives your Spark session a meaningful name, which can be used to help others identify the purpose of your app.<br />
@@ -804,8 +739,8 @@ would be under significant strain.</p>
 
               </div>
               
-            
-                <!-- Previous / next buttons -->
+        
+            <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="when-to-use-spark.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -822,16 +757,18 @@ would be under significant strain.</p>
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-            
+        
         </div>
     </div>
     <footer class="footer">
-  <p>
-    
-      By Wil Roberts & Adrian Prince<br/>
-    
-  </p>
-</footer>
+    <div class="container">
+      <p>
+        
+          By Wil Roberts & Adrian Prince<br/>
+        
+      </p>
+    </div>
+  </footer>
 </main>
 
 

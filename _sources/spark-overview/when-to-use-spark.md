@@ -29,7 +29,7 @@ For more information about good practices in using Python and R see the [QA of a
 
 Python and R have their limits, specifically when it comes to big data. The main issue is that as datasets get larger, the data are eventually too big to fit into a computer's RAM (or memory). Another issue is that processing large amounts of data using Python or R can become very slow. This is where Spark comes in.
 
-As repeatedly mentioned in the [Getting Started] guide, Spark is a big data solution. It allows us to process large amounts of data efficiently by making use of a cluster of computers and parallel processing. Can we use Spark to process smaller amounts of data? Yes, but it's not advised to do so unless it's for a specific reason like developing code using a [sample of the data](../spark-functions/sampling), writing [unit tests](../testing-debugging/unit-testing) or doing some training. There are easier ways to process smaller datasets, like using pandas or R. 
+As repeatedly mentioned in the [Getting Started](spark-start) guide, Spark is a big data solution. It allows us to process large amounts of data efficiently by making use of a cluster of computers and parallel processing. Can we use Spark to process smaller amounts of data? Yes, but it is not advised to do so unless for a specific reason like developing code using a [sample of the data](../spark-functions/sampling), writing [unit tests](../testing-debugging/unit-testing) or doing some training. There are easier ways to process smaller datasets, like using pandas or R. 
 
 When deciding whether to use Spark think about how big the data is; anything bigger than a few GB and it's likely Spark will be more efficient at processing the data. It is also worth considering whether the dataset will be joined or linked to another dataset, because both datasets will need to fit into memory to complete the join in Python or R.
 
@@ -62,8 +62,8 @@ In practice, within a modern data platform environment people will probably use 
 Typical usage:
 
 - A project team could use PySpark to process a large admin dataset through various stages that make up a data pipeline.
-- Throughout the various stages of the pipeline the data are written out to the file system or database in the form of tables, these are called intermediate tables.
-- Some simple quality assurance checks are carried out on the intermediate tables using Impala SQL to make sure the pipeline is producing the desired result.
+- Throughout the various stages of the pipeline the data are written out to the file system or database in the form of tables, these are called intermediate outputs.
+- Some simple quality assurance checks are carried out on the intermediate outputs using Impala SQL to make sure the pipeline is producing the desired result.
 - Towards the latter stages of the pipeline the data are aggregated and therefore small enough to use the pandas library in Python instead of PySpark.
 - The final outputs are quality assured and disclosure checked using Excel before being exported out of the secure environment.
 

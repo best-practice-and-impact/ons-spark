@@ -38,19 +38,17 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script>let toggleHintShow = 'Click to show';</script>
-    <script>let toggleHintHide = 'Click to hide';</script>
-    <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script>
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -437,7 +435,7 @@ const thebe_selector_output = ".output, .cell_output"
                 data-placement="left">.md</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -471,7 +469,7 @@ const thebe_selector_output = ".output, .cell_output"
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+        <div class="d-none d-md-block col-md-2 bd-toc show">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -516,55 +514,7 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>When To Use Spark</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#good-practices">
-   Good practices
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#amount-of-data-to-process">
-   Amount of data to process
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#skills-within-the-team">
-   Skills within the team
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#what-do-you-want-to-do-with-the-data">
-   What do you want to do with the data?
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#combination-of-tools-that-work-for-you">
-   Combination of tools that work for you
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#further-resources">
-   Further Resources
-  </a>
- </li>
-</ul>
-
-                        </nav>
-                    </div>
-                </div>
-            </div>
-            
+        
               <div>
                 
   <div class="section" id="when-to-use-spark">
@@ -595,7 +545,7 @@ const thebe_selector_output = ".output, .cell_output"
 <div class="section" id="amount-of-data-to-process">
 <h2>Amount of data to process<a class="headerlink" href="#amount-of-data-to-process" title="Permalink to this headline">¶</a></h2>
 <p>Python and R have their limits, specifically when it comes to big data. The main issue is that as datasets get larger, the data are eventually too big to fit into a computer’s RAM (or memory). Another issue is that processing large amounts of data using Python or R can become very slow. This is where Spark comes in.</p>
-<p>As repeatedly mentioned in the [Getting Started] guide, Spark is a big data solution. It allows us to process large amounts of data efficiently by making use of a cluster of computers and parallel processing. Can we use Spark to process smaller amounts of data? Yes, but it’s not advised to do so unless it’s for a specific reason like developing code using a <a class="reference internal" href="../spark-functions/sampling.html"><span class="doc std std-doc">sample of the data</span></a>, writing <a class="reference internal" href="../testing-debugging/unit-testing.html"><span class="doc std std-doc">unit tests</span></a> or doing some training. There are easier ways to process smaller datasets, like using pandas or R.</p>
+<p>As repeatedly mentioned in the <a class="reference internal" href="spark-start.html"><span class="doc std std-doc">Getting Started</span></a> guide, Spark is a big data solution. It allows us to process large amounts of data efficiently by making use of a cluster of computers and parallel processing. Can we use Spark to process smaller amounts of data? Yes, but it is not advised to do so unless for a specific reason like developing code using a <a class="reference internal" href="../spark-functions/sampling.html"><span class="doc std std-doc">sample of the data</span></a>, writing <a class="reference internal" href="../testing-debugging/unit-testing.html"><span class="doc std std-doc">unit tests</span></a> or doing some training. There are easier ways to process smaller datasets, like using pandas or R.</p>
 <p>When deciding whether to use Spark think about how big the data is; anything bigger than a few GB and it’s likely Spark will be more efficient at processing the data. It is also worth considering whether the dataset will be joined or linked to another dataset, because both datasets will need to fit into memory to complete the join in Python or R.</p>
 <p>Another consideration is whether the data will grow with time. For example, a data processing pipeline written in R takes a 2GB dataset as an input, but if the dataset grows by 50MB per week the pipeline will eventually face some out of memory issues. Perhaps only one week’s worth of data could be processed at a time, but if not it may be safer to opt for Spark.</p>
 </div>
@@ -619,8 +569,8 @@ const thebe_selector_output = ".output, .cell_output"
 <p>Typical usage:</p>
 <ul class="simple">
 <li><p>A project team could use PySpark to process a large admin dataset through various stages that make up a data pipeline.</p></li>
-<li><p>Throughout the various stages of the pipeline the data are written out to the file system or database in the form of tables, these are called intermediate tables.</p></li>
-<li><p>Some simple quality assurance checks are carried out on the intermediate tables using Impala SQL to make sure the pipeline is producing the desired result.</p></li>
+<li><p>Throughout the various stages of the pipeline the data are written out to the file system or database in the form of tables, these are called intermediate outputs.</p></li>
+<li><p>Some simple quality assurance checks are carried out on the intermediate outputs using Impala SQL to make sure the pipeline is producing the desired result.</p></li>
 <li><p>Towards the latter stages of the pipeline the data are aggregated and therefore small enough to use the pandas library in Python instead of PySpark.</p></li>
 <li><p>The final outputs are quality assured and disclosure checked using Excel before being exported out of the secure environment.</p></li>
 </ul>
@@ -663,8 +613,8 @@ const thebe_selector_output = ".output, .cell_output"
 
               </div>
               
-            
-                <!-- Previous / next buttons -->
+        
+            <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="spark-start.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -681,16 +631,18 @@ const thebe_selector_output = ".output, .cell_output"
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-            
+        
         </div>
     </div>
     <footer class="footer">
-  <p>
-    
-      By Wil Roberts & Adrian Prince<br/>
-    
-  </p>
-</footer>
+    <div class="container">
+      <p>
+        
+          By Wil Roberts & Adrian Prince<br/>
+        
+      </p>
+    </div>
+  </footer>
 </main>
 
 
