@@ -14,7 +14,7 @@ width: 100%
 name: architecture
 alt: Diagram that shows a driver program on an edge node linking to a resource manager and multiple worker nodes containing executors.
 ---
-Simple container running on YARN
+Simplified Spark cluster running on YARN
 ```
 
 Each element in a cluster is referred to as a node. In a Spark cluster, the *edge node* is where the user interacts with the cluster through the driver program. There is also the aptly named *resource manager* within this architecture and some *worker nodes* where the processing of data happens. 
@@ -34,7 +34,7 @@ job. It will also shut them down when they are not needed. This process of switc
 
 There are many options when it comes to creating a Spark session. We recommend using the default parameters when getting started, you can then start adding other parameters when you learn more about how Spark works and how to tune your session to your specific needs.
 
-Remember we should stop the Spark session when we are finished to free up the cluster resource for others. This is often done automatically when we stop our driver program, or you can also do it by running [`spark.stop()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.stop.html)/[`spark_disconnect()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html).
+Remember we should stop the Spark session when we are finished to free up the cluster resource for others. This is often done automatically when we stop our driver program, or you can also do it by running [`spark.stop()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.stop.html)/[`spark_disconnect()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html) in Python/R.
 
 ### Using default parameters
 
@@ -103,7 +103,7 @@ To view all of the parameters, both default and custom, associated with your Spa
 Note that [`sparkContext`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.SparkContext.html) is created automatically when calling [`SparkSession`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html)
 
 
-*Note that the values shown in brackets are common default values* 
+*The values shown in brackets are common default values* 
 
 **App Name**  
 `.appName()`  
