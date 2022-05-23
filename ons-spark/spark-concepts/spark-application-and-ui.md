@@ -18,9 +18,14 @@ Below is a diagram of the Spark application hierarchy:
 - **Stage** - a set of tasks that can be executed in parallel. Similar to how *actions* define a job boundary, a stage boundary is introduced by a *wide* transformation, such as [`.groupBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.groupBy.html)/[`group_by()`](https://dplyr.tidyverse.org/reference/group_by.html) or [`.join()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.join.html)/[`left_join()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/join.tbl_spark.html). A stage might consist of many *narrow* transformations, but a stage always finishes with a *wide* transformation or action.
 - **Task** - an individual unit of work assigned to a single core on an executor.
 
-
-![Diagram of Spark application showing partitioned DataFrame going through narrow and wide operations](../images/spark_app_diagram.png)
-
+```{figure} ../images/spark_app_diagram.png
+---
+width: 100%
+name: SparkApplication
+alt: Diagram representing Spark application showing partitioned DataFrame going through narrow and wide operations
+---
+Spark application
+```
 
 Note that Jobs, Stages and Tasks are numbered starting from zero.
 
@@ -71,7 +76,14 @@ If you are running the source notebook and follow the above link you will see so
 
 There is a lot of useful information in the Spark UI, but in this article we will only concentrate on the *Jobs* and *Stages* tabs. Note that we haven't executed any *Jobs* yet, so there isn't much to see at the moment.
 
-![Empty Spark UI page](../images/spark_app_empty_ui.png)
+```{figure} ../images/spark_app_empty_ui.png
+---
+width: 100%
+name: EmptyUI
+alt: Empty Spark UI page
+---
+Empty Spark UI page
+```
 
 Let's import the animal rescue data and find out the number of partitions in which our `rescue` DataFrame is processed. The number of partitions will be useful later when we're investigating our application's tasks.
 ````{tabs}
@@ -205,7 +217,14 @@ In the top section of the timeline you will see the executors being added and re
 
 *Tip:* You can tick the *Enable Zooming* button to zoom in and out of different sections of the timeline
 
-![Event timeline within Spark UI showing executors being assigned and jobs being deployed](../images/spark_app_event_timeline.png)
+```{figure} ../images/spark_app_event_timeline.png
+---
+width: 100%
+name: AppEventTimeline
+alt: Event timeline within Spark UI showing executors being assigned and jobs being deployed
+---
+An application's Event Timeline
+```
 
 Let's look at the *Completed Jobs* table. The description gives us a clue as to the action that initiated that job. The first job, *Job Id* 0, was to interact with HDFS, so it has the description `parquet at NativeMethodAccessorImpl.java:0`. Remember that executing transformations creates an execution plan, so Spark needs to know the DataFrame's schema, i.e. column names and types, to validate our PySpark/sparklyr code. Reading from disk will always create a job, usually consisting of just one stage as shown in the *Stages* column.
 
@@ -222,7 +241,14 @@ The DAG shows the two stages. Here are some rough definitions of the terms insid
 
 There are more informative DAG diagrams on the SQL tab, which are explored in the [Optimising Joins](../spark-concepts/join-concepts) and [Persisting](../spark-concepts/persistence) articles. 
 
-![Stage information in Spark UI showing DAG and stage table](../images/spark_app_stages.png)
+```{figure} ../images/spark_app_stages.png
+---
+width: 100%
+name: JobDetails
+alt: Job details page in Spark UI showing DAG diagram and table of the job's stages
+---
+Job details page
+```
 
 ### Stages page
 
@@ -234,7 +260,14 @@ This page contains lots of detailed information about the individual tasks and i
 
 Opening the *Event timeline* collapsible menu will show a timeline like in the below image. This timeline has a single row, which means one executor (i.e. the driver in our case because we're running a local session) was used to complete these tasks. This executor has two cores, we know this because the *Executor Computing Time* (shown in green) of the two task are overlapping. If there was just one core available to the driver the two tasks would not run in parallel.
 
-![Task event timeline in Spark UI showing parallel processing on tasks](../images/spark_app_task_timeline.png)
+```{figure} ../images/spark_app_task_timeline.png
+---
+width: 100%
+name: TaskEventTimeline
+alt: Task event timeline in Spark UI showing parallel processing of tasks
+---
+Task Event timeline
+```
 
 The colours also indicate what was going on while the task was being completed. In general- green is good, and is an indication that there is no need to spend time optimising the processing. Delays often occur when lots of data are moved around, because the process can involve some or all of the below:
 1. serialising data - preparing the data to be moved to disk
@@ -250,7 +283,14 @@ Summary information about the tasks within a stage are given in the Summary Metr
 
 This is a useful indication of the distribution of times taken for various components of task processing. It might not be the most useful part of the UI to look at with only two tasks, so we will revisit this later.
 
-![Task metrics table in the Spark UI](../images/spark_app_task_metrics.png)
+```{figure} ../images/spark_app_task_metrics.png
+---
+width: 100%
+name: TaskMetrics
+alt: Task metrics table in the Spark UI
+---
+Task metrics table
+```
 
 We won't discuss *GC time*, or garbage collection time, in this article. This is a topic that is covered in [a separate article](../spark-concepts/garbage-collection).
 
@@ -347,7 +387,14 @@ ggplot2::ggplot(aggregated_r_plot, ggplot2::aes(cost_group, count)) +
 <matplotlib.axes._subplots.AxesSubplot at 0x7fc7dd4c2a58>
 ```
 ````
-![Incident cost by cost group chart](../images/spark_app_incident_cost_chart.png)
+```{figure} ../images/spark_app_incident_cost_chart.png
+---
+width: 100%
+name: IncidentCostChart
+alt: Simple bar chart of animal rescue incident cost by cost group chart
+---
+Animal rescue incident cost by cost group
+```
 
 Now we have our chart, let's see how that translates to tasks in the Spark UI.
 
@@ -361,7 +408,14 @@ Finally, let's take a look at the stages and tasks for the latest job in the Spa
 
 The `.toPandas()`/`collect()` job has two stages because the `.groupBy()`[`.agg()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.agg.html)/`group_by() %>% `[`summarise()`](https://dplyr.tidyverse.org/reference/summarise.html) command is a wide transformation. In the first stage the data is read in, a new column added and then the dataset is aggregated. This stage has 2 tasks because the `rescue` DataFrame has 2 partitions. The second stage in this job moves the data from the cluster to the CDSW session. This stage has 200 tasks, because `aggregated_spark` has 200 partitions, more on why this is the case in the [Partitions](../spark-concepts/partitions). A screenshot of the *Stage details* for these tasks is below.
 
-![Task information for 200 tasks](../images/spark_app_200_tasks.png)
+```{figure} ../images/spark_app_200_tasks.png
+---
+width: 100%
+name: to ref
+alt: Task information, such as processing time and scheduling time, showing relatively poor performance due to over-partitioning a small DataFrame
+---
+Task information showing relatively poor performance
+```
 
 As we're running in local mode with 2 cores (or threads), the processing of these 200 tasks took place on the driver. The tasks seem to show relatively poor performance, which is indicated by the non-green colours in the timeline. Also by comparing the *Duration* (useful processing time) metrics with that of *Scheduler Delay* and *Task Deserialization Time* in the *Summary Metrics* table. Would we get better performance if the `aggregated_spark` DataFrame had fewer partitions? Let's try to improve the performance by reducing the number of partitions from 200 to 2 with [`.coalesce()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.coalesce.html)/[`sdf_coalesce()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html):
 ````{tabs}
@@ -385,7 +439,14 @@ aggregated_r <- aggregated_spark %>%
 ````
 Now navigate to the details of the latter stage of the latest job within the UI and you will see something similar to the screenshot below. Of course, the all important metric to compare is the time taken to complete the stage. Previously, using 200 partitions the stage time was 0.6 seconds, using 2 partitions the stage time was 0.3 seconds. Looking at this page we can see why.
 
-![Task timeline for fewer tasks showing better performance](../images/spark_app_2_tasks.png)
+```{figure} ../images/spark_app_2_tasks.png
+---
+width: 100%
+name: to ref
+alt: Task timeline for processing fewer (but larger) partitions and hence fewer tasks, showing improved performance
+---
+Task information showing improved performance
+```
 
 Note that a 0.3s improvement is nothing to brag about, but a x2 processing speed isn't bad.
 
