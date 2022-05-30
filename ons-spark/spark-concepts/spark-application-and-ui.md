@@ -411,7 +411,7 @@ The `.toPandas()`/`collect()` job has two stages because the `.groupBy()`[`.agg(
 ```{figure} ../images/spark_app_200_tasks.png
 ---
 width: 100%
-name: to ref
+name: TaskInfo200
 alt: Task information, such as processing time and scheduling time, showing relatively poor performance due to over-partitioning a small DataFrame
 ---
 Task information showing relatively poor performance
@@ -442,7 +442,7 @@ Now navigate to the details of the latter stage of the latest job within the UI 
 ```{figure} ../images/spark_app_2_tasks.png
 ---
 width: 100%
-name: to ref
+name: TaskInfo2
 alt: Task timeline for processing fewer (but larger) partitions and hence fewer tasks, showing improved performance
 ---
 Task information showing improved performance
