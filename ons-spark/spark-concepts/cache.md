@@ -82,11 +82,25 @@ Now we can take a look in the [Spark UI](../spark-concepts/spark-application-and
 
 Within the Spark UI, if you were to head over to the *Storage* tab you would see an RDD stored in memory, in two partitions and using 35.7 KB of executor memory. More on RDDs in the [Shuffling](../spark-concepts/shuffling.html#a-quick-note-on-rdds) article.
 
-![cached DataFrame in memory](../images/cache_memory.png)
+```{figure} ../images/cache_memory.png
+---
+width: 100%
+name: CacheMemory
+alt: Storage page from the Spark UI showing cached DataFrame in memory
+---
+DataFrame cached in memory
+```
 
 You can also click on the RDD name to get more information, such as how many executors are being used and the size of each partition.
 
-![partition details of cached DataFrame](../images/cache_memory_partitions.png)
+```{figure} ../images/cache_memory_partitions.png
+---
+width: 100%
+name: CacheDetails
+alt: Further details of the cache in the Spark UI including partition sizes
+---
+Cache details
+```
 
 ### Persist
 
@@ -147,7 +161,14 @@ sparklyr::sdf_persist(population, storage.level = "DISK_ONLY", name = "populatio
 ````
 Before we move on, head back to the Spark UI and have a look at how much space the `population` DataFrame uses on disk.
 
-![cached DataFrame on executor disk](../images/cache_disk.png)
+```{figure} ../images/cache_disk.png
+---
+width: 100%
+name: CacheDisk
+alt: Storage page from the Spark UI showing cached DataFrame on disk
+---
+DataFrame cached on disk
+```
 
 Is this what you expected? Why is this number different to persisting in memory? Because there is some compression involved in data written on disk.
 
@@ -500,14 +521,28 @@ Go into the [Spark UI](../spark-concepts/spark-application-and-ui) and look at t
 
 Click on the query with a description that starts with 'csv' and look at the DAG diagram. DAG stands for Directed Acyclic Graph and is often used to describe a process.
 
-![SQL DAG for csv file scan](../images/cache_file_scan.png)
+```{figure} ../images/cache_file_scan.png
+---
+width: 100%
+name: FileScan
+alt: SQL DAG in the Spark UI for inferring a schema from a csv file
+---
+File scan to infer DataFrame schema
+```
 
 This query is glancing at the `animal_rescue.csv` file to get the schema so that following transformations can be validated before being added to the execution plan (it does this because we asked Spark to infer the schema). Doing this for large files can take several minutes, so for large data sets use parquet files or Hive tables, which store the schema for you.
 
 The next three queries (highlighted below) are the functions we have called above. Look at the DAG for each query by clicking on the descriptions, what are your observations?
 
-![SQL page of Spark UI](../images/cache_sql_no_persist.png)
- 
+```{figure} ../images/cache_sql_no_persist.png
+---
+width: 100%
+name: AnalysisNoCache
+alt: SQL page of Spark UI showing execution time for analysis without using cache
+---
+Analysis duration without cache
+```
+
 **Observations**
 - Spark has changed the order of our transformations. We'll look at this later.
 - It's difficult to make sense of some boxes.
@@ -680,7 +715,14 @@ get_summary_cost_by_animal(rescue) %>%
 ````
 Look at the Spark UI. Below is the DAG for the latest query.
 
-![SQL DAG with cached data](../images/cache_dag_in_memory.png)
+```{figure} ../images/cache_dag_in_memory.png
+---
+width: 50%
+name: DAGWithCache
+alt: SQL DAG in Spark UI showing shortened process by making use of cached DataFrame
+---
+SQL DAG using cached DataFrame
+```
 
 This time Spark didn't read in the data from disk and apply the cleaning, we have broken the lineage. We know this because the DAG starts with a *InMemoryTableScan*, i.e. the cache. Note that this diagram consists of fewer stages than we had previously. Another sign of cached data being used is the presence of *Skipped Stages* on the Jobs page. 
 
@@ -690,7 +732,14 @@ There are many factors that contribute towards the time taken for each query tha
 
 Each function is labelled in the image below. The first run was without caching, the second was with caching and the third was a second run with cached data. 
 
-![comparison of query times using cache](../images/cache_sql_compare.png)
+```{figure} ../images/cache_sql_compare.png
+---
+width: 100%
+name: AnalysisWithCache
+alt: SQL page of Spark UI showing improved execution time for analysis with cache
+---
+Processing time without and with cache
+```
 
 ### Further Resources
 
