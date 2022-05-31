@@ -425,7 +425,7 @@ There are different visualisations available in the Spark UI; here we will choos
 
 ```{figure} ../images/shuffling_example1_ui_list.png
 ---
-width: 100%
+width: 60%
 name: CompletedSQLQueries
 alt: List of completed SQL queries in Spark UI
 ---
@@ -436,7 +436,7 @@ Clicking on the link where `ID` is `3` displays the plan:
 
 ```{figure} ../images/shuffling_example1_sql_ui.png
 ---
-width: 100%
+width: 50%
 name: ExchangeExample
 alt: Spark UI showing an exchange when DF is sorted
 ---
@@ -768,7 +768,7 @@ Bottom 5 rows:
 ````
 ```{figure} ../images/shuffling_catalyst_ui.png
 ---
-width: 100%
+width: 50%
 name: MultipleSortsSingleExchange
 alt: Spark UI showing one exchange for multiple DF sorting operations
 ---
@@ -830,26 +830,26 @@ Sort [rand1#77L DESC NULLS LAST], true
   org.apache.spark.sql.execution.QueryExecution
   == Parsed Logical Plan ==
 'Project ['id, 'rand1]
-+- 'UnresolvedRelation `sparklyr_tmp_79d0eb95_2db9_4c77_bc42_d147d3b860a6`
++- 'UnresolvedRelation `sparklyr_tmp_84a4a495_8926_4508_a776_58e5d785612b`
 
 == Analyzed Logical Plan ==
 id: int, rand1: bigint
 Project [id#67, rand1#75L]
-+- SubqueryAlias `sparklyr_tmp_79d0eb95_2db9_4c77_bc42_d147d3b860a6`
++- SubqueryAlias `sparklyr_tmp_84a4a495_8926_4508_a776_58e5d785612b`
    +- Sort [rand2#76 ASC NULLS FIRST], true
       +- Project [id#67, rand1#75L, rand2#76]
-         +- SubqueryAlias `sparklyr_tmp_d08a39dc_dc57_4d05_a903_9f77f219a1c3`
+         +- SubqueryAlias `sparklyr_tmp_4bead31f_cb75_477e_9a7a_fe93cc69940a`
             +- Sort [rand1#75L ASC NULLS FIRST], true
                +- Project [id#67, rand1#75L, rand2#76]
-                  +- SubqueryAlias `sparklyr_tmp_a1d9acdc_e111_42a3_a105_6ce2191824f5`
+                  +- SubqueryAlias `sparklyr_tmp_69f825f8_040d_45cf_b014_5213f38e0dd8`
                      +- Sort [rand2#76 ASC NULLS FIRST], true
                         +- Project [id#67, rand1#75L, rand2#76]
-                           +- SubqueryAlias `sparklyr_tmp_2a0b90e3_c72b_42ef_af38_147a48f3432f`
+                           +- SubqueryAlias `sparklyr_tmp_245f1eba_188c_4a73_b9de_cf51ad1bd30d`
                               +- Sort [rand1#75L ASC NULLS FIRST], true
                                  +- Project [id#67, rand1#75L, CheckOverflow((promote_precision(cast(cast(rand1#75L as decimal(20,0)) as decimal(21,1))) * promote_precision(cast(-1.0 as decimal(21,1)))), DecimalType(23,1)) AS rand2#76]
                                     +- SubqueryAlias `q01`
                                        +- Project [id#67, CEIL((rand(999) * cast(10.0 as double))) AS rand1#75L]
-                                          +- SubqueryAlias `sparklyr_tmp_2256397d_4a13_4b90_b706_f9e7cc113a7d`
+                                          +- SubqueryAlias `sparklyr_tmp_e3c999d4_6b13_4147_b556_e71bf666f08f`
                                              +- LogicalRDD [id#67], false
 
 == Optimized Logical Plan ==

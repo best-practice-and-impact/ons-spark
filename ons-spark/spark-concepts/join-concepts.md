@@ -261,8 +261,8 @@ rescue_with_pop %>% dplyr::explain()
 <SQL>
 SELECT `incident_number`, `cal_year`, `animal_group`, `LHS`.`postcode_district` AS `postcode_district`, `population`
 FROM (SELECT `IncidentNumber` AS `incident_number`, `CalYear` AS `cal_year`, `AnimalGroupParent` AS `animal_group`, `PostcodeDistrict` AS `postcode_district`
-FROM `animal_rescue_4ff2315c_2321_4af2_856d_dc2e7938ee77`) `LHS`
-LEFT JOIN `population_88709d44_3a98_420a_9088_a8321b79c136` AS `RHS`
+FROM `animal_rescue_1d547e21_8254_46be_98e2_a9ded90863f4`) `LHS`
+LEFT JOIN `population_ab8b048d_9812_4304_9e43_c5ceed0e937a` AS `RHS`
 ON (`LHS`.`postcode_district` = `RHS`.`postcode_district`)
 
 
@@ -283,7 +283,7 @@ See the [Spark Application and UI](../spark-concepts/spark-application-and-ui) a
 
 ```{figure} ../images/sort_merge_join_ui.png
 ---
-width: 60%
+width: 100%
 name: SortMergeDAG
 alt: SQL DAG in Spark UI for sort merge join, showing an exchange for both DataFrames
 ---
@@ -406,8 +406,8 @@ rescue_with_pop_broadcast %>% dplyr::explain()
 <SQL>
 SELECT `incident_number`, `cal_year`, `animal_group`, `LHS`.`postcode_district` AS `postcode_district`, `population`
 FROM (SELECT `IncidentNumber` AS `incident_number`, `CalYear` AS `cal_year`, `AnimalGroupParent` AS `animal_group`, `PostcodeDistrict` AS `postcode_district`
-FROM `animal_rescue_360a1fbd_e1c0_4bd8_a3d2_addfa34d3fd3`) `LHS`
-LEFT JOIN `sparklyr_tmp_fd808a47_c303_4bf2_a458_22d19048c821` AS `RHS`
+FROM `animal_rescue_23ea78f1_9e82_4e2b_8c62_0b227629103d`) `LHS`
+LEFT JOIN `sparklyr_tmp_7da9aaa4_584b_4195_8306_26d69b044ab0` AS `RHS`
 ON (`LHS`.`postcode_district` = `RHS`.`postcode_district`)
 
 
@@ -554,8 +554,8 @@ rescue_with_pop_auto_broadcast %>% dplyr::explain()
 <SQL>
 SELECT `incident_number`, `cal_year`, `animal_group`, `LHS`.`postcode_district` AS `postcode_district`, `origin_of_call`, `population`
 FROM (SELECT `IncidentNumber` AS `incident_number`, `CalYear` AS `cal_year`, `AnimalGroupParent` AS `animal_group`, `PostcodeDistrict` AS `postcode_district`, `OriginofCall` AS `origin_of_call`
-FROM `animal_rescue_da7f96f2_d950_423b_a837_b7ab8eb1f825`) `LHS`
-LEFT JOIN `population_c6f1e855_ead2_42cb_8538_1ac0ad18c928` AS `RHS`
+FROM `animal_rescue_e46fd0c9_28f2_44c3_acdf_235018ad2bc0`) `LHS`
+LEFT JOIN `population_24bbb1e6_d041_4faf_8061_d0f1c2fb1c8c` AS `RHS`
 ON (`LHS`.`postcode_district` = `RHS`.`postcode_district`)
 
 
@@ -843,7 +843,7 @@ WHEN (`origin_of_call` = "Not known") THEN (NULL)
 ELSE (NULL)
 END AS `origin_type`
 FROM (SELECT `IncidentNumber` AS `incident_number`, `CalYear` AS `cal_year`, `AnimalGroupParent` AS `animal_group`, `PostcodeDistrict` AS `postcode_district`, `OriginofCall` AS `origin_of_call`
-FROM `animal_rescue_02aaef47_69f6_4e0a_a82e_9bbc85ca703a`) `q01`
+FROM `animal_rescue_7426fd08_0750_40d0_ac73_c9ddf9de52dc`) `q01`
 
 <PLAN>
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    plan
@@ -856,7 +856,7 @@ This can be confirmed by looking at the Spark UI:
 
 ```{figure} ../images/when_ui.png
 ---
-width: 30%
+width: 50%
 name: NarrowTransformationDAG
 alt: Simple SQL DAG representing a process where a join was replaced with a narrow transformation, showing no exchanges
 ---
