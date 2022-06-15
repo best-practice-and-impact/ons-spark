@@ -20,7 +20,14 @@ Partitions are just separate chunks of data. Whereas a pandas or base R DataFram
 
 In the diagram below, the solid boxes represent partitions and the arrows are transformations. If the data stays on the same partition that is referred to as as *narrow transformation*. Shuffles occur between the stages, where the data moves between partitions; this happens when a *wide transformation* is processed.
 
-![Diagram showing wide and narrow transformations](../images/application_and_ui.png)
+```{figure} ../images/application_and_ui.png
+---
+width: 100%
+name: SparkApplication
+alt: Diagram showing wide and narrow transformations
+---
+Spark application
+```
 
 This is covered in more detail in the [Spark Application and UI](../spark-concepts/spark-application-and-ui) article.
 
@@ -116,7 +123,9 @@ example_1 %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +---+
 | id|
 +---+
@@ -142,6 +151,33 @@ example_1 %>%
 | 19|
 +---+
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 20 × 1
+      id
+   <int>
+ 1     0
+ 2     1
+ 3     2
+ 4     3
+ 5     4
+ 6     5
+ 7     6
+ 8     7
+ 9     8
+10     9
+11    10
+12    11
+13    12
+14    13
+15    14
+16    15
+17    16
+18    17
+19    18
+20    19
+```
+````
 In order to print out the DataFrame we have to transfer the data back to the driver as one object, so we cannot see the partitioning. Indeed when we write our code we often do not pay attention to how the DataFrame might be distributed in memory.
 
 To see how it is partitioned in Spark add another column using [`F.spark_partition_id()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.spark_partition_id.html)/[`spark_partition_id()`](https://spark.apache.org/docs/latest/api/sql/index.html#spark_partition_id). In PySpark this is from the `functions` module; in sparklyr this is Spark function called inside `mutate`.
@@ -163,7 +199,9 @@ example_1 %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +---+------------+
 | id|partition_id|
 +---+------------+
@@ -189,6 +227,33 @@ example_1 %>%
 | 19|           1|
 +---+------------+
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 20 × 2
+      id partition_id
+   <int>        <int>
+ 1     0            0
+ 2     1            0
+ 3     2            0
+ 4     3            0
+ 5     4            0
+ 6     5            0
+ 7     6            0
+ 8     7            0
+ 9     8            0
+10     9            0
+11    10            1
+12    11            1
+13    12            1
+14    13            1
+15    14            1
+16    15            1
+17    16            1
+18    17            1
+19    18            1
+20    19            1
+```
+````
 We can see that this DataFrame has two partitions: `id` from `0` to `9` are in partition `0`, and `10` to `19` in partition `1`.
 
 Try a transformation on this DataFrame: adding a column of random numbers, `rand1`, between `1` and `10` with - [`F.rand()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.rand.html)/[`rand()`](https://spark.apache.org/docs/latest/api/sql/index.html#rand) and [`F.ceil()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.ceil.html)/[`ceil()`](https://spark.apache.org/docs/latest/api/sql/index.html#ceil) (which rounds numbers up to the nearest integer), then recalculate the `partition_id`:
@@ -215,7 +280,9 @@ example_1 %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +---+------------+-----+
 | id|partition_id|rand1|
 +---+------------+-----+
@@ -241,6 +308,33 @@ example_1 %>%
 | 19|           1|    8|
 +---+------------+-----+
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 20 × 3
+      id partition_id rand1
+   <int>        <int> <dbl>
+ 1     0            0     9
+ 2     1            0     4
+ 3     2            0     4
+ 4     3            0     8
+ 5     4            0     6
+ 6     5            0     2
+ 7     6            0     2
+ 8     7            0    10
+ 9     8            0     4
+10     9            0     3
+11    10            1     1
+12    11            1     4
+13    12            1     9
+14    13            1     6
+15    14            1     4
+16    15            1     9
+17    16            1     1
+18    17            1     6
+19    18            1     9
+20    19            1     8
+```
+````
 Comparing this to the previous output, we see that the `partition_id` has not changed. Why? This is because the data did not need to be shuffled between the partitions, as the creation of a column of random numbers is a *narrow transformation*. This calculation can be done independently on each row and so all partitions can be processed in parallel.
 
 Now try sorting the data by `rand1` in ascending order. Sorting will cause a shuffle, as the data needs to be moved between partitions to get it in the correct order. Then create a column for the `partition_id` after the sort, called `partition_id_new`.
@@ -266,7 +360,9 @@ example_1 %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 +---+------------+-----+----------------+
 | id|partition_id|rand1|partition_id_new|
 +---+------------+-----+----------------+
@@ -292,6 +388,33 @@ example_1 %>%
 |  7|           0|   10|               1|
 +---+------------+-----+----------------+
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 20 × 4
+      id partition_id rand1 partition_id_new
+   <int>        <int> <dbl>            <int>
+ 1    10            1     1                0
+ 2    16            1     1                0
+ 3     5            0     2                0
+ 4     6            0     2                0
+ 5     9            0     3                0
+ 6     1            0     4                0
+ 7     2            0     4                0
+ 8     8            0     4                0
+ 9    11            1     4                0
+10    14            1     4                0
+11     4            0     6                1
+12    13            1     6                1
+13    17            1     6                1
+14     3            0     8                1
+15    19            1     8                1
+16     0            0     9                1
+17    12            1     9                1
+18    15            1     9                1
+19    18            1     9                1
+20     7            0    10                1
+```
+````
 We can see that some data has moved between the partitions. Specifically, any row where `partition_id` $ \neq$ `partition_id_new`. Note that not all the data has changed partitions; some are already on the correct partition prior to the sorting.
 
 As we specified `spark.sql.shuffle.partitions` to be  `2` in the config, the shuffle has returned two partitions. In practical usage you will almost never only use two partitions, but this principle applies regardless of the size of the DF or number of partitions.
@@ -300,11 +423,25 @@ Another way to see when a shuffle has occurred is to check the Spark UI, where a
 
 There are different visualisations available in the Spark UI; here we will choose SQL. There should be four completed queries, which relate to the four actions we have called to this point in the Spark session.
 
-![List of completed SQL queries in Spark UI](../images/shuffling_example1_ui_list.png)
+```{figure} ../images/shuffling_example1_ui_list.png
+---
+width: 60%
+name: CompletedSQLQueries
+alt: List of completed SQL queries in Spark UI
+---
+Completed SQL queries
+```
 
 Clicking on the link where `ID` is `3` displays the plan:
 
-![Spark UI showing an exchange when DF is sorted](../images/shuffling_example1_sql_ui.png)
+```{figure} ../images/shuffling_example1_sql_ui.png
+---
+width: 50%
+name: ExchangeExample
+alt: Spark UI showing an exchange when DF is sorted
+---
+Exchange in Spark UI representing a shuffle
+```
 
 We can see from this that the shuffle occurred when we sorted the DataFrame by `rand1`, as represented by **Exchange** in the diagram.
 
@@ -414,7 +551,9 @@ print(tail(collected_df, 5))
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 Row count:  100
 
 Top 5 rows:
@@ -433,11 +572,42 @@ Bottom 5 rows:
 98     10      9        989
 99     10     10        959
 ```
+
+```{code-tab} plaintext R Output
+[1] "Row count: "
+[1] 100
+[1] "Top 5 rows:"
+# A tibble: 5 × 3
+  rand1 rand2 row_count
+  <dbl> <dbl>     <dbl>
+1     1     1       969
+2     1     2       988
+3     1     3      1023
+4     1     4      1033
+5     1     5       976
+[1] "Bottom 5 rows:"
+# A tibble: 5 × 3
+  rand1 rand2 row_count
+  <dbl> <dbl>     <dbl>
+1    10     6       963
+2    10     7      1004
+3    10     8      1023
+4    10     9       989
+5    10    10       959
+```
+````
 The result is as expected.
 
 Rather than try and print out the `partition_id` like we did in the first example, here the Spark UI is much more informative:
 
-![Spark UI showing exchanges when a DF is joined, grouped and sorted](../images/shuffling_example2_sql_ui.png)
+```{figure} ../images/shuffling_example2_sql_ui.png
+---
+width: 100%
+name: MultipleExchanges
+alt: Spark UI showing exchanges when a DF is joined, grouped and sorted
+---
+Multiple exchanges
+```
 
 We can visually see where a shuffle takes place, in this case, on both DataFrames prior to the join, then when grouping, and finally one more when sorting at the end.
 
@@ -486,7 +656,14 @@ Broadcast joins are one of the easiest ways to improve the efficiency of your co
 
 The [Optimising Joins](../spark-concepts/join-concepts) article has full details; this is an example of the Spark UI from that article, showing that there are fewer shuffles involved when broadcasting:
 
-![Spark UI for broadcast join, showing a broadcast exchange](../images/broadcast_join_ui.png)
+```{figure} ../images/broadcast_join_ui.png
+---
+width: 100%
+name: BroadcastExchange
+alt: Spark UI for broadcast join, showing a broadcast exchange
+---
+Boradcast exchange
+```
 
 #### Replace joins with conditional statements
 
@@ -544,7 +721,9 @@ print(tail(sorted_collected_df, 5))
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 Row count:  100000
 
 Top 5 rows:
@@ -563,7 +742,38 @@ Bottom 5 rows:
 99998  99963      1
 99999  99975      1
 ```
-![Spark UI showing one exchange for multiple DF sorting operations](../images/shuffling_catalyst_ui.png)
+
+```{code-tab} plaintext R Output
+[1] "Row count: "
+[1] 100000
+[1] "Top 5 rows:"
+# A tibble: 5 × 2
+     id rand1
+  <int> <dbl>
+1     7    10
+2    19    10
+3    21    10
+4    24    10
+5    58    10
+[1] "Bottom 5 rows:"
+# A tibble: 5 × 2
+     id rand1
+  <int> <dbl>
+1 99930     1
+2 99936     1
+3 99947     1
+4 99963     1
+5 99975     1
+```
+````
+```{figure} ../images/shuffling_catalyst_ui.png
+---
+width: 50%
+name: MultipleSortsSingleExchange
+alt: Spark UI showing one exchange for multiple DF sorting operations
+---
+Multiple sorts in single exchange
+```
 
 On the plan, we only have one exchange, but we gave it four operations which should cause a shuffle. What has happened is that Spark has optimised the plan to only include one shuffle. This is a feature of Spark called the *catalyst optimizer* and is explained further in the [Persisting](../spark-concepts/persistence) article.
 
@@ -583,7 +793,9 @@ sorted_df %>%
 ```
 ````
 
-```plaintext
+````{tabs}
+
+```{code-tab} plaintext Python Output
 == Parsed Logical Plan ==
 'Sort ['rand1 DESC NULLS LAST], true
 +- Sort [rand1#77L ASC NULLS FIRST], true
@@ -612,6 +824,50 @@ Sort [rand1#77L DESC NULLS LAST], true
    +- *(1) Project [id#75L, CEIL((rand(999) * 10.0)) AS rand1#77L]
       +- *(1) Range (0, 100000, step=1, splits=2)
 ```
+
+```{code-tab} plaintext R Output
+<jobj[73]>
+  org.apache.spark.sql.execution.QueryExecution
+  == Parsed Logical Plan ==
+'Project ['id, 'rand1]
++- 'UnresolvedRelation `sparklyr_tmp_84a4a495_8926_4508_a776_58e5d785612b`
+
+== Analyzed Logical Plan ==
+id: int, rand1: bigint
+Project [id#67, rand1#75L]
++- SubqueryAlias `sparklyr_tmp_84a4a495_8926_4508_a776_58e5d785612b`
+   +- Sort [rand2#76 ASC NULLS FIRST], true
+      +- Project [id#67, rand1#75L, rand2#76]
+         +- SubqueryAlias `sparklyr_tmp_4bead31f_cb75_477e_9a7a_fe93cc69940a`
+            +- Sort [rand1#75L ASC NULLS FIRST], true
+               +- Project [id#67, rand1#75L, rand2#76]
+                  +- SubqueryAlias `sparklyr_tmp_69f825f8_040d_45cf_b014_5213f38e0dd8`
+                     +- Sort [rand2#76 ASC NULLS FIRST], true
+                        +- Project [id#67, rand1#75L, rand2#76]
+                           +- SubqueryAlias `sparklyr_tmp_245f1eba_188c_4a73_b9de_cf51ad1bd30d`
+                              +- Sort [rand1#75L ASC NULLS FIRST], true
+                                 +- Project [id#67, rand1#75L, CheckOverflow((promote_precision(cast(cast(rand1#75L as decimal(20,0)) as decimal(21,1))) * promote_precision(cast(-1.0 as decimal(21,1)))), DecimalType(23,1)) AS rand2#76]
+                                    +- SubqueryAlias `q01`
+                                       +- Project [id#67, CEIL((rand(999) * cast(10.0 as double))) AS rand1#75L]
+                                          +- SubqueryAlias `sparklyr_tmp_e3c999d4_6b13_4147_b556_e71bf666f08f`
+                                             +- LogicalRDD [id#67], false
+
+== Optimized Logical Plan ==
+Project [id#67, rand1#75L]
++- Sort [rand2#76 ASC NULLS FIRST], true
+   +- Project [id#67, rand1#75L, CheckOverflow((promote_precision(cast(cast(rand1#75L as decimal(20,0)) as decimal(21,1))) * -1.0), DecimalType(23,1)) AS rand2#76]
+      +- Project [id#67, CEIL((rand(999) * 10.0)) AS rand1#75L]
+         +- LogicalRDD [id#67], false
+
+== Physical Plan ==
+*(2) Project [id#67, rand1#75L]
++- *(2) Sort [rand2#76 ASC NULLS FIRST], true, 0
+   +- Exchange rangepartitioning(rand2#76 ASC NULLS FIRST, 100)
+      +- *(1) Project [id#67, rand1#75L, CheckOverflow((promote_precision(cast(cast(rand1#75L as decimal(20,0)) as decimal(21,1))) * -1.0), DecimalType(23,1)) AS rand2#76]
+         +- *(1) Project [id#67, CEIL((rand(999) * 10.0)) AS rand1#75L]
+            +- Scan ExistingRDD[id#67]
+```
+````
 The key output here is the difference between the **Parsed** and **Analyzed Logical Plans**, and the **Optimized Logical Plan**. We can see in the first two that all our sorting operations are present, but in the **Optimized**, only the final sort is. Hence we only have one shuffle.
 
 #### Use Window functions

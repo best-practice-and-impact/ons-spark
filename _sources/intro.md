@@ -36,3 +36,28 @@ Here are some examples of other free resources we recommend:
 - [Spark by Examples](https://sparkbyexamples.com/)
 - [Quality Assurance of Code for Analysis and Research](https://best-practice-and-impact.github.io/qa-of-code-guidance/intro.html) (a.k.a. the Duck Book)
 - [Coding for Economists](https://aeturrell.github.io/coding-for-economists/intro.html)
+
+## Accessibility statement
+
+This accessibility statement applies to the Spark at the ONS. Please note that this does not include third-party content that is referenced from this guidance.
+
+The website is managed by the Quality and Improvement division of the Office for National Statistics. We would like this guidance to be accessible for as many people as possible. This means that you should be able to:
+* change colours, contrast levels and fonts
+* zoom in up to 300% without the text spilling off the screen
+* navigate most of the website using just a keyboard
+* navigate most of the website using speech recognition software
+* listen to most of the website using a screen reader (including the most recent versions of JAWS, NVDA and VoiceOver)
+
+For keyboard navigation, {kbd}`Up Arrow` and {kbd}`Down Arrow` keys can be used to scroll up and down on the current page. {kbd}`Left Arrow` and {kbd}`Right Arrow` keys can be used to move forwards and backwards through the pages of the book. Tabbed content (including code example) can be focused using the {kbd}`Tab` key. {kbd}`Left Arrow` and {kbd}`Right Arrow` keys are then used to focus the required tab option, where {kbd}`Enter` can be used to select that option and display the associated content.
+
+
+### Feedback and reporting accessibility problems
+
+We are always looking to improve the accessibility of our guidance. If you find any problems not listed on this page or think that we are not meeting accessibility requirements, please contact us using [GitHub Issues](https://github.com/best-practice-and-impact/ons-spark/issues). Please also get in touch if you are unable to access any part of this guidance, or require the content in a different format.
+
+We will consider your request and will get back to you as soon as wen can.
+
+
+### Enforcement procedure
+
+The Equality and Human Rights Commission (EHRC) is responsible for enforcing the [Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018 (the ‘accessibility regulations’)](https://www.legislation.gov.uk/uksi/2018/952/made). If you’re not happy with how we respond to your complaint, you should [contact the Equality Advisory and Support Service (EASS)](https://www.equalityadvisoryservice.com/).

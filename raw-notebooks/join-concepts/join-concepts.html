@@ -598,7 +598,10 @@
 <p>First of all, the data in each DataFrame will be sorted. A sort operation requires a shuffle on each DataFrame. This will also ensure that all the same key values are on the same partition. This also means that the join can be done in parallel on each partition, although it can potentially be a problem if your data are skewed (in which case a <em>salted join</em> may be useful).</p>
 <p>Now that both DataFrames are ordered, it is easy to iterate over each row in the DataFrames and see if they have a matching key; if they do, they can be returned as part of the resulting DataFrame. In most circumstances this will be more efficient than the shuffle hash join.</p>
 <p>This diagram should help explain this visually:</p>
-<p><img alt="Diagram showing how a sort merge join works" src="raw-notebooks/images/sort_merge_join.png" /></p>
+<div class="figure align-default" id="sortmergediagram">
+<a class="reference internal image-reference" href="raw-notebooks/images/sort_merge_join.png"><img alt="Diagram showing two partitioned DataFrames being sorted before being merged" src="raw-notebooks/images/sort_merge_join.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-text">Sort Merge join</span><a class="headerlink" href="#sortmergediagram" title="Permalink to this image">¶</a></p>
+</div>
 <p>Both sort merge joins and shuffle hash joins use a shuffle; the difference is in the processing stage, where the former uses a searching algorithm and the latter uses a hash table.</p>
 <div class="section" id="sort-merge-join-example">
 <h3>Sort Merge Join Example<a class="headerlink" href="#sort-merge-join-example" title="Permalink to this headline">¶</a></h3>
@@ -776,7 +779,10 @@ only showing top 5 rows
 </ul>
 <p>We can view the plan visually with the Spark UI on the SQL tab. The Spark UI for a local session is <a class="reference external" href="http://localhost:4040/jobs">http://localhost:4040/jobs</a>.</p>
 <p>See the <span class="xref myst">Spark Application and UI</span> article for details on how to access the Spark UI, and the <span class="xref myst">Persisting</span> article for more details on interpreting the information in the SQL tab.</p>
-<p><img alt="Spark UI for sort merge join, showing an exchange for both DataFrames" src="raw-notebooks/images/sort_merge_join_ui.png" /></p>
+<div class="figure align-default" id="sortmergedag">
+<a class="reference internal image-reference" href="raw-notebooks/images/sort_merge_join_ui.png"><img alt="SQL DAG in Spark UI for sort merge join, showing an exchange for both DataFrames" src="raw-notebooks/images/sort_merge_join_ui.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-text">SQL DAG for a SortMergeJoin</span><a class="headerlink" href="#sortmergedag" title="Permalink to this image">¶</a></p>
+</div>
 <p>This diagram has the same information as the <code class="docutils literal notranslate"><span class="pre">explain()</span></code>, just presented in a much nicer way. Again, we can see that there is an <strong>Exchange</strong> for each DataFrame, before the <strong>SortMergeJoin</strong>, and a <strong>Filter</strong> when reading the parquet.</p>
 </div>
 <div class="section" id="understanding-sort-merge-join">
@@ -790,7 +796,10 @@ only showing top 5 rows
 <p>The other common method is the broadcast join. This can be used when you are joining a small DataFrame to a large one. The smaller DataFrame is copied to every node on the cluster and then a traditional hash join is performed. This avoids the need for the sorting step that exists in the sort merge join, and therefore the expensive shuffles.</p>
 <p>Broadcast joins are suitable when you are joining a small DataFrame to a larger one. As one DataFrame is pushed to several places, this may actually be too slow or impossible if you are joining two large DataFrames.</p>
 <p>The diagram below shows how a broadcast join works visually:</p>
-<p><img alt="Diagram showing how a broadcast join works" src="raw-notebooks/images/broadcast_join.png" /></p>
+<div class="figure align-default" id="broadcostjoindiagram">
+<a class="reference internal image-reference" href="raw-notebooks/images/broadcast_join.png"><img alt="Diagram showing a small DataFrame being copied, or broadcast, to all partitions of a larger DataFrame" src="raw-notebooks/images/broadcast_join.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-text">Diagram of broadcast join</span><a class="headerlink" href="#broadcostjoindiagram" title="Permalink to this image">¶</a></p>
+</div>
 <p>There are two ways to trigger a broadcast join:</p>
 <ol class="simple">
 <li><p>Use the broadcast hint: <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.broadcast.html"><code class="docutils literal notranslate"><span class="pre">F.broadcast()</span></code></a> in PySpark or <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_broadcast.html"><code class="docutils literal notranslate"><span class="pre">sdf_broadcast()</span></code></a> in sparklyr</p></li>
@@ -983,7 +992,10 @@ only showing top 5 rows
 <h2>Replacing a join with a narrow transformation<a class="headerlink" href="#replacing-a-join-with-a-narrow-transformation" title="Permalink to this headline">¶</a></h2>
 <p>If your second DataFrame is tiny, you could potentially even not do a join at all, and replace it with a series of <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.when.html"><code class="docutils literal notranslate"><span class="pre">F.when()</span></code></a> statements in PySpark or <a class="reference external" href="https://dplyr.tidyverse.org/reference/case_when.html"><code class="docutils literal notranslate"><span class="pre">case_when()</span></code></a> in sparklyr. These will be processed as a <em>narrow transformation</em> in parallel rather than a <em>wide transformation</em>, meaning that it should be quicker than joining using the usual methods.</p>
 <p>The following diagram from the  shows how this works visually; the <code class="docutils literal notranslate"><span class="pre">F.when()</span></code>/<code class="docutils literal notranslate"><span class="pre">case_when()</span></code> method is a narrow <em>narrow transformation</em> is within the same stage, rather than a <em>wide transformation</em> between stages:</p>
-<p><img alt="Diagram showing wide and narrow transformations" src="raw-notebooks/images/application_and_ui.png" /></p>
+<div class="figure align-default" id="sparkapplication">
+<a class="reference internal image-reference" href="raw-notebooks/images/application_and_ui.png"><img alt="Diagram showing parallel and serial operations representing narrow and wide transformations respectively" src="raw-notebooks/images/application_and_ui.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-text">Narrow and wide transformations</span><a class="headerlink" href="#sparkapplication" title="Permalink to this image">¶</a></p>
+</div>
 <div class="section" id="example-narrow-transformations">
 <h3>Example: Narrow Transformations<a class="headerlink" href="#example-narrow-transformations" title="Permalink to this headline">¶</a></h3>
 <p>The rescue data has a column, <code class="docutils literal notranslate"><span class="pre">origin_of_call</span></code>, which contains information about who reported the incident.</p>
@@ -1165,7 +1177,10 @@ only showing top 5 rows
 </div>
 <p>The plan here confirms that no join is taking place; instead, the conditional statements are interpreted as an SQL style <code class="docutils literal notranslate"><span class="pre">CASE</span> <span class="pre">WHEN</span></code> statement. There are only narrow transformations, meaning that the data can stay within the partitions and no shuffle is needed and therefore should be more efficient than a join.</p>
 <p>This can be confirmed by looking at the Spark UI:</p>
-<p><img alt="Spark UI for replacing joins with a narrow transformation, showing no exchanges" src="raw-notebooks/images/when_ui.png" /></p>
+<div class="figure align-default" id="narrowtransformationdag">
+<a class="reference internal image-reference" href="raw-notebooks/images/when_ui.png"><img alt="Simple SQL DAG representing a process where a join was replaced with a narrow transformation, showing no exchanges" src="raw-notebooks/images/when_ui.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-text">SQL DAG for narrow transformation</span><a class="headerlink" href="#narrowtransformationdag" title="Permalink to this image">¶</a></p>
+</div>
 <p>This plan is far simpler than the other two we saw.</p>
 <p>Although it may be tempting to use this method be careful. It is trickier to code and harder to read than a conventional join and also will not work if the source data changes, so if a new value appeared in <code class="docutils literal notranslate"><span class="pre">origin_of_call</span></code> (e.g. the RSPCA or the army, which may want a different <code class="docutils literal notranslate"><span class="pre">origin_type</span></code>) we would have to change the actual code rather than adding new lines to a reference file.</p>
 <p>In production code, it is best practice to use unit tests. These are very important when making efficiency improvements, since it is important that any changes do not affect the functionality of the code. See the articles on <span class="xref myst">Unit Testing in Spark</span> for more details.</p>

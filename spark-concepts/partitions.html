@@ -533,13 +533,11 @@
      Run the jobs and investigate UI
     </a>
    </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#discussion">
-   Discussion
-  </a>
-  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#discussion">
+     Discussion
+    </a>
+   </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#what-does-this-mean-in-practice">
      What does this mean in practice?
@@ -912,9 +910,9 @@ Number of partitions in rescue_by_area DataFrame:	 200
 1 SE5                 42
 2 SE17                20
 3 E7                  45
-4 SE13                42
-5 N6                   9
-[1] &quot;Number of partitions in count_by_area DataFrame:16&quot;
+4 N6                   9
+5 DA15                12
+[1] &quot;Number of partitions in count_by_area DataFrame:32&quot;
 </pre></div>
 </div>
 </div></div>
@@ -936,7 +934,7 @@ Number of partitions in rescue_by_area DataFrame:	 200
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-16-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-16-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-16-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-16-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-16-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-16-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Number of rows per partition:	 [1, 1, 1, 0, 0, 0, 1, 1, 2, 1, 2, 1, 0, 1, 1, 0, 1, 2, 2, 4, 1, 2, 1, 0, 2, 3, 2, 3, 1, 2, 0, 1, 1, 3, 0, 0, 2, 3, 0, 1, 1, 2, 1, 1, 3, 0, 2, 2, 1, 2, 1, 2, 0, 3, 5, 4, 1, 1, 1, 2, 0, 2, 2, 1, 0, 1, 1, 0, 0, 0, 1, 1, 4, 3, 1, 2, 3, 3, 1, 4, 0, 2, 2, 5, 1, 1, 0, 0, 3, 1, 3, 2, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 0, 2, 0, 1, 2, 2, 0, 1, 6, 0, 2, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 2, 2, 1, 3, 1, 3, 1, 3, 0, 0, 1, 4, 1, 4, 1, 0, 0, 0, 1, 1, 3, 1, 2, 3, 1, 0, 1, 0, 2, 1, 1, 2, 1, 0, 2, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 2, 4, 2, 0, 1, 0, 0, 1, 2, 3, 2, 1, 0, 1, 0, 3, 2, 0, 2, 1, 0, 4, 0, 2, 0, 0, 0, 3]
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-16-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-16-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] &quot;Number of rows per partition: c(15, 22, 14, 25, 13, 21, 14, 17, 15, 22, 15, 18, 13, 17, 16, 11)&quot;
+</div><div aria-labelledby="tab-16-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-16-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] &quot;Number of rows per partition: c(9, 10, 8, 11, 4, 11, 8, 7, 7, 15, 8, 13, 5, 8, 6, 6, 6, 12, 6, 14, 9, 10, 6, 10, 8, 7, 7, 5, 8, 9, 10, 5)&quot;
 </pre></div>
 </div>
 </div></div>
@@ -1285,19 +1283,31 @@ Deleted file:///home/cdsw/ons-spark/checkpoints/temp.parquet
 </div></div>
 <p>Below are images of the task timeline for the above jobs containing the wide transformations. Note that the images might look slightly different if you are running the source notebook. The processing times will also vary.</p>
 <p>The main message in this set of images is that we see a clear bottleneck in the case of the join and window function, but there is no bottleneck in the group by.</p>
-<p><strong>Join</strong></p>
-<p><img alt="task timeline for skewed join" src="../_images/partition_skew_join.PNG" /></p>
-<p><strong>Group by</strong></p>
-<p><img alt="task timeline for skewed groupby" src="../_images/partition_skew_groupby.PNG" /></p>
-<p><strong>Window</strong></p>
-<p><img alt="task timeline for skewed windows" src="../_images/partition_skew_window.PNG" /></p>
+<div class="figure align-default" id="jointimeline">
+<a class="reference internal image-reference" href="../_images/partition_skew_join.PNG"><img alt="Task timeline for skewed join showing unevenly sized tasks" src="../_images/partition_skew_join.PNG" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 24 </span><span class="caption-text">Task timeline for skewed join</span><a class="headerlink" href="#jointimeline" title="Permalink to this image">¶</a></p>
+</div>
+<div class="figure align-default" id="groupbytimeline">
+<a class="reference internal image-reference" href="../_images/partition_skew_groupby.PNG"><img alt="Task timeline for skewed group by showing evenly sized tasks" src="../_images/partition_skew_groupby.PNG" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 25 </span><span class="caption-text">Task timeline for skewed group by</span><a class="headerlink" href="#groupbytimeline" title="Permalink to this image">¶</a></p>
+</div>
+<div class="figure align-default" id="windowtimeline">
+<a class="reference internal image-reference" href="../_images/partition_skew_window.PNG"><img alt="Task timeline for skewed windows showing unevenly sized tasks" src="../_images/partition_skew_window.PNG" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 26 </span><span class="caption-text">Task timeline for skewed windows</span><a class="headerlink" href="#windowtimeline" title="Permalink to this image">¶</a></p>
+</div>
 <p>It’s also useful to look at the Tasks table below the timeline to see how many records were processes in each of the 200 tasks. In the images below we have sorted the table by the <em>Output Size / Records</em> column (circled red) so that the largest tasks are at the top.</p>
-<p><strong>Join</strong></p>
-<p><img alt="task details for skewed join" src="../_images/partition_skew_join_table.PNG" /></p>
-<p><strong>Group by</strong></p>
-<p><img alt="task details for skewed groupby" src="../_images/partition_skew_groupby_table.PNG" /></p>
-<p><strong>Window</strong></p>
-<p><img alt="task details for skewed windows" src="../_images/partition_skew_window_table.PNG" /></p>
+<div class="figure align-default" id="joindetails">
+<a class="reference internal image-reference" href="../_images/partition_skew_join_table.PNG"><img alt="Task details for skewed join showing number of records in uneven partitions" src="../_images/partition_skew_join_table.PNG" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 27 </span><span class="caption-text">Task details for skewed join</span><a class="headerlink" href="#joindetails" title="Permalink to this image">¶</a></p>
+</div>
+<div class="figure align-default" id="groupbydetails">
+<a class="reference internal image-reference" href="../_images/partition_skew_groupby_table.PNG"><img alt="Task details for skewed group by showing number of records in even partitions" src="../_images/partition_skew_groupby_table.PNG" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 28 </span><span class="caption-text">Task details for skewed group by</span><a class="headerlink" href="#groupbydetails" title="Permalink to this image">¶</a></p>
+</div>
+<div class="figure align-default" id="windowdetails">
+<a class="reference internal image-reference" href="../_images/partition_skew_window_table.PNG"><img alt="Task details for skewed windows" src="../_images/partition_skew_window_table.PNG" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 29 </span><span class="caption-text">Task details for skewed windows</span><a class="headerlink" href="#windowdetails" title="Permalink to this image">¶</a></p>
+</div>
 <p>One last piece of information we will gather is the partitioning information of the output DataFrames using the <code class="docutils literal notranslate"><span class="pre">print_partitioning_info()</span></code> function we defined above.</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-36-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-36-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-36-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-36-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-36-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-36-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">print_partitioning_info</span><span class="p">(</span><span class="n">joined_df</span><span class="p">)</span>
@@ -1324,12 +1334,12 @@ Number of partitions: 200
 </div><div aria-labelledby="tab-37-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-37-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># A tibble: 5 × 2
   part_id   count
     &lt;int&gt;   &lt;dbl&gt;
-1       1     900
-2       3 9900000
-3       2     100
+1      18     100
+2       1     900
+3       3 9900000
 4       6   90000
 5       9    9000
-[1] &quot;Number of partitions: 16&quot;
+[1] &quot;Number of partitions: 32&quot;
 </pre></div>
 </div>
 </div></div>
@@ -1358,12 +1368,12 @@ Number of partitions: 200
 </div><div aria-labelledby="tab-39-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-39-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># A tibble: 5 × 2
   part_id count
     &lt;int&gt; &lt;dbl&gt;
-1       1     1
-2       3     1
-3       2     1
+1      18     1
+2       1     1
+3       3     1
 4       6     1
 5       9     1
-[1] &quot;Number of partitions: 16&quot;
+[1] &quot;Number of partitions: 32&quot;
 </pre></div>
 </div>
 </div></div>
@@ -1391,14 +1401,13 @@ Number of partitions: 200
     &lt;int&gt;   &lt;dbl&gt;
 1       1 5000000
 2       0 5000000
-[1] &quot;Number of partitions: 16&quot;
+[1] &quot;Number of partitions: 32&quot;
 </pre></div>
 </div>
 </div></div>
 </div>
-</div>
 <div class="section" id="discussion">
-<h2>Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
+<h3>Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h3>
 <p>Now that we have all the information on how Spark performed these processes we can compare the three cases.</p>
 <p>All three operations involve an intermediate shuffle where the join key/grouped variable/windows are moved to the same partitions. This is called <code class="docutils literal notranslate"><span class="pre">hashpartitioning()</span></code> in the execution plan. As we mentioned previously, these are all wide transformations so the number of partitions of the output DataFrames are the same, 200. Listed below are the differences in processing and output DataFrames for the three operations.</p>
 <p><strong>Join</strong></p>
@@ -1407,6 +1416,7 @@ Number of partitions: 200
 <p>In the case of the group by the skewed variable isn’t too much of an issue because the aggregation is quite simple and is optimised, therefore it is easy to process each partition whether there is skew or not. Again, the output DataFrame is partitioned by the grouped variable, this time there is one row on each partition.</p>
 <p><strong>Window</strong></p>
 <p>Like the join, there is more work to do on the larger partitions. However, unlike the join, the rows of the output DataFrame have the same partition IDs as the input DataFrame.</p>
+</div>
 <div class="section" id="what-does-this-mean-in-practice">
 <h3>What does this mean in practice?<a class="headerlink" href="#what-does-this-mean-in-practice" title="Permalink to this headline">¶</a></h3>
 <p>Highly skewed data is a common issue that causes slow processing with Spark. Above we have seen that skewed data causes skewed partitions when Spark processes wide transformations and can result in bottlenecks, where some tasks take much longer than others therefore not utilising the full potential of parallel processing. An even worse situation is where the skew causes spill, where the large partition cannot fit into its allocated memory on an executor and overflows temporarily onto disk. We cannot recreate the issue of spill in a local session but they are easy to spot in the Stage details page in the Spark UI.</p>

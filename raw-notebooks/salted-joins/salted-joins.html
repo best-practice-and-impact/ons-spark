@@ -695,7 +695,10 @@
 </pre></div>
 </div>
 <p>Looking at the <span class="xref myst">Spark UI</span> (the Spark UI link for a local session is <a class="reference external" href="http://localhost:4040/jobs/">http://localhost:4040/jobs/</a>) for the <code class="docutils literal notranslate"><span class="pre">Row</span> <span class="pre">Count</span></code> job, we can see that one partition is taking much longer than the rest to process:</p>
-<p><img alt="Spark UI demonstrating inefficient processing of a skewed DF" src="raw-notebooks/images/presalt_ui.png" /></p>
+<div class="figure align-default" id="skewedjointimeline">
+<a class="reference internal image-reference" href="raw-notebooks/images/presalt_ui.png"><img alt="Stage details page in Spark UI showing inefficient processing of a skewed DF" src="raw-notebooks/images/presalt_ui.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-text">Timeline for skewed join</span><a class="headerlink" href="#skewedjointimeline" title="Permalink to this image">¶</a></p>
+</div>
 <p>This is because all of the data with the same join key will be on the same partition. To split this up, we can <em>salt</em> the keys. Salting is the process of artificially creating new join keys. For instance, the <code class="docutils literal notranslate"><span class="pre">E</span></code> key could be split into ten new keys, called <code class="docutils literal notranslate"><span class="pre">E-0</span></code>, <code class="docutils literal notranslate"><span class="pre">E-1</span></code> … <code class="docutils literal notranslate"><span class="pre">E-9</span></code>. Provided the salting is identical in both DataFrames the result of the join will be correct. As with any similar process, ensure that your code is fully tested.</p>
 <p>The easiest way to do this is by concatenating a random number to the key in both DataFrames. We are using a seed here for reproducibility.</p>
 <p>In this example we will salt every key as we do not have many unique values in our key column, but you can also use <code class="docutils literal notranslate"><span class="pre">F.when()</span></code> to salt only specified values if you wish.</p>
@@ -889,7 +892,10 @@ only showing top 20 rows
 </pre></div>
 </div>
 <p>Finally, look at the Spark UI for <code class="docutils literal notranslate"><span class="pre">Salted</span> <span class="pre">Join</span> <span class="pre">Row</span> <span class="pre">Count</span></code> to see that the parallelism is improved:</p>
-<p><img alt="Spark UI demonstrating efficient processing of a salted DF" src="raw-notebooks/images/salt_ui.png" /></p>
+<div class="figure align-default" id="saltedjointimeline">
+<a class="reference internal image-reference" href="raw-notebooks/images/salt_ui.png"><img alt="Stage details page in Spark UI showing improved efficiency of a salted DF being joined" src="raw-notebooks/images/salt_ui.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-text">Timeline for salted join</span><a class="headerlink" href="#saltedjointimeline" title="Permalink to this image">¶</a></p>
+</div>
 <p>The key metric here is not the overall time, but how the work is distributed. It is shared more equally and there is no longer one long green bar taking far longer than the other processes. In real life examples where salting is essential you will find that the Spark UI looks much more efficient; obviously this is only a minimal example.</p>
 </div>
 <div class="section" id="salting-alternatives">

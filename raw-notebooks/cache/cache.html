@@ -619,9 +619,15 @@
 </div>
 <p>Now we can take a look in the <span class="xref myst">Spark UI</span>, which is reached using the URL <a class="reference external" href="http://localhost:4040/jobs/">http://localhost:4040/jobs/</a>. Note this address is used for a local Spark session, for more information on how to navigate to the Spark UI see the <a class="reference external" href="https://spark.apache.org/docs/latest/monitoring.html">documentation on monitoring</a>.</p>
 <p>Within the Spark UI, if you were to head over to the <em>Storage</em> tab you would see an RDD stored in memory, in two partitions and using 35.7 KB of executor memory. More on RDDs in the <a class="reference external" href="../spark-concepts/shuffling.html#a-quick-note-on-rdds">Shuffling</a> article.</p>
-<p><img alt="cached DataFrame in memory" src="raw-notebooks/images/cache_memory.png" /></p>
+<div class="figure align-default" id="cachememory">
+<a class="reference internal image-reference" href="raw-notebooks/images/cache_memory.png"><img alt="Storage page from the Spark UI showing cached DataFrame in memory" src="raw-notebooks/images/cache_memory.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-text">DataFrame cached in memory</span><a class="headerlink" href="#cachememory" title="Permalink to this image">¶</a></p>
+</div>
 <p>You can also click on the RDD name to get more information, such as how many executors are being used and the size of each partition.</p>
-<p><img alt="partition details of cached DataFrame" src="raw-notebooks/images/cache_memory_partitions.png" /></p>
+<div class="figure align-default" id="cachedetails">
+<a class="reference internal image-reference" href="raw-notebooks/images/cache_memory_partitions.png"><img alt="Further details of the cache in the Spark UI including partition sizes" src="raw-notebooks/images/cache_memory_partitions.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-text">Cache details</span><a class="headerlink" href="#cachedetails" title="Permalink to this image">¶</a></p>
+</div>
 </div>
 <div class="section" id="persist">
 <h2>Persist<a class="headerlink" href="#persist" title="Permalink to this headline">¶</a></h2>
@@ -669,7 +675,10 @@
 </pre></div>
 </div>
 <p>Before we move on, head back to the Spark UI and have a look at how much space the <code class="docutils literal notranslate"><span class="pre">population</span></code> DataFrame uses on disk.</p>
-<p><img alt="cached DataFrame on executor disk" src="raw-notebooks/images/cache_disk.png" /></p>
+<div class="figure align-default" id="cachedisk">
+<a class="reference internal image-reference" href="raw-notebooks/images/cache_disk.png"><img alt="Storage page from the Spark UI showing cached DataFrame on disk" src="raw-notebooks/images/cache_disk.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-text">DataFrame cached on disk</span><a class="headerlink" href="#cachedisk" title="Permalink to this image">¶</a></p>
+</div>
 <p>Is this what you expected? Why is this number different to persisting in memory? Because there is some compression involved in data written on disk.</p>
 <p><a class="reference external" href="https://databricks.com/">Databricks</a>, a company founded by the creators of Apache Spark, suggest the use cases for <code class="docutils literal notranslate"><span class="pre">.persist()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_persist()</span></code> are rare. The are often cases where you might want to persist using <code class="docutils literal notranslate"><span class="pre">cache()</span></code>/<code class="docutils literal notranslate"><span class="pre">tbl_cache()</span></code>, write to disk, use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.checkpoint.html"><code class="docutils literal notranslate"><span class="pre">.checkpoint()</span></code></a>/<a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_checkpoint.html"><code class="docutils literal notranslate"><span class="pre">sdf_checkpoint()</span></code></a> or staging tables, but the options that <code class="docutils literal notranslate"><span class="pre">.persist()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_persist()</span></code> present are not as useful. For a more detailed discussion about these options see the <span class="xref myst">Persisting</span> article.</p>
 <div class="cell docutils container">
@@ -960,10 +969,16 @@
 <h2>Investigate the Spark UI<a class="headerlink" href="#investigate-the-spark-ui" title="Permalink to this headline">¶</a></h2>
 <p>Go into the <span class="xref myst">Spark UI</span> and look at the <em>SQL</em> tab which lists the queries that are created from our PySpark code. Alternatively, we could use the <em>Jobs</em> tab, but the <em>SQL</em> tab has more detailed information for our needs here.</p>
 <p>Click on the query with a description that starts with ‘csv’ and look at the DAG diagram. DAG stands for Directed Acyclic Graph and is often used to describe a process.</p>
-<p><img alt="SQL DAG for csv file scan" src="raw-notebooks/images/cache_file_scan.png" /></p>
+<div class="figure align-default" id="filescan">
+<a class="reference internal image-reference" href="raw-notebooks/images/cache_file_scan.png"><img alt="SQL DAG in the Spark UI for inferring a schema from a csv file" src="raw-notebooks/images/cache_file_scan.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-text">File scan to infer DataFrame schema</span><a class="headerlink" href="#filescan" title="Permalink to this image">¶</a></p>
+</div>
 <p>This query is glancing at the <code class="docutils literal notranslate"><span class="pre">animal_rescue.csv</span></code> file to get the schema so that following transformations can be validated before being added to the execution plan (it does this because we asked Spark to infer the schema). Doing this for large files can take several minutes, so for large data sets use parquet files or Hive tables, which store the schema for you.</p>
 <p>The next three queries (highlighted below) are the functions we have called above. Look at the DAG for each query by clicking on the descriptions, what are your observations?</p>
-<p><img alt="SQL page of Spark UI" src="raw-notebooks/images/cache_sql_no_persist.png" /></p>
+<div class="figure align-default" id="analysisnocache">
+<a class="reference internal image-reference" href="raw-notebooks/images/cache_sql_no_persist.png"><img alt="SQL page of Spark UI showing execution time for analysis without using cache" src="raw-notebooks/images/cache_sql_no_persist.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-text">Analysis duration without cache</span><a class="headerlink" href="#analysisnocache" title="Permalink to this image">¶</a></p>
+</div>
 <p><strong>Observations</strong></p>
 <ul class="simple">
 <li><p>Spark has changed the order of our transformations. We’ll look at this later.</p></li>
@@ -1076,12 +1091,18 @@
 </pre></div>
 </div>
 <p>Look at the Spark UI. Below is the DAG for the latest query.</p>
-<p><img alt="SQL DAG with cached data" src="raw-notebooks/images/cache_dag_in_memory.png" /></p>
+<div class="figure align-default" id="dagwithcache">
+<a class="reference internal image-reference" href="raw-notebooks/images/cache_dag_in_memory.png"><img alt="SQL DAG in Spark UI showing shortened process by making use of cached DataFrame" src="raw-notebooks/images/cache_dag_in_memory.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-text">SQL DAG using cached DataFrame</span><a class="headerlink" href="#dagwithcache" title="Permalink to this image">¶</a></p>
+</div>
 <p>This time Spark didn’t read in the data from disk and apply the cleaning, we have broken the lineage. We know this because the DAG starts with a <em>InMemoryTableScan</em>, i.e. the cache. Note that this diagram consists of fewer stages than we had previously. Another sign of cached data being used is the presence of <em>Skipped Stages</em> on the Jobs page.</p>
 <p>The important point here is that we were doing repeated computations on a DataFrame, i.e. aggregations on the cleansed data. When this happens it may well be more efficient to persist the data before the repeated calculations. We should check this for our case.</p>
 <p>There are many factors that contribute towards the time taken for each query that make benchmarking in Spark complex. When running the source notebook, sometimes the processing will be faster after the cache, but sometimes it will be slower. If we run the last three code cells above once more and look at the times we see that the processing after the cache was generally quicker.</p>
 <p>Each function is labelled in the image below. The first run was without caching, the second was with caching and the third was a second run with cached data.</p>
-<p><img alt="comparison of query times using cache" src="raw-notebooks/images/cache_sql_compare.png" /></p>
+<div class="figure align-default" id="analysiswithcache">
+<a class="reference internal image-reference" href="raw-notebooks/images/cache_sql_compare.png"><img alt="SQL page of Spark UI showing improved execution time for analysis with cache" src="raw-notebooks/images/cache_sql_compare.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-text">Processing time without and with cache</span><a class="headerlink" href="#analysiswithcache" title="Permalink to this image">¶</a></p>
+</div>
 </div>
 </div>
 <div class="section" id="further-resources">

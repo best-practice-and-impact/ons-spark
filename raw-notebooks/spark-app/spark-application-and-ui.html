@@ -592,7 +592,10 @@
 <li><p><strong>Stage</strong> - a set of tasks that can be executed in parallel. Similar to how <em>actions</em> define a job boundary, a stage boundary is introduced by a <em>wide</em> transformation, such as <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.groupBy.html"><code class="docutils literal notranslate"><span class="pre">.groupBy()</span></code></a>/<a class="reference external" href="https://dplyr.tidyverse.org/reference/group_by.html"><code class="docutils literal notranslate"><span class="pre">group_by()</span></code></a> or <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.join.html"><code class="docutils literal notranslate"><span class="pre">.join()</span></code></a>/<a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/join.tbl_spark.html"><code class="docutils literal notranslate"><span class="pre">left_join()</span></code></a>. A stage might consist of many <em>narrow</em> transformations, but a stage always finishes with a <em>wide</em> transformation or action.</p></li>
 <li><p><strong>Task</strong> - an individual unit of work assigned to a single core on an executor.</p></li>
 </ul>
-<p><img alt="Diagram of Spark application showing partitioned DataFrame going through narrow and wide operations" src="raw-notebooks/images/spark_app_diagram.png" /></p>
+<div class="figure align-default" id="sparkapplication">
+<a class="reference internal image-reference" href="raw-notebooks/images/spark_app_diagram.png"><img alt="Diagram representing Spark application showing partitioned DataFrame going through narrow and wide operations" src="raw-notebooks/images/spark_app_diagram.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-text">Spark application</span><a class="headerlink" href="#sparkapplication" title="Permalink to this image">¶</a></p>
+</div>
 <p>Note that Jobs, Stages and Tasks are numbered starting from zero.</p>
 <p>Now look more closely at the DataFrame. On the left there is a Spark DataFrame which is split up into four sections, called <em>partitions</em>. Spark puts our data into partitions automatically so we don’t have to decide how or when to do it. More details on exactly how Spark does this are in the <span class="xref myst">Partitions Article</span>.</p>
 <p>The first operation to be applied to this DataFrame is a <em>narrow</em> transformation, e.g. adding two columns to create a new column. The second operation is again a narrow transformation. These two operations can be run in parallel, because each child partition has only one parent, indicated by the golden arrows.</p>
@@ -631,7 +634,10 @@
 <p>We can then look at the Spark UI using the URL  <a class="reference external" href="http://localhost:4040/jobs/">http://localhost:4040/jobs/</a>. Note this address is used for a local Spark session, for more information on how to navigate to the Spark UI see the <a class="reference external" href="https://spark.apache.org/docs/latest/monitoring.html">documentation on monitoring</a>.</p>
 <p>If you are running the source notebook and follow the above link you will see something similar to the screenshot below, with the application name on the top right and various tabs along the top.</p>
 <p>There is a lot of useful information in the Spark UI, but in this article we will only concentrate on the <em>Jobs</em> and <em>Stages</em> tabs. Note that we haven’t executed any <em>Jobs</em> yet, so there isn’t much to see at the moment.</p>
-<p><img alt="Empty Spark UI page" src="raw-notebooks/images/spark_app_empty_ui.png" /></p>
+<div class="figure align-default" id="emptyui">
+<a class="reference internal image-reference" href="raw-notebooks/images/spark_app_empty_ui.png"><img alt="Empty Spark UI page" src="raw-notebooks/images/spark_app_empty_ui.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-text">Empty Spark UI page</span><a class="headerlink" href="#emptyui" title="Permalink to this image">¶</a></p>
+</div>
 <p>Let’s import the animal rescue data and find out the number of partitions in which our <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame is processed. The number of partitions will be useful later when we’re investigating our application’s tasks.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -734,7 +740,10 @@ only showing top 7 rows
 <p>Note the images in this article were created using PySpark, the Spark UI will look slightly different when using sparklyr, but not very different.</p>
 <p>In the top section of the timeline you will see the executors being added and removed by the <em>dynamic allocation</em> feature of Spark. The <code class="docutils literal notranslate"><span class="pre">SparkSession</span></code> used in this case was a local session, so we will only see the driver here. The jobs are shown in the bottom section of the timeline. Hover over a job in the timeline and the corresponding job in the <em>Completed Jobs</em> table below will be highlighted.</p>
 <p><em>Tip:</em> You can tick the <em>Enable Zooming</em> button to zoom in and out of different sections of the timeline</p>
-<p><img alt="Event timeline within Spark UI showing executors being assigned and jobs being deployed" src="raw-notebooks/images/spark_app_event_timeline.png" /></p>
+<div class="figure align-default" id="appeventtimeline">
+<a class="reference internal image-reference" href="raw-notebooks/images/spark_app_event_timeline.png"><img alt="Event timeline within Spark UI showing executors being assigned and jobs being deployed" src="raw-notebooks/images/spark_app_event_timeline.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-text">An application’s Event Timeline</span><a class="headerlink" href="#appeventtimeline" title="Permalink to this image">¶</a></p>
+</div>
 <p>Let’s look at the <em>Completed Jobs</em> table. The description gives us a clue as to the action that initiated that job. The first job, <em>Job Id</em> 0, was to interact with HDFS, so it has the description <code class="docutils literal notranslate"><span class="pre">parquet</span> <span class="pre">at</span> <span class="pre">NativeMethodAccessorImpl.java:0</span></code>. Remember that executing transformations creates an execution plan, so Spark needs to know the DataFrame’s schema, i.e. column names and types, to validate our PySpark/sparklyr code. Reading from disk will always create a job, usually consisting of just one stage as shown in the <em>Stages</em> column.</p>
 <p>The second job was initiated by <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.show.html"><code class="docutils literal notranslate"><span class="pre">.show()</span></code></a>/<a class="reference external" href="https://dplyr.tidyverse.org/reference/compute.html"><code class="docutils literal notranslate"><span class="pre">collect()</span></code></a>, again it consists of one stage, which itself had one task as shown in the <em>Tasks</em> column. As mentioned in the previous section, Spark only needed to process one partition to produce the output so we therefore have one task in this job.</p>
 <p>The third job was the <code class="docutils literal notranslate"><span class="pre">.count()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_nrow()</span></code>. The job contains two stages, which themselves consist of 3 tasks. Let’s get more information on these stages and tasks. Within the <em>Completed Jobs</em> table click on the link in the <em>Description</em> column for the latest job that says <code class="docutils literal notranslate"><span class="pre">count</span> <span class="pre">at</span> <span class="pre">NativeMethodAccessorImpl.java:0</span></code>.</p>
@@ -746,7 +755,10 @@ only showing top 7 rows
 <li><p><em>mapPartitionsInternal</em> - bringing information from multiple partitions together</p></li>
 </ol>
 <p>There are more informative DAG diagrams on the SQL tab, which are explored in the <span class="xref myst">Optimising Joins</span> and <span class="xref myst">Persisting</span> articles.</p>
-<p><img alt="Stage information in Spark UI showing DAG and stage table" src="raw-notebooks/images/spark_app_stages.png" /></p>
+<div class="figure align-default" id="jobdetails">
+<a class="reference internal image-reference" href="raw-notebooks/images/spark_app_stages.png"><img alt="Job details page in Spark UI showing DAG diagram and table of the job's stages" src="raw-notebooks/images/spark_app_stages.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-text">Job details page</span><a class="headerlink" href="#jobdetails" title="Permalink to this image">¶</a></p>
+</div>
 </div>
 <div class="section" id="stages-page">
 <h2>Stages page<a class="headerlink" href="#stages-page" title="Permalink to this headline">¶</a></h2>
@@ -755,7 +767,10 @@ only showing top 7 rows
 <div class="section" id="task-event-timeline">
 <h3>Task Event timeline<a class="headerlink" href="#task-event-timeline" title="Permalink to this headline">¶</a></h3>
 <p>Opening the <em>Event timeline</em> collapsible menu will show a timeline like in the below image. This timeline has a single row, which means one executor (i.e. the driver in our case because we’re running a local session) was used to complete these tasks. This executor has two cores, we know this because the <em>Executor Computing Time</em> (shown in green) of the two task are overlapping. If there was just one core available to the driver the two tasks would not run in parallel.</p>
-<p><img alt="Task event timeline in Spark UI showing parallel processing on tasks" src="raw-notebooks/images/spark_app_task_timeline.png" /></p>
+<div class="figure align-default" id="taskeventtimeline">
+<a class="reference internal image-reference" href="raw-notebooks/images/spark_app_task_timeline.png"><img alt="Task event timeline in Spark UI showing parallel processing of tasks" src="raw-notebooks/images/spark_app_task_timeline.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-text">Task Event timeline</span><a class="headerlink" href="#taskeventtimeline" title="Permalink to this image">¶</a></p>
+</div>
 <p>The colours also indicate what was going on while the task was being completed. In general- green is good, and is an indication that there is no need to spend time optimising the processing. Delays often occur when lots of data are moved around, because the process can involve some or all of the below:</p>
 <ol class="simple">
 <li><p>serialising data - preparing the data to be moved to disk</p></li>
@@ -769,7 +784,10 @@ only showing top 7 rows
 <h3>Summary Metrics<a class="headerlink" href="#summary-metrics" title="Permalink to this headline">¶</a></h3>
 <p>Summary information about the tasks within a stage are given in the Summary Metrics table. Select the <em>(De)select All</em> option to view more metrics.</p>
 <p>This is a useful indication of the distribution of times taken for various components of task processing. It might not be the most useful part of the UI to look at with only two tasks, so we will revisit this later.</p>
-<p><img alt="Task metrics table in the Spark UI" src="raw-notebooks/images/spark_app_task_metrics.png" /></p>
+<div class="figure align-default" id="taskmetrics">
+<a class="reference internal image-reference" href="raw-notebooks/images/spark_app_task_metrics.png"><img alt="Task metrics table in the Spark UI" src="raw-notebooks/images/spark_app_task_metrics.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-text">Task metrics table</span><a class="headerlink" href="#taskmetrics" title="Permalink to this image">¶</a></p>
+</div>
 <p>We won’t discuss <em>GC time</em>, or garbage collection time, in this article. This is a topic that is covered in <span class="xref myst">a separate article</span>.</p>
 </div>
 </div>
@@ -886,7 +904,10 @@ only showing top 7 rows
     <span class="n">ggplot2</span><span class="o">::</span><span class="nf">geom_bar</span><span class="p">(</span><span class="n">stat</span><span class="o">=</span><span class="s">&quot;identity&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><img alt="Incident cost by cost group chart" src="raw-notebooks/images/spark_app_incident_cost_chart.png" /></p>
+<div class="figure align-default" id="incidentcostchart">
+<a class="reference internal image-reference" href="raw-notebooks/images/spark_app_incident_cost_chart.png"><img alt="Simple bar chart of animal rescue incident cost by cost group chart" src="raw-notebooks/images/spark_app_incident_cost_chart.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-text">Animal rescue incident cost by cost group</span><a class="headerlink" href="#incidentcostchart" title="Permalink to this image">¶</a></p>
+</div>
 <p>Now we have our chart, let’s see how that translates to tasks in the Spark UI.</p>
 <p>There is a job for <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code>/<code class="docutils literal notranslate"><span class="pre">collect()</span></code>, but nothing after that for the plot. Why?</p>
 <p>The plotting was done in Pandas/R and so Spark was not involved at all. We therefore don’t expect the Spark UI to show anything that represents those processes.</p>
@@ -896,7 +917,10 @@ only showing top 7 rows
 <h2>Improving performance<a class="headerlink" href="#improving-performance" title="Permalink to this headline">¶</a></h2>
 <p>Finally, let’s take a look at the stages and tasks for the latest job in the Spark UI and have and see an example of identifying a performance issue, how to solving it, and finding evidence of improvement.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code>/<code class="docutils literal notranslate"><span class="pre">collect()</span></code> job has two stages because the <code class="docutils literal notranslate"><span class="pre">.groupBy()</span></code><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.agg.html"><code class="docutils literal notranslate"><span class="pre">.agg()</span></code></a>/<code class="docutils literal notranslate"><span class="pre">group_by()</span> <span class="pre">%&gt;%</span> </code><a class="reference external" href="https://dplyr.tidyverse.org/reference/summarise.html"><code class="docutils literal notranslate"><span class="pre">summarise()</span></code></a> command is a wide transformation. In the first stage the data is read in, a new column added and then the dataset is aggregated. This stage has 2 tasks because the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame has 2 partitions. The second stage in this job moves the data from the cluster to the CDSW session. This stage has 200 tasks, because <code class="docutils literal notranslate"><span class="pre">aggregated_spark</span></code> has 200 partitions, more on why this is the case in the <span class="xref myst">Partitions</span>. A screenshot of the <em>Stage details</em> for these tasks is below.</p>
-<p><img alt="Task information for 200 tasks" src="raw-notebooks/images/spark_app_200_tasks.png" /></p>
+<div class="figure align-default" id="taskinfo200">
+<a class="reference internal image-reference" href="raw-notebooks/images/spark_app_200_tasks.png"><img alt="Task information, such as processing time and scheduling time, showing relatively poor performance due to over-partitioning a small DataFrame" src="raw-notebooks/images/spark_app_200_tasks.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-text">Task information showing relatively poor performance</span><a class="headerlink" href="#taskinfo200" title="Permalink to this image">¶</a></p>
+</div>
 <p>As we’re running in local mode with 2 cores (or threads), the processing of these 200 tasks took place on the driver. The tasks seem to show relatively poor performance, which is indicated by the non-green colours in the timeline. Also by comparing the <em>Duration</em> (useful processing time) metrics with that of <em>Scheduler Delay</em> and <em>Task Deserialization Time</em> in the <em>Summary Metrics</em> table. Would we get better performance if the <code class="docutils literal notranslate"><span class="pre">aggregated_spark</span></code> DataFrame had fewer partitions? Let’s try to improve the performance by reducing the number of partitions from 200 to 2 with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.coalesce.html"><code class="docutils literal notranslate"><span class="pre">.coalesce()</span></code></a>/<a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html"><code class="docutils literal notranslate"><span class="pre">sdf_coalesce()</span></code></a>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -917,7 +941,10 @@ only showing top 7 rows
 </pre></div>
 </div>
 <p>Now navigate to the details of the latter stage of the latest job within the UI and you will see something similar to the screenshot below. Of course, the all important metric to compare is the time taken to complete the stage. Previously, using 200 partitions the stage time was 0.6 seconds, using 2 partitions the stage time was 0.3 seconds. Looking at this page we can see why.</p>
-<p><img alt="Task timeline for fewer tasks showing better performance" src="raw-notebooks/images/spark_app_2_tasks.png" /></p>
+<div class="figure align-default" id="taskinfo2">
+<a class="reference internal image-reference" href="raw-notebooks/images/spark_app_2_tasks.png"><img alt="Task timeline for processing fewer (but larger) partitions and hence fewer tasks, showing improved performance" src="raw-notebooks/images/spark_app_2_tasks.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-text">Task information showing improved performance</span><a class="headerlink" href="#taskinfo2" title="Permalink to this image">¶</a></p>
+</div>
 <p>Note that a 0.3s improvement is nothing to brag about, but a x2 processing speed isn’t bad.</p>
 <p>Again, the processing took place on the driver with 2 cores, but this time there was one task per core. There’s much more green visible in this timeline and comparing <em>Scheduler Delay</em> and <em>Task Deserialization Time</em> with <em>Duration</em> in the <em>Summary Metrics</em> tells a very different story.</p>
 <p>The important point is that we are processing a small amount of data and therefore should reduce the partitioning. With 200 partitions a lot of time was spent scheduling tasks and (de)serializing data. By putting our small DataFrame into fewer partitions we spent more time on useful processing and decreased the overall processing time.</p>

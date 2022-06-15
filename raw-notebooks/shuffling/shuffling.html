@@ -626,7 +626,10 @@
 <h3>What is a partition?<a class="headerlink" href="#what-is-a-partition" title="Permalink to this headline">¶</a></h3>
 <p>Partitions are just separate chunks of data. Whereas a pandas or base R DataFrame will be stored as one object in the driver memory, a Spark DataFrame will be distributed over many different partitions on the Spark cluster. These partitions are processed in parallel wherever possible. This structure is one of the reasons that Spark is so powerful for handling large data. The Partitions article explores this topic in more detail.</p>
 <p>In the diagram below, the solid boxes represent partitions and the arrows are transformations. If the data stays on the same partition that is referred to as as <em>narrow transformation</em>. Shuffles occur between the stages, where the data moves between partitions; this happens when a <em>wide transformation</em> is processed.</p>
-<p><img alt="Diagram showing wide and narrow transformations" src="raw-notebooks/images/application_and_ui.png" /></p>
+<div class="figure align-default" id="sparkapplication">
+<a class="reference internal image-reference" href="raw-notebooks/images/application_and_ui.png"><img alt="Diagram showing wide and narrow transformations" src="raw-notebooks/images/application_and_ui.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-text">Spark application</span><a class="headerlink" href="#sparkapplication" title="Permalink to this image">¶</a></p>
+</div>
 <p>This is covered in more detail in the <span class="xref myst">Spark Application and UI</span> article.</p>
 </div>
 <div class="section" id="what-transformations-cause-a-shuffle">
@@ -893,9 +896,15 @@
 <p>As we specified <code class="docutils literal notranslate"><span class="pre">spark.sql.shuffle.partitions</span></code> to be  <code class="docutils literal notranslate"><span class="pre">2</span></code> in the config, the shuffle has returned two partitions. In practical usage you will almost never only use two partitions, but this principle applies regardless of the size of the DF or number of partitions.</p>
 <p>Another way to see when a shuffle has occurred is to check the Spark UI, where a shuffle is referred to as an <strong>Exchange</strong>. This is covered in more detail in the <span class="xref myst">Spark Application and UI</span> article. In a local Spark session, the URL is <a class="reference external" href="http://localhost:4040/">http://localhost:4040/</a>.</p>
 <p>There are different visualisations available in the Spark UI; here we will choose SQL. There should be four completed queries, which relate to the four actions we have called to this point in the Spark session.</p>
-<p><img alt="List of completed SQL queries in Spark UI" src="raw-notebooks/images/shuffling_example1_ui_list.png" /></p>
+<div class="figure align-default" id="completedsqlqueries">
+<a class="reference internal image-reference" href="raw-notebooks/images/shuffling_example1_ui_list.png"><img alt="List of completed SQL queries in Spark UI" src="raw-notebooks/images/shuffling_example1_ui_list.png" style="width: 60%;" /></a>
+<p class="caption"><span class="caption-text">Completed SQL queries</span><a class="headerlink" href="#completedsqlqueries" title="Permalink to this image">¶</a></p>
+</div>
 <p>Clicking on the link where <code class="docutils literal notranslate"><span class="pre">ID</span></code> is <code class="docutils literal notranslate"><span class="pre">3</span></code> displays the plan:</p>
-<p><img alt="Spark UI showing an exchange when DF is sorted" src="raw-notebooks/images/shuffling_example1_sql_ui.png" /></p>
+<div class="figure align-default" id="exchangeexample">
+<a class="reference internal image-reference" href="raw-notebooks/images/shuffling_example1_sql_ui.png"><img alt="Spark UI showing an exchange when DF is sorted" src="raw-notebooks/images/shuffling_example1_sql_ui.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-text">Exchange in Spark UI representing a shuffle</span><a class="headerlink" href="#exchangeexample" title="Permalink to this image">¶</a></p>
+</div>
 <p>We can see from this that the shuffle occurred when we sorted the DataFrame by <code class="docutils literal notranslate"><span class="pre">rand1</span></code>, as represented by <strong>Exchange</strong> in the diagram.</p>
 </div>
 <div class="section" id="example-2-lots-of-shuffles">
@@ -1019,7 +1028,10 @@ Bottom 5 rows:
 </div>
 <p>The result is as expected.</p>
 <p>Rather than try and print out the <code class="docutils literal notranslate"><span class="pre">partition_id</span></code> like we did in the first example, here the Spark UI is much more informative:</p>
-<p><img alt="Spark UI showing exchanges when a DF is joined, grouped and sorted" src="raw-notebooks/images/shuffling_example2_sql_ui.png" /></p>
+<div class="figure align-default" id="multipleexchanges">
+<a class="reference internal image-reference" href="raw-notebooks/images/shuffling_example2_sql_ui.png"><img alt="Spark UI showing exchanges when a DF is joined, grouped and sorted" src="raw-notebooks/images/shuffling_example2_sql_ui.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-text">Multiple exchanges</span><a class="headerlink" href="#multipleexchanges" title="Permalink to this image">¶</a></p>
+</div>
 <p>We can visually see where a shuffle takes place, in this case, on both DataFrames prior to the join, then when grouping, and finally one more when sorting at the end.</p>
 <p>A quick note on the shuffles prior to the join: Spark uses sort merge join, which requires a shuffle of the DataFrames before performing the join, hence the initial <strong>Exchange</strong> and <strong>Sort</strong> in the diagram. The other joining algorithm is the broadcast join, briefly covered later and in full in the Join Concepts article.</p>
 </div>
@@ -1054,7 +1066,10 @@ Bottom 5 rows:
 <p>Broadcast joins are one of the easiest ways to improve the efficiency of your code, as you just have to wrap the second DF in <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.broadcast.html"><code class="docutils literal notranslate"><span class="pre">F.broadcast()</span></code></a> in PySpark or <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_broadcast.html"><code class="docutils literal notranslate"><span class="pre">sdf_broadcast()</span></code></a>
 in sparklyr.</p>
 <p>The <span class="xref myst">Optimising Joins</span> article has full details; this is an example of the Spark UI from that article, showing that there are fewer shuffles involved when broadcasting:</p>
-<p><img alt="Spark UI for broadcast join, showing a broadcast exchange" src="raw-notebooks/images/broadcast_join_ui.png" /></p>
+<div class="figure align-default" id="broadcastexchange">
+<a class="reference internal image-reference" href="raw-notebooks/images/broadcast_join_ui.png"><img alt="Spark UI for broadcast join, showing a broadcast exchange" src="raw-notebooks/images/broadcast_join_ui.png" style="width: 100%;" /></a>
+<p class="caption"><span class="caption-text">Boradcast exchange</span><a class="headerlink" href="#broadcastexchange" title="Permalink to this image">¶</a></p>
+</div>
 </div>
 <div class="section" id="replace-joins-with-conditional-statements">
 <h3>Replace joins with conditional statements<a class="headerlink" href="#replace-joins-with-conditional-statements" title="Permalink to this headline">¶</a></h3>
@@ -1128,7 +1143,10 @@ Bottom 5 rows:
 <span class="nf">print</span><span class="p">(</span><span class="nf">tail</span><span class="p">(</span><span class="n">sorted_collected_df</span><span class="p">,</span> <span class="m">5</span><span class="p">))</span>
 </pre></div>
 </div>
-<p><img alt="Spark UI showing one exchange for multiple DF sorting operations" src="raw-notebooks/images/shuffling_catalyst_ui.png" /></p>
+<div class="figure align-default" id="multiplesortssingleexchange">
+<a class="reference internal image-reference" href="raw-notebooks/images/shuffling_catalyst_ui.png"><img alt="Spark UI showing one exchange for multiple DF sorting operations" src="raw-notebooks/images/shuffling_catalyst_ui.png" style="width: 50%;" /></a>
+<p class="caption"><span class="caption-text">Multiple sorts in single exchange</span><a class="headerlink" href="#multiplesortssingleexchange" title="Permalink to this image">¶</a></p>
+</div>
 <p>On the plan, we only have one exchange, but we gave it four operations which should cause a shuffle. What has happened is that Spark has optimised the plan to only include one shuffle. This is a feature of Spark called the <em>catalyst optimizer</em> and is explained further in the <span class="xref myst">Persisting</span> article.</p>
 <p>We can demonstrate this by looking at the full plan with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.explain.html"><code class="docutils literal notranslate"><span class="pre">.explain(True)</span></code></a>
 in PySpark and with <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/invoke.html"><code class="docutils literal notranslate"><span class="pre">invoke(&quot;queryExecution&quot;)</span></code></a> in sparklyr:</p>

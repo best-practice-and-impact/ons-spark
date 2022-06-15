@@ -564,26 +564,37 @@
 </pre></div>
 </div>
 </div></div>
-<p><img alt="Matplotlib chart of count of animals rescued by cal_year" src="../_images/viz_1_python.png" /></p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button></div><div aria-labelledby="tab-3-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7f4e95971a90&gt;
+</pre></div>
+</div>
+</div></div>
+<div class="figure align-default" id="matplotlibchart">
+<a class="reference internal image-reference" href="../_images/viz_1_python.png"><img alt="Matplotlib chart of animal rescue incidents by calendar year" src="../_images/viz_1_python.png" style="width: 100%;" /></a>
+</div>
 <p>Common R charting packages include <a class="reference external" href="https://ggplot2.tidyverse.org/">ggplot2</a> and <a class="reference external" href="https://plotly.com/r/">Plotly</a>. Once the data is collected to the driver as a tibble these packages can be used normally.</p>
 <p>In this example, <code class="docutils literal notranslate"><span class="pre">cal_year</span></code> is discrete and so is converted to a factor before charting.</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-3-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">ggplot2</span><span class="o">::</span><span class="nf">ggplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">rescue_tb</span><span class="p">,</span> <span class="n">ggplot2</span><span class="o">::</span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="nf">as.factor</span><span class="p">(</span><span class="n">cal_year</span><span class="p">),</span> <span class="n">y</span><span class="o">=</span><span class="n">count</span><span class="p">))</span> <span class="o">+</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-4-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-4-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">ggplot2</span><span class="o">::</span><span class="nf">ggplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">rescue_tb</span><span class="p">,</span> <span class="n">ggplot2</span><span class="o">::</span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="nf">as.factor</span><span class="p">(</span><span class="n">cal_year</span><span class="p">),</span> <span class="n">y</span><span class="o">=</span><span class="n">count</span><span class="p">))</span> <span class="o">+</span>
     <span class="n">ggplot2</span><span class="o">::</span><span class="nf">geom_bar</span><span class="p">(</span><span class="n">stat</span><span class="o">=</span><span class="s">&quot;identity&quot;</span><span class="p">)</span> <span class="o">+</span>
     <span class="n">ggplot2</span><span class="o">::</span><span class="nf">labs</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">&quot;cal_year&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></div>
-<p><img alt="ggplot2 chart of count of animals rescued by cal_year" src="../_images/viz_2_r.png" /></p>
+<div class="figure align-default" id="ggplot2chart">
+<a class="reference internal image-reference" href="../_images/viz_2_r.png"><img alt="ggplot2 chart of animal rescue incidents by calendar year" src="../_images/viz_2_r.png" style="width: 100%;" /></a>
+</div>
 <p>You can pass a sparklyr DataFrame directly into <a class="reference external" href="https://ggplot2.tidyverse.org/reference/ggplot.html"><code class="docutils literal notranslate"><span class="pre">ggplot()</span></code></a>, although this could lead to errors if the data are too large. It is better to aggregate the data first and <code class="docutils literal notranslate"><span class="pre">collect()</span></code>.</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-4-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-4-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">ggplot2</span><span class="o">::</span><span class="nf">ggplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">rescue</span><span class="p">,</span> <span class="n">ggplot2</span><span class="o">::</span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="nf">as.factor</span><span class="p">(</span><span class="n">cal_year</span><span class="p">),</span> <span class="n">y</span><span class="o">=</span><span class="n">count</span><span class="p">))</span> <span class="o">+</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-5-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-5-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">ggplot2</span><span class="o">::</span><span class="nf">ggplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">rescue</span><span class="p">,</span> <span class="n">ggplot2</span><span class="o">::</span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="nf">as.factor</span><span class="p">(</span><span class="n">cal_year</span><span class="p">),</span> <span class="n">y</span><span class="o">=</span><span class="n">count</span><span class="p">))</span> <span class="o">+</span>
     <span class="n">ggplot2</span><span class="o">::</span><span class="nf">geom_bar</span><span class="p">(</span><span class="n">stat</span><span class="o">=</span><span class="s">&quot;identity&quot;</span><span class="p">)</span> <span class="o">+</span>
     <span class="n">ggplot2</span><span class="o">::</span><span class="nf">labs</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">&quot;cal_year&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></div>
-<p><img alt="ggplot2 chart of count of animals rescued by cal_year" src="../_images/viz_2_r.png" /></p>
+<div class="figure align-default" id="id1">
+<a class="reference internal image-reference" href="../_images/viz_2_r.png"><img alt="ggplot2 chart of animal rescue incidents by calendar year" src="../_images/viz_2_r.png" style="width: 100%;" /></a>
+</div>
 </div>
 <div class="section" id="dashboards">
 <h2>Dashboards<a class="headerlink" href="#dashboards" title="Permalink to this headline">¶</a></h2>
