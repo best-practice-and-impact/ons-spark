@@ -391,9 +391,9 @@ Number of partitions in rescue_by_area DataFrame:	 200
 1 SE5                 42
 2 SE17                20
 3 E7                  45
-4 SE13                42
-5 N6                   9
-[1] "Number of partitions in count_by_area DataFrame:16"
+4 N6                   9
+5 DA15                12
+[1] "Number of partitions in count_by_area DataFrame:32"
 ```
 ````
 **How many?!?**  
@@ -425,7 +425,7 @@ Number of rows per partition:	 [1, 1, 1, 0, 0, 0, 1, 1, 2, 1, 2, 1, 0, 1, 1, 0, 
 ```
 
 ```{code-tab} plaintext R Output
-[1] "Number of rows per partition: c(15, 22, 14, 25, 13, 21, 14, 17, 15, 22, 15, 18, 13, 17, 16, 11)"
+[1] "Number of rows per partition: c(9, 10, 8, 11, 4, 11, 8, 7, 7, 15, 8, 13, 5, 8, 6, 6, 6, 12, 6, 14, 9, 10, 6, 10, 8, 7, 7, 5, 8, 9, 10, 5)"
 ```
 ````
 Quite a few empty partitions- this is a clear case of overpartitioning. In the [Spark Application and UI](../spark-concepts/spark-application-and-ui) article it was shown that overpartitioning leads to slower processing as a larger proportion of time is spent on scheduling tasks and (de)serialising data instead of processing the task.
@@ -848,31 +848,61 @@ Below are images of the task timeline for the above jobs containing the wide tra
 
 The main message in this set of images is that we see a clear bottleneck in the case of the join and window function, but there is no bottleneck in the group by.
 
-**Join**
+```{figure} ../images/partition_skew_join.PNG
+---
+width: 100%
+name: JoinTimeline
+alt: Task timeline for skewed join showing unevenly sized tasks
+---
+Task timeline for skewed join
+```
 
-![task timeline for skewed join](../images/partition_skew_join.PNG)
+```{figure} ../images/partition_skew_groupby.PNG
+---
+width: 100%
+name: GroupbyTimeline
+alt: Task timeline for skewed group by showing evenly sized tasks
+---
+Task timeline for skewed group by
+```
 
-**Group by**
-
-![task timeline for skewed groupby](../images/partition_skew_groupby.PNG)
-
-**Window**
-
-![task timeline for skewed windows](../images/partition_skew_window.PNG)
+```{figure} ../images/partition_skew_window.PNG
+---
+width: 100%
+name: WindowTimeline
+alt: Task timeline for skewed windows showing unevenly sized tasks
+---
+Task timeline for skewed windows
+```
 
 It's also useful to look at the Tasks table below the timeline to see how many records were processes in each of the 200 tasks. In the images below we have sorted the table by the *Output Size / Records* column (circled red) so that the largest tasks are at the top.
 
-**Join**
+```{figure} ../images/partition_skew_join_table.PNG
+---
+width: 100%
+name: JoinDetails
+alt: Task details for skewed join showing number of records in uneven partitions
+---
+Task details for skewed join
+```
 
-![task details for skewed join](../images/partition_skew_join_table.PNG)
+```{figure} ../images/partition_skew_groupby_table.PNG
+---
+width: 100%
+name: GroupbyDetails
+alt: Task details for skewed group by showing number of records in even partitions
+---
+Task details for skewed group by
+```
 
-**Group by**
-
-![task details for skewed groupby](../images/partition_skew_groupby_table.PNG)
-
-**Window**
-
-![task details for skewed windows](../images/partition_skew_window_table.PNG)
+```{figure} ../images/partition_skew_window_table.PNG
+---
+width: 100%
+name: WindowDetails
+alt: Task details for skewed windows
+---
+Task details for skewed windows
+```
 
 One last piece of information we will gather is the partitioning information of the output DataFrames using the `print_partitioning_info()` function we defined above.
 ````{tabs}
@@ -907,12 +937,12 @@ Number of partitions: 200
 # A tibble: 5 × 2
   part_id   count
     <int>   <dbl>
-1       1     900
-2       3 9900000
-3       2     100
+1      18     100
+2       1     900
+3       3 9900000
 4       6   90000
 5       9    9000
-[1] "Number of partitions: 16"
+[1] "Number of partitions: 32"
 ```
 ````
 
@@ -948,12 +978,12 @@ Number of partitions: 200
 # A tibble: 5 × 2
   part_id count
     <int> <dbl>
-1       1     1
-2       3     1
-3       2     1
+1      18     1
+2       1     1
+3       3     1
 4       6     1
 5       9     1
-[1] "Number of partitions: 16"
+[1] "Number of partitions: 32"
 ```
 ````
 
@@ -988,10 +1018,10 @@ Number of partitions: 200
     <int>   <dbl>
 1       1 5000000
 2       0 5000000
-[1] "Number of partitions: 16"
+[1] "Number of partitions: 32"
 ```
 ````
-### Discussion
+#### Discussion
 
 Now that we have all the information on how Spark performed these processes we can compare the three cases.
 

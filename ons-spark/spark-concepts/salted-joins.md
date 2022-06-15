@@ -103,10 +103,10 @@ skewed_df %>%
   join_col   count pct_of_data
   <chr>      <dbl>       <dbl>
 1 B            900       0.009
-2 A            100       0.001
-3 E        9900000      99    
-4 D          90000       0.9  
-5 C           9000       0.09 
+2 E        9900000      99    
+3 D          90000       0.9  
+4 C           9000       0.09 
+5 A            100       0.001
 ```
 ````
 Create another DF, `small_df` that will be joined to `skewed_df`. This is a simple mapping of letters to numbers.
@@ -213,15 +213,22 @@ NULL
   join_col number_col   count
   <chr>         <int>   <dbl>
 1 B                 2     900
-2 A                 1     100
-3 E                 5 9900000
-4 D                 4   90000
-5 C                 3    9000
+2 E                 5 9900000
+3 D                 4   90000
+4 C                 3    9000
+5 A                 1     100
 ```
 ````
 Looking at the [Spark UI](../spark-concepts/spark-application-and-ui) (the Spark UI link for a local session is http://localhost:4040/jobs/) for the `Row Count` job, we can see that one partition is taking much longer than the rest to process:
 
-![Spark UI demonstrating inefficient processing of a skewed DF](../images/presalt_ui.png)
+```{figure} ../images/presalt_ui.png
+---
+width: 100%
+name: SkewedJoinTimeline
+alt: Stage details page in Spark UI showing inefficient processing of a skewed DF
+---
+Timeline for skewed join
+```
 
 This is because all of the data with the same join key will be on the same partition. To split this up, we can *salt* the keys. Salting is the process of artificially creating new join keys. For instance, the `E` key could be split into ten new keys, called `E-0`, `E-1` ... `E-9`. Provided the salting is identical in both DataFrames the result of the join will be correct. As with any similar process, ensure that your code is fully tested.
 
@@ -496,15 +503,22 @@ NULL
   join_col number_col   count
   <chr>         <int>   <dbl>
 1 B                 2     900
-2 A                 1     100
-3 E                 5 9900000
-4 D                 4   90000
-5 C                 3    9000
+2 E                 5 9900000
+3 D                 4   90000
+4 C                 3    9000
+5 A                 1     100
 ```
 ````
 Finally, look at the Spark UI for `Salted Join Row Count` to see that the parallelism is improved:
 
-![Spark UI demonstrating efficient processing of a salted DF](../images/salt_ui.png)
+```{figure} ../images/salt_ui.png
+---
+width: 100%
+name: SaltedJoinTimeline
+alt: Stage details page in Spark UI showing improved efficiency of a salted DF being joined
+---
+Timeline for salted join
+```
 
 The key metric here is not the overall time, but how the work is distributed. It is shared more equally and there is no longer one long green bar taking far longer than the other processes. In real life examples where salting is essential you will find that the Spark UI looks much more efficient; obviously this is only a minimal example.
 

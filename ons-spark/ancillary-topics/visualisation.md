@@ -68,7 +68,20 @@ rescue_pd.set_index("cal_year", drop=True, inplace=True)
 rescue_pd.plot(kind="bar")
 ```
 ````
-![Matplotlib chart of count of animals rescued by cal_year](../images/viz_1_python.png)
+
+````{tabs}
+
+```{code-tab} plaintext Python Output
+<matplotlib.axes._subplots.AxesSubplot at 0x7f4e95971a90>
+```
+````
+```{figure} ../images/viz_1_python.png
+---
+width: 100%
+name: MatplotlibChart
+alt: Matplotlib chart of animal rescue incidents by calendar year
+---
+```
 
 Common R charting packages include [ggplot2](https://ggplot2.tidyverse.org/) and [Plotly](https://plotly.com/r/). Once the data is collected to the driver as a tibble these packages can be used normally.
 
@@ -83,7 +96,13 @@ ggplot2::ggplot(data=rescue_tb, ggplot2::aes(x=as.factor(cal_year), y=count)) +
 
 ```
 ````
-![ggplot2 chart of count of animals rescued by cal_year](../images/viz_2_r.png)
+```{figure} ../images/viz_2_r.png
+---
+width: 100%
+name: ggplot2Chart
+alt: ggplot2 chart of animal rescue incidents by calendar year
+---
+```
 
 You can pass a sparklyr DataFrame directly into [`ggplot()`](https://ggplot2.tidyverse.org/reference/ggplot.html), although this could lead to errors if the data are too large. It is better to aggregate the data first and `collect()`.
 ````{tabs}
@@ -96,7 +115,13 @@ ggplot2::ggplot(data=rescue, ggplot2::aes(x=as.factor(cal_year), y=count)) +
 
 ```
 ````
-![ggplot2 chart of count of animals rescued by cal_year](../images/viz_2_r.png)
+```{figure} ../images/viz_2_r.png
+---
+width: 100%
+name: ggplot2Chart
+alt: ggplot2 chart of animal rescue incidents by calendar year
+---
+```
 
 ### Dashboards
 
