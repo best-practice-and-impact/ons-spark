@@ -1,0 +1,143 @@
+cell_no,execution_count,tidy_python_output,r_output
+1,1,"+---------------+--------------+
+|incident_number|origin_of_call|
++---------------+--------------+
+|      146647151|        Police|
+|       66969111|        Police|
+|      103407111|        Police|
+|      137525091|        Police|
+|      158794091|        Police|
++---------------+--------------+
+only showing top 5 rows
+","# A tibble: 5 × 2
+  incident_number origin_of_call
+  <chr>           <chr>         
+1 146647151       Police        
+2 66969111        Police        
+3 103407111       Police        
+4 137525091       Police        
+5 158794091       Police        
+"
+4,2,"root
+ |-- incident_number: string (nullable = true)
+ |-- origin_of_call: string (nullable = true)
+","Rows: ??
+Columns: 2
+Database: spark_connection
+Ordered by: date_time_of_call
+$ incident_number <chr> ""146647151"", ""66969111"", ""103407111"", ""137525091"", ""15…
+$ origin_of_call  <chr> ""Police"", ""Police"", ""Police"", ""Police"", ""Police"", ""Pol…
+"
+7,3,"+------------------+-----+
+|incident_no_length|count|
++------------------+-----+
+|                 6|    1|
+|                 7|    6|
+|                 8|   57|
+|                 9|   65|
++------------------+-----+
+","# A tibble: 4 × 3
+  incident_no_length origin_of_call count
+               <int> <chr>          <dbl>
+1                  6 Police             1
+2                  8 Police            57
+3                  7 Police             6
+4                  9 Police            65
+"
+10,4,"+---------------+--------------+------------------+------------------+
+|incident_number|origin_of_call|incident_no_length|padded_incident_no|
++---------------+--------------+------------------+------------------+
+|         955141|        Police|                 6|         000955141|
+|        7003121|        Police|                 7|         007003121|
+|        6311101|        Police|                 7|         006311101|
+|        5930131|        Police|                 7|         005930131|
+|        3223101|        Police|                 7|         003223101|
++---------------+--------------+------------------+------------------+
+only showing top 5 rows
+
++---------------+--------------+------------------+------------------+
+|incident_number|origin_of_call|incident_no_length|padded_incident_no|
++---------------+--------------+------------------+------------------+
+|      205017101|        Police|                 9|         205017101|
+|      207037111|        Police|                 9|         207037111|
+|      135844101|        Police|                 9|         135844101|
+|      216289101|        Police|                 9|         216289101|
+|      145879151|        Police|                 9|         145879151|
++---------------+--------------+------------------+------------------+
+only showing top 5 rows
+","# A tibble: 5 × 4
+  incident_number origin_of_call incident_no_length padded_incident_no
+  <chr>           <chr>                       <int> <chr>             
+1 955141          Police                          6 000955141         
+2 3215101         Police                          7 003215101         
+3 3223101         Police                          7 003223101         
+4 7003121         Police                          7 007003121         
+5 6311101         Police                          7 006311101         
+# A tibble: 5 × 4
+  incident_number origin_of_call incident_no_length padded_incident_no
+  <chr>           <chr>                       <int> <chr>             
+1 163121101       Police                          9 163121101         
+2 103225141       Police                          9 103225141         
+3 114153091       Police                          9 114153091         
+4 101172091       Police                          9 101172091         
+5 110211101       Police                          9 110211101         
+"
+13,5,"+---------------+--------------+------------------+------------------+----------------+
+|incident_number|origin_of_call|incident_no_length|padded_incident_no|too_short_inc_no|
++---------------+--------------+------------------+------------------+----------------+
+|      114153091|        Police|                 9|         114153091|             114|
+|      138096091|        Police|                 9|         138096091|             138|
+|      110211101|        Police|                 9|         110211101|             110|
+|      101172091|        Police|                 9|         101172091|             101|
+|      102278091|        Police|                 9|         102278091|             102|
++---------------+--------------+------------------+------------------+----------------+
+only showing top 5 rows
+","# A tibble: 5 × 5
+  incident_number origin_of_call incident_no_length padded_incident_no
+  <chr>           <chr>                       <int> <chr>             
+1 163121101       Police                          9 163121101         
+2 103225141       Police                          9 103225141         
+3 114153091       Police                          9 114153091         
+4 101172091       Police                          9 101172091         
+5 110211101       Police                          9 110211101         
+# … with 1 more variable: too_short_inc_no <chr>
+"
+16,6,"+---------------+--------------+------------------+------------------+----------------+--------------+
+|incident_number|origin_of_call|incident_no_length|padded_incident_no|too_short_inc_no| silly_example|
++---------------+--------------+------------------+------------------+----------------+--------------+
+|         955141|        Police|                 6|         000955141|             955|xyzxyzxy955141|
+|        7003121|        Police|                 7|         007003121|             700|xyzxyzx7003121|
+|        6311101|        Police|                 7|         006311101|             631|xyzxyzx6311101|
+|        5930131|        Police|                 7|         005930131|             593|xyzxyzx5930131|
+|        3223101|        Police|                 7|         003223101|             322|xyzxyzx3223101|
++---------------+--------------+------------------+------------------+----------------+--------------+
+only showing top 5 rows
+","# A tibble: 5 × 6
+  incident_number origin_of_call incident_no_length padded_incident_no
+  <chr>           <chr>                       <int> <chr>             
+1 955141          Police                          6 000955141         
+2 3215101         Police                          7 003215101         
+3 3223101         Police                          7 003223101         
+4 7003121         Police                          7 007003121         
+5 6311101         Police                          7 006311101         
+# … with 2 more variables: too_short_inc_no <chr>, silly_example <chr>
+"
+19,7,"+---------------+-------------------+
+|incident_number|right_padded_inc_no|
++---------------+-------------------+
+|      146647151|          146647151|
+|       66969111|          669691110|
+|      103407111|          103407111|
+|      137525091|          137525091|
+|      158794091|          158794091|
++---------------+-------------------+
+only showing top 5 rows
+","# A tibble: 5 × 2
+  incident_number right_padded_inc_no
+  <chr>           <chr>              
+1 53242091        532420910          
+2 45531111        455311110          
+3 19747141        197471410          
+4 21512131        215121310          
+5 220308091       220308091          
+"
