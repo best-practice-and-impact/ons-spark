@@ -12,11 +12,6 @@ filepath = r"C:\Users\hallj\ons-spark\ons-spark"
 old_string = "https://spark.apache.org/docs/latest/api/python/reference/api/"
 new_string = "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/"
 
-#other strings to change
-#old_string = "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql.html#functions"
-#new_string = "https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/functions.html"
-
-
 #test_file = r"C:\Users\hallj\ons-spark\ons-spark\test_update_links\spark-concepts\cache.md"
 
 
@@ -59,6 +54,8 @@ def count_replacements(filepath, extensions, old_string, new_string):
     summary = pd.DataFrame(data, columns = cols)
     return summary
 
+count_replacements(filepath, (".md", ".ipynb"), old_string, new_string)
+
 
 
 def change_string(filename, old_string, new_string):
@@ -72,6 +69,7 @@ def change_string(filename, old_string, new_string):
             x = x.replace(old_string, new_string)
             file_to_change.write(x)
 
+
 #change_string(test_file, old_string, new_string)
 
 
@@ -83,8 +81,4 @@ def find_and_replace(filepath, extensions, old_string, new_string):
         change_string(x, old_string, new_string)
 
 
-count_replacements(filepath, (".md", ".ipynb"), old_string, new_string)
-
 find_and_replace(filepath, (".md", ".ipynb"), old_string, new_string)
-
-count_replacements(filepath, (".md", ".ipynb"), old_string, new_string)
