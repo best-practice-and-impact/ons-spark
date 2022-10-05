@@ -1,11 +1,11 @@
 ## Reference columns by name: `F.col()`
 
-There are several different ways to reference columns in a PySpark DataFrame `df`, e.g. in a [`.filter()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.filter.html) operation:
+There are several different ways to reference columns in a PySpark DataFrame `df`, e.g. in a [`.filter()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.filter.html) operation:
 - `df.filter(F.col("column_name") == value)`: references column by name; the recommended method, used throughout this book
 - `df.filter(df.column_name == value)`: references column directly from the DF
 - `df.flter(df["column_name"] == value)`: pandas style, less commonly used in PySpark
 
-The preferred method is using [`F.col()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.col.html) from the `pyspark.sql.functions` module and is used throughout this book. Although all three methods above will work in some circumstances, only `F.col()` will always have the desired outcome. This is because it references the column by *name* rather than directly from the DF, which means columns not yet assigned to the DF can be used, e.g. when chaining several operations on the same DF together.
+The preferred method is using [`F.col()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.col.html) from the `pyspark.sql.functions` module and is used throughout this book. Although all three methods above will work in some circumstances, only `F.col()` will always have the desired outcome. This is because it references the column by *name* rather than directly from the DF, which means columns not yet assigned to the DF can be used, e.g. when chaining several operations on the same DF together.
 
 There are several cases where `F.col()` will work but one of the other methods may not:
 - [Filter the DataFrame when reading in](f-col:example-1)
@@ -255,5 +255,5 @@ Spark at the ONS Articles:
     - [Writing Data to a Hive Table](../spark-functions/writing-data.html#writing-data-to-a-hive-table)
 
 PySpark Documentation:
-- [`.filter()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.filter.html)
-- [`F.col()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.col.html)
+- [`.filter()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.filter.html)
+- [`F.col()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.col.html)

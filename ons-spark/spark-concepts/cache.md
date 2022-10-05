@@ -45,7 +45,7 @@ sc <- sparklyr::spark_connect(
 ````
 Next we need some data. Here we're using a small amount of data because we're running a local session which has very limited resource. 
 
-Note that [`.cache()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.cache.html) in PySpark is a transformation, so to initiate moving the data into memory we need an action, hence the [`.count()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.count.html).
+Note that [`.cache()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.cache.html) in PySpark is a transformation, so to initiate moving the data into memory we need an action, hence the [`.count()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.count.html).
 
 In sparklyr there is a `force=TRUE` argument in the [`tbl_cache()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/tbl_cache.html) function meaning there is no need to pipe this into a row count. Also note that the name of the DataFrame will appear in the Spark UI, which is a nice feature in sparklyr. To do the same in PySpark we would need to register the DataFrame as a temporary table and give it a name.
 ````{tabs}
@@ -104,7 +104,7 @@ Cache details
 
 ### Persist
 
-There is another function that can be used to persist DataFrames, [`.persist()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.persist.html)/[`sdf_persist()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_persist.html) in PySpark/sparklyr. This is a general form of `.cache()`/`tbl_cache()`. It is similar to doing a cache but we are able to specify where to store the data, e.g. use memory but allow spill over to executor disk if the executor memory is full. `.persist()`/`sdf_persist()` takes a `StorageLevel` argument to specify where to cache the data. Options for storage levels are:  
+There is another function that can be used to persist DataFrames, [`.persist()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.persist.html)/[`sdf_persist()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_persist.html) in PySpark/sparklyr. This is a general form of `.cache()`/`tbl_cache()`. It is similar to doing a cache but we are able to specify where to store the data, e.g. use memory but allow spill over to executor disk if the executor memory is full. `.persist()`/`sdf_persist()` takes a `StorageLevel` argument to specify where to cache the data. Options for storage levels are:  
 
 - `MEMORY_ONLY`
 - `MEMORY_AND_DISK`  
@@ -172,7 +172,7 @@ DataFrame cached on disk
 
 Is this what you expected? Why is this number different to persisting in memory? Because there is some compression involved in data written on disk.
 
-[Databricks](https://databricks.com/), a company founded by the creators of Apache Spark, suggest the use cases for `.persist()`/`sdf_persist()` are rare. The are often cases where you might want to persist using `cache()`/`tbl_cache()`, write to disk, use [`.checkpoint()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.checkpoint.html)/[`sdf_checkpoint()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_checkpoint.html) or staging tables, but the options that `.persist()`/`sdf_persist()` present are not as useful. For a more detailed discussion about these options see the [Persisting](../spark-concepts/persistence) article.
+[Databricks](https://databricks.com/), a company founded by the creators of Apache Spark, suggest the use cases for `.persist()`/`sdf_persist()` are rare. The are often cases where you might want to persist using `cache()`/`tbl_cache()`, write to disk, use [`.checkpoint()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.checkpoint.html)/[`sdf_checkpoint()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_checkpoint.html) or staging tables, but the options that `.persist()`/`sdf_persist()` present are not as useful. For a more detailed discussion about these options see the [Persisting](../spark-concepts/persistence) article.
 ````{tabs}
 ```{code-tab} py
 population.unpersist()
@@ -750,10 +750,10 @@ Spark at the ONS Articles:
 - [Spark Application and UI](../spark-concepts/spark-application-and-ui)
 
 PySpark Documentation:
-- [`.count()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.count.html)
-- [`.cache()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.cache.html)
-- [`.persist()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.persist.html)
-- [`.checkpoint()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.checkpoint.html)
+- [`.count()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.count.html)
+- [`.cache()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.cache.html)
+- [`.persist()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.persist.html)
+- [`.checkpoint()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.checkpoint.html)
 
 sparklyr and tidyverse Documentation:
 - [`tbl_cache()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/tbl_cache.html)

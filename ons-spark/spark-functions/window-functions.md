@@ -1,6 +1,6 @@
 ## Window Functions in Spark
 
-Window functions use values from other rows within the same group, or *window*, and return a value in a new column for every row. This can be in the form of aggregations (similar to a [`.groupBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.groupBy.html)/[`group_by()`](https://dplyr.tidyverse.org/reference/group_by.html) but preserving the original DataFrame), ranking rows within groups, or returning values from previous rows. If you're familiar with SQL then a window function in PySpark works in the same way.
+Window functions use values from other rows within the same group, or *window*, and return a value in a new column for every row. This can be in the form of aggregations (similar to a [`.groupBy()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.groupBy.html)/[`group_by()`](https://dplyr.tidyverse.org/reference/group_by.html) but preserving the original DataFrame), ranking rows within groups, or returning values from previous rows. If you're familiar with SQL then a window function in PySpark works in the same way.
 
 This article explains how to use window functions in three ways: for aggregation, ranking, and referencing the previous row. An SQL example is also given.
 
@@ -10,7 +10,7 @@ You can use a window function for aggregations. Rather than returning an aggrega
 
 One example of where this is useful is for deriving a total to be used as the denominator for another calculation. For instance, in the Animal Rescue data we may want to work out what percentage of animals rescued each year are dogs. We can do this by getting the total of all animals by year, then dividing each animal group count by this. 
 
-First, import the relevant packages and start a Spark session. To use window functions in PySpark, we need to import [`Window`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Window.html) from `pyspark.sql.window`. No extra packages are needed for sparklyr, as Spark functions are referenced inside [`mutate()`](https://dplyr.tidyverse.org/reference/mutate.html).
+First, import the relevant packages and start a Spark session. To use window functions in PySpark, we need to import [`Window`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Window.html) from `pyspark.sql.window`. No extra packages are needed for sparklyr, as Spark functions are referenced inside [`mutate()`](https://dplyr.tidyverse.org/reference/mutate.html).
 ````{tabs}
 ```{code-tab} py
 from pyspark.sql import SparkSession, functions as F
@@ -100,9 +100,9 @@ We want to calculate the percentage of animals rescued each year that are dogs. 
 We could create a new DataFrame by grouping and aggregating and then joining back to the original DF; this would get the correct result, but a window function is much more efficient as it will reduce the number of shuffles required, as well as making the code more succinct and readable.
 
 The syntax is quite different between PySpark and sparklyr, although the principle is identical in each, and Spark will process them in the same way. The process for using a window function for aggregation in PySpark is as follows:
-- First, use [`.withColumn()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.withColumn.html), as the result is stored in a new column in the DataFrame.
-- Then do the aggregation: [`F.sum("animal_count")`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.sum.html).
-- Then perform this [over](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Column.over.html) a window with `.over(Window.partitionBy("cal_year"))`. Note that this uses [`.partitionBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Window.partitionBy.html) rather than `.groupBy()` (for some window functions you will also use [`.orderBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.orderBy.html), but we do not need to here).
+- First, use [`.withColumn()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.withColumn.html), as the result is stored in a new column in the DataFrame.
+- Then do the aggregation: [`F.sum("animal_count")`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.sum.html).
+- Then perform this [over](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.over.html) a window with `.over(Window.partitionBy("cal_year"))`. Note that this uses [`.partitionBy()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Window.partitionBy.html) rather than `.groupBy()` (for some window functions you will also use [`.orderBy()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.orderBy.html), but we do not need to here).
 
 In sparklyr:
 - Use `group_by(cal_year)` to partition the data.
@@ -243,7 +243,7 @@ rescue_annual %>%
 11 Dog              2018           91          609      14.9 
 ```
 ````
-This example used `F.sum()`/`sum()` but other aggregations are possible too, e.g. [`F.mean()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.mean.html)/[`mean()`](https://spark.apache.org/docs/latest/api/sql/index.html#mean), [`F.max()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.max.html)/[`max()`](https://spark.apache.org/docs/latest/api/sql/index.html#max). In PySpark, use multiple `.withColumn()` statements; in sparklyr, you can combine them in `mutate()`. In this example we filter on `"Snake"`:
+This example used `F.sum()`/`sum()` but other aggregations are possible too, e.g. [`F.mean()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.mean.html)/[`mean()`](https://spark.apache.org/docs/latest/api/sql/index.html#mean), [`F.max()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.max.html)/[`max()`](https://spark.apache.org/docs/latest/api/sql/index.html#max). In PySpark, use multiple `.withColumn()` statements; in sparklyr, you can combine them in `mutate()`. In this example we filter on `"Snake"`:
 ````{tabs}
 ```{code-tab} py
 rescue_annual = (rescue_annual
@@ -363,9 +363,9 @@ rescue_annual_alternative %>%
 ````
 ### Using Window Functions for Ranking
 
-Window functions can also be ordered as well as grouped. This can be combined with [`F.rank()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.rank.html)/[`rank()`](https://spark.apache.org/docs/latest/api/sql/index.html#rank) or [`F.row_number()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.row_number.html)/[`row_number()`](https://spark.apache.org/docs/latest/api/sql/index.html#rank) to get ranks within groups. For instance, we can get the ranking of the most commonly rescued animals by year, then filter on the top three.
+Window functions can also be ordered as well as grouped. This can be combined with [`F.rank()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.rank.html)/[`rank()`](https://spark.apache.org/docs/latest/api/sql/index.html#rank) or [`F.row_number()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.row_number.html)/[`row_number()`](https://spark.apache.org/docs/latest/api/sql/index.html#rank) to get ranks within groups. For instance, we can get the ranking of the most commonly rescued animals by year, then filter on the top three.
 
-The syntax is again different between PySpark and sparklyr. In PySpark, use the same method as described above for aggregations, but replace `F.sum()` with `F.rank()` (or another ordered function), and add `orderBy()`. In this example, use [`F.desc("animal_count")`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.desc.html) to sort descending. The `.partitionBy()` step is optional; without a `.partitionBy()` it will treat the whole DataFrame as one group.
+The syntax is again different between PySpark and sparklyr. In PySpark, use the same method as described above for aggregations, but replace `F.sum()` with `F.rank()` (or another ordered function), and add `orderBy()`. In this example, use [`F.desc("animal_count")`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.desc.html) to sort descending. The `.partitionBy()` step is optional; without a `.partitionBy()` it will treat the whole DataFrame as one group.
 
 In sparklyr, the method is also almost the same as using aggregations. The ordering is done directly with the `rank()` function. `desc(animal_count)` is used to sort descending.
 ````{tabs}
@@ -503,7 +503,7 @@ rescue_rank %>%
 Note that you can have duplicate ranks within each group when using `rank()`; if this is not desirable then one method is to partition by more columns to break ties. There are also alternatives to `rank()` depending on your use case:
 
 - `F.rank()`/`rank()` will assign the same value to ties.
-- [`F.dense_rank()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.dense_rank.html)/[`dense_rank()`](https://spark.apache.org/docs/latest/api/sql/index.html#dense_rank) will not skip a rank after ties.
+- [`F.dense_rank()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.dense_rank.html)/[`dense_rank()`](https://spark.apache.org/docs/latest/api/sql/index.html#dense_rank) will not skip a rank after ties.
 - `F.row_number()`/`row_number()` will give a unique number to each row within the grouping specified. Note that this can be non-deterministic if there are duplicate rows for the ordering condition specified. This can be avoided by specifying extra columns to essentially use as a tiebreaker.
 
 We can see the difference by comparing the three methods:
@@ -669,7 +669,7 @@ only showing top 10 rows
 ````
 ### Reference other rows with `lag()` and `lead()`
 
-The window function [`F.lag()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.lag.html)/[`lag()`](https://spark.apache.org/docs/latest/api/sql/index.html#lag)  allows you to reference the values of previous rows within a group, and [`F.lead()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.lead.html)/[`lead()`](https://spark.apache.org/docs/latest/api/sql/index.html#lead) will do the same for subsequent rows. You can specify how many previous rows you want to reference with the `count` argument. By default this is `1`. Note that `count` can be negative, so `lag(col, count=1)` is the same as `lead(col, count=-1)`.
+The window function [`F.lag()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.lag.html)/[`lag()`](https://spark.apache.org/docs/latest/api/sql/index.html#lag)  allows you to reference the values of previous rows within a group, and [`F.lead()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.lead.html)/[`lead()`](https://spark.apache.org/docs/latest/api/sql/index.html#lead) will do the same for subsequent rows. You can specify how many previous rows you want to reference with the `count` argument. By default this is `1`. Note that `count` can be negative, so `lag(col, count=1)` is the same as `lead(col, count=-1)`.
 
 The first or last row within the window partition will be null values, as they do not have a previous or subsequent row to reference. This can be changed by setting the `default` parameter, which by default is `None`.
 
@@ -936,21 +936,21 @@ Spark at the ONS Articles:
 - [Cross Joins](../spark-functions/cross-join)
 
 PySpark Documentation:
-- [`.groupBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.groupBy.html)
-- [`Window`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Window.html)
-- [`.withColumn()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.withColumn.html)
-- [`F.sum()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.sum.html)
-- [`.over()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Column.over.html)
-- [`.partitionBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Window.partitionBy.html)
-- [`.orderBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.orderBy.html)
-- [`F.mean()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.mean.html)
-- [`F.max()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.max.html)
-- [`F.rank()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.rank.html)
-- [`F.row_number()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.row_number.html)
-- [`F.desc()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.desc.html)
-- [`F.dense_rank()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.dense_rank.html)
-- [`F.lag()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.lag.html)
-- [`F.lead()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.lead.html)
+- [`.groupBy()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.groupBy.html)
+- [`Window`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Window.html)
+- [`.withColumn()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.withColumn.html)
+- [`F.sum()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.sum.html)
+- [`.over()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.over.html)
+- [`.partitionBy()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Window.partitionBy.html)
+- [`.orderBy()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.orderBy.html)
+- [`F.mean()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.mean.html)
+- [`F.max()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.max.html)
+- [`F.rank()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.rank.html)
+- [`F.row_number()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.row_number.html)
+- [`F.desc()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.desc.html)
+- [`F.dense_rank()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.dense_rank.html)
+- [`F.lag()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.lag.html)
+- [`F.lead()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.lead.html)
 - [`spark.sql()`](https://spark.apache.org/docs/latest/sql-getting-started.html#running-sql-queries-programmatically)
 
 sparklyr and tidyverse Documentation:

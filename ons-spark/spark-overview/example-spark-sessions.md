@@ -3,7 +3,7 @@
 This document gives some example Spark sessions. For more information on Spark sessions and why you need to be careful with memory usage, please consult the [Guidance on Spark Sessions](../spark-overview/spark-session-guidance) and [Configuration Hierarchy and `spark-defaults.conf`](../spark-overview/spark-defaults).
 
 
-Remember to only use a Spark session for as long as you need. It's good etiquette to use [`spark.stop()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.stop.html) (for PySpark) or [`spark_disconnect(sc)`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html) (for sparklyr) in your scripts. Stopping the CDSW or Jupyter Notebook session will also close the Spark session if one is running.
+Remember to only use a Spark session for as long as you need. It's good etiquette to use [`spark.stop()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.stop.html) (for PySpark) or [`spark_disconnect(sc)`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html) (for sparklyr) in your scripts. Stopping the CDSW or Jupyter Notebook session will also close the Spark session if one is running.
 
 ### Default/Blank Session
 
@@ -280,8 +280,8 @@ Spark at the ONS Articles:
 - [Configuration Hierarchy and `spark-defaults.conf`](../spark-overview/spark-defaults)
 
 PySpark Documentation:
-- [`SparkSession.builder`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html#pyspark.sql.SparkSession.builder)
-- [`spark.stop()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.stop.html)
+- [`SparkSession.builder`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.html#pyspark.sql.SparkSession.builder)
+- [`spark.stop()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.stop.html)
 
 sparklyr and tidyverse Documentation:
 - [`spark_connect`/`spark_disconnect()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html)

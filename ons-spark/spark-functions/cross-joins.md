@@ -4,7 +4,7 @@ A *cross join* is used to return every combination of the rows of two DataFrames
 
 As a cross join will return every combination of the rows, the size of the returned DataFrame is equal to the product of the row count of both source DataFrames; this can quickly get large and overwhelm your Spark session. As such, use them carefully!
 
-The syntax for cross joins is different in PySpark and sparklyr. In PySpark, DataFrames have a [`.crossJoin()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.crossJoin.html) method. In sparklyr, use [`full_join()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/join.tbl_spark.html) with `by=character()`.
+The syntax for cross joins is different in PySpark and sparklyr. In PySpark, DataFrames have a [`.crossJoin()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.crossJoin.html) method. In sparklyr, use [`full_join()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/join.tbl_spark.html) with `by=character()`.
 
 One use case for cross joins is to return every combination when producing results that involve grouping and aggregation, even when some of these are zero. Cross joins are also commonly used in [salted joins](../spark-concepts/salted-joins), used to improve the efficiency of a join when the join keys are skewed.
 
@@ -178,7 +178,7 @@ cal_years <- sparklyr::sdf_checkpoint(cal_years)
 
 ```
 ````
-Now cross join `cal_years` and `animals`. In PySpark, use [`.crossJoin()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.crossJoin.html), which is a method applied to the DataFrame and takes one argument, the DF to cross join to. In sparklyr, there is no native cross join function, so use [`full_join()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/join.tbl_spark.html) with `by=character()`.
+Now cross join `cal_years` and `animals`. In PySpark, use [`.crossJoin()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.crossJoin.html), which is a method applied to the DataFrame and takes one argument, the DF to cross join to. In sparklyr, there is no native cross join function, so use [`full_join()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/join.tbl_spark.html) with `by=character()`.
 
 Note that apart from the order of the columns the result will be the same regardless of which DF is on the left and which is on the right. The `result` DF will have $27 \times 11 = 297$ rows.
 ````{tabs}
@@ -492,9 +492,9 @@ Spark at the ONS Articles:
 	- [Broadcast Join](../spark-concepts/join-concepts.html#broadcast-join)
     
 PySpark Documentation:
-- [`.crossJoin()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.crossJoin.html)
-- [`.checkpoint()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.checkpoint.html)
-- [`.distinct()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.distinct.html)
+- [`.crossJoin()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.crossJoin.html)
+- [`.checkpoint()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.checkpoint.html)
+- [`.distinct()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.distinct.html)
 
 sparklyr Documentation:
 - [`full_join()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/join.tbl_spark.html): there is no native cross join function in sparklyr; the documentation recommends using `by=character()`

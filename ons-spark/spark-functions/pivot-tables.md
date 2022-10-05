@@ -7,7 +7,7 @@ The principles are the same in PySpark and sparklyr, although unlike some Spark 
 <details>
 <summary><b>Python Explanation</b></summary>
     
-You can create pivot tables in PySpark by using [`.pivot()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.GroupedData.pivot.html) with [`.groupBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.groupBy.html). If you group your data by two or more columns then you may find it easier to view the data in this way.
+You can create pivot tables in PySpark by using [`.pivot()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.GroupedData.pivot.html) with [`.groupBy()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.groupBy.html). If you group your data by two or more columns then you may find it easier to view the data in this way.
 
 `.pivot()` has two arguments. `pivot_col` is the column used to create the output columns, and has to be a single column; it cannot accept a list of multiple columns. The second argument, `values`, is optional but recommended. You can specify the exact columns that you want returned. If left blank, Spark will automatically use all possible values as output columns; calculating this can be inefficient and the output will look untidy if there are a large number of columns.
 </details>
@@ -65,7 +65,7 @@ The minimal example is grouping by just one column, pivoting on another, just co
 <details>
 <summary><b>Python Example</b></summary>
 
-In PySpark, use `.groupBy()` and [`.count()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.count.html) as you normally would when grouping and getting the row count, but add `.pivot()` between the two functions.
+In PySpark, use `.groupBy()` and [`.count()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.count.html) as you normally would when grouping and getting the row count, but add `.pivot()` between the two functions.
 ````{tabs}
 ```{code-tab} py
 rescue_pivot = (rescue
@@ -243,9 +243,9 @@ rescue_grouped %>%
 <details>
 <summary><b>Python Example</b></summary>
 
-You can use [`.agg()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.GroupedData.agg.html) with `.pivot()` in the same way as you do with `.groupBy()`. This example will sum the `total_cost`.
+You can use [`.agg()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.GroupedData.agg.html) with `.pivot()` in the same way as you do with `.groupBy()`. This example will sum the `total_cost`.
 
-The [documentation](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.GroupedData.pivot.html) explains why it is more efficient to manually provide the `values` argument; as an example, we just look at three years.
+The [documentation](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.GroupedData.pivot.html) explains why it is more efficient to manually provide the `values` argument; as an example, we just look at three years.
 ````{tabs}
 ```{code-tab} py
 rescue_pivot = (rescue
@@ -308,11 +308,11 @@ rescue_pivot %>%
 <details>
 <summary><b>Python Example</b></summary>
 
-You can only supply one column to `.pivot()`, but you can have multiple aggregations. Adding an [`.alias()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Column.alias.html) makes the result easier to read.
+You can only supply one column to `.pivot()`, but you can have multiple aggregations. Adding an [`.alias()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.alias.html) makes the result easier to read.
 
-Any missing combinations of the grouping and pivot will be returned as `null`, e.g. there are no incidents with `Hamster`, `Person (land line)` and `2009`. To set this to zero, use [`.fillna()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.fillna.html).
+Any missing combinations of the grouping and pivot will be returned as `null`, e.g. there are no incidents with `Hamster`, `Person (land line)` and `2009`. To set this to zero, use [`.fillna()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.fillna.html).
 
-If grouping by multiple columns you may also want to add [`.orderBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.orderBy.html).
+If grouping by multiple columns you may also want to add [`.orderBy()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.orderBy.html).
 ````{tabs}
 ```{code-tab} py
 rescue_pivot = (rescue
@@ -488,13 +488,13 @@ tibble_pivot %>%
 ### Further Resources
 
 PySpark Documentation:
-- [`.pivot()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.GroupedData.pivot.html)
-- [`.groupBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.groupBy.html)
-- [`.count()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.count.html) 
-- [`.agg()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.GroupedData.agg.html)
-- [`.alias()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Column.alias.html)
-- [`.fillna()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.fillna.html)
-- [`.orderBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.orderBy.html)
+- [`.pivot()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.GroupedData.pivot.html)
+- [`.groupBy()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.groupBy.html)
+- [`.count()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.count.html) 
+- [`.agg()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.GroupedData.agg.html)
+- [`.alias()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.alias.html)
+- [`.fillna()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.fillna.html)
+- [`.orderBy()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.orderBy.html)
 
 sparklyr and tidyverse Documentation:
 - [`sdf_pivot()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_pivot.html)

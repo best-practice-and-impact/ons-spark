@@ -20,13 +20,13 @@ This article was created through a combination of experience, knowledge, frustra
 - Make sure you do not have lots of small files on HDFS (bad for Hadoop and bad for Spark).
 
 #### 3. Get rid of actions that are not needed
-- Get rid of intermediate actions put in during development (e.g. [`.show()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.show.html), [`glimpse()`](https://pillar.r-lib.org/reference/glimpse.html), [`.count()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.count.html), [`sdf_nrow()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_dim.html)); these make Spark reprocess the result.
+- Get rid of intermediate actions put in during development (e.g. [`.show()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.show.html), [`glimpse()`](https://pillar.r-lib.org/reference/glimpse.html), [`.count()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.count.html), [`sdf_nrow()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_dim.html)); these make Spark reprocess the result.
 - Is it possible to replace any remaining actions with some transformations?
 - If there is a repeated action needed on a DataFrame consider persisting (memory or disk).
 
 #### 4. Partitioning and shuffling
 - If the amount of data you are processing is small for Spark, reduce the `spark.sql.shuffle.partitions` parameter.
-- Use [`.coalesce()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.coalesce.html)/[`sdf_coalesce()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html) for small DataFrames, especially before writing them to disk.
+- Use [`.coalesce()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.coalesce.html)/[`sdf_coalesce()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html) for small DataFrames, especially before writing them to disk.
 - Shuffles are expensive, remove unnecessary shuffles.
 
 *See guidance on [Partitioning](../spark-concepts/partitions) and [Shuffling](../spark-concepts/shuffling) for more details.*
@@ -43,7 +43,7 @@ Run code on full dataset(s). Need further optimisation? Grab a link to the Spark
 *See articles on [Spark Application and UI](../spark-concepts/spark-application-and-ui.html#spark-application-overview) and [Partitions](../spark-concepts/partitions.html#intermediate-partitions-in-wide-operations) for more details.*
 
 #### 6. How is Spark processing the data?
-- Check the execution plan using [`.explain()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.explain.html)/[`explain()`](https://dplyr.tidyverse.org/reference/explain.html).
+- Check the execution plan using [`.explain()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.explain.html)/[`explain()`](https://dplyr.tidyverse.org/reference/explain.html).
 - Find the relevant SQL DAG in the UI.
 - Complex plans can be simplified using persistence 
 
@@ -96,10 +96,10 @@ Spark at the ONS Articles:
 - [Guidance on Spark Sessions](../spark-overview/spark-session-guidance)
 
 PySpark Documentation:
-- [`.show()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.show.html)
-- [`.count()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.count.html)
-- [`.coalesce()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.coalesce.html)
-- [`.explain()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.explain.html)
+- [`.show()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.show.html)
+- [`.count()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.count.html)
+- [`.coalesce()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.coalesce.html)
+- [`.explain()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.explain.html)
 
 sparklyr and tidyverse Documentation:
 - [`glimpse()`](https://pillar.r-lib.org/reference/glimpse.html)

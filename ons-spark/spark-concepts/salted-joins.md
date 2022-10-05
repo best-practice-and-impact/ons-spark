@@ -2,7 +2,7 @@
 
 When joining DataFrames in Spark with a Sort Merge Join, all the data with the same join keys will be moved to the same partition. Spark works best when partitions are of roughly equal size. If the data are skewed so that some partitions are much larger than others, then a disproportionate amount of time will be spent on dealing with data in one partition.
 
-Attempting to force a repartition of the DataFrame with [`.repartition()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.repartition.html) (PySpark) or [`sdf_repartition()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_repartition.html) (sparklyr) will not work, as a Sort Merge Join will then automatically shuffle the data based on join keys. Note that this issue will not occur if the smaller DataFrame is able to be broadcast, since that does not force a shuffle of the DataFrames.
+Attempting to force a repartition of the DataFrame with [`.repartition()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.repartition.html) (PySpark) or [`sdf_repartition()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_repartition.html) (sparklyr) will not work, as a Sort Merge Join will then automatically shuffle the data based on join keys. Note that this issue will not occur if the smaller DataFrame is able to be broadcast, since that does not force a shuffle of the DataFrames.
 
 To resolve this issue, we can change the join keys manually, so that the larger partitions get split into smaller ones. This is called *salting*.
 
@@ -38,7 +38,7 @@ sc <- sparklyr::spark_connect(
 
 ```
 ````
-Create a DataFrame with excessive skew by using [`spark.range()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.range.html)/[`sdf_seq()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_seq.html) to create a one column DF with an `id` column, then assigning an arbitrary letter from `A` to `E`. 
+Create a DataFrame with excessive skew by using [`spark.range()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.range.html)/[`sdf_seq()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_seq.html) to create a one column DF with an `id` column, then assigning an arbitrary letter from `A` to `E`. 
 ````{tabs}
 ```{code-tab} py
 row_ct = 10**7
@@ -142,7 +142,7 @@ joined_df <- skewed_df %>%
 
 ```
 ````
-We want to see how the DataFrame is processed on the cluster using the Spark UI, so use `.count()` and [set the job description](../spark-functions/job-description) with [`.setJobDescription()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.SparkContext.setJobDescription.html)/[`invoke("setJobDescription", ...)`](https://spark.rstudio.com/packages/sparklyr/latest/reference/invoke.html):
+We want to see how the DataFrame is processed on the cluster using the Spark UI, so use `.count()` and [set the job description](../spark-functions/job-description) with [`.setJobDescription()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.SparkContext.setJobDescription.html)/[`invoke("setJobDescription", ...)`](https://spark.rstudio.com/packages/sparklyr/latest/reference/invoke.html):
 ````{tabs}
 ```{code-tab} py
 spark.sparkContext.setJobDescription("Row Count")
@@ -526,7 +526,7 @@ The key metric here is not the overall time, but how the work is distributed. It
 
 Salting is not the only option for dealing with skewed DataFrames:
 - [Broadcasting](../spark-concepts/join-concepts.html#broadcast-join) the smaller DataFrame removes the need for a shuffle of the larger DF, and so the partitioning will remain the same. A broadcast join should also be more efficient than salting.
-- Some parts of the join could be achieved with conditional statements, e.g. split the DF into two and use [`F.when()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.when.html)/[`case_when()`](https://dplyr.tidyverse.org/reference/case_when.html) for the larger join keys then a regular join for the rest.
+- Some parts of the join could be achieved with conditional statements, e.g. split the DF into two and use [`F.when()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.when.html)/[`case_when()`](https://dplyr.tidyverse.org/reference/case_when.html) for the larger join keys then a regular join for the rest.
 - Reducing the size of the larger DataFrame may be possible in some circumstances, e.g. by grouping or filtering earlier in the process.
 - If salting only leads to minor improvements in efficiency you may prefer not to salt and just use a regular [sort merge join](../spark-concepts/join-concepts.html#sort-merge-join); you may feel that the benefits of the code being more readable and requiring less testing are worth a small sacrifice of efficiency
 
@@ -542,14 +542,14 @@ Spark at the ONS Articles:
     - [Sort Merge Join](../spark-concepts/join-concepts.html#sort-merge-join)
 
 PySpark Documentation:
-- [`.repartition()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.repartition.html)
-- [`spark.range()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.range.html)
-- [`F.when()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.when.html)
-- [`.setJobDescription()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.SparkContext.setJobDescription.html)
-- [`F.rand()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.rand.html)
-- [`F.concat()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.concat.html)
-- [`F.floor()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.floor.html)
-- [`.crossJoin()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.crossJoin.html)
+- [`.repartition()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.repartition.html)
+- [`spark.range()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.range.html)
+- [`F.when()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.when.html)
+- [`.setJobDescription()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.SparkContext.setJobDescription.html)
+- [`F.rand()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.rand.html)
+- [`F.concat()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.concat.html)
+- [`F.floor()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.floor.html)
+- [`.crossJoin()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.crossJoin.html)
 
 sparklyr and tidyverse Documentation:
 - [`sdf_repartition()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_repartition.html)

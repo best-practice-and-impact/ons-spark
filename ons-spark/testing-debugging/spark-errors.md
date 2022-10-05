@@ -98,7 +98,7 @@ When using Spark, sometimes errors from other languages that the code is compile
 
 For more details on why Python error messages can be so long, especially with Spark, you may want to read the documentation on [Exception Chaining](https://docs.python.org/3/tutorial/errors.html#exception-chaining).
 
-Try using [`spark.read.parquet()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrameReader.parquet.html) with an incorrect file path:
+Try using [`spark.read.parquet()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameReader.parquet.html) with an incorrect file path:
 
 ````{tabs}
 ```{code-tab} py
@@ -120,7 +120,7 @@ Py4JJavaError                             Traceback (most recent call last)
 ```
 ````
 
-The full error message is not given here as it is very long and some of it is platform specific, so try running this code in your own Spark session. You will see a long error message that has raised both a [`Py4JJavaError`](https://www.py4j.org/py4j_java_protocol.html) and an [`AnalysisException`](https://spark.apache.org/docs/latest/api/python/_modules/pyspark/sql/utils.html). The `Py4JJavaError` is caused by Spark and has become an `AnalysisException` in Python.
+The full error message is not given here as it is very long and some of it is platform specific, so try running this code in your own Spark session. You will see a long error message that has raised both a [`Py4JJavaError`](https://www.py4j.org/py4j_java_protocol.html) and an [`AnalysisException`](https://spark.apache.org/docs/3.0.0-preview/api/python/_modules/pyspark/sql/utils.html). The `Py4JJavaError` is caused by Spark and has become an `AnalysisException` in Python.
 
 We can ignore everything else apart from the first line as this contains enough information to resolve the error:
 
@@ -496,7 +496,7 @@ This example shows how functions can be used to handle errors.
 
 We have started to see how useful `try`/`except` blocks can be, but it adds extra lines of code which interrupt the flow for the reader. As such it is a good idea to wrap error handling in functions. You should document why you are choosing to handle the error and the docstring of a function is a natural place to do this.
 
-As an example, define a wrapper function for [`spark.read.csv`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrameReader.csv.html) which reads a CSV file from HDFS. This can handle two types of errors:
+As an example, define a wrapper function for [`spark.read.csv`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameReader.csv.html) which reads a CSV file from HDFS. This can handle two types of errors:
 - If the Spark context has been stopped, it will return a custom error message that is much shorter and descriptive
 - If the path does not exist the same error message will be returned but raised `from None` to shorten the stack trace
 
@@ -823,7 +823,7 @@ Column `column_that_does_not_exist` does not exist. Returning `0`
 ```
 ````
 
-A better way would be to avoid the error in the first place by checking if the column exists before the [`.distinct()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.distinct.html):
+A better way would be to avoid the error in the first place by checking if the column exists before the [`.distinct()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.distinct.html):
 
 ````{tabs}
 ```{code-tab} py
@@ -969,10 +969,10 @@ Spark at the ONS Articles:
 - [Getting Started with Spark](../spark-overview/spark-start)
 
 PySpark Documentation:
-- [`spark.read.parquet()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrameReader.parquet.html)
-- [`spark.read.csv`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrameReader.csv.html)
-- [`pyspark.sql.utils`](https://spark.apache.org/docs/latest/api/python/_modules/pyspark/sql/utils.html): source code for `AnalysisException`
-- [`.distinct()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.distinct.html)
+- [`spark.read.parquet()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameReader.parquet.html)
+- [`spark.read.csv`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameReader.csv.html)
+- [`pyspark.sql.utils`](https://spark.apache.org/docs/3.0.0-preview/api/python/_modules/pyspark/sql/utils.html): source code for `AnalysisException`
+- [`.distinct()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.distinct.html)
 
 Python Documentation:
 - [Errors](https://docs.python.org/3/tutorial/errors.html)

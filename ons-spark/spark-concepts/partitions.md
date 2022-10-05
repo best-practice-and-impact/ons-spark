@@ -93,7 +93,7 @@ only showing top 10 rows
 10     9        7
 ```
 ````
-To find the number of partitions of a DataFrame in PySpark we need to access the underlying RDD structures that make up the DataFrame by using `.rdd` after referencing the DataFrame. Then we can use the [`.getNumPartitions()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.RDD.getNumPartitions.html) method to return the number of partitions. In sparklyr we can just use the function [`sdf_num_partitions()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_num_partitions.html).
+To find the number of partitions of a DataFrame in PySpark we need to access the underlying RDD structures that make up the DataFrame by using `.rdd` after referencing the DataFrame. Then we can use the [`.getNumPartitions()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.RDD.getNumPartitions.html) method to return the number of partitions. In sparklyr we can just use the function [`sdf_num_partitions()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_num_partitions.html).
 
 We can also find out how many rows are in each partition. There is more than one way of doing this, one method was introduced in the [Shuffling](../spark-concepts/shuffling) article and will be used later in this article, a second method is shown below. Again, in PySpark we will need to access the underlying RDDs then map on a `lambda` function that will loop over the rows in each partition and return a count of these rows in a list. In sparklyr we can use [`spark_apply()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_apply.html) to give us a row count for each partition.
 
@@ -449,7 +449,7 @@ Before we look at how to modify DataFrame partitioning, let's revisit the motiva
 
 #### Change partitioning
 
-Here are two ways of changing the number of partitions of a DataFrame. One is [`.repartition()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.repartition.html)/[`sdf_repartition()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_repartition.html) and the other is `coalesce()`/[`sdf_coalesce()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html).
+Here are two ways of changing the number of partitions of a DataFrame. One is [`.repartition()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.repartition.html)/[`sdf_repartition()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_repartition.html) and the other is `coalesce()`/[`sdf_coalesce()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html).
 
 Let's see how to use these functions.
 ````{tabs}
@@ -524,7 +524,7 @@ rand_df %>% sparklyr::sdf_num_partitions()
 [1] 2
 ```
 ````
-Is that the answer we were expecting? Note that [`.coalesce()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.coalesce.html) should only be used to *decrease* the number of partitions. When increasing it can only increase to a previous state.
+Is that the answer we were expecting? Note that [`.coalesce()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.coalesce.html) should only be used to *decrease* the number of partitions. When increasing it can only increase to a previous state.
 ````{tabs}
 ```{code-tab} py
 rand_df = rand_df.repartition(1)
@@ -1165,7 +1165,7 @@ As the computer scientist Donald Knuth once wrote:
 
 More importantly it's good practice to be aware of the size of the DataFrame and the number of partitions as this will help to avoid obvious issues or over-partitioning, under-partitioning and highly skewed processes.
 
-A more accurate answer depends on a variety of factors including: the size of the data, data types, distributions within the data, type of processing and other properties defined in the [`SparkSession`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html). Here are some tips for quick wins:
+A more accurate answer depends on a variety of factors including: the size of the data, data types, distributions within the data, type of processing and other properties defined in the [`SparkSession`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.html). Here are some tips for quick wins:
 
 - As suggested above, the first step is getting the code right. Only look to optimise if you're running into performance issues.
 - Decreasing the `spark.sql.shuffle.partitions` parameter is sensible for smaller datasets.
@@ -1185,13 +1185,13 @@ Spark at the ONS Articles:
 - [Checkpoint and Staging Tables](../raw-notebooks/checkpoint-staging/checkpoint-staging)
 
 PySpark Documentation:
-- [`.coalesce()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.coalesce.html)
-- [`SparkSession`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html)
-- [`.getNumPartitions()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.RDD.getNumPartitions.html)
-- [`.repartition()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.repartition.html)
-- [`.coalesce()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.coalesce.html)
-- [`.rdd.mapPartitions()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.RDD.mapPartitions.html)
-- [`DataFrameWriter.partitionBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrameWriter.partitionBy.html)
+- [`.coalesce()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.coalesce.html)
+- [`SparkSession`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.html)
+- [`.getNumPartitions()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.RDD.getNumPartitions.html)
+- [`.repartition()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.repartition.html)
+- [`.coalesce()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.coalesce.html)
+- [`.rdd.mapPartitions()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.RDD.mapPartitions.html)
+- [`DataFrameWriter.partitionBy()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameWriter.partitionBy.html)
 
 Python Documentation:
 - [`subprocess`](https://docs.python.org/3/library/subprocess.html) 

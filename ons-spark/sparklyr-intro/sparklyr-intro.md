@@ -489,7 +489,7 @@ $ postcode_district <chr> "SE19", "SE25", "SM5", "UB9", "RM3", "RM10", "E11", â€
 
 ### Filter rows: `filter()`
 
-Rows of sparklyr DataFrames can be filtered with [`filter()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.filter.html), which takes a logical condition. This works in an identical way to `dplyr::filter()`. Any column names can be referenced by name without quotes.
+Rows of sparklyr DataFrames can be filtered with [`filter()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.filter.html), which takes a logical condition. This works in an identical way to `dplyr::filter()`. Any column names can be referenced by name without quotes.
 
 For instance, if we want to select all the rows where `animal_group` is equal to `Hamster`, we can use `filter(animal_group == "Hamster")`. Note the double equals sign used in a condition. We do not want to change the `rescue` DataFrame, so assign it to a new DF, `hamsters`, then preview a few of the columns:
 ````{tabs}
