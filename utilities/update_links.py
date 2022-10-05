@@ -4,11 +4,6 @@ pd.option_context('display.max_rows', None,
                   'display.max_columns', None,
                   'display.precision', 3)
 
-filepath = r"..\ons-spark\ons-spark"
-old_string = "sprak"
-new_string = "spark"
-extensions = ('.md', '.ipynb')
-
 
 class FindReplace():
 
@@ -100,7 +95,16 @@ def search_and_replace(filepath, extensions, old_string, new_string):
         extensions (tuple containing multiple strings): extensions of the files you want to change.
         old_string (string): string to search for which requires changing.
         new_string (string): string you want to change to.
-    '''
+
+    Example:
+        filepath = r"..\ons-spark\ons-spark"
+        old_string = "sprak"
+        new_string = "spark"
+        extensions = ('.md', '.ipynb')
+
+        search_and_replace(filepath, extensions, old_string, new_string)
+
+        '''
 
     docs = FindReplace(filepath, extensions, old_string, new_string)
     print(docs.count_replacements())
@@ -108,10 +112,6 @@ def search_and_replace(filepath, extensions, old_string, new_string):
     print(docs.count_replacements())
 
 
-
-
-#wrapper function to run
-search_and_replace(filepath, extensions, old_string, new_string)
 
 
 
