@@ -8,7 +8,7 @@ Remember that Spark DataFrames are processed on the Spark cluster, regardless of
 
 ### Simple one column DataFrames
 
-[`spark.range()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.range.html)/[`sdf_seq()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_seq.html) are functions which create a simple DataFrame with one column, `id`, with the specified number of rows. This can be useful as a starting point for creating synthetic or test data, or for generating a DataFrame containing random numbers.
+[`spark.range()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.range.html)/[`sdf_seq()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_seq.html) are functions which create a simple DataFrame with one column, `id`, with the specified number of rows. This can be useful as a starting point for creating synthetic or test data, or for generating a DataFrame containing random numbers.
 
 <details>
     <summary><b>PySpark Explanation</b></summary>
@@ -101,7 +101,7 @@ You can also create Spark DataFrames from pandas or base R DataFrames. Spark DFs
 
 Remember that there are key differences between pandas/R DFs and Spark DFs. Spark DFs are not ordered by default and also have no index, so converting to Spark and then back will not preserve the original row order. Some operations are also easier with pandas/R than they are with Spark. See the Choosing between pandas/R and Spark article for more information.
 
-In PySpark, use [`spark.createDataFrame(pandas_df)`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.createDataFrame.html), where `pandas_df` is the pandas DataFrame. You can also specify the `schema` argument here, although generally you will not need to as pandas DFs already have data types assigned. Note that if your pandas version is earlier that `0.25.0` there may be a bug when creating the DataFrame due to the column ordering. It is recommended to update to a later version of pandas to solve this.
+In PySpark, use [`spark.createDataFrame(pandas_df)`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.createDataFrame.html), where `pandas_df` is the pandas DataFrame. You can also specify the `schema` argument here, although generally you will not need to as pandas DFs already have data types assigned. Note that if your pandas version is earlier that `0.25.0` there may be a bug when creating the DataFrame due to the column ordering. It is recommended to update to a later version of pandas to solve this.
 
 In sparklyr, use [`sdf_copy_to()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_copy_to.html), with `sc` as the first argument and the base R DF as the second. You can also create a temporary table with the `name` option if desired.
 
@@ -202,7 +202,7 @@ Another issue to be careful with when converting pandas DFs to Spark is the trea
 
 ### Create DF directly
 
-In PySpark, as well as converting a pandas DF you can also create a DataFrame directly with [`spark.createDataFrame()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.createDataFrame.html). The first argument is `data`, generally as a regular Python list with each row containing another list. If using this method then you will also want to supply the `schema`, either a list of column names, or an object containing column names and types. See the article on Data Types for more information.
+In PySpark, as well as converting a pandas DF you can also create a DataFrame directly with [`spark.createDataFrame()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.createDataFrame.html). The first argument is `data`, generally as a regular Python list with each row containing another list. If using this method then you will also want to supply the `schema`, either a list of column names, or an object containing column names and types. See the article on Data Types for more information.
 
 You cannot create a DataFrame in sparklyr in this way; instead, create a base R DF or tibble and use `sdf_copy_to()`, as described above.
 ````{tabs}
@@ -245,8 +245,8 @@ Spark at the ONS Articles:
 - [Unit Testing in Spark](../testing-debugging/unit-testing)
 
 PySpark Documentation:
-- [`spark.createDataFrame()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.createDataFrame.html)
-- [`spark.range()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.range.html)
+- [`spark.createDataFrame()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.createDataFrame.html)
+- [`spark.range()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.range.html)
 
 sparklyr and tidyverse Documentation:
 - [`sdf_copy_to()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_copy_to.html)

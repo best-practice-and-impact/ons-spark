@@ -1,7 +1,7 @@
 ## Configuration Hierarchy and `spark-defaults.conf`
 
 Every Spark session has a *configuration*, where important settings such as the amount of memory, number of executors and cores are defined. There are three places that can contain configuration settings for a Spark session:
-- Directly in [`SparkSession.builder`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html#pyspark.sql.SparkSession.builder) (PySpark) or [`spark_connect()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html) (sparklyr)
+- Directly in [`SparkSession.builder`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.html#pyspark.sql.SparkSession.builder) (PySpark) or [`spark_connect()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html) (sparklyr)
 - In a `spark-defaults.conf` configuration file
 - The default global setting
 
@@ -90,7 +90,7 @@ Spark at the ONS Articles:
 - [Example Spark Sessions](../spark-overview/example-spark-sessions)
 
 PySpark Documentation:
-- [`SparkSession.builder`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html#pyspark.sql.SparkSession.builder)
+- [`SparkSession.builder`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.html#pyspark.sql.SparkSession.builder)
 
 sparklyr and tidyverse Documentation:
 - [`spark_connect()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html)

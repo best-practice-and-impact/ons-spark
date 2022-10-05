@@ -34,11 +34,11 @@ job. It will also shut them down when they are not needed. This process of switc
 
 There are many options when it comes to creating a Spark session. We recommend using the default parameters when getting started, you can then start adding other parameters when you learn more about how Spark works and how to tune your session to your specific needs.
 
-Remember we should stop the Spark session when we are finished to free up the cluster resource for others. This is often done automatically when we stop our driver program, or you can also do it by running [`spark.stop()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.stop.html)/[`spark_disconnect()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html) in Python/R.
+Remember we should stop the Spark session when we are finished to free up the cluster resource for others. This is often done automatically when we stop our driver program, or you can also do it by running [`spark.stop()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.stop.html)/[`spark_disconnect()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html) in Python/R.
 
 ### Using default parameters
 
-As a starting point you can create a Spark session with all the defaults, by leaving the optional properties blank in [`SparkSession.builder`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html#pyspark.sql.SparkSession.builder)/[`spark_connect()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html). This is the bare minimum you need to create a Spark session and will work fine in most cases. Note you should give your session a sensible name, here we have called it `default-session`.
+As a starting point you can create a Spark session with all the defaults, by leaving the optional properties blank in [`SparkSession.builder`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.html#pyspark.sql.SparkSession.builder)/[`spark_connect()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html). This is the bare minimum you need to create a Spark session and will work fine in most cases. Note you should give your session a sensible name, here we have called it `default-session`.
 
 ````{tabs}
 ```{code-tab} py
@@ -98,9 +98,9 @@ For more details look at the official documentation for [Spark configuration](ht
 
 ONS runs Spark on YARN, that entails another [set of configuration options](https://spark.apache.org/docs/latest/running-on-yarn.html) documented here.
 
-To view all of the parameters, both default and custom, associated with your Spark session use [`spark.sparkContext.getConf().getAll()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.SparkConf.getAll.html).
+To view all of the parameters, both default and custom, associated with your Spark session use [`spark.sparkContext.getConf().getAll()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.SparkConf.getAll.html).
 
-Note that [`sparkContext`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.SparkContext.html) is created automatically when calling [`SparkSession`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html)
+Note that [`sparkContext`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.SparkContext.html) is created automatically when calling [`SparkSession`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.html)
 
 
 *The values shown in brackets are common default values* 
@@ -203,11 +203,11 @@ Spark at the ONS Articles:
 - [Configuration Hierarchy and `spark-defaults.conf`](../spark-overview/spark-defaults)
 
 PySpark Documentation:
-- [`SparkSession`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html)
-- [`SparkSession.builder`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.html#pyspark.sql.SparkSession.builder)
-- [`spark.stop()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.stop.html)
-- [`spark.sparkContext`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.SparkContext.html)
-- [`spark.sparkContext.getConf().getAll()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.SparkConf.getAll.html)
+- [`SparkSession`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.html)
+- [`SparkSession.builder`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.html#pyspark.sql.SparkSession.builder)
+- [`spark.stop()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.stop.html)
+- [`spark.sparkContext`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.SparkContext.html)
+- [`spark.sparkContext.getConf().getAll()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.SparkConf.getAll.html)
 
 sparklyr and tidyverse Documentation:
 - [`spark_connect`/`spark_disconnect()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html)

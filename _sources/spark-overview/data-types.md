@@ -79,7 +79,7 @@ If the column only contains integers, then `IntegerType` or `LongType` will be t
 
 For decimals, you can use often use `DoubleType`. For larger numbers or those with a lot of decimal places, `DecimalType` gives greater precision as you can specify the `precision` and `scale`, e.g. `precision=5` and `scale=2` has values between $\pm 999.99$.
 
-The types given by [`.printSchema()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.printSchema.html) are simpler than the full Spark type name, e.g. `IntegerType` is `integer`.
+The types given by [`.printSchema()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.printSchema.html) are simpler than the full Spark type name, e.g. `IntegerType` is `integer`.
 
 As a quick example, we can see what happens when a value is too long for `IntegerType`, and also see that the `DecimalType` has a fixed width to the right of the decimal point:
 ```
@@ -421,7 +421,7 @@ root
 
 The process of changing data types is referred to as *casting*. For instance, if a string column contains numbers you may want to cast this as an integer.
 
-In PySpark, use the column methods [`.cast()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Column.cast.html) or [`.astype()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Column.astype.html). These methods are identical and just aliases of each other. It is good to be consistent within your project as to which one you use.
+In PySpark, use the column methods [`.cast()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.cast.html) or [`.astype()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.astype.html). These methods are identical and just aliases of each other. It is good to be consistent within your project as to which one you use.
 
 In sparklyr, casting can be done with either base R methods (when available), e.g. [`as.double()`](https://stat.ethz.ch/R-manual/R-devel/library/base/html/double.html), or [Spark functions](../sparklyr-intro/sparklyr-functions), e.g. [`double()`](https://spark.apache.org/docs/latest/api/sql/index.html#double), [`to_timestamp()`](https://spark.apache.org/docs/latest/api/sql/index.html#to_timestamp). Spark functions are preferred as they are easier for Spark to compile.
 
@@ -488,10 +488,10 @@ Spark at the ONS Articles:
 - [Using Spark Functions in sparklyr](../sparklyr-intro/sparklyr-functions)
 
 PySpark Documentation:
-- [`.printSchema()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.printSchema.html)
+- [`.printSchema()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.printSchema.html)
 - [`pyspark.sql.types`](https://spark.apache.org/docs/latest/sql-ref-datatypes.html)
-- [`.cast()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Column.cast.html)
-- [`.astype()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.Column.astype.html)
+- [`.cast()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.cast.html)
+- [`.astype()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.astype.html)
 
 sparklyr and tidyverse Documentation:
 - [`glimpse()`](https://pillar.r-lib.org/reference/glimpse.html)

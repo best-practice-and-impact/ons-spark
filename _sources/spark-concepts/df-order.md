@@ -1,6 +1,6 @@
 ## Spark DataFrames Are Not Ordered
 
-Spark DataFrames do not have the order preserved in the same way as pandas or base R DataFrames. Subsetting a pandas or R DataFrame, e.g. with `head()`, will always return identical rows, whereas the rows returned may be different when subsetting PySpark or sparklyr DFs, e.g with [`.show()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.show.html) or `head()`.
+Spark DataFrames do not have the order preserved in the same way as pandas or base R DataFrames. Subsetting a pandas or R DataFrame, e.g. with `head()`, will always return identical rows, whereas the rows returned may be different when subsetting PySpark or sparklyr DFs, e.g with [`.show()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.show.html) or `head()`.
 
 The reason for this is that Spark DataFrames are distributed across partitions. Some operations, such as joining, grouping or sorting, cause data to be moved between [partitions](../spark-concepts/partitions), known as a [*shuffle*](../spark-concepts/shuffling). Running the exact same Spark code can result in different data being on different partitions, as well as a different order within each partition.
 
@@ -109,7 +109,7 @@ winners <- sparklyr::sdf_copy_to(sc,
 ````
 Now order the data by `nation`. This will ensure that the first nation alphabetically will be returned (`England`), but as the `year` is not specified these may be returned in a different order.
 
-To demonstrate that these rows are all on the same partition, create a new column using [`F.spark_partition_id()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.spark_partition_id.html)/[`spark_partition_id()`](https://spark.apache.org/docs/latest/api/sql/index.html#spark_partition_id):
+To demonstrate that these rows are all on the same partition, create a new column using [`F.spark_partition_id()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.spark_partition_id.html)/[`spark_partition_id()`](https://spark.apache.org/docs/latest/api/sql/index.html#spark_partition_id):
 ````{tabs}
 ```{code-tab} py
 winners_ordered = (winners
@@ -324,7 +324,7 @@ for(show_no in 1:3){
 3 Hamster         14            8
 ```
 ````
-Although the same plan is being executed each time, the `partition_id` can be different. The `partition_id` is allocated by the [`.groupBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.groupBy.html)/[`group_by()`](https://dplyr.tidyverse.org/reference/group_by.html) operation, which causes a shuffle.
+Although the same plan is being executed each time, the `partition_id` can be different. The `partition_id` is allocated by the [`.groupBy()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.groupBy.html)/[`group_by()`](https://dplyr.tidyverse.org/reference/group_by.html) operation, which causes a shuffle.
 
 ### Final thoughts
 
@@ -345,9 +345,9 @@ Spark at the ONS Articles:
 - [Writing Data](../spark-functions/writing-data)
 
 PySpark Documentation:
-- [`.show()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.show.html)
-- [`F.spark_partition_id()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.spark_partition_id.html)
-- [`.groupBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.groupBy.html)
+- [`.show()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.show.html)
+- [`F.spark_partition_id()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.spark_partition_id.html)
+- [`.groupBy()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.groupBy.html)
 
 sparklyr and tidyverse Documentation:
 - [`group_by()`](https://dplyr.tidyverse.org/reference/group_by.html)

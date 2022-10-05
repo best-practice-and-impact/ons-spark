@@ -44,7 +44,7 @@ This is covered in more detail in the [Spark Application and UI](../spark-concep
 
 Although in PySpark and sparklyr we work with DataFrames, they are actually stored in memory as a [Resilient Distributed Dataset (RDD)](https://spark.apache.org/docs/latest/rdd-programming-guide.html) and this is what you will see in the Spark UI.
 
-In PySpark, a DataFrame is effectively an API built on top of the RDD, allowing it to be manipulated in a more user-friendly manner than the native RDD syntax. We can access RDD specific functionality with `df.rdd`; an example of this is [`df.rdd.getNumPartitions()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.RDD.getNumPartitions.html) to get the number of partitions of the DataFrame.
+In PySpark, a DataFrame is effectively an API built on top of the RDD, allowing it to be manipulated in a more user-friendly manner than the native RDD syntax. We can access RDD specific functionality with `df.rdd`; an example of this is [`df.rdd.getNumPartitions()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.RDD.getNumPartitions.html) to get the number of partitions of the DataFrame.
 
 In sparklyr we simply have `tbl_spark` objects rather than two APIs, e.g. to get the number of partitions use [`sdf_num_partitions()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_num_partitions.html) on your sparklyr DataFrame.
 
@@ -103,7 +103,7 @@ seed_no <- 999L
 
 ```
 ````
-For this example, create a DataFrame with one column, `id`, 20 rows and two partitions using [`spark.range()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.range.html)/[`sdf_seq()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_seq.html).
+For this example, create a DataFrame with one column, `id`, 20 rows and two partitions using [`spark.range()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.range.html)/[`sdf_seq()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_seq.html).
 
 Now look at the DF:
 ````{tabs}
@@ -180,7 +180,7 @@ example_1 %>%
 ````
 In order to print out the DataFrame we have to transfer the data back to the driver as one object, so we cannot see the partitioning. Indeed when we write our code we often do not pay attention to how the DataFrame might be distributed in memory.
 
-To see how it is partitioned in Spark add another column using [`F.spark_partition_id()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.spark_partition_id.html)/[`spark_partition_id()`](https://spark.apache.org/docs/latest/api/sql/index.html#spark_partition_id). In PySpark this is from the `functions` module; in sparklyr this is Spark function called inside `mutate`.
+To see how it is partitioned in Spark add another column using [`F.spark_partition_id()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.spark_partition_id.html)/[`spark_partition_id()`](https://spark.apache.org/docs/latest/api/sql/index.html#spark_partition_id). In PySpark this is from the `functions` module; in sparklyr this is Spark function called inside `mutate`.
 ````{tabs}
 ```{code-tab} py
 example_1 = example_1.withColumn("partition_id", F.spark_partition_id())
@@ -256,7 +256,7 @@ example_1 %>%
 ````
 We can see that this DataFrame has two partitions: `id` from `0` to `9` are in partition `0`, and `10` to `19` in partition `1`.
 
-Try a transformation on this DataFrame: adding a column of random numbers, `rand1`, between `1` and `10` with - [`F.rand()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.rand.html)/[`rand()`](https://spark.apache.org/docs/latest/api/sql/index.html#rand) and [`F.ceil()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.ceil.html)/[`ceil()`](https://spark.apache.org/docs/latest/api/sql/index.html#ceil) (which rounds numbers up to the nearest integer), then recalculate the `partition_id`:
+Try a transformation on this DataFrame: adding a column of random numbers, `rand1`, between `1` and `10` with - [`F.rand()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.rand.html)/[`rand()`](https://spark.apache.org/docs/latest/api/sql/index.html#rand) and [`F.ceil()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.ceil.html)/[`ceil()`](https://spark.apache.org/docs/latest/api/sql/index.html#ceil) (which rounds numbers up to the nearest integer), then recalculate the `partition_id`:
 ````{tabs}
 ```{code-tab} py
 example_1 = (example_1
@@ -637,7 +637,7 @@ In addition, Spark does have some efficiencies in the way repeated actions are h
 
 If your DataFrame is small, you can discard the concept of distributed computing and shuffling entirely by converting it into a pandas or base R DataFrame and process it in the driver memory rather than in Spark. Operations which would normally trigger a shuffle in Spark will be instead processed in the driver memory.
 
-Converting PySpark DataFrames to pandas is very easy as they have a [`.toPandas()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.toPandas.html) method. In sparklyr, use [`sparklyr::collect()`](https://dplyr.tidyverse.org/reference/compute.html); this will convert to the standard dplyr-style tibble, which are mostly interchangeable with base R DFs.
+Converting PySpark DataFrames to pandas is very easy as they have a [`.toPandas()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.toPandas.html) method. In sparklyr, use [`sparklyr::collect()`](https://dplyr.tidyverse.org/reference/compute.html); this will convert to the standard dplyr-style tibble, which are mostly interchangeable with base R DFs.
 
 In PySpark you can even skip Spark entirely by reading in from HDFS to pandas with [Pydoop](../ancillary-topics/pydoop).
 
@@ -651,7 +651,7 @@ The larger the DataFrame that is supplied to Spark the longer the Spark job will
 
 As we saw in the second example, a join will cause a shuffle on the DataFrames to be joined. We saw that this was referred to as a [**SortMergeJoin**](../spark-concepts/join-concepts.html#sort-merge-join) in the visualised plan. There is however another type of join: the [broadcast join](../spark-concepts/join-concepts.html#broadcast-join). A broadcast join can be used when one of your DataFrames in the join is small; a copy is created on each partition. This can then be processed separately on each partition in parallel, avoiding the need for a full shuffle.
 
-Broadcast joins are one of the easiest ways to improve the efficiency of your code, as you just have to wrap the second DF in [`F.broadcast()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.broadcast.html) in PySpark or [`sdf_broadcast()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_broadcast.html)
+Broadcast joins are one of the easiest ways to improve the efficiency of your code, as you just have to wrap the second DF in [`F.broadcast()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.broadcast.html) in PySpark or [`sdf_broadcast()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_broadcast.html)
  in sparklyr.
 
 The [Optimising Joins](../spark-concepts/join-concepts) article has full details; this is an example of the Spark UI from that article, showing that there are fewer shuffles involved when broadcasting:
@@ -667,12 +667,12 @@ Boradcast exchange
 
 #### Replace joins with conditional statements
 
-If you are joining a tiny DataFrame of only a few rows, a shuffle can potentially be avoided entirely be re-writing the join as a set of conditional statements with [`F.when()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.when.html) in PySpark or [`case_when()`](https://dplyr.tidyverse.org/reference/case_when.html)
+If you are joining a tiny DataFrame of only a few rows, a shuffle can potentially be avoided entirely be re-writing the join as a set of conditional statements with [`F.when()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.when.html) in PySpark or [`case_when()`](https://dplyr.tidyverse.org/reference/case_when.html)
  in sparklyr; although this method can be more prone to errors when coding and harder to maintain. See the [Optimising Joins: Replacing a join with a narrow transformation](../spark-concepts/join-concepts.html#replacing-a-join-with-a-narrow-transformation) section for more information.
 
 #### Avoiding unnecessary sorting
 
-There can be the temptation to put a lot of [`.orderBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.orderBy.html)/[`sdf_sort()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_sort.html) statements in your code when developing, especially if you are previewing the data at various points (e.g. with `show(n)`/`head(n) %>% collect()`). Remember that our Spark DataFrames are distributed into partitions and so the concept of order is different to when we have these stored as one object (e.g. a pandas or R DataFrame) in the driver memory. Generally the order of the rows in the DataFrame should not matter; you can often just sort the data once right at the end of the code before writing out the results if the order of the output is important.
+There can be the temptation to put a lot of [`.orderBy()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.orderBy.html)/[`sdf_sort()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_sort.html) statements in your code when developing, especially if you are previewing the data at various points (e.g. with `show(n)`/`head(n) %>% collect()`). Remember that our Spark DataFrames are distributed into partitions and so the concept of order is different to when we have these stored as one object (e.g. a pandas or R DataFrame) in the driver memory. Generally the order of the rows in the DataFrame should not matter; you can often just sort the data once right at the end of the code before writing out the results if the order of the output is important.
 
 This does come with a caveat in that Spark sometimes can be cleverer than we expect, due to the *catalyst optimizer*. As we know, the Spark plan is only triggered when an action is called, such as `.show()`, `collect()` etc. Spark will sometimes however detect unnecessary sorting and optimise the plan. We can demonstrate this by sorting our DataFrame several times, then looking at the UI.
 
@@ -777,7 +777,7 @@ Multiple sorts in single exchange
 
 On the plan, we only have one exchange, but we gave it four operations which should cause a shuffle. What has happened is that Spark has optimised the plan to only include one shuffle. This is a feature of Spark called the *catalyst optimizer* and is explained further in the [Persisting](../spark-concepts/persistence) article.
 
-We can demonstrate this by looking at the full plan with [`.explain(True)`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.explain.html)
+We can demonstrate this by looking at the full plan with [`.explain(True)`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.explain.html)
  in PySpark and with [`invoke("queryExecution")`](https://spark.rstudio.com/packages/sparklyr/latest/reference/invoke.html) in sparklyr:
 ````{tabs}
 ```{code-tab} py
@@ -890,7 +890,7 @@ We've seen how shuffles take time to process and can cause a bottleneck in perfo
 
 Sometimes shuffling our data into more logical partitions can actually cause performance to increase. For instance, if our data are skewed so that one partition contains significantly more data than another, the parallelism will not be as efficient as it could be. By shuffling the data into partitions of similar sizes, the efficiency will actually increase. An example is using a salted join to reduce skew when joining DataFrames.
 
-You can also change the number of partitions. By default, this is `200`, but repartitioning into a greater or smaller number depending on your data and what you are doing with it can help performance. Note that when repartitioning a DataFrame, [`.repartition()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.repartition.html)/[`sdf_repartition()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_repartition.html) will cause a full shuffle into roughly equal partition sizes, whereas [`.coalesce()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.coalesce.html)/[`sdf_coalesce()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html)  will essentially combine partitions (and so they may vary in size), so the data will still move but be processed more efficiently. This topic is explored more in the [Partitions](../spark-concepts/partitions) article.
+You can also change the number of partitions. By default, this is `200`, but repartitioning into a greater or smaller number depending on your data and what you are doing with it can help performance. Note that when repartitioning a DataFrame, [`.repartition()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.repartition.html)/[`sdf_repartition()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_repartition.html) will cause a full shuffle into roughly equal partition sizes, whereas [`.coalesce()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.coalesce.html)/[`sdf_coalesce()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html)  will essentially combine partitions (and so they may vary in size), so the data will still move but be processed more efficiently. This topic is explored more in the [Partitions](../spark-concepts/partitions) article.
 
 ### Summary
 
@@ -919,18 +919,18 @@ Spark at the ONS Articles:
 - [When To Use Spark](../spark-overview/when-to-use-spark)
 
 PySpark Documentation:
-- [`.rdd.getNumPartitions()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.RDD.getNumPartitions.html) 
-- [`spark.range()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.SparkSession.range.html)
-- [`F.spark_partition_id()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.spark_partition_id.html)
-- [`F.rand()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.rand.html)
-- [`F.ceil()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.ceil.html)
-- [`.toPandas()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.toPandas.html)
-- [`F.broadcast()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.broadcast.html)
-- [`F.when()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.when.html)
-- [`.orderBy()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.orderBy.html)
-- [`.explain()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.explain.html)
-- [`.repartition()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.repartition.html)
-- [`.coalesce()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.coalesce.html)
+- [`.rdd.getNumPartitions()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.RDD.getNumPartitions.html) 
+- [`spark.range()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.range.html)
+- [`F.spark_partition_id()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.spark_partition_id.html)
+- [`F.rand()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.rand.html)
+- [`F.ceil()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.ceil.html)
+- [`.toPandas()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.toPandas.html)
+- [`F.broadcast()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.broadcast.html)
+- [`F.when()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.when.html)
+- [`.orderBy()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.orderBy.html)
+- [`.explain()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.explain.html)
+- [`.repartition()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.repartition.html)
+- [`.coalesce()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.coalesce.html)
 
 sparklyr and tidyverse Documentation:
 - [`sdf_num_partitions()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_num_partitions.html)

@@ -2,7 +2,7 @@
 
 Importing modules in Python and R can lead to naming conflicts if a function with that name already exists. This article demonstrates why you should be careful when importing modules to ensure that these conflicts do not occur.
 
-A common example in Python is using [`from pyspark.sql.functions import *`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql.html#functions), which will overwrite some built-in Python functions (e.g. `sum()`). Instead, it is good practice to use `from pyspark.sql import functions as F`, where you prefix the functions  with `F`, e.g. [`F.sum()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.sum.html).
+A common example in Python is using [`from pyspark.sql.functions import *`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/functions.html), which will overwrite some built-in Python functions (e.g. `sum()`). Instead, it is good practice to use `from pyspark.sql import functions as F`, where you prefix the functions  with `F`, e.g. [`F.sum()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.sum.html).
 
 ### Naming variables
 
@@ -238,7 +238,7 @@ col
 'double_id'
 ```
 ````
-Importing the PySpark `functions` as `F` and using [`F.col()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.col.html) solves this problem:
+Importing the PySpark `functions` as `F` and using [`F.col()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.col.html) solves this problem:
 ````{tabs}
 ```{code-tab} py
 from pyspark.sql import functions as F 
@@ -423,9 +423,9 @@ _E_x_a_m_p_l_e_s:
 ### Further Resources
 
 PySpark Documentation:
-- [`pyspark.sql.functions`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql.html#functions)
-- [`F.col()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.col.html)
-- [`F.sum()`](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.sum.html)
+- [`pyspark.sql.functions`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/functions.html)
+- [`F.col()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.col.html)
+- [`F.sum()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.sum.html)
 
 sparklyr and tidyverse Documentation:
 - [`dplyr::filter()`](https://dplyr.tidyverse.org/reference/filter.html)
