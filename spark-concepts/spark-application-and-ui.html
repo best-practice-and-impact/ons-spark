@@ -4,13 +4,11 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Spark Application and UI &#8212; Spark at the ONS</title>
     
-  <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="../_static/css/theme.css" rel="stylesheet">
+  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -20,37 +18,38 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
+    
+      
+
+    
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
     
-  <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
-    <script>let toggleHintShow = 'Click to show';</script>
-    <script>let toggleHintHide = 'Click to hide';</script>
-    <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/tabs.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/design-tabs.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script>
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -71,21 +70,7 @@ const thebe_selector_output = ".output, .cell_output"
                 </script>
 
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay overlay-navbar" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<!-- Checkboxes to toggle the in-page toc -->
-<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
-<label class="overlay overlay-pagetoc" for="__page-toc">
-    <div class="visually-hidden">Toggle in-page Table of Contents</div>
-</label>
-<!-- Headers at the top -->
-<div class="announcement header-item noprint"></div>
-<div class="header header-item noprint"></div>
-
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -94,10 +79,9 @@ const thebe_selector_output = ".output, .cell_output"
     <div class="container-xl">
       <div class="row">
           
-<!-- Sidebar -->
-<div class="bd-sidebar noprint" id="site-navigation">
-    <div class="bd-sidebar__content">
-        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
     <a class="navbar-brand text-wrap" href="../index.html">
       
         <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
@@ -115,15 +99,14 @@ const thebe_selector_output = ".output, .cell_output"
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        
-        <ul class="nav bd-sidenav bd-sidenav__home-link">
-            <li class="toctree-l1">
-                <a class="reference internal" href="../intro.html">
-                    Introduction
-                </a>
-            </li>
-        </ul>
-        <p aria-level="2" class="caption" role="heading">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../intro.html">
+   Introduction
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Spark overview
  </span>
@@ -410,358 +393,179 @@ const thebe_selector_output = ".output, .cell_output"
 </ul>
 
     </div>
-</nav></div>
-        <div class="bd-sidebar__bottom">
-             <!-- To handle the deprecated key -->
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
             
-            <div class="navbar_extra_footer">
-            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/spark-concepts/spark-application-and-ui.md"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.md</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/best-practice-and-impact/ons-spark"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fspark-concepts/spark-application-and-ui.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
             </div>
-            
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#spark-application-overview">
+   Spark Application Overview
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#investigate-the-spark-ui">
+   Investigate the Spark UI
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#create-an-application">
+     Create an application
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#jobs-page">
+   Jobs page
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#stages-page">
+   Stages page
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#task-event-timeline">
+     Task Event timeline
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#summary-metrics">
+     Summary Metrics
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#more-information">
+   More information
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#documentation">
+     Documentation
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#moving-data-outside-spark">
+     Moving data outside Spark
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#improving-performance">
+   Improving performance
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#summary">
+   Summary
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+            </nav>
         </div>
     </div>
-    <div id="rtd-footer-container"></div>
 </div>
-
-
-          
-
-
-          
-<!-- A tiny helper pixel to detect if we've scrolled -->
-<div class="sbt-scroll-pixel-helper"></div>
-<!-- Main content -->
-<div class="col py-0 content-container">
-    
-    <div class="header-article row sticky-top noprint">
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
         
-
-
-
-<div class="col py-1 d-flex header-article-main">
-    <div class="header-article__left">
-        
-        <label for="__navigation"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="right"
-title="Toggle navigation"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-bars"></i>
-  </span>
-
-</label>
-
-        
-    </div>
-    <div class="header-article__right">
-<button onclick="toggleFullScreen()"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="bottom"
-title="Fullscreen mode"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-expand"></i>
-  </span>
-
-</button>
-
-<div class="menu-dropdown menu-dropdown-repository-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Source repositories">
-      <i class="fab fa-github"></i>
-  </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="https://github.com/best-practice-and-impact/ons-spark"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Source repository"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fab fa-github"></i>
-  </span>
-<span class="headerbtn__text-container">repository</span>
-</a>
-
-      </li>
-      
-      <li>
-        <a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fspark-concepts/spark-application-and-ui.html&body=Your%20issue%20content%20here."
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Open an issue"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-lightbulb"></i>
-  </span>
-<span class="headerbtn__text-container">open issue</span>
-</a>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-
-<div class="menu-dropdown menu-dropdown-download-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Download this page">
-      <i class="fas fa-download"></i>
-  </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="../_sources/spark-concepts/spark-application-and-ui.md"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Download source file"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file"></i>
-  </span>
-<span class="headerbtn__text-container">.md</span>
-</a>
-
-      </li>
-      
-      <li>
-        
-<button onclick="printPdf(this)"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="left"
-title="Print to PDF"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file-pdf"></i>
-  </span>
-<span class="headerbtn__text-container">.pdf</span>
-</button>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
-  </span>
-
-</label>
-
-    </div>
-</div>
-
-<!-- Table of contents -->
-<div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#spark-application-overview">
-   Spark Application Overview
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#investigate-the-spark-ui">
-   Investigate the Spark UI
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#create-an-application">
-     Create an application
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#jobs-page">
-   Jobs page
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#stages-page">
-   Stages page
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#task-event-timeline">
-     Task Event timeline
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#summary-metrics">
-     Summary Metrics
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#more-information">
-   More information
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#documentation">
-     Documentation
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#moving-data-outside-spark">
-     Moving data outside Spark
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#improving-performance">
-   Improving performance
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#summary">
-   Summary
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#further-resources">
-   Further Resources
-  </a>
- </li>
-</ul>
-
-    </nav>
-</div>
-    </div>
-    <div class="article row">
-        <div class="col pl-md-3 pl-lg-5 content-container">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Spark Application and UI</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#spark-application-overview">
-   Spark Application Overview
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#investigate-the-spark-ui">
-   Investigate the Spark UI
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#create-an-application">
-     Create an application
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#jobs-page">
-   Jobs page
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#stages-page">
-   Stages page
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#task-event-timeline">
-     Task Event timeline
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#summary-metrics">
-     Summary Metrics
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#more-information">
-   More information
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#documentation">
-     Documentation
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#moving-data-outside-spark">
-     Moving data outside Spark
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#improving-performance">
-   Improving performance
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#summary">
-   Summary
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#further-resources">
-   Further Resources
-  </a>
- </li>
-</ul>
-
-                        </nav>
-                    </div>
-                </div>
-            </div>
-            <main id="main-content" role="main">
-                
               <div>
                 
-  <section id="spark-application-and-ui">
-<h1>Spark Application and UI<a class="headerlink" href="#spark-application-and-ui" title="Permalink to this headline">#</a></h1>
+  <div class="section" id="spark-application-and-ui">
+<h1>Spark Application and UI<a class="headerlink" href="#spark-application-and-ui" title="Permalink to this headline">¶</a></h1>
 <p>This article introduces the structure of a Spark application and how the structure relates to the various pages within the application monitoring interface, the Spark UI.</p>
 <p>The Spark UI is used to monitor the status and resource consumption of your Spark cluster and is the main tool for troubleshooting slow Spark code.</p>
 <p>Understanding the structure of a Spark application helps to understand how Spark works so you can begin to think differently as you code to get the most out of Spark.</p>
-<section id="spark-application-overview">
-<h2>Spark Application Overview<a class="headerlink" href="#spark-application-overview" title="Permalink to this headline">#</a></h2>
+<div class="section" id="spark-application-overview">
+<h2>Spark Application Overview<a class="headerlink" href="#spark-application-overview" title="Permalink to this headline">¶</a></h2>
 <p>A Spark application has an underlining structure and learning about this structure will help us:</p>
 <ol class="simple">
 <li><p>understand the difference between a narrow transformation, wide transformation and an action</p></li>
@@ -774,24 +578,22 @@ title="Print to PDF"
 <li><p><strong>Stage</strong> - a set of tasks that can be executed in parallel. Similar to how <em>actions</em> define a job boundary, a stage boundary is introduced by a <em>wide</em> transformation, such as <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.groupBy.html"><code class="docutils literal notranslate"><span class="pre">.groupBy()</span></code></a>/<a class="reference external" href="https://dplyr.tidyverse.org/reference/group_by.html"><code class="docutils literal notranslate"><span class="pre">group_by()</span></code></a> or <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.join.html"><code class="docutils literal notranslate"><span class="pre">.join()</span></code></a>/<a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/join.tbl_spark.html"><code class="docutils literal notranslate"><span class="pre">left_join()</span></code></a>. A stage might consist of many <em>narrow</em> transformations, but a stage always finishes with a <em>wide</em> transformation or action.</p></li>
 <li><p><strong>Task</strong> - an individual unit of work assigned to a single core on an executor.</p></li>
 </ul>
-<figure class="align-default" id="sparkapplication">
+<div class="figure align-default" id="sparkapplication">
 <a class="reference internal image-reference" href="../_images/spark_app_diagram.png"><img alt="Diagram representing Spark application showing partitioned DataFrame going through narrow and wide operations" src="../_images/spark_app_diagram.png" style="width: 100%;" /></a>
-<figcaption>
-<p><span class="caption-number">Fig. 2 </span><span class="caption-text">Spark application</span><a class="headerlink" href="#sparkapplication" title="Permalink to this image">#</a></p>
-</figcaption>
-</figure>
+<p class="caption"><span class="caption-number">Fig. 2 </span><span class="caption-text">Spark application</span><a class="headerlink" href="#sparkapplication" title="Permalink to this image">¶</a></p>
+</div>
 <p>Note that Jobs, Stages and Tasks are numbered starting from zero.</p>
 <p>Now look more closely at the DataFrame. On the left there is a Spark DataFrame which is split up into four sections, called <em>partitions</em>. Spark puts our data into partitions automatically so we don’t have to decide how or when to do it. More details on exactly how Spark does this are in the <a class="reference internal" href="partitions.html"><span class="doc std std-doc">Partitions Article</span></a>.</p>
 <p>The first operation to be applied to this DataFrame is a <em>narrow</em> transformation, e.g. adding two columns to create a new column. The second operation is again a narrow transformation. These two operations can be run in parallel, because each child partition has only one parent, indicated by the golden arrows.</p>
 <p>Then we hit a stage boundary, which means the third operation is a <em>wide</em> transformation, e.g. aggregating the data or joining with another DataFrame. This is a wide operation because each child partition has multiple parent partitions. This is also an example of <em>shuffling</em> the data, which means to move data between partitions, more on shuffling in the <a class="reference internal" href="shuffling.html"><span class="doc std std-doc">Shuffling Article</span></a>.</p>
 <p>Finally in the diagram above there is another narrow operation on the aggregated DataFrame before we run into an <em>action</em>, e.g. writing the data to HDFS or a simple count of the rows.</p>
 <p>As we execute the wide and narrow transformations nothing happens to the data at this point in time, Spark just builds up a plan of what to do with the DataFrame. This plan is a called the execution plan and is a set of instructions of how to transform the data from one state to another. More on the execution plan in the <a class="reference internal" href="persistence.html"><span class="doc std std-doc">Persisting Article</span></a>. An action initiates the execution plan and so this is when the DataFrame is processed. All the previous transformations, along with the action, are put into Spark <em>jobs</em> and deployed on the Spark cluster.</p>
-</section>
-<section id="investigate-the-spark-ui">
-<h2>Investigate the Spark UI<a class="headerlink" href="#investigate-the-spark-ui" title="Permalink to this headline">#</a></h2>
+</div>
+<div class="section" id="investigate-the-spark-ui">
+<h2>Investigate the Spark UI<a class="headerlink" href="#investigate-the-spark-ui" title="Permalink to this headline">¶</a></h2>
 <p>We will create an application and execute some code to create jobs. Then we can drill down from Job to Stage to Task and investigate their performance. In most cases this is where we look first when trying to diagnose a slow Spark application.</p>
-<section id="create-an-application">
-<h3>Create an application<a class="headerlink" href="#create-an-application" title="Permalink to this headline">#</a></h3>
+<div class="section" id="create-an-application">
+<h3>Create an application<a class="headerlink" href="#create-an-application" title="Permalink to this headline">¶</a></h3>
 <p>The first step is to create an application. Once we create a Spark application we can look at the Spark UI. If we stop the Spark session using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.stop.html"><code class="docutils literal notranslate"><span class="pre">spark.stop()</span></code></a>/<a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html"><code class="docutils literal notranslate"><span class="pre">spark_disconnect()</span></code></a> or disconnect from the notebook, the Spark UI for our application can no longer be accessed.</p>
 <p>Let’s start with the necessary imports and create an application.</p>
 <div class="sphinx-tabs docutils container">
@@ -816,12 +618,10 @@ title="Print to PDF"
 <p>We can then look at the Spark UI using the URL  <a class="reference external" href="http://localhost:4040/jobs/">http://localhost:4040/jobs/</a>. Note this address is used for a local Spark session, for more information on how to navigate to the Spark UI see the <a class="reference external" href="https://spark.apache.org/docs/latest/monitoring.html">documentation on monitoring</a>.</p>
 <p>If you are running the source notebook and follow the above link you will see something similar to the screenshot below, with the application name on the top right and various tabs along the top.</p>
 <p>There is a lot of useful information in the Spark UI, but in this article we will only concentrate on the <em>Jobs</em> and <em>Stages</em> tabs. Note that we haven’t executed any <em>Jobs</em> yet, so there isn’t much to see at the moment.</p>
-<figure class="align-default" id="emptyui">
+<div class="figure align-default" id="emptyui">
 <a class="reference internal image-reference" href="../_images/spark_app_empty_ui.png"><img alt="Empty Spark UI page" src="../_images/spark_app_empty_ui.png" style="width: 100%;" /></a>
-<figcaption>
-<p><span class="caption-number">Fig. 3 </span><span class="caption-text">Empty Spark UI page</span><a class="headerlink" href="#emptyui" title="Permalink to this image">#</a></p>
-</figcaption>
-</figure>
+<p class="caption"><span class="caption-number">Fig. 3 </span><span class="caption-text">Empty Spark UI page</span><a class="headerlink" href="#emptyui" title="Permalink to this image">¶</a></p>
+</div>
 <p>Let’s import the animal rescue data and find out the number of partitions in which our <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame is processed. The number of partitions will be useful later when we’re investigating our application’s tasks.</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-1-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-1-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -923,10 +723,10 @@ only showing top 7 rows
 </pre></div>
 </div>
 </div></div>
-</section>
-</section>
-<section id="jobs-page">
-<h2>Jobs page<a class="headerlink" href="#jobs-page" title="Permalink to this headline">#</a></h2>
+</div>
+</div>
+<div class="section" id="jobs-page">
+<h2>Jobs page<a class="headerlink" href="#jobs-page" title="Permalink to this headline">¶</a></h2>
 <p>Now that we’ve created some jobs let’s have a quick look at the application’s <em>Event timeline</em>. For those who are running this as a notebook:</p>
 <ol class="simple">
 <li><p>Go into the Spark UI</p></li>
@@ -936,12 +736,10 @@ only showing top 7 rows
 <p>Note the images in this article were created using PySpark, the Spark UI will look slightly different when using sparklyr, but not very different.</p>
 <p>In the top section of the timeline you will see the executors being added and removed by the <em>dynamic allocation</em> feature of Spark. The <code class="docutils literal notranslate"><span class="pre">SparkSession</span></code> used in this case was a local session, so we will only see the driver here. The jobs are shown in the bottom section of the timeline. Hover over a job in the timeline and the corresponding job in the <em>Completed Jobs</em> table below will be highlighted.</p>
 <p><em>Tip:</em> You can tick the <em>Enable Zooming</em> button to zoom in and out of different sections of the timeline</p>
-<figure class="align-default" id="appeventtimeline">
+<div class="figure align-default" id="appeventtimeline">
 <a class="reference internal image-reference" href="../_images/spark_app_event_timeline.png"><img alt="Event timeline within Spark UI showing executors being assigned and jobs being deployed" src="../_images/spark_app_event_timeline.png" style="width: 100%;" /></a>
-<figcaption>
-<p><span class="caption-number">Fig. 4 </span><span class="caption-text">An application’s Event Timeline</span><a class="headerlink" href="#appeventtimeline" title="Permalink to this image">#</a></p>
-</figcaption>
-</figure>
+<p class="caption"><span class="caption-number">Fig. 4 </span><span class="caption-text">An application’s Event Timeline</span><a class="headerlink" href="#appeventtimeline" title="Permalink to this image">¶</a></p>
+</div>
 <p>Let’s look at the <em>Completed Jobs</em> table. The description gives us a clue as to the action that initiated that job. The first job, <em>Job Id</em> 0, was to interact with HDFS, so it has the description <code class="docutils literal notranslate"><span class="pre">parquet</span> <span class="pre">at</span> <span class="pre">NativeMethodAccessorImpl.java:0</span></code>. Remember that executing transformations creates an execution plan, so Spark needs to know the DataFrame’s schema, i.e. column names and types, to validate our PySpark/sparklyr code. Reading from disk will always create a job, usually consisting of just one stage as shown in the <em>Stages</em> column.</p>
 <p>The second job was initiated by <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.show.html"><code class="docutils literal notranslate"><span class="pre">.show()</span></code></a>/<a class="reference external" href="https://dplyr.tidyverse.org/reference/compute.html"><code class="docutils literal notranslate"><span class="pre">collect()</span></code></a>, again it consists of one stage, which itself had one task as shown in the <em>Tasks</em> column. As mentioned in the previous section, Spark only needed to process one partition to produce the output so we therefore have one task in this job.</p>
 <p>The third job was the <code class="docutils literal notranslate"><span class="pre">.count()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_nrow()</span></code>. The job contains two stages, which themselves consist of 3 tasks. Let’s get more information on these stages and tasks. Within the <em>Completed Jobs</em> table click on the link in the <em>Description</em> column for the latest job that says <code class="docutils literal notranslate"><span class="pre">count</span> <span class="pre">at</span> <span class="pre">NativeMethodAccessorImpl.java:0</span></code>.</p>
@@ -953,26 +751,22 @@ only showing top 7 rows
 <li><p><em>mapPartitionsInternal</em> - bringing information from multiple partitions together</p></li>
 </ol>
 <p>There are more informative DAG diagrams on the SQL tab, which are explored in the <a class="reference internal" href="join-concepts.html"><span class="doc std std-doc">Optimising Joins</span></a> and <a class="reference internal" href="persistence.html"><span class="doc std std-doc">Persisting</span></a> articles.</p>
-<figure class="align-default" id="jobdetails">
+<div class="figure align-default" id="jobdetails">
 <a class="reference internal image-reference" href="../_images/spark_app_stages.png"><img alt="Job details page in Spark UI showing DAG diagram and table of the job's stages" src="../_images/spark_app_stages.png" style="width: 100%;" /></a>
-<figcaption>
-<p><span class="caption-number">Fig. 5 </span><span class="caption-text">Job details page</span><a class="headerlink" href="#jobdetails" title="Permalink to this image">#</a></p>
-</figcaption>
-</figure>
-</section>
-<section id="stages-page">
-<h2>Stages page<a class="headerlink" href="#stages-page" title="Permalink to this headline">#</a></h2>
+<p class="caption"><span class="caption-number">Fig. 5 </span><span class="caption-text">Job details page</span><a class="headerlink" href="#jobdetails" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="stages-page">
+<h2>Stages page<a class="headerlink" href="#stages-page" title="Permalink to this headline">¶</a></h2>
 <p>From the <em>Completed Stages</em> table on the <em>Job Details</em> page, when we click on the link in the <em>Description</em> column for the stage consisting of two tasks (<em>Stage Id</em> 2 in the example above), we get to the <em>Stage Details</em>.</p>
 <p>This page contains lots of detailed information about the individual tasks and it’s one of the more useful places to look for troubleshooting sluggish applications. We will just concentrate on two sections within this page, the <em>Event timeline</em> (for tasks) and the <em>Summary Metrics</em>.</p>
-<section id="task-event-timeline">
-<h3>Task Event timeline<a class="headerlink" href="#task-event-timeline" title="Permalink to this headline">#</a></h3>
+<div class="section" id="task-event-timeline">
+<h3>Task Event timeline<a class="headerlink" href="#task-event-timeline" title="Permalink to this headline">¶</a></h3>
 <p>Opening the <em>Event timeline</em> collapsible menu will show a timeline like in the below image. This timeline has a single row, which means one executor (i.e. the driver in our case because we’re running a local session) was used to complete these tasks. This executor has two cores, we know this because the <em>Executor Computing Time</em> (shown in green) of the two task are overlapping. If there was just one core available to the driver the two tasks would not run in parallel.</p>
-<figure class="align-default" id="taskeventtimeline">
+<div class="figure align-default" id="taskeventtimeline">
 <a class="reference internal image-reference" href="../_images/spark_app_task_timeline.png"><img alt="Task event timeline in Spark UI showing parallel processing of tasks" src="../_images/spark_app_task_timeline.png" style="width: 100%;" /></a>
-<figcaption>
-<p><span class="caption-number">Fig. 6 </span><span class="caption-text">Task Event timeline</span><a class="headerlink" href="#taskeventtimeline" title="Permalink to this image">#</a></p>
-</figcaption>
-</figure>
+<p class="caption"><span class="caption-number">Fig. 6 </span><span class="caption-text">Task Event timeline</span><a class="headerlink" href="#taskeventtimeline" title="Permalink to this image">¶</a></p>
+</div>
 <p>The colours also indicate what was going on while the task was being completed. In general- green is good, and is an indication that there is no need to spend time optimising the processing. Delays often occur when lots of data are moved around, because the process can involve some or all of the below:</p>
 <ol class="simple">
 <li><p>serialising data - preparing the data to be moved to disk</p></li>
@@ -981,33 +775,31 @@ only showing top 7 rows
 <li><p>deserialisation - preparing the data to be read in memory</p></li>
 </ol>
 <p>Sometimes when processing many small partitions more time is spent on moving small amounts of data around than useful processing time. This task event timeline will show evidence of this problem in the form of non-green colours. We’ll see this in action later.</p>
-</section>
-<section id="summary-metrics">
-<h3>Summary Metrics<a class="headerlink" href="#summary-metrics" title="Permalink to this headline">#</a></h3>
+</div>
+<div class="section" id="summary-metrics">
+<h3>Summary Metrics<a class="headerlink" href="#summary-metrics" title="Permalink to this headline">¶</a></h3>
 <p>Summary information about the tasks within a stage are given in the Summary Metrics table. Select the <em>(De)select All</em> option to view more metrics.</p>
 <p>This is a useful indication of the distribution of times taken for various components of task processing. It might not be the most useful part of the UI to look at with only two tasks, so we will revisit this later.</p>
-<figure class="align-default" id="taskmetrics">
+<div class="figure align-default" id="taskmetrics">
 <a class="reference internal image-reference" href="../_images/spark_app_task_metrics.png"><img alt="Task metrics table in the Spark UI" src="../_images/spark_app_task_metrics.png" style="width: 100%;" /></a>
-<figcaption>
-<p><span class="caption-number">Fig. 7 </span><span class="caption-text">Task metrics table</span><a class="headerlink" href="#taskmetrics" title="Permalink to this image">#</a></p>
-</figcaption>
-</figure>
+<p class="caption"><span class="caption-number">Fig. 7 </span><span class="caption-text">Task metrics table</span><a class="headerlink" href="#taskmetrics" title="Permalink to this image">¶</a></p>
+</div>
 <p>We won’t discuss <em>GC time</em>, or garbage collection time, in this article. This is a topic that is covered in <a class="reference internal" href="garbage-collection.html"><span class="doc std std-doc">a separate article</span></a>.</p>
-</section>
-</section>
-<section id="more-information">
-<h2>More information<a class="headerlink" href="#more-information" title="Permalink to this headline">#</a></h2>
-<section id="documentation">
-<h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">#</a></h3>
+</div>
+</div>
+<div class="section" id="more-information">
+<h2>More information<a class="headerlink" href="#more-information" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="documentation">
+<h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h3>
 <p>There are tens of blogs available online that introduce some feature in the Spark UI, but most are not particularly useful and are generally rehashes of other blogs.</p>
 <p>Finally, since its release of version 3.0.0, Spark’s online documentation contains information about the <a class="reference external" href="https://spark.apache.org/docs/latest/web-ui.html">Spark web UI</a>. Note however that this is a later version of Spark than what is currently used in DAP at the ONS. Therefore there will be some small differences between what you see in your application’s UI and that documented in the above link.</p>
 <p>The documentation runs through the different pages of the Spark UI with screenshots and a brief description of the various elements. It’s a good place to start and useful for finding definitions. For example, if you want to know what <em>Scheduler delay</em> means, search for this term on the docs page and you will find</p>
 <blockquote>
 <div><p><strong>Scheduler delay</strong> is the time the task waits to be scheduled for execution</p>
 </div></blockquote>
-</section>
-<section id="moving-data-outside-spark">
-<h3>Moving data outside Spark<a class="headerlink" href="#moving-data-outside-spark" title="Permalink to this headline">#</a></h3>
+</div>
+<div class="section" id="moving-data-outside-spark">
+<h3>Moving data outside Spark<a class="headerlink" href="#moving-data-outside-spark" title="Permalink to this headline">¶</a></h3>
 <p>Note that in our case using the Data Access Platform (DAP) we could call the <em>driver</em> here <em>CDSW session</em>, but we’ll use driver to be consistent with other material in this book.</p>
 <p>What can the Spark UI tell us about the processing of Pandas/R DataFrames? Let’s investigate by</p>
 <ol class="simple">
@@ -1075,27 +867,23 @@ only showing top 7 rows
 </pre></div>
 </div>
 </div></div>
-<figure class="align-default" id="incidentcostchart">
+<div class="figure align-default" id="incidentcostchart">
 <a class="reference internal image-reference" href="../_images/spark_app_incident_cost_chart.png"><img alt="Simple bar chart of animal rescue incident cost by cost group chart" src="../_images/spark_app_incident_cost_chart.png" style="width: 100%;" /></a>
-<figcaption>
-<p><span class="caption-number">Fig. 8 </span><span class="caption-text">Animal rescue incident cost by cost group</span><a class="headerlink" href="#incidentcostchart" title="Permalink to this image">#</a></p>
-</figcaption>
-</figure>
+<p class="caption"><span class="caption-number">Fig. 8 </span><span class="caption-text">Animal rescue incident cost by cost group</span><a class="headerlink" href="#incidentcostchart" title="Permalink to this image">¶</a></p>
+</div>
 <p>Now we have our chart, let’s see how that translates to tasks in the Spark UI.</p>
 <p>There is a job for <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code>/<code class="docutils literal notranslate"><span class="pre">collect()</span></code>, but nothing after that for the plot. Why?</p>
 <p>The plotting was done in Pandas/R and so Spark was not involved at all. We therefore don’t expect the Spark UI to show anything that represents those processes.</p>
-</section>
-</section>
-<section id="improving-performance">
-<h2>Improving performance<a class="headerlink" href="#improving-performance" title="Permalink to this headline">#</a></h2>
+</div>
+</div>
+<div class="section" id="improving-performance">
+<h2>Improving performance<a class="headerlink" href="#improving-performance" title="Permalink to this headline">¶</a></h2>
 <p>Finally, let’s take a look at the stages and tasks for the latest job in the Spark UI and have and see an example of identifying a performance issue, how to solving it, and finding evidence of improvement.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code>/<code class="docutils literal notranslate"><span class="pre">collect()</span></code> job has two stages because the <code class="docutils literal notranslate"><span class="pre">.groupBy()</span></code><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.agg.html"><code class="docutils literal notranslate"><span class="pre">.agg()</span></code></a>/<code class="docutils literal notranslate"><span class="pre">group_by()</span> <span class="pre">%&gt;%</span> </code><a class="reference external" href="https://dplyr.tidyverse.org/reference/summarise.html"><code class="docutils literal notranslate"><span class="pre">summarise()</span></code></a> command is a wide transformation. In the first stage the data is read in, a new column added and then the dataset is aggregated. This stage has 2 tasks because the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame has 2 partitions. The second stage in this job moves the data from the cluster to the CDSW session. This stage has 200 tasks, because <code class="docutils literal notranslate"><span class="pre">aggregated_spark</span></code> has 200 partitions, more on why this is the case in the <a class="reference internal" href="partitions.html"><span class="doc std std-doc">Partitions</span></a>. A screenshot of the <em>Stage details</em> for these tasks is below.</p>
-<figure class="align-default" id="taskinfo200">
+<div class="figure align-default" id="taskinfo200">
 <a class="reference internal image-reference" href="../_images/spark_app_200_tasks.png"><img alt="Task information, such as processing time and scheduling time, showing relatively poor performance due to over-partitioning a small DataFrame" src="../_images/spark_app_200_tasks.png" style="width: 100%;" /></a>
-<figcaption>
-<p><span class="caption-number">Fig. 9 </span><span class="caption-text">Task information showing relatively poor performance</span><a class="headerlink" href="#taskinfo200" title="Permalink to this image">#</a></p>
-</figcaption>
-</figure>
+<p class="caption"><span class="caption-number">Fig. 9 </span><span class="caption-text">Task information showing relatively poor performance</span><a class="headerlink" href="#taskinfo200" title="Permalink to this image">¶</a></p>
+</div>
 <p>As we’re running in local mode with 2 cores (or threads), the processing of these 200 tasks took place on the driver. The tasks seem to show relatively poor performance, which is indicated by the non-green colours in the timeline. Also by comparing the <em>Duration</em> (useful processing time) metrics with that of <em>Scheduler Delay</em> and <em>Task Deserialization Time</em> in the <em>Summary Metrics</em> table. Would we get better performance if the <code class="docutils literal notranslate"><span class="pre">aggregated_spark</span></code> DataFrame had fewer partitions? Let’s try to improve the performance by reducing the number of partitions from 200 to 2 with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.coalesce.html"><code class="docutils literal notranslate"><span class="pre">.coalesce()</span></code></a>/<a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html"><code class="docutils literal notranslate"><span class="pre">sdf_coalesce()</span></code></a>:</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-11-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-11-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-11-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-11-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">aggregated_spark</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;cost_group&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;count&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">coalesce</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
@@ -1114,18 +902,16 @@ only showing top 7 rows
 </div>
 </div></div>
 <p>Now navigate to the details of the latter stage of the latest job within the UI and you will see something similar to the screenshot below. Of course, the all important metric to compare is the time taken to complete the stage. Previously, using 200 partitions the stage time was 0.6 seconds, using 2 partitions the stage time was 0.3 seconds. Looking at this page we can see why.</p>
-<figure class="align-default" id="taskinfo2">
+<div class="figure align-default" id="taskinfo2">
 <a class="reference internal image-reference" href="../_images/spark_app_2_tasks.png"><img alt="Task timeline for processing fewer (but larger) partitions and hence fewer tasks, showing improved performance" src="../_images/spark_app_2_tasks.png" style="width: 100%;" /></a>
-<figcaption>
-<p><span class="caption-number">Fig. 10 </span><span class="caption-text">Task information showing improved performance</span><a class="headerlink" href="#taskinfo2" title="Permalink to this image">#</a></p>
-</figcaption>
-</figure>
+<p class="caption"><span class="caption-number">Fig. 10 </span><span class="caption-text">Task information showing improved performance</span><a class="headerlink" href="#taskinfo2" title="Permalink to this image">¶</a></p>
+</div>
 <p>Note that a 0.3s improvement is nothing to brag about, but a x2 processing speed isn’t bad.</p>
 <p>Again, the processing took place on the driver with 2 cores, but this time there was one task per core. There’s much more green visible in this timeline and comparing <em>Scheduler Delay</em> and <em>Task Deserialization Time</em> with <em>Duration</em> in the <em>Summary Metrics</em> tells a very different story.</p>
 <p>The important point is that we are processing a small amount of data and therefore should reduce the partitioning. With 200 partitions a lot of time was spent scheduling tasks and (de)serializing data. By putting our small DataFrame into fewer partitions we spent more time on useful processing and decreased the overall processing time.</p>
-</section>
-<section id="summary">
-<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">#</a></h2>
+</div>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
 <p><strong>Spark application hierarchy</strong></p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>- Application 
     - Job 
@@ -1145,9 +931,9 @@ only showing top 7 rows
 <li><p>Lots of small partitions is an inefficient strategy to process data</p></li>
 <li><p>Matching up the executed code with the job number in the UI is difficult, the description starts with the action used to initiate that job. You can also customise the job description to track jobs easier. See the article on <a class="reference internal" href="../spark-functions/job-description.html"><span class="doc std std-doc">Set Spark Job Description</span></a> for more information.</p></li>
 </ul>
-</section>
-<section id="further-resources">
-<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">#</a></h2>
+</div>
+<div class="section" id="further-resources">
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
 <p>Spark at the ONS Articles:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="partitions.html"><span class="doc std std-doc">Partitions</span></a></p></li>
@@ -1184,8 +970,8 @@ only showing top 7 rows
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/monitoring.html">Monitoring and Instrumentation</a></p></li>
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/web-ui.html">Spark Web UI</a></p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
     <script type="text/x-thebe-config">
     {
@@ -1209,11 +995,9 @@ only showing top 7 rows
 
               </div>
               
-            </main>
-            <footer class="footer-article noprint">
-                
-    <!-- Previous / next buttons -->
-<div class='prev-next-area'>
+        
+            <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="optimisation-tips.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
@@ -1229,27 +1013,25 @@ only showing top 7 rows
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-            </footer>
+        
         </div>
     </div>
-    <div class="footer-content row">
-        <footer class="col footer"><p>
-  
-    By Wil Roberts & Adrian Prince<br/>
-  
-</p>
-        </footer>
+    <footer class="footer">
+    <div class="container">
+      <p>
+        
+          By Wil Roberts & Adrian Prince<br/>
+        
+      </p>
     </div>
-    
-</div>
+  </footer>
+</main>
 
 
       </div>
     </div>
   
-  <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-
+  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
 
   </body>
 </html>

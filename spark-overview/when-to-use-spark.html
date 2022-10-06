@@ -4,13 +4,11 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>When To Use Spark &#8212; Spark at the ONS</title>
     
-  <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="../_static/css/theme.css" rel="stylesheet">
+  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -20,36 +18,37 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
+    
+      
+
+    
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
     
-  <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
-    <script>let toggleHintShow = 'Click to show';</script>
-    <script>let toggleHintHide = 'Click to hide';</script>
-    <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/design-tabs.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script>
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -70,21 +69,7 @@ const thebe_selector_output = ".output, .cell_output"
                 </script>
 
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay overlay-navbar" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<!-- Checkboxes to toggle the in-page toc -->
-<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
-<label class="overlay overlay-pagetoc" for="__page-toc">
-    <div class="visually-hidden">Toggle in-page Table of Contents</div>
-</label>
-<!-- Headers at the top -->
-<div class="announcement header-item noprint"></div>
-<div class="header header-item noprint"></div>
-
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -93,10 +78,9 @@ const thebe_selector_output = ".output, .cell_output"
     <div class="container-xl">
       <div class="row">
           
-<!-- Sidebar -->
-<div class="bd-sidebar noprint" id="site-navigation">
-    <div class="bd-sidebar__content">
-        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
     <a class="navbar-brand text-wrap" href="../index.html">
       
         <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
@@ -114,15 +98,14 @@ const thebe_selector_output = ".output, .cell_output"
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        
-        <ul class="nav bd-sidenav bd-sidenav__home-link">
-            <li class="toctree-l1">
-                <a class="reference internal" href="../intro.html">
-                    Introduction
-                </a>
-            </li>
-        </ul>
-        <p aria-level="2" class="caption" role="heading">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../intro.html">
+   Introduction
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Spark overview
  </span>
@@ -409,271 +392,133 @@ const thebe_selector_output = ".output, .cell_output"
 </ul>
 
     </div>
-</nav></div>
-        <div class="bd-sidebar__bottom">
-             <!-- To handle the deprecated key -->
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
             
-            <div class="navbar_extra_footer">
-            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/spark-overview/when-to-use-spark.md"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.md</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/best-practice-and-impact/ons-spark"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fspark-overview/when-to-use-spark.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
             </div>
-            
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#good-practices">
+   Good practices
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#amount-of-data-to-process">
+   Amount of data to process
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#skills-within-the-team">
+   Skills within the team
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#what-do-you-want-to-do-with-the-data">
+   What do you want to do with the data?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#combination-of-tools-that-work-for-you">
+   Combination of tools that work for you
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+            </nav>
         </div>
     </div>
-    <div id="rtd-footer-container"></div>
 </div>
-
-
-          
-
-
-          
-<!-- A tiny helper pixel to detect if we've scrolled -->
-<div class="sbt-scroll-pixel-helper"></div>
-<!-- Main content -->
-<div class="col py-0 content-container">
-    
-    <div class="header-article row sticky-top noprint">
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
         
-
-
-
-<div class="col py-1 d-flex header-article-main">
-    <div class="header-article__left">
-        
-        <label for="__navigation"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="right"
-title="Toggle navigation"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-bars"></i>
-  </span>
-
-</label>
-
-        
-    </div>
-    <div class="header-article__right">
-<button onclick="toggleFullScreen()"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="bottom"
-title="Fullscreen mode"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-expand"></i>
-  </span>
-
-</button>
-
-<div class="menu-dropdown menu-dropdown-repository-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Source repositories">
-      <i class="fab fa-github"></i>
-  </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="https://github.com/best-practice-and-impact/ons-spark"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Source repository"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fab fa-github"></i>
-  </span>
-<span class="headerbtn__text-container">repository</span>
-</a>
-
-      </li>
-      
-      <li>
-        <a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fspark-overview/when-to-use-spark.html&body=Your%20issue%20content%20here."
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Open an issue"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-lightbulb"></i>
-  </span>
-<span class="headerbtn__text-container">open issue</span>
-</a>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-
-<div class="menu-dropdown menu-dropdown-download-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Download this page">
-      <i class="fas fa-download"></i>
-  </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="../_sources/spark-overview/when-to-use-spark.md"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Download source file"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file"></i>
-  </span>
-<span class="headerbtn__text-container">.md</span>
-</a>
-
-      </li>
-      
-      <li>
-        
-<button onclick="printPdf(this)"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="left"
-title="Print to PDF"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file-pdf"></i>
-  </span>
-<span class="headerbtn__text-container">.pdf</span>
-</button>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
-  </span>
-
-</label>
-
-    </div>
-</div>
-
-<!-- Table of contents -->
-<div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#good-practices">
-   Good practices
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#amount-of-data-to-process">
-   Amount of data to process
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#skills-within-the-team">
-   Skills within the team
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#what-do-you-want-to-do-with-the-data">
-   What do you want to do with the data?
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#combination-of-tools-that-work-for-you">
-   Combination of tools that work for you
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#further-resources">
-   Further Resources
-  </a>
- </li>
-</ul>
-
-    </nav>
-</div>
-    </div>
-    <div class="article row">
-        <div class="col pl-md-3 pl-lg-5 content-container">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>When To Use Spark</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#good-practices">
-   Good practices
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#amount-of-data-to-process">
-   Amount of data to process
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#skills-within-the-team">
-   Skills within the team
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#what-do-you-want-to-do-with-the-data">
-   What do you want to do with the data?
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#combination-of-tools-that-work-for-you">
-   Combination of tools that work for you
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#further-resources">
-   Further Resources
-  </a>
- </li>
-</ul>
-
-                        </nav>
-                    </div>
-                </div>
-            </div>
-            <main id="main-content" role="main">
-                
               <div>
                 
-  <section id="when-to-use-spark">
-<h1>When To Use Spark<a class="headerlink" href="#when-to-use-spark" title="Permalink to this headline">#</a></h1>
+  <div class="section" id="when-to-use-spark">
+<h1>When To Use Spark<a class="headerlink" href="#when-to-use-spark" title="Permalink to this headline">¶</a></h1>
 <p>Some points to consider when making a decision on whether to use Spark for analysis in government are:</p>
 <ul class="simple">
 <li><p>Good practices for research and analysis in government</p></li>
@@ -683,8 +528,8 @@ title="Print to PDF"
 <li><p>Using a mix of tools that work for you and are available to you</p></li>
 </ul>
 <p>In this article we will give some comments on each of the above points. These comments are the authors’ opinions and by no means a comprehensive discussion on tooling for analysis.</p>
-<section id="good-practices">
-<h2>Good practices<a class="headerlink" href="#good-practices" title="Permalink to this headline">#</a></h2>
+<div class="section" id="good-practices">
+<h2>Good practices<a class="headerlink" href="#good-practices" title="Permalink to this headline">¶</a></h2>
 <p>Analysts in government are increasingly being asked to make use of open-source coding languages for research and analysis. <a class="reference external" href="http://Gov.uk">Gov.uk</a> guidance on <a class="reference external" href="https://www.gov.uk/guidance/choose-tools-and-infrastructure-to-make-better-use-of-your-data">Choosing tools and infrastructure to make better use of your data</a> says,</p>
 <blockquote>
 <div><p>Data scientists and analysts often use common open source languages such as Python and R. The benefits of using these languages include:</p>
@@ -696,30 +541,30 @@ title="Print to PDF"
 </div></blockquote>
 <p>Therefore, from a good practice point of view, the preferred tools to use are Python or R.</p>
 <p>For more information about good practices in using Python and R see the <a class="reference external" href="https://best-practice-and-impact.github.io/qa-of-code-guidance/intro.html">QA of analysis and research in government</a>.</p>
-</section>
-<section id="amount-of-data-to-process">
-<h2>Amount of data to process<a class="headerlink" href="#amount-of-data-to-process" title="Permalink to this headline">#</a></h2>
+</div>
+<div class="section" id="amount-of-data-to-process">
+<h2>Amount of data to process<a class="headerlink" href="#amount-of-data-to-process" title="Permalink to this headline">¶</a></h2>
 <p>Python and R have their limits, specifically when it comes to big data. The main issue is that as datasets get larger, the data are eventually too big to fit into a computer’s RAM (or memory). Another issue is that processing large amounts of data using Python or R can become very slow. This is where Spark comes in.</p>
 <p>As repeatedly mentioned in the <a class="reference internal" href="spark-start.html"><span class="doc std std-doc">Getting Started</span></a> guide, Spark is a big data solution. It allows us to process large amounts of data efficiently by making use of a cluster of computers and parallel processing. Can we use Spark to process smaller amounts of data? Yes, but it is not advised to do so unless for a specific reason like developing code using a <a class="reference internal" href="../spark-functions/sampling.html"><span class="doc std std-doc">sample of the data</span></a>, writing <a class="reference internal" href="../testing-debugging/unit-testing.html"><span class="doc std std-doc">unit tests</span></a> or doing some training. There are easier ways to process smaller datasets, like using pandas or R.</p>
 <p>When deciding whether to use Spark think about how big the data is; anything bigger than a few GB and it’s likely Spark will be more efficient at processing the data. It is also worth considering whether the dataset will be joined or linked to another dataset, because both datasets will need to fit into memory to complete the join in Python or R.</p>
 <p>Another consideration is whether the data will grow with time. For example, a data processing pipeline written in R takes a 2GB dataset as an input, but if the dataset grows by 50MB per week the pipeline will eventually face some out of memory issues. Perhaps only one week’s worth of data could be processed at a time, but if not it may be safer to opt for Spark.</p>
-</section>
-<section id="skills-within-the-team">
-<h2>Skills within the team<a class="headerlink" href="#skills-within-the-team" title="Permalink to this headline">#</a></h2>
+</div>
+<div class="section" id="skills-within-the-team">
+<h2>Skills within the team<a class="headerlink" href="#skills-within-the-team" title="Permalink to this headline">¶</a></h2>
 <p>What if nobody within the project team has experience in using Python or R, let alone Spark?</p>
 <p>It is well worth getting started with learning Python or R because these languages will be used by analysts in government, as well as outside government, for a long time.</p>
 <p>In the meantime, an alternative option for processing data on most platforms is SQL. This is particularly useful if someone in the team already knows SQL, but it can also be quicker and easier to pick up than Python or R. Hive and Impala SQL make use of parallel processing to speed up the queries.</p>
 <p>Excel is also often available to government analysts. However, note that Excel is not suitable for processing large amounts of data, neither is it a suitable tool for complex processes. There is a relatively large amount of risk involved with processing data using Excel compared with Python or R, therefore, use with caution.</p>
-</section>
-<section id="what-do-you-want-to-do-with-the-data">
-<h2>What do you want to do with the data?<a class="headerlink" href="#what-do-you-want-to-do-with-the-data" title="Permalink to this headline">#</a></h2>
+</div>
+<div class="section" id="what-do-you-want-to-do-with-the-data">
+<h2>What do you want to do with the data?<a class="headerlink" href="#what-do-you-want-to-do-with-the-data" title="Permalink to this headline">¶</a></h2>
 <p>For this section we will loosely define typical reasons to process data.</p>
 <p><strong>Data engineering</strong> generally refers to preparing data ready for analysis. Sometimes it involves simple operations done to a high standard, but it can also include more complex processes. Data engineers are also typically associated with big data. Therefore modern engineers might use PySpark and SQL.</p>
 <p>Data science can be quite a broad term so we will use <strong>machine learning</strong> to be more specific. There are many packages available in Python and R that make machine learning more accessible to analysts. Therefore as long as the datasets are not too large Python or R would be first choice. Failing that, Spark does have machine learning libraries that are better suited for machine learning on big data.</p>
 <p><strong>General analysis</strong> can be anything else. If it is a quick answer you are after, consider Impala SQL to run simple queries on tables if this is available. For anything more complex the rich packages available with Python and R make these the best options. Again, if the data are too big for Python and R, go for the big data versions, PySpark or sparklyr.</p>
-</section>
-<section id="combination-of-tools-that-work-for-you">
-<h2>Combination of tools that work for you<a class="headerlink" href="#combination-of-tools-that-work-for-you" title="Permalink to this headline">#</a></h2>
+</div>
+<div class="section" id="combination-of-tools-that-work-for-you">
+<h2>Combination of tools that work for you<a class="headerlink" href="#combination-of-tools-that-work-for-you" title="Permalink to this headline">¶</a></h2>
 <p>In practice, within a modern data platform environment people will probably use a combination of these tools to complete some analysis. Below are some examples of how this might work, particularly in government.</p>
 <p>Typical usage:</p>
 <ul class="simple">
@@ -730,9 +575,9 @@ title="Print to PDF"
 <li><p>The final outputs are quality assured and disclosure checked using Excel before being exported out of the secure environment.</p></li>
 </ul>
 <p>Alternatives to the example above might be using sparklyr and R instead of PySpark and Python. Or perhaps use Impala/Hive SQL to do all of the heavy lifting (processing large datasets) and use Python or R once the data has been aggregated to an appropriate size.</p>
-</section>
-<section id="further-resources">
-<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">#</a></h2>
+</div>
+<div class="section" id="further-resources">
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
 <p>External links:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.gov.uk/guidance/choose-tools-and-infrastructure-to-make-better-use-of-your-data">Choosing tools and infrastructure to make better use of your data</a></p></li>
@@ -743,8 +588,8 @@ title="Print to PDF"
 <li><p><a class="reference internal" href="../spark-functions/sampling.html"><span class="doc std std-doc">Sampling</span></a></p></li>
 <li><p><a class="reference internal" href="../testing-debugging/unit-testing.html"><span class="doc std std-doc">Unit tests</span></a></p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
     <script type="text/x-thebe-config">
     {
@@ -768,11 +613,9 @@ title="Print to PDF"
 
               </div>
               
-            </main>
-            <footer class="footer-article noprint">
-                
-    <!-- Previous / next buttons -->
-<div class='prev-next-area'>
+        
+            <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="spark-start.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
@@ -788,27 +631,25 @@ title="Print to PDF"
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-            </footer>
+        
         </div>
     </div>
-    <div class="footer-content row">
-        <footer class="col footer"><p>
-  
-    By Wil Roberts & Adrian Prince<br/>
-  
-</p>
-        </footer>
+    <footer class="footer">
+    <div class="container">
+      <p>
+        
+          By Wil Roberts & Adrian Prince<br/>
+        
+      </p>
     </div>
-    
-</div>
+  </footer>
+</main>
 
 
       </div>
     </div>
   
-  <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-
+  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
 
   </body>
 </html>

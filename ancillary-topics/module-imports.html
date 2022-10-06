@@ -4,13 +4,11 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Naming Conflicts in Module Imports &#8212; Spark at the ONS</title>
     
-  <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="../_static/css/theme.css" rel="stylesheet">
+  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -20,37 +18,38 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
+    
+      
+
+    
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
     
-  <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
-    <script>let toggleHintShow = 'Click to show';</script>
-    <script>let toggleHintHide = 'Click to hide';</script>
-    <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/tabs.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/design-tabs.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script>
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -71,21 +70,7 @@ const thebe_selector_output = ".output, .cell_output"
                 </script>
 
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay overlay-navbar" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<!-- Checkboxes to toggle the in-page toc -->
-<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
-<label class="overlay overlay-pagetoc" for="__page-toc">
-    <div class="visually-hidden">Toggle in-page Table of Contents</div>
-</label>
-<!-- Headers at the top -->
-<div class="announcement header-item noprint"></div>
-<div class="header header-item noprint"></div>
-
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -94,10 +79,9 @@ const thebe_selector_output = ".output, .cell_output"
     <div class="container-xl">
       <div class="row">
           
-<!-- Sidebar -->
-<div class="bd-sidebar noprint" id="site-navigation">
-    <div class="bd-sidebar__content">
-        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
     <a class="navbar-brand text-wrap" href="../index.html">
       
         <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
@@ -115,15 +99,14 @@ const thebe_selector_output = ".output, .cell_output"
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        
-        <ul class="nav bd-sidenav bd-sidenav__home-link">
-            <li class="toctree-l1">
-                <a class="reference internal" href="../intro.html">
-                    Introduction
-                </a>
-            </li>
-        </ul>
-        <p aria-level="2" class="caption" role="heading">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../intro.html">
+   Introduction
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Spark overview
  </span>
@@ -410,283 +393,143 @@ const thebe_selector_output = ".output, .cell_output"
 </ul>
 
     </div>
-</nav></div>
-        <div class="bd-sidebar__bottom">
-             <!-- To handle the deprecated key -->
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
             
-            <div class="navbar_extra_footer">
-            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/ancillary-topics/module-imports.md"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.md</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/best-practice-and-impact/ons-spark"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fancillary-topics/module-imports.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
             </div>
-            
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#naming-variables">
+   Naming variables
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#keywords">
+   Keywords
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#built-in-functions-and-module-imports-in-python">
+   Built in functions and module imports in Python
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#python-example">
+     Python Example
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#built-in-functions-and-package-imports-in-r">
+   Built in functions and package imports in R
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+            </nav>
         </div>
     </div>
-    <div id="rtd-footer-container"></div>
 </div>
-
-
-          
-
-
-          
-<!-- A tiny helper pixel to detect if we've scrolled -->
-<div class="sbt-scroll-pixel-helper"></div>
-<!-- Main content -->
-<div class="col py-0 content-container">
-    
-    <div class="header-article row sticky-top noprint">
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
         
-
-
-
-<div class="col py-1 d-flex header-article-main">
-    <div class="header-article__left">
-        
-        <label for="__navigation"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="right"
-title="Toggle navigation"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-bars"></i>
-  </span>
-
-</label>
-
-        
-    </div>
-    <div class="header-article__right">
-<button onclick="toggleFullScreen()"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="bottom"
-title="Fullscreen mode"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-expand"></i>
-  </span>
-
-</button>
-
-<div class="menu-dropdown menu-dropdown-repository-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Source repositories">
-      <i class="fab fa-github"></i>
-  </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="https://github.com/best-practice-and-impact/ons-spark"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Source repository"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fab fa-github"></i>
-  </span>
-<span class="headerbtn__text-container">repository</span>
-</a>
-
-      </li>
-      
-      <li>
-        <a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fancillary-topics/module-imports.html&body=Your%20issue%20content%20here."
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Open an issue"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-lightbulb"></i>
-  </span>
-<span class="headerbtn__text-container">open issue</span>
-</a>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-
-<div class="menu-dropdown menu-dropdown-download-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Download this page">
-      <i class="fas fa-download"></i>
-  </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="../_sources/ancillary-topics/module-imports.md"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Download source file"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file"></i>
-  </span>
-<span class="headerbtn__text-container">.md</span>
-</a>
-
-      </li>
-      
-      <li>
-        
-<button onclick="printPdf(this)"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="left"
-title="Print to PDF"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file-pdf"></i>
-  </span>
-<span class="headerbtn__text-container">.pdf</span>
-</button>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
-  </span>
-
-</label>
-
-    </div>
-</div>
-
-<!-- Table of contents -->
-<div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#naming-variables">
-   Naming variables
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#keywords">
-   Keywords
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#built-in-functions-and-module-imports-in-python">
-   Built in functions and module imports in Python
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#python-example">
-     Python Example
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#built-in-functions-and-package-imports-in-r">
-   Built in functions and package imports in R
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#further-resources">
-   Further Resources
-  </a>
- </li>
-</ul>
-
-    </nav>
-</div>
-    </div>
-    <div class="article row">
-        <div class="col pl-md-3 pl-lg-5 content-container">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Naming Conflicts in Module Imports</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#naming-variables">
-   Naming variables
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#keywords">
-   Keywords
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#built-in-functions-and-module-imports-in-python">
-   Built in functions and module imports in Python
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#python-example">
-     Python Example
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#built-in-functions-and-package-imports-in-r">
-   Built in functions and package imports in R
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#further-resources">
-   Further Resources
-  </a>
- </li>
-</ul>
-
-                        </nav>
-                    </div>
-                </div>
-            </div>
-            <main id="main-content" role="main">
-                
               <div>
                 
-  <section id="naming-conflicts-in-module-imports">
-<h1>Naming Conflicts in Module Imports<a class="headerlink" href="#naming-conflicts-in-module-imports" title="Permalink to this headline">#</a></h1>
+  <div class="section" id="naming-conflicts-in-module-imports">
+<h1>Naming Conflicts in Module Imports<a class="headerlink" href="#naming-conflicts-in-module-imports" title="Permalink to this headline">¶</a></h1>
 <p>Importing modules in Python and R can lead to naming conflicts if a function with that name already exists. This article demonstrates why you should be careful when importing modules to ensure that these conflicts do not occur.</p>
 <p>A common example in Python is using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/functions.html"><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">pyspark.sql.functions</span> <span class="pre">import</span> <span class="pre">*</span></code></a>, which will overwrite some built-in Python functions (e.g. <code class="docutils literal notranslate"><span class="pre">sum()</span></code>). Instead, it is good practice to use <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">pyspark.sql</span> <span class="pre">import</span> <span class="pre">functions</span> <span class="pre">as</span> <span class="pre">F</span></code>, where you prefix the functions  with <code class="docutils literal notranslate"><span class="pre">F</span></code>, e.g. <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.sum.html"><code class="docutils literal notranslate"><span class="pre">F.sum()</span></code></a>.</p>
-<section id="naming-variables">
-<h2>Naming variables<a class="headerlink" href="#naming-variables" title="Permalink to this headline">#</a></h2>
+<div class="section" id="naming-variables">
+<h2>Naming variables<a class="headerlink" href="#naming-variables" title="Permalink to this headline">¶</a></h2>
 <p>When writing code, it is important to give your variables sensible names, that are informative but not too long. A good reference on this is the <a class="reference external" href="https://best-practice-and-impact.github.io/qa-of-code-guidance/core_programming.html#clean-code">Clean Code</a> section from <a class="reference external" href="https://best-practice-and-impact.github.io/qa-of-code-guidance/intro.html">QA of Code for Analysis and Research</a>. <strong>You should avoid using the names of existing built in functions for user-defined variables</strong>.</p>
-</section>
-<section id="keywords">
-<h2>Keywords<a class="headerlink" href="#keywords" title="Permalink to this headline">#</a></h2>
+</div>
+<div class="section" id="keywords">
+<h2>Keywords<a class="headerlink" href="#keywords" title="Permalink to this headline">¶</a></h2>
 <p>Some words are reserved: for instance, in Python you cannot have a variable called <code class="docutils literal notranslate"><span class="pre">def</span></code>, <code class="docutils literal notranslate"><span class="pre">False</span></code> or <code class="docutils literal notranslate"><span class="pre">lambda</span></code>. These are referred to as <em>keywords</em> and the code will not even compile if you try, raising a <code class="docutils literal notranslate"><span class="pre">SyntaxError</span></code>. You can generate a list of these with <a class="reference external" href="https://docs.python.org/3/library/keyword.html"><code class="docutils literal notranslate"><span class="pre">keyword.kwlist</span></code></a>.</p>
 <p>In R, use <code class="docutils literal notranslate"><span class="pre">?reserved</span></code> to get a list of the reserved words.</p>
 <div class="sphinx-tabs docutils container">
@@ -728,15 +571,15 @@ _D_e_t_a_i_l_s:
 </pre></div>
 </div>
 </div></div>
-</section>
-<section id="built-in-functions-and-module-imports-in-python">
-<h2>Built in functions and module imports in Python<a class="headerlink" href="#built-in-functions-and-module-imports-in-python" title="Permalink to this headline">#</a></h2>
+</div>
+<div class="section" id="built-in-functions-and-module-imports-in-python">
+<h2>Built in functions and module imports in Python<a class="headerlink" href="#built-in-functions-and-module-imports-in-python" title="Permalink to this headline">¶</a></h2>
 <details>
 <summary><b>Python Example</b></summary>
 <p>You might notice that the Python keyword list is quite short and that some common Python functionality is not listed, for instance, <code class="docutils literal notranslate"><span class="pre">sum()</span></code> or <code class="docutils literal notranslate"><span class="pre">round()</span></code>. This means that it is possible to overwrite these; obviously this is not good practice and should be avoided.</p>
 <p>This can be surprisingly easy to do in PySpark, and can be hard to debug if you do not know the reason for the error.</p>
-<section id="python-example">
-<h3>Python Example<a class="headerlink" href="#python-example" title="Permalink to this headline">#</a></h3>
+<div class="section" id="python-example">
+<h3>Python Example<a class="headerlink" href="#python-example" title="Permalink to this headline">¶</a></h3>
 <p>First, look at the documentation for <code class="docutils literal notranslate"><span class="pre">sum</span></code>:</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button></div><div aria-labelledby="tab-2-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="nb">sum</span><span class="p">)</span>
@@ -908,10 +751,10 @@ sum(col)
 </div>
 </div></div>
 </details>
-</section>
-</section>
-<section id="built-in-functions-and-package-imports-in-r">
-<h2>Built in functions and package imports in R<a class="headerlink" href="#built-in-functions-and-package-imports-in-r" title="Permalink to this headline">#</a></h2>
+</div>
+</div>
+<div class="section" id="built-in-functions-and-package-imports-in-r">
+<h2>Built in functions and package imports in R<a class="headerlink" href="#built-in-functions-and-package-imports-in-r" title="Permalink to this headline">¶</a></h2>
 <details>
 <summary><b>R Example</b></summary>
 <p>It is advised to use <code class="docutils literal notranslate"><span class="pre">::</span></code> to directly call a function from a package. For instance, there is a <code class="docutils literal notranslate"><span class="pre">filter</span></code> function in both <a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/filter.html"><code class="docutils literal notranslate"><span class="pre">stats</span></code></a> and <a class="reference external" href="https://dplyr.tidyverse.org/reference/filter.html"><code class="docutils literal notranslate"><span class="pre">dplyr</span></code></a>; you can specify exactly which to use with <code class="docutils literal notranslate"><span class="pre">dplyr::filter()</span></code> or <code class="docutils literal notranslate"><span class="pre">stats::filter()</span></code>.</p>
@@ -1058,9 +901,9 @@ _E_x_a_m_p_l_e_s:
 </div>
 </div></div>
 </details>
-</section>
-<section id="further-resources">
-<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">#</a></h2>
+</div>
+<div class="section" id="further-resources">
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
 <p>PySpark Documentation:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/functions.html"><code class="docutils literal notranslate"><span class="pre">pyspark.sql.functions</span></code></a></p></li>
@@ -1080,8 +923,8 @@ _E_x_a_m_p_l_e_s:
 <li><p><a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/Fdist.html"><code class="docutils literal notranslate"><span class="pre">stats::df()</span></code></a></p></li>
 <li><p><a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/filter.html"><code class="docutils literal notranslate"><span class="pre">stats::filter()</span></code></a></p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
     <script type="text/x-thebe-config">
     {
@@ -1105,11 +948,9 @@ _E_x_a_m_p_l_e_s:
 
               </div>
               
-            </main>
-            <footer class="footer-article noprint">
-                
-    <!-- Previous / next buttons -->
-<div class='prev-next-area'>
+        
+            <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="visualisation.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
@@ -1125,27 +966,25 @@ _E_x_a_m_p_l_e_s:
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-            </footer>
+        
         </div>
     </div>
-    <div class="footer-content row">
-        <footer class="col footer"><p>
-  
-    By Wil Roberts & Adrian Prince<br/>
-  
-</p>
-        </footer>
+    <footer class="footer">
+    <div class="container">
+      <p>
+        
+          By Wil Roberts & Adrian Prince<br/>
+        
+      </p>
     </div>
-    
-</div>
+  </footer>
+</main>
 
 
       </div>
     </div>
   
-  <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-
+  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
 
   </body>
 </html>

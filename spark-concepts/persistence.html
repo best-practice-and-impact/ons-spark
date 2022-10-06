@@ -4,13 +4,11 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Persisting in Spark &#8212; Spark at the ONS</title>
     
-  <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="../_static/css/theme.css" rel="stylesheet">
+  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -20,36 +18,37 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
+    
+      
+
+    
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
     
-  <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
-    <script>let toggleHintShow = 'Click to show';</script>
-    <script>let toggleHintHide = 'Click to hide';</script>
-    <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/design-tabs.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script>
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -70,21 +69,7 @@ const thebe_selector_output = ".output, .cell_output"
                 </script>
 
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay overlay-navbar" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<!-- Checkboxes to toggle the in-page toc -->
-<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
-<label class="overlay overlay-pagetoc" for="__page-toc">
-    <div class="visually-hidden">Toggle in-page Table of Contents</div>
-</label>
-<!-- Headers at the top -->
-<div class="announcement header-item noprint"></div>
-<div class="header header-item noprint"></div>
-
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -93,10 +78,9 @@ const thebe_selector_output = ".output, .cell_output"
     <div class="container-xl">
       <div class="row">
           
-<!-- Sidebar -->
-<div class="bd-sidebar noprint" id="site-navigation">
-    <div class="bd-sidebar__content">
-        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
     <a class="navbar-brand text-wrap" href="../index.html">
       
         <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
@@ -114,15 +98,14 @@ const thebe_selector_output = ".output, .cell_output"
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        
-        <ul class="nav bd-sidenav bd-sidenav__home-link">
-            <li class="toctree-l1">
-                <a class="reference internal" href="../intro.html">
-                    Introduction
-                </a>
-            </li>
-        </ul>
-        <p aria-level="2" class="caption" role="heading">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../intro.html">
+   Introduction
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Spark overview
  </span>
@@ -409,352 +392,187 @@ const thebe_selector_output = ".output, .cell_output"
 </ul>
 
     </div>
-</nav></div>
-        <div class="bd-sidebar__bottom">
-             <!-- To handle the deprecated key -->
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
             
-            <div class="navbar_extra_footer">
-            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/spark-concepts/persistence.md"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.md</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/best-practice-and-impact/ons-spark"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fspark-concepts/persistence.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
             </div>
-            
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#theory-lineage-execution-plan-and-the-catalyst-optimiser">
+   Theory: lineage, execution plan and the catalyst optimiser
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#remove-repeated-processing">
+   Remove repeated processing
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#breaking-dataframe-lineage">
+   Breaking DataFrame lineage
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#different-types-of-persisting">
+   Different types of persisting
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#why-should-we-not-persist">
+   Why should we not persist?
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#predicate-pushdown">
+     Predicate pushdown
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#writing-and-reading-is-not-free">
+     Writing and reading is not free
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#filling-up-cache-file-system-with-persisted-data">
+     Filling up cache/file system with persisted data
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#use-cases-for-persisting">
+   Use cases for persisting
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#checkpoint-or-staging-tables">
+   Checkpoint or staging tables?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+            </nav>
         </div>
     </div>
-    <div id="rtd-footer-container"></div>
 </div>
-
-
-          
-
-
-          
-<!-- A tiny helper pixel to detect if we've scrolled -->
-<div class="sbt-scroll-pixel-helper"></div>
-<!-- Main content -->
-<div class="col py-0 content-container">
-    
-    <div class="header-article row sticky-top noprint">
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
         
-
-
-
-<div class="col py-1 d-flex header-article-main">
-    <div class="header-article__left">
-        
-        <label for="__navigation"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="right"
-title="Toggle navigation"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-bars"></i>
-  </span>
-
-</label>
-
-        
-    </div>
-    <div class="header-article__right">
-<button onclick="toggleFullScreen()"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="bottom"
-title="Fullscreen mode"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-expand"></i>
-  </span>
-
-</button>
-
-<div class="menu-dropdown menu-dropdown-repository-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Source repositories">
-      <i class="fab fa-github"></i>
-  </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="https://github.com/best-practice-and-impact/ons-spark"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Source repository"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fab fa-github"></i>
-  </span>
-<span class="headerbtn__text-container">repository</span>
-</a>
-
-      </li>
-      
-      <li>
-        <a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fspark-concepts/persistence.html&body=Your%20issue%20content%20here."
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Open an issue"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-lightbulb"></i>
-  </span>
-<span class="headerbtn__text-container">open issue</span>
-</a>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-
-<div class="menu-dropdown menu-dropdown-download-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Download this page">
-      <i class="fas fa-download"></i>
-  </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="../_sources/spark-concepts/persistence.md"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Download source file"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file"></i>
-  </span>
-<span class="headerbtn__text-container">.md</span>
-</a>
-
-      </li>
-      
-      <li>
-        
-<button onclick="printPdf(this)"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="left"
-title="Print to PDF"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file-pdf"></i>
-  </span>
-<span class="headerbtn__text-container">.pdf</span>
-</button>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
-  </span>
-
-</label>
-
-    </div>
-</div>
-
-<!-- Table of contents -->
-<div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#theory-lineage-execution-plan-and-the-catalyst-optimiser">
-   Theory: lineage, execution plan and the catalyst optimiser
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#remove-repeated-processing">
-   Remove repeated processing
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#breaking-dataframe-lineage">
-   Breaking DataFrame lineage
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#different-types-of-persisting">
-   Different types of persisting
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#why-should-we-not-persist">
-   Why should we not persist?
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#predicate-pushdown">
-     Predicate pushdown
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#writing-and-reading-is-not-free">
-     Writing and reading is not free
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#filling-up-cache-file-system-with-persisted-data">
-     Filling up cache/file system with persisted data
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#use-cases-for-persisting">
-   Use cases for persisting
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#checkpoint-or-staging-tables">
-   Checkpoint or staging tables?
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#further-resources">
-   Further Resources
-  </a>
- </li>
-</ul>
-
-    </nav>
-</div>
-    </div>
-    <div class="article row">
-        <div class="col pl-md-3 pl-lg-5 content-container">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Persisting in Spark</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#theory-lineage-execution-plan-and-the-catalyst-optimiser">
-   Theory: lineage, execution plan and the catalyst optimiser
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#remove-repeated-processing">
-   Remove repeated processing
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#breaking-dataframe-lineage">
-   Breaking DataFrame lineage
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#different-types-of-persisting">
-   Different types of persisting
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#why-should-we-not-persist">
-   Why should we not persist?
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#predicate-pushdown">
-     Predicate pushdown
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#writing-and-reading-is-not-free">
-     Writing and reading is not free
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#filling-up-cache-file-system-with-persisted-data">
-     Filling up cache/file system with persisted data
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#use-cases-for-persisting">
-   Use cases for persisting
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#checkpoint-or-staging-tables">
-   Checkpoint or staging tables?
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#further-resources">
-   Further Resources
-  </a>
- </li>
-</ul>
-
-                        </nav>
-                    </div>
-                </div>
-            </div>
-            <main id="main-content" role="main">
-                
               <div>
                 
   <!-- #region -->
-<section id="persisting-in-spark">
-<h1>Persisting in Spark<a class="headerlink" href="#persisting-in-spark" title="Permalink to this headline">#</a></h1>
+<div class="section" id="persisting-in-spark">
+<h1>Persisting in Spark<a class="headerlink" href="#persisting-in-spark" title="Permalink to this headline">¶</a></h1>
 <p>Persisting Spark DataFrames is done for a number of reasons, a common reason is creating intermediate outputs in a pipeline for quality assurance purposes. In this article we are mainly interested in using <a class="reference external" href="https://en.wikipedia.org/wiki/Persistence_(computer_science)">persistence</a> to improve performance, i.e. reduce processing time. There are two different cases where persisting DataFrames can be useful in this context:</p>
 <ol class="simple">
 <li><p>To remove unnecessary repetitions of the same processing</p></li>
 <li><p>If the DataFrame lineage is long and complex</p></li>
 </ol>
 <p>In this article we discuss why persisting is useful with Spark, introduce the different methods of persisting data and discuss their use cases. Examples are given in the <a class="reference internal" href="cache.html"><span class="doc std std-doc">Caching</span></a> and <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html"><span class="doc std std-doc">Checkpoint and Staging Tables</span></a> articles.</p>
-<section id="theory-lineage-execution-plan-and-the-catalyst-optimiser">
-<h2>Theory: lineage, execution plan and the catalyst optimiser<a class="headerlink" href="#theory-lineage-execution-plan-and-the-catalyst-optimiser" title="Permalink to this headline">#</a></h2>
+<div class="section" id="theory-lineage-execution-plan-and-the-catalyst-optimiser">
+<h2>Theory: lineage, execution plan and the catalyst optimiser<a class="headerlink" href="#theory-lineage-execution-plan-and-the-catalyst-optimiser" title="Permalink to this headline">¶</a></h2>
 <p>Before we discuss persistence we should discuss lineage, the execution plan and the catalyst optimiser.</p>
 <p>We know that Spark uses lazy evaluation, meaning it doesn’t process data until it has to e.g. inferring the schema of a file, a row count, returning some data using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.show.html"><code class="docutils literal notranslate"><span class="pre">.show()</span></code></a>/<code class="docutils literal notranslate"><span class="pre">head()</span> <span class="pre">%&gt;%</span></code> <a class="reference external" href="https://dplyr.tidyverse.org/reference/compute.html"><code class="docutils literal notranslate"><span class="pre">collect()</span></code></a> or writing data to disk. As we execute DataFrame transformations Spark tracks the lineage of the DataFrame and creates an execution plan. When we execute an action Spark executes the plan. This is quite different to how regular Python, pandas or R works. Why does Spark work in this way? One reason is that Spark wont have to store intermediate objects in memory, which makes it more efficient for processing big data. Another reason is that Spark will find more efficient ways to process the data than just following our commands one after the other, and again, this is really useful when processing big data.</p>
 <p>The way Spark optimises our jobs is using the <a class="reference external" href="https://databricks.com/glossary/catalyst-optimizer">catalyst optimiser</a> and the <a class="reference external" href="https://databricks.com/glossary/tungsten">tungsten optimiser</a>. The former uses a list of rules to change our code into a more efficient strategy, whereas the latter performs optimisations on the hardware. If we want to see how Spark will or has processed a DataFrame we can look at the execution plan. For a quick view you can apply the <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.explain.html"><code class="docutils literal notranslate"><span class="pre">.explain()</span></code></a>/<a class="reference external" href="https://dplyr.tidyverse.org/reference/explain.html"><code class="docutils literal notranslate"><span class="pre">explain()</span></code></a> functions to DataFrames in PySpark/sparklyr. The <code class="docutils literal notranslate"><span class="pre">full</span></code> argument can be set to <code class="docutils literal notranslate"><span class="pre">true</span></code> to see how the catalyst optimiser has taken the original Spark code and optimised it to reach the final version, called the Physical Plan. Examples are given in the <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html"><span class="doc std std-doc">Checkpoint and Staging Tables</span></a> article on how to read the output of the <code class="docutils literal notranslate"><span class="pre">explain</span></code> function. The execution plan is also given in the form of a DAG diagram within the SQL tab in the Spark UI. Examples are given in the <a class="reference internal" href="cache.html"><span class="doc std std-doc">Caching</span></a> article on understanding these diagrams.</p>
-</section>
-<section id="remove-repeated-processing">
-<h2>Remove repeated processing<a class="headerlink" href="#remove-repeated-processing" title="Permalink to this headline">#</a></h2>
+</div>
+<div class="section" id="remove-repeated-processing">
+<h2>Remove repeated processing<a class="headerlink" href="#remove-repeated-processing" title="Permalink to this headline">¶</a></h2>
 <p>The default behaviour of Spark when it encounters an action is to execute the full execution plan from when the data was read in from disk to the output of the action which was called. There are some optimisations provided by the tungsten optimiser that diverge from this default behaviour, but we will ignore these for now.</p>
 <p>Now imagine we read in a dataset and perform some cleaning transformations to get the data ready for some analysis. We then perform three different aggregations on the cleansed data and write these summary tables to disk. If we consider how Spark executes the full execution plan when it gets to an action, we see that Spark will repeat the cleaning transformations for each summary table. Surely it would be more efficient to clean the data once and not three times (one for each aggregation)? This where persisting can help. A possible solution here would be to persist the cleansed data into memory using a cache before performing the aggregations. This means that the first time Spark executes the full plan it will create a copy of the cleansed data in the executor memory, so next time the DataFrame is used it can be accessed quickly and efficiently.</p>
 <p>An example of using cache to remove repeated processing is given in the <a class="reference internal" href="cache.html"><span class="doc std std-doc">Caching</span></a> article.</p>
-</section>
-<section id="breaking-dataframe-lineage">
-<h2>Breaking DataFrame lineage<a class="headerlink" href="#breaking-dataframe-lineage" title="Permalink to this headline">#</a></h2>
+</div>
+<div class="section" id="breaking-dataframe-lineage">
+<h2>Breaking DataFrame lineage<a class="headerlink" href="#breaking-dataframe-lineage" title="Permalink to this headline">¶</a></h2>
 <p>As we apply more transformations to our DataFrames the lineage grows and so does the execution plan. If the lineage is long and complex Spark will struggle to optimise the plan and take a long time to process the DataFrame. Hence, in a data pipeline we might write intermediate tables at sensible points that can be used for quality assurance purposes, but also this process breaks the DataFrame lineage.</p>
 <p>Let’s say we are executing an iterative algorithm on a DataFrame, for example we apply some calculation to a column to create a new column and use this new column as the input to the calculation in the next iteration. We notice that Spark struggles to execute the code after many iterations. What we can try to solve this issue is every few iterations we write the DataFrame out to disk and read it back in for the next iteration. Writing the data out to disk is a form of persistence, and so this is an example where persistence is used in Spark to break the lineage of a DataFrame.</p>
 <p>An example of persistence in an iterative process is given in the article on <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html"><span class="doc std std-doc">Checkpoint and Staging Tables</span></a>.</p>
-</section>
-<section id="different-types-of-persisting">
-<h2>Different types of persisting<a class="headerlink" href="#different-types-of-persisting" title="Permalink to this headline">#</a></h2>
+</div>
+<div class="section" id="different-types-of-persisting">
+<h2>Different types of persisting<a class="headerlink" href="#different-types-of-persisting" title="Permalink to this headline">¶</a></h2>
 <p>There are multiple ways of persisting data with Spark, they are:</p>
 <ul class="simple">
 <li><p>Caching a DataFrame into the executor memory using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.cache.html"><code class="docutils literal notranslate"><span class="pre">.cache()</span></code></a>/<a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/tbl_cache.html"><code class="docutils literal notranslate"><span class="pre">tbl_cache()</span></code></a> for PySpark/sparklyr. This forces Spark to compute the DataFrame and store it in the memory of the executors.</p></li>
@@ -764,26 +582,26 @@ title="Print to PDF"
 <li><p>Staging tables is another form of a write/read process using a Hive table.</p></li>
 </ul>
 <p>Please see the Cache article for a more detailed explanation of the first two options above. Examples of checkpointing and staging tables are given in the <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html"><span class="doc std std-doc">Checkpoint and Staging Tables</span></a>.</p>
-</section>
-<section id="why-should-we-not-persist">
-<h2>Why should we not persist?<a class="headerlink" href="#why-should-we-not-persist" title="Permalink to this headline">#</a></h2>
+</div>
+<div class="section" id="why-should-we-not-persist">
+<h2>Why should we not persist?<a class="headerlink" href="#why-should-we-not-persist" title="Permalink to this headline">¶</a></h2>
 <p>Persisting data in Spark is no <em>silver bullet</em>. Some data platform support teams say that over half of their issue tickets are to do with poor use of caching. Make sure you understand the pros <em>and cons</em> before you use it to improve performance.</p>
-<section id="predicate-pushdown">
-<h3>Predicate pushdown<a class="headerlink" href="#predicate-pushdown" title="Permalink to this headline">#</a></h3>
+<div class="section" id="predicate-pushdown">
+<h3>Predicate pushdown<a class="headerlink" href="#predicate-pushdown" title="Permalink to this headline">¶</a></h3>
 <p>As explained above, Spark uses the catalyst optimiser to improve performance by optimising the whole execution plan. However, when we persist the data the plan is made shorter. This is sometimes a good thing if the plan is too complex, but in general we want the catalyst optimiser to take all our transformations to find the optimum execution plan. For example, in the Cache article we saw that the catalyst optimiser will move a filter as early as possible in the execution plan so Spark has to process fewer rows of data later on; this is called a predicate pushdown. If we cached at the wrong point in the code, the optimiser would not be able to push the filter to the beginning of the execution plan.</p>
-</section>
-<section id="writing-and-reading-is-not-free">
-<h3>Writing and reading is not free<a class="headerlink" href="#writing-and-reading-is-not-free" title="Permalink to this headline">#</a></h3>
+</div>
+<div class="section" id="writing-and-reading-is-not-free">
+<h3>Writing and reading is not free<a class="headerlink" href="#writing-and-reading-is-not-free" title="Permalink to this headline">¶</a></h3>
 <p>The process of writing and reading data for checkpoints and staging tables, as well as general write/read operations, takes some amount of time. Perhaps the time it takes to do this process is greater than the gains from breaking the lineage. As we often say, it makes sense to get the code working first and try to improve performance where needed. When experimenting on improving performance record the evidence used to inform decisions so that others can clearly understand why a decision to persist was made.</p>
-</section>
-<section id="filling-up-cache-file-system-with-persisted-data">
-<h3>Filling up cache/file system with persisted data<a class="headerlink" href="#filling-up-cache-file-system-with-persisted-data" title="Permalink to this headline">#</a></h3>
+</div>
+<div class="section" id="filling-up-cache-file-system-with-persisted-data">
+<h3>Filling up cache/file system with persisted data<a class="headerlink" href="#filling-up-cache-file-system-with-persisted-data" title="Permalink to this headline">¶</a></h3>
 <p>There is a limited amount of memory on the executors of the Spark cluster and if you fill it up with cached data Spark will start to spill data onto disk or return an out of memory error. Spark will prioritise recent caches and run more expensive processes to manage the low priority data. Remember to empty the cache when you’ve stopped using a DataFrame and don’t cache too many DataFrames at one time. Memory management in a Spark cluster is a complex topic, a good introduction is given in the <a class="reference external" href="https://spark.apache.org/docs/latest/tuning.html#memory-management-overview">Spark documentation</a>.</p>
 <p>The same is true for the file system, although there is much more space to store data of course. It’s good practice to delete a checkpoint directory after use within a Spark script. The same is true for staging tables, unless you want to view the data at a later date.</p>
-</section>
-</section>
-<section id="use-cases-for-persisting">
-<h2>Use cases for persisting<a class="headerlink" href="#use-cases-for-persisting" title="Permalink to this headline">#</a></h2>
+</div>
+</div>
+<div class="section" id="use-cases-for-persisting">
+<h2>Use cases for persisting<a class="headerlink" href="#use-cases-for-persisting" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>It usually makes sense to cache data in memory before repeated actions are applied to the DataFrame, like the example in the <a class="reference internal" href="cache.html"><span class="doc std std-doc">Caching</span></a> article.</p></li>
 <li><p>Another use case for caching in memory is just before running an iterative algorithm, where you make use of the cached DataFrame in each iteration.</p></li>
@@ -791,9 +609,9 @@ title="Print to PDF"
 <li><p>As shown in the <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html"><span class="doc std std-doc">checkpoint</span></a> article, when a DataFrame’s lineage gets long or complex breaking up the lineage by persisting can improve performance.</p></li>
 <li><p>Caching is also a great tool whilst developing your code. For example, perhaps you have just linked two data sets and want to do some checks to make sure the result makes sense. Perhaps the checks would involve running multiple actions e.g. <code class="docutils literal notranslate"><span class="pre">.show()</span></code>, <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.count.html"><code class="docutils literal notranslate"><span class="pre">.count()</span></code></a>, <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.describe.html"><code class="docutils literal notranslate"><span class="pre">.describe()</span></code></a>, but without caching after the join Spark would repeat the join process for each action. Once you’re happy with the result you might want to empty the cache and possibly even replace the cache with a staging table so that users can quality assure the result of the join after each run of the pipeline.</p></li>
 </ul>
-</section>
-<section id="checkpoint-or-staging-tables">
-<h2>Checkpoint or staging tables?<a class="headerlink" href="#checkpoint-or-staging-tables" title="Permalink to this headline">#</a></h2>
+</div>
+<div class="section" id="checkpoint-or-staging-tables">
+<h2>Checkpoint or staging tables?<a class="headerlink" href="#checkpoint-or-staging-tables" title="Permalink to this headline">¶</a></h2>
 <p><strong>Checkpoint</strong></p>
 <ul class="simple">
 <li><p>Checkpointing is more convenient than staging tables in terms of writing the code</p></li>
@@ -807,9 +625,9 @@ title="Print to PDF"
 <li><p>If inserting into an existing table, you can take advantage of the table schema, as an exception will be raised if the DataFrame and table schemas do not match</p></li>
 <li><p>It is more efficient for Spark to read Hive tables than text/CSV files as the underlying format is Parquet, so if your data are delivered as text/CSV files you may want to stage them as Hive tables first.</p></li>
 </ul>
-</section>
-<section id="further-resources">
-<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">#</a></h2>
+</div>
+<div class="section" id="further-resources">
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
 <p>Spark at the ONS Articles:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="cache.html"><span class="doc std std-doc">Caching</span></a></p></li>
@@ -836,8 +654,8 @@ title="Print to PDF"
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/tuning.html#memory-management-overview">Memory Management Overview</a></p></li>
 </ul>
 <!-- #endregion -->
-</section>
-</section>
+</div>
+</div>
 
     <script type="text/x-thebe-config">
     {
@@ -861,11 +679,9 @@ title="Print to PDF"
 
               </div>
               
-            </main>
-            <footer class="footer-article noprint">
-                
-    <!-- Previous / next buttons -->
-<div class='prev-next-area'>
+        
+            <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="partitions.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
@@ -881,27 +697,25 @@ title="Print to PDF"
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-            </footer>
+        
         </div>
     </div>
-    <div class="footer-content row">
-        <footer class="col footer"><p>
-  
-    By Wil Roberts & Adrian Prince<br/>
-  
-</p>
-        </footer>
+    <footer class="footer">
+    <div class="container">
+      <p>
+        
+          By Wil Roberts & Adrian Prince<br/>
+        
+      </p>
     </div>
-    
-</div>
+  </footer>
+</main>
 
 
       </div>
     </div>
   
-  <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-
+  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
 
   </body>
 </html>

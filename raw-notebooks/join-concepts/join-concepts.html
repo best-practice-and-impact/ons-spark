@@ -4,13 +4,11 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Optimising Joins &#8212; Spark at the ONS</title>
     
-  <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="../../_static/css/theme.css" rel="stylesheet">
+  <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -20,36 +18,37 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
+    
+      
+
+    
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
     
-  <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="../../_static/js/index.be7d3bbb2ef33a8344ce.js">
 
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/togglebutton.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
-    <script src="../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
-    <script>let toggleHintShow = 'Click to show';</script>
-    <script>let toggleHintHide = 'Click to hide';</script>
-    <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../../_static/design-tabs.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
+    <script src="../../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script>
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -68,21 +67,7 @@ const thebe_selector_output = ".output, .cell_output"
                 </script>
 
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay overlay-navbar" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<!-- Checkboxes to toggle the in-page toc -->
-<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
-<label class="overlay overlay-pagetoc" for="__page-toc">
-    <div class="visually-hidden">Toggle in-page Table of Contents</div>
-</label>
-<!-- Headers at the top -->
-<div class="announcement header-item noprint"></div>
-<div class="header header-item noprint"></div>
-
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -91,10 +76,9 @@ const thebe_selector_output = ".output, .cell_output"
     <div class="container-xl">
       <div class="row">
           
-<!-- Sidebar -->
-<div class="bd-sidebar noprint" id="site-navigation">
-    <div class="bd-sidebar__content">
-        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
     <a class="navbar-brand text-wrap" href="../../index.html">
       
         <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
@@ -112,15 +96,14 @@ const thebe_selector_output = ".output, .cell_output"
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        
-        <ul class="nav bd-sidenav bd-sidenav__home-link">
-            <li class="toctree-l1">
-                <a class="reference internal" href="../../intro.html">
-                    Introduction
-                </a>
-            </li>
-        </ul>
-        <p aria-level="2" class="caption" role="heading">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../intro.html">
+   Introduction
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Spark overview
  </span>
@@ -407,378 +390,192 @@ const thebe_selector_output = ".output, .cell_output"
 </ul>
 
     </div>
-</nav></div>
-        <div class="bd-sidebar__bottom">
-             <!-- To handle the deprecated key -->
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
             
-            <div class="navbar_extra_footer">
-            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../../_sources/raw-notebooks/join-concepts/join-concepts.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/best-practice-and-impact/ons-spark"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fraw-notebooks/join-concepts/join-concepts.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+    <div class="dropdown-buttons">
+        
+        <a class="binder-button" href="https://mybinder.org/v2/gh/best-practice-and-impact/ons-spark/main?urlpath=tree/docs/raw-notebooks/join-concepts/join-concepts.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="../../_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
+        
+        
+        
+        
+    </div>
+</div>
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
             </div>
-            
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-join-algorithms-in-spark">
+   The Join Algorithms in Spark
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#shuffle-hash-join">
+   Shuffle Hash Join
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#sort-merge-join">
+   Sort Merge Join
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#sort-merge-join-example">
+     Sort Merge Join Example
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#understanding-sort-merge-join">
+     Understanding Sort Merge Join
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#broadcast-join">
+   Broadcast Join
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#example-using-a-broadcast-hint">
+     Example: Using a Broadcast Hint
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#replacing-a-join-with-a-narrow-transformation">
+   Replacing a join with a narrow transformation
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#example-narrow-transformations">
+     Example: Narrow Transformations
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#when-to-use-each-method">
+   When to use each method
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#salted-joins">
+   Salted Joins
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+            </nav>
         </div>
     </div>
-    <div id="rtd-footer-container"></div>
 </div>
-
-
-          
-
-
-          
-<!-- A tiny helper pixel to detect if we've scrolled -->
-<div class="sbt-scroll-pixel-helper"></div>
-<!-- Main content -->
-<div class="col py-0 content-container">
-    
-    <div class="header-article row sticky-top noprint">
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
         
-
-
-
-<div class="col py-1 d-flex header-article-main">
-    <div class="header-article__left">
-        
-        <label for="__navigation"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="right"
-title="Toggle navigation"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-bars"></i>
-  </span>
-
-</label>
-
-        
-    </div>
-    <div class="header-article__right">
-<div class="menu-dropdown menu-dropdown-launch-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Launch interactive content">
-      <i class="fas fa-rocket"></i>
-  </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="https://mybinder.org/v2/gh/best-practice-and-impact/ons-spark/main?urlpath=tree/docs/raw-notebooks/join-concepts/join-concepts.ipynb"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Launch on Binder"
->
-  
-
-<span class="headerbtn__icon-container">
-  
-    <img src="../../_static/images/logo_binder.svg">
-  </span>
-<span class="headerbtn__text-container">Binder</span>
-</a>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-
-<button onclick="toggleFullScreen()"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="bottom"
-title="Fullscreen mode"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-expand"></i>
-  </span>
-
-</button>
-
-<div class="menu-dropdown menu-dropdown-repository-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Source repositories">
-      <i class="fab fa-github"></i>
-  </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="https://github.com/best-practice-and-impact/ons-spark"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Source repository"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fab fa-github"></i>
-  </span>
-<span class="headerbtn__text-container">repository</span>
-</a>
-
-      </li>
-      
-      <li>
-        <a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fraw-notebooks/join-concepts/join-concepts.html&body=Your%20issue%20content%20here."
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Open an issue"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-lightbulb"></i>
-  </span>
-<span class="headerbtn__text-container">open issue</span>
-</a>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-
-<div class="menu-dropdown menu-dropdown-download-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Download this page">
-      <i class="fas fa-download"></i>
-  </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="../../_sources/raw-notebooks/join-concepts/join-concepts.ipynb"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Download source file"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file"></i>
-  </span>
-<span class="headerbtn__text-container">.ipynb</span>
-</a>
-
-      </li>
-      
-      <li>
-        
-<button onclick="printPdf(this)"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="left"
-title="Print to PDF"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file-pdf"></i>
-  </span>
-<span class="headerbtn__text-container">.pdf</span>
-</button>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
-  </span>
-
-</label>
-
-    </div>
-</div>
-
-<!-- Table of contents -->
-<div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-join-algorithms-in-spark">
-   The Join Algorithms in Spark
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#shuffle-hash-join">
-   Shuffle Hash Join
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#sort-merge-join">
-   Sort Merge Join
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#sort-merge-join-example">
-     Sort Merge Join Example
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#understanding-sort-merge-join">
-     Understanding Sort Merge Join
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#broadcast-join">
-   Broadcast Join
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#example-using-a-broadcast-hint">
-     Example: Using a Broadcast Hint
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#replacing-a-join-with-a-narrow-transformation">
-   Replacing a join with a narrow transformation
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#example-narrow-transformations">
-     Example: Narrow Transformations
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#when-to-use-each-method">
-   When to use each method
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#salted-joins">
-   Salted Joins
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#further-resources">
-   Further Resources
-  </a>
- </li>
-</ul>
-
-    </nav>
-</div>
-    </div>
-    <div class="article row">
-        <div class="col pl-md-3 pl-lg-5 content-container">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Optimising Joins</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-join-algorithms-in-spark">
-   The Join Algorithms in Spark
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#shuffle-hash-join">
-   Shuffle Hash Join
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#sort-merge-join">
-   Sort Merge Join
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#sort-merge-join-example">
-     Sort Merge Join Example
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#understanding-sort-merge-join">
-     Understanding Sort Merge Join
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#broadcast-join">
-   Broadcast Join
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#example-using-a-broadcast-hint">
-     Example: Using a Broadcast Hint
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#replacing-a-join-with-a-narrow-transformation">
-   Replacing a join with a narrow transformation
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#example-narrow-transformations">
-     Example: Narrow Transformations
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#when-to-use-each-method">
-   When to use each method
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#salted-joins">
-   Salted Joins
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#further-resources">
-   Further Resources
-  </a>
- </li>
-</ul>
-
-                        </nav>
-                    </div>
-                </div>
-            </div>
-            <main id="main-content" role="main">
-                
               <div>
                 
-  <section id="optimising-joins">
-<h1>Optimising Joins<a class="headerlink" href="#optimising-joins" title="Permalink to this headline">#</a></h1>
+  <div class="section" id="optimising-joins">
+<h1>Optimising Joins<a class="headerlink" href="#optimising-joins" title="Permalink to this headline">¶</a></h1>
 <p>Joining DataFrames is a common and often essential operation in Spark. However, joins are one of the more expensive operations in terms of processing time. This is because by default both source DataFrames are first sorted, which is a <em>wide transformation</em>, causing a <em>shuffle</em> (or <em>exchange</em>). As such, it is worth paying extra attention to where joins occur in the code and trying to figure out which method to use to make them more efficient.</p>
 <p>This article describes the different join algorithms in Spark, explains how they work, when to use them, and shows examples of each. It also covers replacing joins entirely with narrow transformations, and gives a brief overview of <span class="xref myst"><em>salted joins</em></span>, that can be used when the data are skewed.</p>
 <p>Before reading this article ensure that you understand how to join two DataFrames in Spark. Knowledge of <span class="xref myst">shuffles</span> and the difference between wide and narrow transformations will also help understanding of why some methods are faster than others, although not mandatory. Useful resources on this include the <a class="reference external" href="https://databricks.com/glossary/what-are-transformations">DataBricks Transformations definition</a>, and the <span class="xref myst">Spark Application and UI</span>, <span class="xref myst">Shuffling</span> and <span class="xref myst">Partitions</span> articles in this book.</p>
 <p>It is important to note that in this notebook when we talk about different joins and the way they are processed we are not talking about left, right, inner or outer joins, but how it is processed on the cluster. The result of the join will always be the same, regardless of which of the algorithms described in this article is used.</p>
-<section id="the-join-algorithms-in-spark">
-<h2>The Join Algorithms in Spark<a class="headerlink" href="#the-join-algorithms-in-spark" title="Permalink to this headline">#</a></h2>
+<div class="section" id="the-join-algorithms-in-spark">
+<h2>The Join Algorithms in Spark<a class="headerlink" href="#the-join-algorithms-in-spark" title="Permalink to this headline">¶</a></h2>
 <p>You do not need to know how joins work when writing Spark code, but you can make them more efficient by understanding that there are different ways for them to be processed and coding appropriately. These are:</p>
 <ul class="simple">
 <li><p>Shuffle Hash Join</p></li>
@@ -787,29 +584,27 @@ title="Print to PDF"
 <li><p>Other Methods</p></li>
 </ul>
 <p>We will look at each in more detail, get a better idea of how they are processed by looking at the Spark UI. We will then compare them and give the advantages and disadvantages of using each.</p>
-</section>
-<section id="shuffle-hash-join">
-<h2>Shuffle Hash Join<a class="headerlink" href="#shuffle-hash-join" title="Permalink to this headline">#</a></h2>
+</div>
+<div class="section" id="shuffle-hash-join">
+<h2>Shuffle Hash Join<a class="headerlink" href="#shuffle-hash-join" title="Permalink to this headline">¶</a></h2>
 <p>In the development of Spark, the shuffle hash join was the original join implementation.</p>
 <p>This consists of two stages: <em>shuffle</em> and <em>hash</em>. First a <em>shuffle</em>, where data with the same keys from both DataFrames are moved to the same executors. Once all the data are on the relevant executors, they are joined using the hash join algorithm. This involves building a hash table in memory and may fail for some larger joins.</p>
 <p>Shuffle hash joins will not be explored further as they have been superseded by sort merge join, which is similar apart from the processing stage.</p>
-</section>
-<section id="sort-merge-join">
-<h2>Sort Merge Join<a class="headerlink" href="#sort-merge-join" title="Permalink to this headline">#</a></h2>
+</div>
+<div class="section" id="sort-merge-join">
+<h2>Sort Merge Join<a class="headerlink" href="#sort-merge-join" title="Permalink to this headline">¶</a></h2>
 <p>This is now the default method of joining two DataFrames in Spark.</p>
 <p>It consists of two key stages, as suggested by the name: <em>sort</em> and <em>merge</em>.</p>
 <p>First of all, the data in each DataFrame will be sorted. A sort operation requires a shuffle on each DataFrame. This will also ensure that all the same key values are on the same partition. This also means that the join can be done in parallel on each partition, although it can potentially be a problem if your data are skewed (in which case a <em>salted join</em> may be useful).</p>
 <p>Now that both DataFrames are ordered, it is easy to iterate over each row in the DataFrames and see if they have a matching key; if they do, they can be returned as part of the resulting DataFrame. In most circumstances this will be more efficient than the shuffle hash join.</p>
 <p>This diagram should help explain this visually:</p>
-<figure class="align-default" id="sortmergediagram">
+<div class="figure align-default" id="sortmergediagram">
 <a class="reference internal image-reference" href="raw-notebooks/images/sort_merge_join.png"><img alt="Diagram showing two partitioned DataFrames being sorted before being merged" src="raw-notebooks/images/sort_merge_join.png" style="width: 100%;" /></a>
-<figcaption>
-<p><span class="caption-text">Sort Merge join</span><a class="headerlink" href="#sortmergediagram" title="Permalink to this image">#</a></p>
-</figcaption>
-</figure>
+<p class="caption"><span class="caption-text">Sort Merge join</span><a class="headerlink" href="#sortmergediagram" title="Permalink to this image">¶</a></p>
+</div>
 <p>Both sort merge joins and shuffle hash joins use a shuffle; the difference is in the processing stage, where the former uses a searching algorithm and the latter uses a hash table.</p>
-<section id="sort-merge-join-example">
-<h3>Sort Merge Join Example<a class="headerlink" href="#sort-merge-join-example" title="Permalink to this headline">#</a></h3>
+<div class="section" id="sort-merge-join-example">
+<h3>Sort Merge Join Example<a class="headerlink" href="#sort-merge-join-example" title="Permalink to this headline">¶</a></h3>
 <p>Let us see an example of a sort merge join and then look at the plan and the Spark UI. The example uses the Animal Rescue (as CSV) and Population (as parquet) datasets, left joining on the <code class="docutils literal notranslate"><span class="pre">postcode_district</span></code>. Note that we are disabling automatic broadcast joins by setting <code class="docutils literal notranslate"><span class="pre">spark.sql.autoBroadcastJoinThreshold</span></code> to <code class="docutils literal notranslate"><span class="pre">-1</span></code>; broadcast joins are covered in the next section. First, start a Spark session, read the data and select and rename the relevant columns:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -984,38 +779,34 @@ only showing top 5 rows
 </ul>
 <p>We can view the plan visually with the Spark UI on the SQL tab. The Spark UI for a local session is <a class="reference external" href="http://localhost:4040/jobs">http://localhost:4040/jobs</a>.</p>
 <p>See the <span class="xref myst">Spark Application and UI</span> article for details on how to access the Spark UI, and the <span class="xref myst">Persisting</span> article for more details on interpreting the information in the SQL tab.</p>
-<figure class="align-default" id="sortmergedag">
+<div class="figure align-default" id="sortmergedag">
 <a class="reference internal image-reference" href="raw-notebooks/images/sort_merge_join_ui.png"><img alt="SQL DAG in Spark UI for sort merge join, showing an exchange for both DataFrames" src="raw-notebooks/images/sort_merge_join_ui.png" style="width: 100%;" /></a>
-<figcaption>
-<p><span class="caption-text">SQL DAG for a SortMergeJoin</span><a class="headerlink" href="#sortmergedag" title="Permalink to this image">#</a></p>
-</figcaption>
-</figure>
+<p class="caption"><span class="caption-text">SQL DAG for a SortMergeJoin</span><a class="headerlink" href="#sortmergedag" title="Permalink to this image">¶</a></p>
+</div>
 <p>This diagram has the same information as the <code class="docutils literal notranslate"><span class="pre">explain()</span></code>, just presented in a much nicer way. Again, we can see that there is an <strong>Exchange</strong> for each DataFrame, before the <strong>SortMergeJoin</strong>, and a <strong>Filter</strong> when reading the parquet.</p>
-</section>
-<section id="understanding-sort-merge-join">
-<h3>Understanding Sort Merge Join<a class="headerlink" href="#understanding-sort-merge-join" title="Permalink to this headline">#</a></h3>
+</div>
+<div class="section" id="understanding-sort-merge-join">
+<h3>Understanding Sort Merge Join<a class="headerlink" href="#understanding-sort-merge-join" title="Permalink to this headline">¶</a></h3>
 <p>The sort merge join involves two <strong>Exchanges</strong> (also called <em>shuffles</em>), one for the sorting of each source DataFrame (see the Shuffles article for a full discussion of this topic). Spark is most powerful when it can process data in parallel (<em>narrow transformations</em>), and sorting is instead a <em>wide transformation</em>, causing a <em>shuffle</em>, meaning that a sort merge join can take significant time to process, depending on the size and composition of your data. There is a full discussion in the when to use each join method section.</p>
 <p>The sort merge join is the <em>default</em> join although not always chosen automatically; the next section on <em>broadcast joins</em> explains this further.</p>
-</section>
-</section>
-<section id="broadcast-join">
-<h2>Broadcast Join<a class="headerlink" href="#broadcast-join" title="Permalink to this headline">#</a></h2>
+</div>
+</div>
+<div class="section" id="broadcast-join">
+<h2>Broadcast Join<a class="headerlink" href="#broadcast-join" title="Permalink to this headline">¶</a></h2>
 <p>The other common method is the broadcast join. This can be used when you are joining a small DataFrame to a large one. The smaller DataFrame is copied to every node on the cluster and then a traditional hash join is performed. This avoids the need for the sorting step that exists in the sort merge join, and therefore the expensive shuffles.</p>
 <p>Broadcast joins are suitable when you are joining a small DataFrame to a larger one. As one DataFrame is pushed to several places, this may actually be too slow or impossible if you are joining two large DataFrames.</p>
 <p>The diagram below shows how a broadcast join works visually:</p>
-<figure class="align-default" id="broadcostjoindiagram">
+<div class="figure align-default" id="broadcostjoindiagram">
 <a class="reference internal image-reference" href="raw-notebooks/images/broadcast_join.png"><img alt="Diagram showing a small DataFrame being copied, or broadcast, to all partitions of a larger DataFrame" src="raw-notebooks/images/broadcast_join.png" style="width: 100%;" /></a>
-<figcaption>
-<p><span class="caption-text">Diagram of broadcast join</span><a class="headerlink" href="#broadcostjoindiagram" title="Permalink to this image">#</a></p>
-</figcaption>
-</figure>
+<p class="caption"><span class="caption-text">Diagram of broadcast join</span><a class="headerlink" href="#broadcostjoindiagram" title="Permalink to this image">¶</a></p>
+</div>
 <p>There are two ways to trigger a broadcast join:</p>
 <ol class="simple">
 <li><p>Use the broadcast hint: <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.broadcast.html"><code class="docutils literal notranslate"><span class="pre">F.broadcast()</span></code></a> in PySpark or <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_broadcast.html"><code class="docutils literal notranslate"><span class="pre">sdf_broadcast()</span></code></a> in sparklyr</p></li>
 <li><p>Spark will use a broadcast join by default if the size of the DataFrame to be broadcast is known and smaller 10MB; this value can be changed with the <a class="reference external" href="https://spark.apache.org/docs/latest/sql-performance-tuning.html"><code class="docutils literal notranslate"><span class="pre">spark.sql.autoBroadcastJoinThreshold</span></code></a> configuration setting.</p></li>
 </ol>
-<section id="example-using-a-broadcast-hint">
-<h3>Example: Using a Broadcast Hint<a class="headerlink" href="#example-using-a-broadcast-hint" title="Permalink to this headline">#</a></h3>
+<div class="section" id="example-using-a-broadcast-hint">
+<h3>Example: Using a Broadcast Hint<a class="headerlink" href="#example-using-a-broadcast-hint" title="Permalink to this headline">¶</a></h3>
 <p>We can use the same source DataFrames as the sort merge join example, <code class="docutils literal notranslate"><span class="pre">rescue</span></code> and <code class="docutils literal notranslate"><span class="pre">population</span></code>. To perform a broadcast join, we just add the broadcast join hint <code class="docutils literal notranslate"><span class="pre">F.broadcast()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_broadcast()</span></code> around <code class="docutils literal notranslate"><span class="pre">population</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1195,20 +986,18 @@ only showing top 5 rows
 </div>
 <p>Both ways of broadcasting give the same result. You can leave it to Spark to decide, or if you want more control over how you DataFrames are joined, turn off automatic broadcasting by setting <code class="docutils literal notranslate"><span class="pre">spark.sql.autoBroadcastJoinThreshold</span></code> to <code class="docutils literal notranslate"><span class="pre">-1</span></code>.</p>
 <p>Note that Spark will not always be able to determine the size of the data in which case it will default to a sort merge join, even when this would be significantly less efficient. Spark does have some non-instinctive behaviour when it comes to automatic broadcasting; generally, if the raw file is less than 10MB it will be broadcast regardless of file type. Large parquet files which are filtered or grouped to reduce the size should be broadcast but the same is not true of CSVs. If unsure, use <code class="docutils literal notranslate"><span class="pre">explain()</span></code> to check or manually broadcast with the broadcast hint.</p>
-</section>
-</section>
-<section id="replacing-a-join-with-a-narrow-transformation">
-<h2>Replacing a join with a narrow transformation<a class="headerlink" href="#replacing-a-join-with-a-narrow-transformation" title="Permalink to this headline">#</a></h2>
+</div>
+</div>
+<div class="section" id="replacing-a-join-with-a-narrow-transformation">
+<h2>Replacing a join with a narrow transformation<a class="headerlink" href="#replacing-a-join-with-a-narrow-transformation" title="Permalink to this headline">¶</a></h2>
 <p>If your second DataFrame is tiny, you could potentially even not do a join at all, and replace it with a series of <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.when.html"><code class="docutils literal notranslate"><span class="pre">F.when()</span></code></a> statements in PySpark or <a class="reference external" href="https://dplyr.tidyverse.org/reference/case_when.html"><code class="docutils literal notranslate"><span class="pre">case_when()</span></code></a> in sparklyr. These will be processed as a <em>narrow transformation</em> in parallel rather than a <em>wide transformation</em>, meaning that it should be quicker than joining using the usual methods.</p>
 <p>The following diagram from the  shows how this works visually; the <code class="docutils literal notranslate"><span class="pre">F.when()</span></code>/<code class="docutils literal notranslate"><span class="pre">case_when()</span></code> method is a narrow <em>narrow transformation</em> is within the same stage, rather than a <em>wide transformation</em> between stages:</p>
-<figure class="align-default" id="sparkapplication">
+<div class="figure align-default" id="sparkapplication">
 <a class="reference internal image-reference" href="raw-notebooks/images/application_and_ui.png"><img alt="Diagram showing parallel and serial operations representing narrow and wide transformations respectively" src="raw-notebooks/images/application_and_ui.png" style="width: 100%;" /></a>
-<figcaption>
-<p><span class="caption-text">Narrow and wide transformations</span><a class="headerlink" href="#sparkapplication" title="Permalink to this image">#</a></p>
-</figcaption>
-</figure>
-<section id="example-narrow-transformations">
-<h3>Example: Narrow Transformations<a class="headerlink" href="#example-narrow-transformations" title="Permalink to this headline">#</a></h3>
+<p class="caption"><span class="caption-text">Narrow and wide transformations</span><a class="headerlink" href="#sparkapplication" title="Permalink to this image">¶</a></p>
+</div>
+<div class="section" id="example-narrow-transformations">
+<h3>Example: Narrow Transformations<a class="headerlink" href="#example-narrow-transformations" title="Permalink to this headline">¶</a></h3>
 <p>The rescue data has a column, <code class="docutils literal notranslate"><span class="pre">origin_of_call</span></code>, which contains information about who reported the incident.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1388,19 +1177,17 @@ only showing top 5 rows
 </div>
 <p>The plan here confirms that no join is taking place; instead, the conditional statements are interpreted as an SQL style <code class="docutils literal notranslate"><span class="pre">CASE</span> <span class="pre">WHEN</span></code> statement. There are only narrow transformations, meaning that the data can stay within the partitions and no shuffle is needed and therefore should be more efficient than a join.</p>
 <p>This can be confirmed by looking at the Spark UI:</p>
-<figure class="align-default" id="narrowtransformationdag">
+<div class="figure align-default" id="narrowtransformationdag">
 <a class="reference internal image-reference" href="raw-notebooks/images/when_ui.png"><img alt="Simple SQL DAG representing a process where a join was replaced with a narrow transformation, showing no exchanges" src="raw-notebooks/images/when_ui.png" style="width: 50%;" /></a>
-<figcaption>
-<p><span class="caption-text">SQL DAG for narrow transformation</span><a class="headerlink" href="#narrowtransformationdag" title="Permalink to this image">#</a></p>
-</figcaption>
-</figure>
+<p class="caption"><span class="caption-text">SQL DAG for narrow transformation</span><a class="headerlink" href="#narrowtransformationdag" title="Permalink to this image">¶</a></p>
+</div>
 <p>This plan is far simpler than the other two we saw.</p>
 <p>Although it may be tempting to use this method be careful. It is trickier to code and harder to read than a conventional join and also will not work if the source data changes, so if a new value appeared in <code class="docutils literal notranslate"><span class="pre">origin_of_call</span></code> (e.g. the RSPCA or the army, which may want a different <code class="docutils literal notranslate"><span class="pre">origin_type</span></code>) we would have to change the actual code rather than adding new lines to a reference file.</p>
 <p>In production code, it is best practice to use unit tests. These are very important when making efficiency improvements, since it is important that any changes do not affect the functionality of the code. See the articles on <span class="xref myst">Unit Testing in Spark</span> for more details.</p>
-</section>
-</section>
-<section id="when-to-use-each-method">
-<h2>When to use each method<a class="headerlink" href="#when-to-use-each-method" title="Permalink to this headline">#</a></h2>
+</div>
+</div>
+<div class="section" id="when-to-use-each-method">
+<h2>When to use each method<a class="headerlink" href="#when-to-use-each-method" title="Permalink to this headline">¶</a></h2>
 <p>We have seen examples of three ways of joining data:</p>
 <ul class="simple">
 <li><p>Sort Merge Join</p></li>
@@ -1415,13 +1202,13 @@ only showing top 5 rows
 <p>You can change the value of <code class="docutils literal notranslate"><span class="pre">spark.sql.autoBroadcastJoinThreshold</span></code>, which may be useful for those using either very small or very large Spark sessions.</p>
 <p>The narrow transformation method was shown mainly to demonstrate that you can replace a join with a narrow transformation in certain circumstances. In practice, as such DataFrames will be tiny they can be broadcast anyway so it is not recommended. Only use this if your source data will never change, and be careful to extensively test and comment your code.</p>
 <p>The analysis above assumes that the join keys in the DataFrames are roughly equally partitioned. If your DataFrame is skewed so that some partitions contain significantly more data than others, then the efficiency of the join could be affected. See the article on <span class="xref myst">partitions</span> for more detail. The solution here is to use a <em>salted join</em>.</p>
-</section>
-<section id="salted-joins">
-<h2>Salted Joins<a class="headerlink" href="#salted-joins" title="Permalink to this headline">#</a></h2>
+</div>
+<div class="section" id="salted-joins">
+<h2>Salted Joins<a class="headerlink" href="#salted-joins" title="Permalink to this headline">¶</a></h2>
 <p>A sort merge join will move all the data with the same join keys to the same partition, which can lead to skew in the DataFrame and cause the join to process inefficiently, or not at all in some cases. This can be resolved with a <em>salted join</em>: splitting the join keys, so that the DataFrame is distributed into more equal partition sizes. See the article on <span class="xref myst">salted joins</span> for more information.</p>
-</section>
-<section id="further-resources">
-<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">#</a></h2>
+</div>
+<div class="section" id="further-resources">
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
 <p>Spark at the ONS Articles:</p>
 <ul class="simple">
 <li><p><span class="xref myst">Salted Joins</span></p></li>
@@ -1460,8 +1247,8 @@ only showing top 5 rows
 <ul class="simple">
 <li><p><a class="reference external" href="https://databricks.com/glossary/what-are-transformations">DataBricks Transformations definition</a></p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
     <script type="text/x-thebe-config">
     {
@@ -1476,7 +1263,7 @@ only showing top 5 rows
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./raw-notebooks/join-concepts"
+            path: "./raw-notebooks\join-concepts"
         },
         predefinedOutput: true
     }
@@ -1485,33 +1272,29 @@ only showing top 5 rows
 
               </div>
               
-            </main>
-            <footer class="footer-article noprint">
-                
-    <!-- Previous / next buttons -->
+        
+            <!-- Previous / next buttons -->
 <div class='prev-next-area'>
 </div>
-            </footer>
+        
         </div>
     </div>
-    <div class="footer-content row">
-        <footer class="col footer"><p>
-  
-    By Wil Roberts & Adrian Prince<br/>
-  
-</p>
-        </footer>
+    <footer class="footer">
+    <div class="container">
+      <p>
+        
+          By Wil Roberts & Adrian Prince<br/>
+        
+      </p>
     </div>
-    
-</div>
+  </footer>
+</main>
 
 
       </div>
     </div>
   
-  <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-
+  <script src="../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
 
   </body>
 </html>
