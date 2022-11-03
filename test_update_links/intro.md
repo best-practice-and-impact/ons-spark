@@ -50,7 +50,6 @@ The website is managed by the Quality and Improvement division of the Office for
 
 For keyboard navigation, {kbd}`Up Arrow` and {kbd}`Down Arrow` keys can be used to scroll up and down on the current page. {kbd}`Left Arrow` and {kbd}`Right Arrow` keys can be used to move forwards and backwards through the pages of the book. Tabbed content (including code example) can be focused using the {kbd}`Tab` key. {kbd}`Left Arrow` and {kbd}`Right Arrow` keys are then used to focus the required tab option, where {kbd}`Enter` can be used to select that option and display the associated content.
 
-To zoom in or out use the mouse scroll wheel or hold {kbd}`Ctrl` and press {kbd}`+` to zoom in and {kbd}`-` to zoom out.
 
 ### Feedback and reporting accessibility problems
 
