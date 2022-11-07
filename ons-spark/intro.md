@@ -16,13 +16,13 @@ ONS staff should also look at our GitLab pages for organisation and platform-spe
 
 The materials in this book assume the reader is familiar with Python or R and is looking to process big data using PySpark or sparklyr. There are Python and R code cells throughout the book to help explain the topics.
 
-The **Spark Overview** section introduces some basic concepts like distributed computing, when to use Spark, creating Spark sessions and simple interaction with data storage. There is then a section for **Introduction to PySpark** and **Introduction to sparklyr**. That covers the basics.
+The [Spark Overview](../spark-overview/spark-start) section introduces some basic concepts like distributed computing, when to use Spark, creating Spark sessions and simple interaction with data storage. There is then a section for [Introduction to PySpark](../pyspark-intro/pyspark-intro) and [Introduction to sparklyr](../sparklyr-intro/sparklyr-intro) that covers the basics.
 
-The next part of your Spark journey is to learn more functions so you can perform more interesting analysis. These are covered in the **Spark Functions** section. As you build more experience you will begin to think more like a Spark developer, choosing certain strategies that suits how Spark processes data.
+The next part of your Spark journey is to learn more functions so you can perform more interesting analysis. These are covered in the [Spark Functions](../spark-functions/union-dataframes-with-different-columns) section. As you build more experience you will begin to think more like a Spark developer, choosing certain strategies that suits how Spark processes data.
 
-The most advanced section of the book is **Understanding and Optimising Spark**. It begins with a short summary page before diving into more complex optimisation topics.
+The most advanced section of the book is [Understanding and Optimising Spark](../spark-concepts/optimisation-tips). It begins with a short summary page before diving into more complex optimisation topics.
 
-The latter two sections, **Testing and Debugging** and **Ancillary Topics**, are included for completeness.
+The latter two sections, [Testing and Debugging](../testing-debugging/spark-errors) and [Ancillary Topics](../ancillary-topics/visualisation), are included for completeness.
 
 ## Further resources
 
@@ -42,21 +42,24 @@ Here are some examples of other free resources we recommend:
 This accessibility statement applies to the Spark at the ONS. Please note that this does not include third-party content that is referenced from this guidance.
 
 The website is managed by the Quality and Improvement division of the Office for National Statistics. We would like this guidance to be accessible for as many people as possible. This means that you should be able to:
-* change colours, contrast levels and fonts
 * zoom in up to 300% without the text spilling off the screen
 * navigate most of the website using just a keyboard
 * navigate most of the website using speech recognition software
 * listen to most of the website using a screen reader (including the most recent versions of JAWS, NVDA and VoiceOver)
 
+The book may be viewed in your browser or using fullscreen mode by clicking on the fullscreen icon in the top left menu (beiside the Contents navigation).
+
 For keyboard navigation, {kbd}`Up Arrow` and {kbd}`Down Arrow` keys can be used to scroll up and down on the current page. {kbd}`Left Arrow` and {kbd}`Right Arrow` keys can be used to move forwards and backwards through the pages of the book. Tabbed content (including code example) can be focused using the {kbd}`Tab` key. {kbd}`Left Arrow` and {kbd}`Right Arrow` keys are then used to focus the required tab option, where {kbd}`Enter` can be used to select that option and display the associated content.
 
-To zoom in or out use the mouse scroll wheel or hold {kbd}`Ctrl` and press {kbd}`+` to zoom in and {kbd}`-` to zoom out.
+To zoom in or out hold {kbd}`Ctrl` and use the {kbd}`mouse scroll wheel` or hold {kbd}`Ctrl` and press {kbd}`+` to zoom in and {kbd}`-` to zoom out. To enlarge diagrams click on them and apply the same commands for zooming in and out a previously mentioned. Return to the main content via the back button on your browser.
+
+This book may can also be download in ethier Markdown or PDF format. To do this use the down arrow located in the top left menu (beside the Contents navigation). From here select the format you wish to download the book as.
 
 ### Feedback and reporting accessibility problems
 
 We are always looking to improve the accessibility of our guidance. If you find any problems not listed on this page or think that we are not meeting accessibility requirements, please contact us using [GitHub Issues](https://github.com/best-practice-and-impact/ons-spark/issues). Please also get in touch if you are unable to access any part of this guidance, or require the content in a different format.
 
-We will consider your request and will get back to you as soon as wen can.
+We will consider your request and will get back to you as soon as we can.
 
 
 ### Enforcement procedure
