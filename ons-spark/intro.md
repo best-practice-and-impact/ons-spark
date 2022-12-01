@@ -53,6 +53,8 @@ For keyboard navigation, {kbd}`Up Arrow` and {kbd}`Down Arrow` keys can be used 
 
 To zoom in or out hold {kbd}`Ctrl` and use the {kbd}`mouse scroll wheel` or hold {kbd}`Ctrl` and press {kbd}`+` to zoom in and {kbd}`-` to zoom out. To enlarge diagrams click on them and apply the same commands for zooming in and out a previously mentioned. Return to the main content via the back button on your browser.
 
+To hide the main menu (left side menu) click the arrow in the top left of the screen. To reopen it, click the 3 bars. 
+
 This book may can also be download in ethier Markdown or PDF format. To do this use the down arrow located in the top left menu (beside the Contents navigation). From here select the format you wish to download the book as.
 
 ### Feedback and reporting accessibility problems
