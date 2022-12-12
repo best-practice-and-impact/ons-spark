@@ -4,11 +4,13 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Caching &#8212; Spark at the ONS</title>
     
-  <link href="../../_static/css/theme.css" rel="stylesheet">
-  <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -18,37 +20,36 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
-    
-      
-
-    
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
-  <link rel="preload" as="script" href="../../_static/js/index.be7d3bbb2ef33a8344ce.js">
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
 
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/togglebutton.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -67,7 +68,21 @@
                 </script>
 
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
     
     <div class="container-fluid" id="banner"></div>
 
@@ -76,9 +91,10 @@
     <div class="container-xl">
       <div class="row">
           
-<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
-    
-        <div class="navbar-brand-box">
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
     <a class="navbar-brand text-wrap" href="../../index.html">
       
         <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
@@ -96,14 +112,15 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../../intro.html">
-   Introduction
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../intro.html">
+                    Introduction
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Spark overview
  </span>
@@ -390,107 +407,209 @@
 </ul>
 
     </div>
-</nav> <!-- To handle the deprecated key -->
-
-<div class="navbar_extra_footer">
-  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-</div>
-
-</div>
-
-
-          
-
-
-          
-<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
-    
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
             
-            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
-                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
-                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
-                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
-                <i class="fas fa-bars"></i>
-                <i class="fas fa-arrow-left"></i>
-                <i class="fas fa-arrow-up"></i>
-            </button>
-            
-            
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
-            class="fas fa-download"></i></button>
-
-    <div class="dropdown-buttons">
-        <!-- ipynb file if we had a myst markdown file -->
-        
-        <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../../_sources/raw-notebooks/cache/cache.ipynb"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.ipynb</button></a>
-        <!-- Download PDF via print -->
-        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
-    </div>
-</div>
-
-            <!-- Source interaction buttons -->
-
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
-    <div class="dropdown-buttons sourcebuttons">
-        <a class="repository-button"
-            href="https://github.com/best-practice-and-impact/ons-spark"><button type="button" class="btn btn-secondary topbarbtn"
-                data-toggle="tooltip" data-placement="left" title="Source repository"><i
-                    class="fab fa-github"></i>repository</button></a>
-        <a class="issues-button"
-            href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fraw-notebooks/cache/cache.html&body=Your%20issue%20content%20here."><button
-                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
-                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
-        
-    </div>
-</div>
-
-            <!-- Full screen (wrap in <a> to have style consistency -->
-
-<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-        title="Fullscreen mode"><i
-            class="fas fa-expand"></i></button></a>
-
-            <!-- Launch buttons -->
-
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
-    <div class="dropdown-buttons">
-        
-        <a class="binder-button" href="https://mybinder.org/v2/gh/best-practice-and-impact/ons-spark/main?urlpath=tree/docs/raw-notebooks/cache/cache.ipynb"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
-                data-placement="left"><img class="binder-button-logo"
-                    src="../../_static/images/logo_binder.svg"
-                    alt="Interact on binder">Binder</button></a>
-        
-        
-        
-        
-    </div>
-</div>
-
-        </div>
-
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
-            
-            <div class="tocsection onthispage pt-5 pb-3">
-                <i class="fas fa-list"></i> Contents
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
             </div>
-            <nav id="bd-toc-nav" aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/best-practice-and-impact/ons-spark/main?urlpath=tree/docs/raw-notebooks/cache/cache.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/best-practice-and-impact/ons-spark"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fraw-notebooks/cache/cache.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../../_sources/raw-notebooks/cache/cache.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#how-big-is-my-dataframe">
    How big is my DataFrame?
@@ -537,17 +656,79 @@
  </li>
 </ul>
 
-            </nav>
-        </div>
-    </div>
+    </nav>
 </div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Caching</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#how-big-is-my-dataframe">
+   How big is my DataFrame?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#persist">
+   Persist
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#using-cache-for-more-efficient-coding">
+   Using cache for more efficient coding
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#preparing-the-data">
+     Preparing the data
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#analysis">
+     Analysis
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#investigate-the-spark-ui">
+   Investigate the Spark UI
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#using-a-cache">
+     Using a cache
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#further-resources">
+   Further Resources
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
               <div>
                 
-  <div class="section" id="caching">
-<h1>Caching<a class="headerlink" href="#caching" title="Permalink to this headline">¶</a></h1>
+  <section id="caching">
+<h1>Caching<a class="headerlink" href="#caching" title="Permalink to this headline">#</a></h1>
 <p>Caching Spark DataFrames can be useful for two reasons:</p>
 <ol class="simple">
 <li><p>To estimate the size of a DataFrame and its partitions in memory</p></li>
@@ -555,8 +736,8 @@
 </ol>
 <p>In this article we will firstly introduce caching to estimate the size of a DataFrame then see an example of where caching is useful to remove repeated runs of an execution plan.</p>
 <p>For a more detailed discussion on persistence in Spark please see the <span class="xref myst">Persisting</span> article.</p>
-<div class="section" id="how-big-is-my-dataframe">
-<h2>How big is my DataFrame?<a class="headerlink" href="#how-big-is-my-dataframe" title="Permalink to this headline">¶</a></h2>
+<section id="how-big-is-my-dataframe">
+<h2>How big is my DataFrame?<a class="headerlink" href="#how-big-is-my-dataframe" title="Permalink to this headline">#</a></h2>
 <p>A simple use of persistence in Spark is to find out how much memory is used to store a DataFrame. This is a tricky subject because the amount of memory or disk space a data set uses depends on many factors, including:</p>
 <ol class="simple">
 <li><p>whether the data are on disk (in storage) or in memory (being used)</p></li>
@@ -568,12 +749,12 @@
 <p>As usual we’ll start with some imports and creating a Spark session.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
-<span class="kn">import</span> <span class="nn">yaml</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from pyspark.sql import SparkSession, functions as F
+import yaml
 
-<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
-         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;cache&quot;</span><span class="p">)</span>
-         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
+spark = (SparkSession.builder.master(&quot;local[2]&quot;)
+         .appName(&quot;cache&quot;)
+         .getOrCreate())
 </pre></div>
 </div>
 </div>
@@ -592,12 +773,12 @@
 <p>In sparklyr there is a <code class="docutils literal notranslate"><span class="pre">force=TRUE</span></code> argument in the <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/tbl_cache.html"><code class="docutils literal notranslate"><span class="pre">tbl_cache()</span></code></a> function meaning there is no need to pipe this into a row count. Also note that the name of the DataFrame will appear in the Spark UI, which is a nice feature in sparklyr. To do the same in PySpark we would need to register the DataFrame as a temporary table and give it a name.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>with open(&quot;../../../config.yaml&quot;) as f:
+    config = yaml.safe_load(f)
 
-<span class="n">population</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;population_path&#39;</span><span class="p">])</span>
+population = spark.read.parquet(config[&#39;population_path&#39;])
 
-<span class="n">population</span><span class="o">.</span><span class="n">cache</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+population.cache().count()
 </pre></div>
 </div>
 </div>
@@ -619,18 +800,22 @@
 </div>
 <p>Now we can take a look in the <span class="xref myst">Spark UI</span>, which is reached using the URL <a class="reference external" href="http://localhost:4040/jobs/">http://localhost:4040/jobs/</a>. Note this address is used for a local Spark session, for more information on how to navigate to the Spark UI see the <a class="reference external" href="https://spark.apache.org/docs/latest/monitoring.html">documentation on monitoring</a>.</p>
 <p>Within the Spark UI, if you were to head over to the <em>Storage</em> tab you would see an RDD stored in memory, in two partitions and using 35.7 KB of executor memory. More on RDDs in the <a class="reference external" href="../spark-concepts/shuffling.html#a-quick-note-on-rdds">Shuffling</a> article.</p>
-<div class="figure align-default" id="cachememory">
+<figure class="align-default" id="cachememory">
 <a class="reference internal image-reference" href="raw-notebooks/images/cache_memory.png"><img alt="Storage page from the Spark UI showing cached DataFrame in memory" src="raw-notebooks/images/cache_memory.png" style="width: 100%;" /></a>
-<p class="caption"><span class="caption-text">DataFrame cached in memory</span><a class="headerlink" href="#cachememory" title="Permalink to this image">¶</a></p>
-</div>
+<figcaption>
+<p><span class="caption-text">DataFrame cached in memory</span><a class="headerlink" href="#cachememory" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
 <p>You can also click on the RDD name to get more information, such as how many executors are being used and the size of each partition.</p>
-<div class="figure align-default" id="cachedetails">
+<figure class="align-default" id="cachedetails">
 <a class="reference internal image-reference" href="raw-notebooks/images/cache_memory_partitions.png"><img alt="Further details of the cache in the Spark UI including partition sizes" src="raw-notebooks/images/cache_memory_partitions.png" style="width: 100%;" /></a>
-<p class="caption"><span class="caption-text">Cache details</span><a class="headerlink" href="#cachedetails" title="Permalink to this image">¶</a></p>
-</div>
-</div>
-<div class="section" id="persist">
-<h2>Persist<a class="headerlink" href="#persist" title="Permalink to this headline">¶</a></h2>
+<figcaption>
+<p><span class="caption-text">Cache details</span><a class="headerlink" href="#cachedetails" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="persist">
+<h2>Persist<a class="headerlink" href="#persist" title="Permalink to this headline">#</a></h2>
 <p>There is another function that can be used to persist DataFrames, <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.persist.html"><code class="docutils literal notranslate"><span class="pre">.persist()</span></code></a>/<a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_persist.html"><code class="docutils literal notranslate"><span class="pre">sdf_persist()</span></code></a> in PySpark/sparklyr. This is a general form of <code class="docutils literal notranslate"><span class="pre">.cache()</span></code>/<code class="docutils literal notranslate"><span class="pre">tbl_cache()</span></code>. It is similar to doing a cache but we are able to specify where to store the data, e.g. use memory but allow spill over to executor disk if the executor memory is full. <code class="docutils literal notranslate"><span class="pre">.persist()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_persist()</span></code> takes a <code class="docutils literal notranslate"><span class="pre">StorageLevel</span></code> argument to specify where to cache the data. Options for storage levels are:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">MEMORY_ONLY</span></code></p></li>
@@ -644,7 +829,7 @@
 <p>There’s an example below to see how this is used, first we will unpersist the previous DataFrame so that we don’t fill our cache memory with unused data. Note this time in sparklyr we need to add a row count.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">population</span><span class="o">.</span><span class="n">unpersist</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>population.unpersist()
 </pre></div>
 </div>
 </div>
@@ -659,8 +844,8 @@
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark</span> <span class="kn">import</span> <span class="n">StorageLevel</span>
-<span class="n">population</span><span class="o">.</span><span class="n">persist</span><span class="p">(</span><span class="n">StorageLevel</span><span class="o">.</span><span class="n">DISK_ONLY</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from pyspark import StorageLevel
+population.persist(StorageLevel.DISK_ONLY).count()
 </pre></div>
 </div>
 </div>
@@ -675,15 +860,17 @@
 </pre></div>
 </div>
 <p>Before we move on, head back to the Spark UI and have a look at how much space the <code class="docutils literal notranslate"><span class="pre">population</span></code> DataFrame uses on disk.</p>
-<div class="figure align-default" id="cachedisk">
+<figure class="align-default" id="cachedisk">
 <a class="reference internal image-reference" href="raw-notebooks/images/cache_disk.png"><img alt="Storage page from the Spark UI showing cached DataFrame on disk" src="raw-notebooks/images/cache_disk.png" style="width: 100%;" /></a>
-<p class="caption"><span class="caption-text">DataFrame cached on disk</span><a class="headerlink" href="#cachedisk" title="Permalink to this image">¶</a></p>
-</div>
+<figcaption>
+<p><span class="caption-text">DataFrame cached on disk</span><a class="headerlink" href="#cachedisk" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
 <p>Is this what you expected? Why is this number different to persisting in memory? Because there is some compression involved in data written on disk.</p>
 <p><a class="reference external" href="https://databricks.com/">Databricks</a>, a company founded by the creators of Apache Spark, suggest the use cases for <code class="docutils literal notranslate"><span class="pre">.persist()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_persist()</span></code> are rare. The are often cases where you might want to persist using <code class="docutils literal notranslate"><span class="pre">cache()</span></code>/<code class="docutils literal notranslate"><span class="pre">tbl_cache()</span></code>, write to disk, use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.checkpoint.html"><code class="docutils literal notranslate"><span class="pre">.checkpoint()</span></code></a>/<a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_checkpoint.html"><code class="docutils literal notranslate"><span class="pre">sdf_checkpoint()</span></code></a> or staging tables, but the options that <code class="docutils literal notranslate"><span class="pre">.persist()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_persist()</span></code> present are not as useful. For a more detailed discussion about these options see the <span class="xref myst">Persisting</span> article.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">population</span><span class="o">.</span><span class="n">unpersist</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>population.unpersist()
 </pre></div>
 </div>
 </div>
@@ -696,19 +883,19 @@
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">tbl_uncache</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="s">&quot;population&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="using-cache-for-more-efficient-coding">
-<h2>Using cache for more efficient coding<a class="headerlink" href="#using-cache-for-more-efficient-coding" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="using-cache-for-more-efficient-coding">
+<h2>Using cache for more efficient coding<a class="headerlink" href="#using-cache-for-more-efficient-coding" title="Permalink to this headline">#</a></h2>
 <p>Let’s take a look at caching to speed up some processing. The scenario is that we want to read in some data and apply some cleaning and preprocessing. Then using this <em>cleansed</em> DataFrame we want to produce three tables as outputs for a publication.</p>
 <p>The data we will use are the animal rescue data set collected by the London Fire Brigade.</p>
-<div class="section" id="preparing-the-data">
-<h3>Preparing the data<a class="headerlink" href="#preparing-the-data" title="Permalink to this headline">¶</a></h3>
+<section id="preparing-the-data">
+<h3>Preparing the data<a class="headerlink" href="#preparing-the-data" title="Permalink to this headline">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span>
-    <span class="n">config</span><span class="p">[</span><span class="s1">&#39;rescue_path_csv&#39;</span><span class="p">],</span> 
-    <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
-<span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue = spark.read.csv(
+    config[&#39;rescue_path_csv&#39;], 
+    header=True, inferSchema=True, 
+)
 </pre></div>
 </div>
 </div>
@@ -719,41 +906,41 @@
 <p>The DataFrame is read into a single partition, which is fine because it’s a small amount of data. However, we’ll repartition to later demonstrate a feature of Spark.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">repartition</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue = rescue.repartition(2)
 
-<span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span>
-    <span class="s1">&#39;WardCode&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;BoroughCode&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Easting_m&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Northing_m&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Easting_rounded&#39;</span><span class="p">,</span> 
-    <span class="s1">&#39;Northing_rounded&#39;</span>
-<span class="p">)</span>
-
-
-<span class="n">rescue</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
-          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;PumpCount&quot;</span><span class="p">,</span> <span class="s2">&quot;EngineCount&quot;</span><span class="p">)</span>
-          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;FinalDescription&quot;</span><span class="p">,</span> <span class="s2">&quot;Description&quot;</span><span class="p">)</span>
-          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;HourlyNotionalCost(£)&quot;</span><span class="p">,</span> <span class="s2">&quot;HourlyCost&quot;</span><span class="p">)</span>
-          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;IncidentNotionalCost(£)&quot;</span><span class="p">,</span> <span class="s2">&quot;TotalCost&quot;</span><span class="p">)</span>
-          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;OriginofCall&quot;</span><span class="p">,</span> <span class="s2">&quot;OriginOfCall&quot;</span><span class="p">)</span>
-          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;PumpHoursTotal&quot;</span><span class="p">,</span> <span class="s2">&quot;JobHours&quot;</span><span class="p">)</span>
-          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;AnimalGroupParent&quot;</span><span class="p">,</span> <span class="s2">&quot;AnimalGroup&quot;</span><span class="p">)</span>
-<span class="p">)</span>
+rescue = rescue.drop(
+    &#39;WardCode&#39;, 
+    &#39;BoroughCode&#39;, 
+    &#39;Easting_m&#39;, 
+    &#39;Northing_m&#39;, 
+    &#39;Easting_rounded&#39;, 
+    &#39;Northing_rounded&#39;
+)
 
 
-<span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span>
-    <span class="s2">&quot;DateTimeOfCall&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">to_date</span><span class="p">(</span><span class="n">rescue</span><span class="o">.</span><span class="n">DateTimeOfCall</span><span class="p">,</span> <span class="s2">&quot;dd/MM/yyyy&quot;</span><span class="p">)</span>
-<span class="p">)</span>
+rescue = (rescue
+          .withColumnRenamed(&quot;PumpCount&quot;, &quot;EngineCount&quot;)
+          .withColumnRenamed(&quot;FinalDescription&quot;, &quot;Description&quot;)
+          .withColumnRenamed(&quot;HourlyNotionalCost(£)&quot;, &quot;HourlyCost&quot;)
+          .withColumnRenamed(&quot;IncidentNotionalCost(£)&quot;, &quot;TotalCost&quot;)
+          .withColumnRenamed(&quot;OriginofCall&quot;, &quot;OriginOfCall&quot;)
+          .withColumnRenamed(&quot;PumpHoursTotal&quot;, &quot;JobHours&quot;)
+          .withColumnRenamed(&quot;AnimalGroupParent&quot;, &quot;AnimalGroup&quot;)
+)
 
 
-<span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span>
-    <span class="s2">&quot;IncidentDuration&quot;</span><span class="p">,</span> 
-    <span class="n">rescue</span><span class="o">.</span><span class="n">JobHours</span> <span class="o">/</span> <span class="n">rescue</span><span class="o">.</span><span class="n">EngineCount</span>
-<span class="p">)</span>
+rescue = rescue.withColumn(
+    &quot;DateTimeOfCall&quot;, F.to_date(rescue.DateTimeOfCall, &quot;dd/MM/yyyy&quot;)
+)
 
 
-<span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">na</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;TotalCost&quot;</span><span class="p">,</span> <span class="s2">&quot;IncidentDuration&quot;</span><span class="p">])</span>
+rescue = rescue.withColumn(
+    &quot;IncidentDuration&quot;, 
+    rescue.JobHours / rescue.EngineCount
+)
+
+
+rescue = rescue.na.drop(subset=[&quot;TotalCost&quot;, &quot;IncidentDuration&quot;])
 </pre></div>
 </div>
 </div>
@@ -795,43 +982,43 @@
 </pre></div>
 </div>
 <p>Note that the above cells executed very quickly. Remember this is because they’re all transformations, which means Spark hasn’t executed the code yet; take a look at the Spark UI if you need convincing. So far Spark has created an execution plan but is waiting for an action to implement the plan.</p>
-</div>
-<div class="section" id="analysis">
-<h3>Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="analysis">
+<h3>Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">#</a></h3>
 <p>Now we have our cleansed DataFrame we can go on to produce some tables for our article on animal rescue costs for the London Fire Brigade. Here we will put the code into functions because we will rerun these snippets of code multiple times in this notebook.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_top_10_incidents</span><span class="p">(</span><span class="n">sdf</span><span class="p">):</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">sdf</span>
-        <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;CalYear&quot;</span><span class="p">,</span> <span class="s2">&quot;PostcodeDistrict&quot;</span><span class="p">,</span> <span class="s2">&quot;AnimalGroup&quot;</span><span class="p">,</span> <span class="s2">&quot;IncidentDuration&quot;</span><span class="p">,</span> <span class="s2">&quot;TotalCost&quot;</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s2">&quot;TotalCost&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-    <span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def get_top_10_incidents(sdf):
+    return (sdf
+        .select(&quot;CalYear&quot;, &quot;PostcodeDistrict&quot;, &quot;AnimalGroup&quot;, &quot;IncidentDuration&quot;, &quot;TotalCost&quot;)
+        .sort(&quot;TotalCost&quot;, ascending=False)
+        .limit(10)
+    )
 
-<span class="k">def</span> <span class="nf">get_mean_cost_by_animal</span><span class="p">(</span><span class="n">sdf</span><span class="p">):</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">sdf</span>
-        <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;AnimalGroup&quot;</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="s2">&quot;TotalCost&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;MeanCost&#39;</span><span class="p">))</span>
-        <span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s2">&quot;MeanCost&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-    <span class="p">)</span>
+def get_mean_cost_by_animal(sdf):
+    return (sdf
+        .groupBy(&quot;AnimalGroup&quot;)
+        .agg(F.mean(&quot;TotalCost&quot;).alias(&#39;MeanCost&#39;))
+        .sort(&quot;MeanCost&quot;, ascending=False)
+        .limit(10)
+    )
 
-<span class="k">def</span> <span class="nf">get_summary_cost_by_animal</span><span class="p">(</span><span class="n">sdf</span><span class="p">):</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">sdf</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
-                <span class="n">rescue</span><span class="o">.</span><span class="n">AnimalGroup</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span>
-                    <span class="s2">&quot;Goat&quot;</span><span class="p">,</span> 
-                    <span class="s2">&quot;Bull&quot;</span><span class="p">,</span> 
-                    <span class="s2">&quot;Fish&quot;</span><span class="p">,</span> 
-                    <span class="s2">&quot;Horse&quot;</span><span class="p">)</span>
-            <span class="p">)</span>
-            <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;AnimalGroup&quot;</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">agg</span><span class="p">(</span>
-                <span class="n">F</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="s1">&#39;TotalCost&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;Min&#39;</span><span class="p">),</span> 
-                <span class="n">F</span><span class="o">.</span><span class="n">avg</span><span class="p">(</span><span class="s1">&#39;TotalCost&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;Mean&#39;</span><span class="p">),</span> 
-                <span class="n">F</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="s1">&#39;TotalCost&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;Max&#39;</span><span class="p">),</span> 
-                <span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;TotalCost&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;Count&#39;</span><span class="p">))</span>
-            <span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s2">&quot;Mean&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="p">)</span>
+def get_summary_cost_by_animal(sdf):
+    return (sdf.filter(
+                rescue.AnimalGroup.isin(
+                    &quot;Goat&quot;, 
+                    &quot;Bull&quot;, 
+                    &quot;Fish&quot;, 
+                    &quot;Horse&quot;)
+            )
+            .groupBy(&quot;AnimalGroup&quot;)
+            .agg(
+                F.min(&#39;TotalCost&#39;).alias(&#39;Min&#39;), 
+                F.avg(&#39;TotalCost&#39;).alias(&#39;Mean&#39;), 
+                F.max(&#39;TotalCost&#39;).alias(&#39;Max&#39;), 
+                F.count(&#39;TotalCost&#39;).alias(&#39;Count&#39;))
+            .sort(&quot;Mean&quot;, ascending=False)
+    )
 </pre></div>
 </div>
 </div>
@@ -873,8 +1060,8 @@
 <p>Next we will call the above functions and show the results</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">top_10_incidents</span> <span class="o">=</span> <span class="n">get_top_10_incidents</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span>
-<span class="n">top_10_incidents</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>top_10_incidents = get_top_10_incidents(rescue)
+top_10_incidents.show(truncate=False)
 </pre></div>
 </div>
 </div>
@@ -906,8 +1093,8 @@
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mean_cost_by_animal</span> <span class="o">=</span> <span class="n">get_mean_cost_by_animal</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span>
-<span class="n">mean_cost_by_animal</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mean_cost_by_animal = get_mean_cost_by_animal(rescue)
+mean_cost_by_animal.show(truncate=False)
 </pre></div>
 </div>
 </div>
@@ -938,8 +1125,8 @@
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">summary_cost_by_animal</span> <span class="o">=</span> <span class="n">get_summary_cost_by_animal</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span>
-<span class="n">summary_cost_by_animal</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>summary_cost_by_animal = get_summary_cost_by_animal(rescue)
+summary_cost_by_animal.show()
 </pre></div>
 </div>
 </div>
@@ -963,22 +1150,26 @@
 </pre></div>
 </div>
 <p>Great- we have our tables. Let’s take a look at the individual steps Spark carried out to create our outputs.</p>
-</div>
-</div>
-<div class="section" id="investigate-the-spark-ui">
-<h2>Investigate the Spark UI<a class="headerlink" href="#investigate-the-spark-ui" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="investigate-the-spark-ui">
+<h2>Investigate the Spark UI<a class="headerlink" href="#investigate-the-spark-ui" title="Permalink to this headline">#</a></h2>
 <p>Go into the <span class="xref myst">Spark UI</span> and look at the <em>SQL</em> tab which lists the queries that are created from our PySpark code. Alternatively, we could use the <em>Jobs</em> tab, but the <em>SQL</em> tab has more detailed information for our needs here.</p>
 <p>Click on the query with a description that starts with ‘csv’ and look at the DAG diagram. DAG stands for Directed Acyclic Graph and is often used to describe a process.</p>
-<div class="figure align-default" id="filescan">
+<figure class="align-default" id="filescan">
 <a class="reference internal image-reference" href="raw-notebooks/images/cache_file_scan.png"><img alt="SQL DAG in the Spark UI for inferring a schema from a csv file" src="raw-notebooks/images/cache_file_scan.png" style="width: 100%;" /></a>
-<p class="caption"><span class="caption-text">File scan to infer DataFrame schema</span><a class="headerlink" href="#filescan" title="Permalink to this image">¶</a></p>
-</div>
+<figcaption>
+<p><span class="caption-text">File scan to infer DataFrame schema</span><a class="headerlink" href="#filescan" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
 <p>This query is glancing at the <code class="docutils literal notranslate"><span class="pre">animal_rescue.csv</span></code> file to get the schema so that following transformations can be validated before being added to the execution plan (it does this because we asked Spark to infer the schema). Doing this for large files can take several minutes, so for large data sets use parquet files or Hive tables, which store the schema for you.</p>
 <p>The next three queries (highlighted below) are the functions we have called above. Look at the DAG for each query by clicking on the descriptions, what are your observations?</p>
-<div class="figure align-default" id="analysisnocache">
+<figure class="align-default" id="analysisnocache">
 <a class="reference internal image-reference" href="raw-notebooks/images/cache_sql_no_persist.png"><img alt="SQL page of Spark UI showing execution time for analysis without using cache" src="raw-notebooks/images/cache_sql_no_persist.png" style="width: 100%;" /></a>
-<p class="caption"><span class="caption-text">Analysis duration without cache</span><a class="headerlink" href="#analysisnocache" title="Permalink to this image">¶</a></p>
-</div>
+<figcaption>
+<p><span class="caption-text">Analysis duration without cache</span><a class="headerlink" href="#analysisnocache" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
 <p><strong>Observations</strong></p>
 <ul class="simple">
 <li><p>Spark has changed the order of our transformations. We’ll look at this later.</p></li>
@@ -986,13 +1177,13 @@
 <li><p>Every single one starts with reading in the data (Scan csv).</p></li>
 </ul>
 <p>The last point above means that Spark is reading in the file at the beginning of the job, and assuming there are no skipped stages, Spark is repeating the cleaning process for each output table.</p>
-<div class="section" id="using-a-cache">
-<h3>Using a cache<a class="headerlink" href="#using-a-cache" title="Permalink to this headline">¶</a></h3>
+<section id="using-a-cache">
+<h3>Using a cache<a class="headerlink" href="#using-a-cache" title="Permalink to this headline">#</a></h3>
 <p>What we need to do is to persist the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame so when we start our analysis functions Spark will use the cleansed and persisted DataFrame as the starting point.</p>
 <p>Let’s cache the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">cache</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue.cache().count()
 </pre></div>
 </div>
 </div>
@@ -1008,7 +1199,7 @@
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">get_top_10_incidents</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>get_top_10_incidents(rescue).show()
 </pre></div>
 </div>
 </div>
@@ -1038,7 +1229,7 @@
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">get_mean_cost_by_animal</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>get_mean_cost_by_animal(rescue).show()
 </pre></div>
 </div>
 </div>
@@ -1068,7 +1259,7 @@
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">get_summary_cost_by_animal</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>get_summary_cost_by_animal(rescue).show()
 </pre></div>
 </div>
 </div>
@@ -1091,22 +1282,26 @@
 </pre></div>
 </div>
 <p>Look at the Spark UI. Below is the DAG for the latest query.</p>
-<div class="figure align-default" id="dagwithcache">
+<figure class="align-default" id="dagwithcache">
 <a class="reference internal image-reference" href="raw-notebooks/images/cache_dag_in_memory.png"><img alt="SQL DAG in Spark UI showing shortened process by making use of cached DataFrame" src="raw-notebooks/images/cache_dag_in_memory.png" style="width: 50%;" /></a>
-<p class="caption"><span class="caption-text">SQL DAG using cached DataFrame</span><a class="headerlink" href="#dagwithcache" title="Permalink to this image">¶</a></p>
-</div>
+<figcaption>
+<p><span class="caption-text">SQL DAG using cached DataFrame</span><a class="headerlink" href="#dagwithcache" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
 <p>This time Spark didn’t read in the data from disk and apply the cleaning, we have broken the lineage. We know this because the DAG starts with a <em>InMemoryTableScan</em>, i.e. the cache. Note that this diagram consists of fewer stages than we had previously. Another sign of cached data being used is the presence of <em>Skipped Stages</em> on the Jobs page.</p>
 <p>The important point here is that we were doing repeated computations on a DataFrame, i.e. aggregations on the cleansed data. When this happens it may well be more efficient to persist the data before the repeated calculations. We should check this for our case.</p>
 <p>There are many factors that contribute towards the time taken for each query that make benchmarking in Spark complex. When running the source notebook, sometimes the processing will be faster after the cache, but sometimes it will be slower. If we run the last three code cells above once more and look at the times we see that the processing after the cache was generally quicker.</p>
 <p>Each function is labelled in the image below. The first run was without caching, the second was with caching and the third was a second run with cached data.</p>
-<div class="figure align-default" id="analysiswithcache">
+<figure class="align-default" id="analysiswithcache">
 <a class="reference internal image-reference" href="raw-notebooks/images/cache_sql_compare.png"><img alt="SQL page of Spark UI showing improved execution time for analysis with cache" src="raw-notebooks/images/cache_sql_compare.png" style="width: 100%;" /></a>
-<p class="caption"><span class="caption-text">Processing time without and with cache</span><a class="headerlink" href="#analysiswithcache" title="Permalink to this image">¶</a></p>
-</div>
-</div>
-</div>
-<div class="section" id="further-resources">
-<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
+<figcaption>
+<p><span class="caption-text">Processing time without and with cache</span><a class="headerlink" href="#analysiswithcache" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="further-resources">
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">#</a></h2>
 <p>Spark at the ONS Articles:</p>
 <ul class="simple">
 <li><p><span class="xref myst">Persisting</span></p></li>
@@ -1139,8 +1334,8 @@
 <ul class="simple">
 <li><p><a class="reference external" href="https://databricks.com/">Databricks</a></p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -1155,7 +1350,7 @@
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./raw-notebooks\cache"
+            path: "./raw-notebooks/cache"
         },
         predefinedOutput: true
     }
@@ -1164,29 +1359,33 @@
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
 <div class='prev-next-area'>
 </div>
-        
+            </footer>
         </div>
     </div>
-    <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By Wil Roberts & Adrian Prince<br/>
-        
-      </p>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Wil Roberts & Adrian Prince<br/>
+  
+</p>
+        </footer>
     </div>
-  </footer>
-</main>
+    
+</div>
 
 
       </div>
     </div>
   
-  <script src="../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
 
   </body>
 </html>
