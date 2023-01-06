@@ -25,7 +25,7 @@ For GitHub and GitLab deployment specifically, the [cookiecutter-jupyter-book](h
 ### Opening the book in a binder
 If you would like to open and run the notebooks in a binder then please follow the link below to launch a binder environment in which you can run the code. 
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/https%3A%2F%2Fmybinder.org%2Fv2%2Fgh%2Fbest-practice-and-impact%2Fons-spark/binder_tests)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/best-practice-and-impact/ons-spark/binder_tests)
 
 ## Contributors
 
