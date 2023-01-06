@@ -22,6 +22,11 @@ Please see the [Jupyter Book documentation](https://jupyterbook.org/publish/web.
 
 For GitHub and GitLab deployment specifically, the [cookiecutter-jupyter-book](https://github.com/executablebooks/cookiecutter-jupyter-book) includes templates for, and information about, optional continuous integration (CI) workflow files to help easily and automatically deploy books online with GitHub or GitLab. For example, if you chose `github` for the `include_ci` cookiecutter option, your book template was created with a GitHub actions workflow file that, once pushed to GitHub, automatically renders and pushes your book to the `gh-pages` branch of your repo and hosts it on GitHub Pages when a push or pull request is made to the main branch.
 
+### Opening the book in a binder
+If you would like to open and run the notebooks in a binder then please follow the link below to launch a binder environment in which you can run the code. 
+
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/https%3A%2F%2Fmybinder.org%2Fv2%2Fgh%2Fbest-practice-and-impact%2Fons-spark/HEAD)]
+
 ## Contributors
 
 We welcome and recognize all contributions. You can see a list of current contributors in the [contributors tab](https://github.com/robertswh/ons-spark/graphs/contributors).
