@@ -9,7 +9,7 @@ Spark learning materials compiled by members of the Office for National Statisti
 If you'd like to develop and/or build the Spark at the ONS book, you should:
 
 1. Clone this repository
-2. Run `pip install -r requirements.txt` (it is recommended you do this within a virtual environment)
+2. Run `pip install -r requirements_dev.txt` (it is recommended you do this within a virtual environment)
 3. (Optional) Edit the books source files located in the `ons-spark/` directory
 4. Run `jupyter-book clean ons-spark/` to remove any existing builds
 5. Run `jupyter-book build ons-spark/`
