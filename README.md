@@ -13,6 +13,9 @@ If you'd like to develop and/or build the Spark at the ONS book, you should:
 3. (Optional) Edit the books source files located in the `ons-spark/` directory
 4. Run `jupyter-book clean ons-spark/` to remove any existing builds
 5. Run `jupyter-book build ons-spark/`
+6. Check the built HTML pages are correct (these will be in ons-spark/_build/html)
+7. Once you are happy, to deploy the book online run `ghp-import -n -p -f ons-spark/_build/html`.
+8. Note you may need to do `pip install ghp-import` if you do not already have this installed.
 
 A fully-rendered HTML version of the book will be built in `ons-spark/_build/html/`.
 
