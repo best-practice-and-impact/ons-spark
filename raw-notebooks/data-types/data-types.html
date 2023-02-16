@@ -769,17 +769,17 @@ title="Print to PDF"
 <p>In R, there is no need to import data types, as they can be handled with base R (e.g. <a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/numeric.html"><code class="docutils literal notranslate"><span class="pre">as.numeric()</span></code></a> or a Spark function e.g. <a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#bigint"><code class="docutils literal notranslate"><span class="pre">bigint()</span></code></a>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Structural types
-from pyspark.sql.types import StructType, StructField
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Structural types</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql.types</span> <span class="kn">import</span> <span class="n">StructType</span><span class="p">,</span> <span class="n">StructField</span>
 
-# String type
-from pyspark.sql.types import StringType
+<span class="c1"># String type</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql.types</span> <span class="kn">import</span> <span class="n">StringType</span>
 
-# Numeric types
-from pyspark.sql.types import IntegerType, DecimalType, DoubleType
+<span class="c1"># Numeric types</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql.types</span> <span class="kn">import</span> <span class="n">IntegerType</span><span class="p">,</span> <span class="n">DecimalType</span><span class="p">,</span> <span class="n">DoubleType</span>
 
-# Date types
-from pyspark.sql.types import DateType, TimestampType
+<span class="c1"># Date types</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql.types</span> <span class="kn">import</span> <span class="n">DateType</span><span class="p">,</span> <span class="n">TimestampType</span>
 </pre></div>
 </div>
 </div>
@@ -787,15 +787,15 @@ from pyspark.sql.types import DateType, TimestampType
 <p>In order to run our examples, we also need to start a Spark session:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from pyspark.sql import SparkSession, functions as F
-import yaml
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
 
-with open(&quot;../../../config.yaml&quot;) as f:
-    config = yaml.safe_load(f)
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
-spark = (SparkSession.builder.master(&quot;local[2]&quot;)
-         .appName(&quot;data-types&quot;)
-         .getOrCreate())
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;data-types&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -837,19 +837,19 @@ spark = (SparkSession.builder.master(&quot;local[2]&quot;)
 </div></div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>numeric_df = (spark.range(5)
-              .withColumn(&quot;really_big_number_long&quot;,
-                          F.col(&quot;id&quot;) * 10**9)
-              .withColumn(&quot;really_big_number_int&quot;,
-                          F.col(&quot;really_big_number_long&quot;).cast(IntegerType()))
-              .withColumn(&quot;small_number&quot;,
-                          (F.col(&quot;id&quot;) + 9998) / 100)
-              .withColumn(&quot;small_number_decimal&quot;,
-                          F.col(&quot;small_number&quot;).cast(DecimalType(5,2)))
-              .drop(&quot;id&quot;))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">numeric_df</span> <span class="o">=</span> <span class="p">(</span><span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+              <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;really_big_number_long&quot;</span><span class="p">,</span>
+                          <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="mi">9</span><span class="p">)</span>
+              <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;really_big_number_int&quot;</span><span class="p">,</span>
+                          <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;really_big_number_long&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">IntegerType</span><span class="p">()))</span>
+              <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;small_number&quot;</span><span class="p">,</span>
+                          <span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">9998</span><span class="p">)</span> <span class="o">/</span> <span class="mi">100</span><span class="p">)</span>
+              <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;small_number_decimal&quot;</span><span class="p">,</span>
+                          <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;small_number&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">DecimalType</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">)))</span>
+              <span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">))</span>
 
-numeric_df.printSchema()
-numeric_df.show()
+<span class="n">numeric_df</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
+<span class="n">numeric_df</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -895,19 +895,19 @@ numeric_df.show()
 <p>The defaults when creating a DataFrame in PySpark and sparklyr are also different, as can be seen from the examples:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from datetime import datetime
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
-dates = (spark
-         .createDataFrame([
-             [&quot;March&quot;, datetime(2022, 3, 1)],
-             [&quot;April&quot;, datetime(2022, 4, 1)],
-             [&quot;May&quot;, datetime(2022, 5, 1)]],
-             [&quot;month_name&quot;, &quot;example_timestamp&quot;])
-         .withColumn(&quot;example_date&quot;,
-                     F.col(&quot;example_timestamp&quot;).cast(DateType())))
+<span class="n">dates</span> <span class="o">=</span> <span class="p">(</span><span class="n">spark</span>
+         <span class="o">.</span><span class="n">createDataFrame</span><span class="p">([</span>
+             <span class="p">[</span><span class="s2">&quot;March&quot;</span><span class="p">,</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span>
+             <span class="p">[</span><span class="s2">&quot;April&quot;</span><span class="p">,</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span>
+             <span class="p">[</span><span class="s2">&quot;May&quot;</span><span class="p">,</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]],</span>
+             <span class="p">[</span><span class="s2">&quot;month_name&quot;</span><span class="p">,</span> <span class="s2">&quot;example_timestamp&quot;</span><span class="p">])</span>
+         <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;example_date&quot;</span><span class="p">,</span>
+                     <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;example_timestamp&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">DateType</span><span class="p">())))</span>
 
-dates.show()
-dates.printSchema()
+<span class="n">dates</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">dates</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -951,11 +951,11 @@ root
 <p>When reading parquet files or Hive tables with Spark the schema is already defined. For instance, We can read the Animal Rescue parquet file and then preview the data types:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_path_parquet = config[&quot;rescue_path&quot;]
-rescue_from_parquet = (spark.read.parquet(rescue_path_parquet)
-                       .select(&quot;incident_number&quot;, &quot;date_time_of_call&quot;, &quot;cal_year&quot;, &quot;fin_year&quot;))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_path_parquet</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path&quot;</span><span class="p">]</span>
+<span class="n">rescue_from_parquet</span> <span class="o">=</span> <span class="p">(</span><span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">rescue_path_parquet</span><span class="p">)</span>
+                       <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;date_time_of_call&quot;</span><span class="p">,</span> <span class="s2">&quot;cal_year&quot;</span><span class="p">,</span> <span class="s2">&quot;fin_year&quot;</span><span class="p">))</span>
 
-rescue_from_parquet.printSchema()
+<span class="n">rescue_from_parquet</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -979,11 +979,11 @@ rescue_from_parquet.printSchema()
 <p>Inferring the schema means that Spark will scan the CSV file when reading in and try and automatically determine the data types. This may sometimes not be the exact data type that you want. Scanning the file in this way is also relatively slow, which is one of the reasons why parquet files are a better storage choice for Spark than CSVs.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_path_csv = config[&quot;rescue_path_csv&quot;]
-rescue_from_csv = (spark.read.csv(rescue_path_csv, header=True, inferSchema=True)
-                   .select(&quot;IncidentNumber&quot;, &quot;DateTimeOfCall&quot;, &quot;CalYear&quot;, &quot;FinYear&quot;))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_path_csv</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path_csv&quot;</span><span class="p">]</span>
+<span class="n">rescue_from_csv</span> <span class="o">=</span> <span class="p">(</span><span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">rescue_path_csv</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                   <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;IncidentNumber&quot;</span><span class="p">,</span> <span class="s2">&quot;DateTimeOfCall&quot;</span><span class="p">,</span> <span class="s2">&quot;CalYear&quot;</span><span class="p">,</span> <span class="s2">&quot;FinYear&quot;</span><span class="p">))</span>
 
-rescue_from_csv.printSchema()
+<span class="n">rescue_from_csv</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1012,17 +1012,17 @@ rescue_from_csv.printSchema()
 <p>Note that we are not supplying an entry for every column in the raw data here, just the first four columns.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from pyspark.sql.types import StructType, StructField, StringType, IntegerType
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.types</span> <span class="kn">import</span> <span class="n">StructType</span><span class="p">,</span> <span class="n">StructField</span><span class="p">,</span> <span class="n">StringType</span><span class="p">,</span> <span class="n">IntegerType</span>
 
-rescue_schema = StructType([
-    StructField(&quot;incident_number&quot;, StringType()),
-    StructField(&quot;date_time_of_call&quot;, StringType()),
-    StructField(&quot;cal_year&quot;, IntegerType()),
-    StructField(&quot;fin_year&quot;, StringType())
-])
+<span class="n">rescue_schema</span> <span class="o">=</span> <span class="n">StructType</span><span class="p">([</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">()),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s2">&quot;date_time_of_call&quot;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">()),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">,</span> <span class="n">IntegerType</span><span class="p">()),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s2">&quot;fin_year&quot;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">())</span>
+<span class="p">])</span>
 
-rescue_from_csv_schema = spark.read.csv(rescue_path_csv, schema=rescue_schema, inferSchema=False)
-rescue_from_csv_schema.printSchema()
+<span class="n">rescue_from_csv_schema</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">rescue_path_csv</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">rescue_schema</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">rescue_from_csv_schema</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1054,15 +1054,15 @@ rescue_from_csv_schema.printSchema()
 <p>In PySpark, using Data Definition Language (DDL) to define a schema is generally quicker and easier. You may be familiar with DDL when creating database tables with SQL. Just use the names of the columns followed by their data type and then separated with commas. For ease of reading it is better to use a multi-line string and put each entry on a new line. Remember that multi-line strings in Python need to be opened and closed with <code class="docutils literal notranslate"><span class="pre">&quot;&quot;&quot;</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_schema_ddl = &quot;&quot;&quot;
-    `incident_number` string,
-    `date_time_of_call` string,
-    `cal_year` int,
-    `fin_year` string
-&quot;&quot;&quot;
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_schema_ddl</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    `incident_number` string,</span>
+<span class="s2">    `date_time_of_call` string,</span>
+<span class="s2">    `cal_year` int,</span>
+<span class="s2">    `fin_year` string</span>
+<span class="s2">&quot;&quot;&quot;</span>
 
-rescue_from_csv_ddl = spark.read.csv(rescue_path_csv, schema=rescue_schema_ddl)
-rescue_from_csv_ddl.printSchema()
+<span class="n">rescue_from_csv_ddl</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">rescue_path_csv</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">rescue_schema_ddl</span><span class="p">)</span>
+<span class="n">rescue_from_csv_ddl</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1085,11 +1085,11 @@ rescue_from_csv_ddl.printSchema()
 <p>Be careful when casting an existing column as this can make the code harder to read and amend. Instead you may want to create a new column to hold the casted value.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>casted_df = (spark.range(5)
-             .withColumn(&quot;id_double&quot;,
-                         F.col(&quot;id&quot;).cast(DoubleType())))
-casted_df.printSchema()
-casted_df.show()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">casted_df</span> <span class="o">=</span> <span class="p">(</span><span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+             <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;id_double&quot;</span><span class="p">,</span>
+                         <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">DoubleType</span><span class="p">())))</span>
+<span class="n">casted_df</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
+<span class="n">casted_df</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1177,7 +1177,7 @@ casted_df.show()
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./raw-notebooks/data-types"
+            path: "./raw-notebooks\data-types"
         },
         predefinedOutput: true
     }

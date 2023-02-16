@@ -750,12 +750,12 @@ title="Print to PDF"
 <p>As usual we’ll start with some imports and creating a Spark session.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from pyspark.sql import SparkSession, functions as F
-import yaml
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
 
-spark = (SparkSession.builder.master(&quot;local[2]&quot;)
-         .appName(&quot;cache&quot;)
-         .getOrCreate())
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;cache&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -774,12 +774,12 @@ spark = (SparkSession.builder.master(&quot;local[2]&quot;)
 <p>In sparklyr there is a <code class="docutils literal notranslate"><span class="pre">force=TRUE</span></code> argument in the <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/tbl_cache.html"><code class="docutils literal notranslate"><span class="pre">tbl_cache()</span></code></a> function meaning there is no need to pipe this into a row count. Also note that the name of the DataFrame will appear in the Spark UI, which is a nice feature in sparklyr. To do the same in PySpark we would need to register the DataFrame as a temporary table and give it a name.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>with open(&quot;../../../config.yaml&quot;) as f:
-    config = yaml.safe_load(f)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
-population = spark.read.parquet(config[&#39;population_path&#39;])
+<span class="n">population</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;population_path&#39;</span><span class="p">])</span>
 
-population.cache().count()
+<span class="n">population</span><span class="o">.</span><span class="n">cache</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -830,7 +830,7 @@ population.cache().count()
 <p>There’s an example below to see how this is used, first we will unpersist the previous DataFrame so that we don’t fill our cache memory with unused data. Note this time in sparklyr we need to add a row count.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>population.unpersist()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">population</span><span class="o">.</span><span class="n">unpersist</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -845,8 +845,8 @@ population.cache().count()
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from pyspark import StorageLevel
-population.persist(StorageLevel.DISK_ONLY).count()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark</span> <span class="kn">import</span> <span class="n">StorageLevel</span>
+<span class="n">population</span><span class="o">.</span><span class="n">persist</span><span class="p">(</span><span class="n">StorageLevel</span><span class="o">.</span><span class="n">DISK_ONLY</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -871,7 +871,7 @@ population.persist(StorageLevel.DISK_ONLY).count()
 <p><a class="reference external" href="https://databricks.com/">Databricks</a>, a company founded by the creators of Apache Spark, suggest the use cases for <code class="docutils literal notranslate"><span class="pre">.persist()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_persist()</span></code> are rare. The are often cases where you might want to persist using <code class="docutils literal notranslate"><span class="pre">cache()</span></code>/<code class="docutils literal notranslate"><span class="pre">tbl_cache()</span></code>, write to disk, use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.checkpoint.html"><code class="docutils literal notranslate"><span class="pre">.checkpoint()</span></code></a>/<a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_checkpoint.html"><code class="docutils literal notranslate"><span class="pre">sdf_checkpoint()</span></code></a> or staging tables, but the options that <code class="docutils literal notranslate"><span class="pre">.persist()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_persist()</span></code> present are not as useful. For a more detailed discussion about these options see the <span class="xref myst">Persisting</span> article.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>population.unpersist()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">population</span><span class="o">.</span><span class="n">unpersist</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -893,10 +893,10 @@ population.persist(StorageLevel.DISK_ONLY).count()
 <h3>Preparing the data<a class="headerlink" href="#preparing-the-data" title="Permalink to this headline">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue = spark.read.csv(
-    config[&#39;rescue_path_csv&#39;], 
-    header=True, inferSchema=True, 
-)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span>
+    <span class="n">config</span><span class="p">[</span><span class="s1">&#39;rescue_path_csv&#39;</span><span class="p">],</span> 
+    <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -907,41 +907,41 @@ population.persist(StorageLevel.DISK_ONLY).count()
 <p>The DataFrame is read into a single partition, which is fine because it’s a small amount of data. However, we’ll repartition to later demonstrate a feature of Spark.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue = rescue.repartition(2)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">repartition</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
-rescue = rescue.drop(
-    &#39;WardCode&#39;, 
-    &#39;BoroughCode&#39;, 
-    &#39;Easting_m&#39;, 
-    &#39;Northing_m&#39;, 
-    &#39;Easting_rounded&#39;, 
-    &#39;Northing_rounded&#39;
-)
-
-
-rescue = (rescue
-          .withColumnRenamed(&quot;PumpCount&quot;, &quot;EngineCount&quot;)
-          .withColumnRenamed(&quot;FinalDescription&quot;, &quot;Description&quot;)
-          .withColumnRenamed(&quot;HourlyNotionalCost(£)&quot;, &quot;HourlyCost&quot;)
-          .withColumnRenamed(&quot;IncidentNotionalCost(£)&quot;, &quot;TotalCost&quot;)
-          .withColumnRenamed(&quot;OriginofCall&quot;, &quot;OriginOfCall&quot;)
-          .withColumnRenamed(&quot;PumpHoursTotal&quot;, &quot;JobHours&quot;)
-          .withColumnRenamed(&quot;AnimalGroupParent&quot;, &quot;AnimalGroup&quot;)
-)
+<span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span>
+    <span class="s1">&#39;WardCode&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;BoroughCode&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Easting_m&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Northing_m&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Easting_rounded&#39;</span><span class="p">,</span> 
+    <span class="s1">&#39;Northing_rounded&#39;</span>
+<span class="p">)</span>
 
 
-rescue = rescue.withColumn(
-    &quot;DateTimeOfCall&quot;, F.to_date(rescue.DateTimeOfCall, &quot;dd/MM/yyyy&quot;)
-)
+<span class="n">rescue</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;PumpCount&quot;</span><span class="p">,</span> <span class="s2">&quot;EngineCount&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;FinalDescription&quot;</span><span class="p">,</span> <span class="s2">&quot;Description&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;HourlyNotionalCost(£)&quot;</span><span class="p">,</span> <span class="s2">&quot;HourlyCost&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;IncidentNotionalCost(£)&quot;</span><span class="p">,</span> <span class="s2">&quot;TotalCost&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;OriginofCall&quot;</span><span class="p">,</span> <span class="s2">&quot;OriginOfCall&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;PumpHoursTotal&quot;</span><span class="p">,</span> <span class="s2">&quot;JobHours&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;AnimalGroupParent&quot;</span><span class="p">,</span> <span class="s2">&quot;AnimalGroup&quot;</span><span class="p">)</span>
+<span class="p">)</span>
 
 
-rescue = rescue.withColumn(
-    &quot;IncidentDuration&quot;, 
-    rescue.JobHours / rescue.EngineCount
-)
+<span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span>
+    <span class="s2">&quot;DateTimeOfCall&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">to_date</span><span class="p">(</span><span class="n">rescue</span><span class="o">.</span><span class="n">DateTimeOfCall</span><span class="p">,</span> <span class="s2">&quot;dd/MM/yyyy&quot;</span><span class="p">)</span>
+<span class="p">)</span>
 
 
-rescue = rescue.na.drop(subset=[&quot;TotalCost&quot;, &quot;IncidentDuration&quot;])
+<span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span>
+    <span class="s2">&quot;IncidentDuration&quot;</span><span class="p">,</span> 
+    <span class="n">rescue</span><span class="o">.</span><span class="n">JobHours</span> <span class="o">/</span> <span class="n">rescue</span><span class="o">.</span><span class="n">EngineCount</span>
+<span class="p">)</span>
+
+
+<span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">na</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;TotalCost&quot;</span><span class="p">,</span> <span class="s2">&quot;IncidentDuration&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -989,37 +989,37 @@ rescue = rescue.na.drop(subset=[&quot;TotalCost&quot;, &quot;IncidentDuration&qu
 <p>Now we have our cleansed DataFrame we can go on to produce some tables for our article on animal rescue costs for the London Fire Brigade. Here we will put the code into functions because we will rerun these snippets of code multiple times in this notebook.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def get_top_10_incidents(sdf):
-    return (sdf
-        .select(&quot;CalYear&quot;, &quot;PostcodeDistrict&quot;, &quot;AnimalGroup&quot;, &quot;IncidentDuration&quot;, &quot;TotalCost&quot;)
-        .sort(&quot;TotalCost&quot;, ascending=False)
-        .limit(10)
-    )
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_top_10_incidents</span><span class="p">(</span><span class="n">sdf</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">sdf</span>
+        <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;CalYear&quot;</span><span class="p">,</span> <span class="s2">&quot;PostcodeDistrict&quot;</span><span class="p">,</span> <span class="s2">&quot;AnimalGroup&quot;</span><span class="p">,</span> <span class="s2">&quot;IncidentDuration&quot;</span><span class="p">,</span> <span class="s2">&quot;TotalCost&quot;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s2">&quot;TotalCost&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+    <span class="p">)</span>
 
-def get_mean_cost_by_animal(sdf):
-    return (sdf
-        .groupBy(&quot;AnimalGroup&quot;)
-        .agg(F.mean(&quot;TotalCost&quot;).alias(&#39;MeanCost&#39;))
-        .sort(&quot;MeanCost&quot;, ascending=False)
-        .limit(10)
-    )
+<span class="k">def</span> <span class="nf">get_mean_cost_by_animal</span><span class="p">(</span><span class="n">sdf</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">sdf</span>
+        <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;AnimalGroup&quot;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="s2">&quot;TotalCost&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;MeanCost&#39;</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s2">&quot;MeanCost&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+    <span class="p">)</span>
 
-def get_summary_cost_by_animal(sdf):
-    return (sdf.filter(
-                rescue.AnimalGroup.isin(
-                    &quot;Goat&quot;, 
-                    &quot;Bull&quot;, 
-                    &quot;Fish&quot;, 
-                    &quot;Horse&quot;)
-            )
-            .groupBy(&quot;AnimalGroup&quot;)
-            .agg(
-                F.min(&#39;TotalCost&#39;).alias(&#39;Min&#39;), 
-                F.avg(&#39;TotalCost&#39;).alias(&#39;Mean&#39;), 
-                F.max(&#39;TotalCost&#39;).alias(&#39;Max&#39;), 
-                F.count(&#39;TotalCost&#39;).alias(&#39;Count&#39;))
-            .sort(&quot;Mean&quot;, ascending=False)
-    )
+<span class="k">def</span> <span class="nf">get_summary_cost_by_animal</span><span class="p">(</span><span class="n">sdf</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">sdf</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+                <span class="n">rescue</span><span class="o">.</span><span class="n">AnimalGroup</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span>
+                    <span class="s2">&quot;Goat&quot;</span><span class="p">,</span> 
+                    <span class="s2">&quot;Bull&quot;</span><span class="p">,</span> 
+                    <span class="s2">&quot;Fish&quot;</span><span class="p">,</span> 
+                    <span class="s2">&quot;Horse&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;AnimalGroup&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">agg</span><span class="p">(</span>
+                <span class="n">F</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="s1">&#39;TotalCost&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;Min&#39;</span><span class="p">),</span> 
+                <span class="n">F</span><span class="o">.</span><span class="n">avg</span><span class="p">(</span><span class="s1">&#39;TotalCost&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;Mean&#39;</span><span class="p">),</span> 
+                <span class="n">F</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="s1">&#39;TotalCost&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;Max&#39;</span><span class="p">),</span> 
+                <span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;TotalCost&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;Count&#39;</span><span class="p">))</span>
+            <span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s2">&quot;Mean&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1061,8 +1061,8 @@ def get_summary_cost_by_animal(sdf):
 <p>Next we will call the above functions and show the results</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>top_10_incidents = get_top_10_incidents(rescue)
-top_10_incidents.show(truncate=False)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">top_10_incidents</span> <span class="o">=</span> <span class="n">get_top_10_incidents</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span>
+<span class="n">top_10_incidents</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1094,8 +1094,8 @@ top_10_incidents.show(truncate=False)
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mean_cost_by_animal = get_mean_cost_by_animal(rescue)
-mean_cost_by_animal.show(truncate=False)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mean_cost_by_animal</span> <span class="o">=</span> <span class="n">get_mean_cost_by_animal</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span>
+<span class="n">mean_cost_by_animal</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1126,8 +1126,8 @@ mean_cost_by_animal.show(truncate=False)
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>summary_cost_by_animal = get_summary_cost_by_animal(rescue)
-summary_cost_by_animal.show()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">summary_cost_by_animal</span> <span class="o">=</span> <span class="n">get_summary_cost_by_animal</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span>
+<span class="n">summary_cost_by_animal</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1184,7 +1184,7 @@ summary_cost_by_animal.show()
 <p>Let’s cache the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue.cache().count()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">cache</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1200,7 +1200,7 @@ summary_cost_by_animal.show()
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>get_top_10_incidents(rescue).show()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">get_top_10_incidents</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1230,7 +1230,7 @@ summary_cost_by_animal.show()
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>get_mean_cost_by_animal(rescue).show()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">get_mean_cost_by_animal</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1260,7 +1260,7 @@ summary_cost_by_animal.show()
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>get_summary_cost_by_animal(rescue).show()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">get_summary_cost_by_animal</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1351,7 +1351,7 @@ summary_cost_by_animal.show()
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./raw-notebooks/cache"
+            path: "./raw-notebooks\cache"
         },
         predefinedOutput: true
     }

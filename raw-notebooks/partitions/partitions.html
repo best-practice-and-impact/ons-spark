@@ -814,12 +814,12 @@ title="Print to PDF"
 <p>We will start by investigating the partitions of some DataFrames. We will look at the partitions of a newly created DataFrame, an imported DataFrame and a processed DataFrame. But first, we’ll need to do some imports and create a local application in the usual way.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import yaml
-from pyspark.sql import SparkSession, Window, functions as F
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">Window</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
 
-spark = (SparkSession.builder.master(&quot;local[2]&quot;)
-         .appName(&quot;partitions&quot;)
-         .getOrCreate())
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;partitions&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -837,13 +837,13 @@ spark = (SparkSession.builder.master(&quot;local[2]&quot;)
 <p>Let’s create a DataFrame called <code class="docutils literal notranslate"><span class="pre">rand_df</span></code> with an <code class="docutils literal notranslate"><span class="pre">id</span></code> column from 0 to 4,999 and a <code class="docutils literal notranslate"><span class="pre">rand_val</span></code> column containing random numbers from 1 to 10.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>row_ct = 5000
-seed_no = 42 #this is used to create the pseudo-random numbers
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">row_ct</span> <span class="o">=</span> <span class="mi">5000</span>
+<span class="n">seed_no</span> <span class="o">=</span> <span class="mi">42</span> <span class="c1">#this is used to create the pseudo-random numbers</span>
 
-rand_df = spark.range(0, row_ct)
-rand_df = rand_df.withColumn(&quot;rand_val&quot;, F.ceil(F.rand(seed=seed_no)*10))
+<span class="n">rand_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">row_ct</span><span class="p">)</span>
+<span class="n">rand_df</span> <span class="o">=</span> <span class="n">rand_df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;rand_val&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed_no</span><span class="p">)</span><span class="o">*</span><span class="mi">10</span><span class="p">))</span>
 
-rand_df.show(10)
+<span class="n">rand_df</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -881,10 +881,10 @@ only showing top 10 rows
 <p>Don’t worry too much about understanding this line of code, it’s the result which is important here.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(&#39;Number of partitions:\t\t&#39;, rand_df.rdd.getNumPartitions())
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of partitions:</span><span class="se">\t\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">rand_df</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">())</span>
 
-rows_in_part = rand_df.rdd.mapPartitions(lambda x: [sum(1 for _ in x)]).collect()
-print(&#39;Number of rows per partition:\t&#39;, rows_in_part)
+<span class="n">rows_in_part</span> <span class="o">=</span> <span class="n">rand_df</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">mapPartitions</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">x</span><span class="p">)])</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of rows per partition:</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">rows_in_part</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -915,11 +915,11 @@ Number of rows per partition:	 [2500, 2500]
 <p>Modifying the <code class="docutils literal notranslate"><span class="pre">spark.default.parallelism</span></code> property will set the number of partitions for all newly created DataFrames in this session. But what if we want to create a DataFrame that is unusually large or small for our session? For this case we can specify how many partitions we want when creating the DataFrame, using an extra argument <code class="docutils literal notranslate"><span class="pre">numPartitions</span></code>/<code class="docutils literal notranslate"><span class="pre">repartition</span></code> for PySpark/sparklyr.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>small_rand = spark.range(0, 10, numPartitions=1) #just 10 rows, so we&#39;ll put them into one partition
-small_rand = small_rand.withColumn(&quot;rand_value&quot;,  F.ceil(F.rand(seed=seed_no)*10))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">small_rand</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">numPartitions</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1">#just 10 rows, so we&#39;ll put them into one partition</span>
+<span class="n">small_rand</span> <span class="o">=</span> <span class="n">small_rand</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;rand_value&quot;</span><span class="p">,</span>  <span class="n">F</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed_no</span><span class="p">)</span><span class="o">*</span><span class="mi">10</span><span class="p">))</span>
 
-small_rand.show()
-small_rand.rdd.getNumPartitions()
+<span class="n">small_rand</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">small_rand</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -959,14 +959,14 @@ small_rand.rdd.getNumPartitions()
 <p>Next, let’s import the <code class="docutils literal notranslate"><span class="pre">animal_rescue.csv</span></code> file and see how many partitions we have.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>with open(&quot;../../../config.yaml&quot;) as f:
-    config = yaml.safe_load(f)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
     
-rescue_path = config[&quot;rescue_path_csv&quot;]
+<span class="n">rescue_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path_csv&quot;</span><span class="p">]</span>
 
-rescue = spark.read.csv(rescue_path, header=True, inferSchema=True)
+<span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-rescue.rdd.getNumPartitions()
+<span class="n">rescue</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -987,17 +987,17 @@ rescue.rdd.getNumPartitions()
 <p>How many rows and columns do each DataFrame have?</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_rows = rescue.count()
-rescue_columns = len(rescue.columns)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_rows</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<span class="n">rescue_columns</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rescue</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
 
-rand_df_columns = len(rand_df.columns)
+<span class="n">rand_df_columns</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rand_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
 
-print(&#39;Number of rows in rescue DataFrame:\t\t&#39;, rescue_rows)
-print(&#39;Number of columns in rescue DataFrame:\t\t&#39;, rescue_columns)
-print(&#39;Total number of cells in rescue DataFrame:\t&#39;, rescue_rows*rescue_columns)
-print(&#39;\nNumber of rows in random_df DataFrame:\t\t&#39;, row_ct)
-print(&#39;Number of columns in random_df DataFrame:\t&#39;, rand_df_columns)
-print(&#39;Total number of cells in random_df DataFrame:\t&#39;, len(rand_df.columns)*row_ct)
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of rows in rescue DataFrame:</span><span class="se">\t\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">rescue_rows</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of columns in rescue DataFrame:</span><span class="se">\t\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">rescue_columns</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Total number of cells in rescue DataFrame:</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">rescue_rows</span><span class="o">*</span><span class="n">rescue_columns</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Number of rows in random_df DataFrame:</span><span class="se">\t\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">row_ct</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of columns in random_df DataFrame:</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">rand_df_columns</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Total number of cells in random_df DataFrame:</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">rand_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">*</span><span class="n">row_ct</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1034,10 +1034,10 @@ Total number of cells in random_df DataFrame:	 10000
 <p>Let’s see how applying <em>narrow</em> and <em>wide</em> transformations to the DataFrame affects the number of partitions. Firstly we’ll filter the data, which is a <em>narrow</em> operation.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>filtered_rescue = rescue.filter(F.col(&#39;AnimalGroupParent&#39;) == &#39;Cat&#39;)
-filtered_rescue.select(&#39;AnimalGroupParent&#39;, &#39;FinalDescription&#39;).show(3, truncate=False)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">filtered_rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;AnimalGroupParent&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Cat&#39;</span><span class="p">)</span>
+<span class="n">filtered_rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;AnimalGroupParent&#39;</span><span class="p">,</span> <span class="s1">&#39;FinalDescription&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-print(&#39;Number of partitions in filtered_rescue DataFrame:\t&#39;,filtered_rescue.rdd.getNumPartitions())
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of partitions in filtered_rescue DataFrame:</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">filtered_rescue</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -1069,11 +1069,11 @@ Number of partitions in filtered_rescue DataFrame:	 1
 <p>*Note PySpark and sparklyr will give different results here; we will explain why later.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>count_by_area = (rescue.groupBy(&#39;PostcodeDistrict&#39;)
-    .agg(F.count(&#39;IncidentNumber&#39;).alias(&#39;Count&#39;)))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">count_by_area</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s1">&#39;PostcodeDistrict&#39;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;IncidentNumber&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;Count&#39;</span><span class="p">)))</span>
 
-count_by_area.show(5)
-print(&#39;Number of partitions in rescue_by_area DataFrame:\t&#39;, count_by_area.rdd.getNumPartitions())
+<span class="n">count_by_area</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of partitions in rescue_by_area DataFrame:</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">count_by_area</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -1106,8 +1106,8 @@ Number of partitions in rescue_by_area DataFrame:	 200
 <p>Let’s check how many rows are in each partition.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rows_in_part = count_by_area.rdd.mapPartitions(lambda x: [sum(1 for _ in x)]).collect()
-print(&#39;Number of rows per partition:\t&#39;, rows_in_part)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rows_in_part</span> <span class="o">=</span> <span class="n">count_by_area</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">mapPartitions</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">x</span><span class="p">)])</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of rows per partition:</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">rows_in_part</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1144,7 +1144,7 @@ print(&#39;Number of rows per partition:\t&#39;, rows_in_part)
 <p>Let’s see how to use these functions.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rand_df.rdd.getNumPartitions()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rand_df</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1159,8 +1159,8 @@ print(&#39;Number of rows per partition:\t&#39;, rows_in_part)
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rand_df = rand_df.coalesce(1)
-rand_df.rdd.getNumPartitions()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rand_df</span> <span class="o">=</span> <span class="n">rand_df</span><span class="o">.</span><span class="n">coalesce</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">rand_df</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1176,8 +1176,8 @@ rand_df.rdd.getNumPartitions()
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rand_df = rand_df.coalesce(10)
-rand_df.rdd.getNumPartitions()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rand_df</span> <span class="o">=</span> <span class="n">rand_df</span><span class="o">.</span><span class="n">coalesce</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">rand_df</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1194,8 +1194,8 @@ rand_df.rdd.getNumPartitions()
 <p>Is that the answer we were expecting? Note that <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.coalesce.html"><code class="docutils literal notranslate"><span class="pre">.coalesce()</span></code></a> should only be used to <em>decrease</em> the number of partitions. When increasing it can only increase to a previous state.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rand_df = rand_df.repartition(1)
-rand_df.rdd.getNumPartitions()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rand_df</span> <span class="o">=</span> <span class="n">rand_df</span><span class="o">.</span><span class="n">repartition</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">rand_df</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1211,8 +1211,8 @@ rand_df.rdd.getNumPartitions()
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rand_df = rand_df.repartition(10)
-rand_df.rdd.getNumPartitions()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rand_df</span> <span class="o">=</span> <span class="n">rand_df</span><span class="o">.</span><span class="n">repartition</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">rand_df</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1255,21 +1255,21 @@ Partition 2: 4, 5, 6 + (10, 11, 12)
 <p>Let’s start with a DataFrame with a skewed variable <code class="docutils literal notranslate"><span class="pre">skew_col</span></code>, but uniform partition sizes. It also has a column <code class="docutils literal notranslate"><span class="pre">rand_val</span></code> containing some random numbers to perform some calculations.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>row_ct = 10**7
-seed_no = 42
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">row_ct</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="mi">7</span>
+<span class="n">seed_no</span> <span class="o">=</span> <span class="mi">42</span>
 
-skewed_df = spark.range(row_ct, numPartitions=2)
+<span class="n">skewed_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="n">row_ct</span><span class="p">,</span> <span class="n">numPartitions</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
-skewed_df = (
-    skewed_df.withColumn(&quot;skew_col&quot;, F.when(F.col(&quot;id&quot;) &lt; 100, &quot;A&quot;)
-                               .when(F.col(&quot;id&quot;) &lt; 1000, &quot;B&quot;)
-                               .when(F.col(&quot;id&quot;) &lt; 10000, &quot;C&quot;)
-                               .when(F.col(&quot;id&quot;) &lt; 100000, &quot;D&quot;)
-                               .otherwise(&quot;E&quot;))
-              .withColumn(&quot;rand_val&quot;, F.rint(F.rand(seed_no)*10).cast(&quot;int&quot;))
-)
+<span class="n">skewed_df</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">skewed_df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;skew_col&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">)</span>
+                               <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">)</span>
+                               <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10000</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
+                               <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100000</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">)</span>
+                               <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">))</span>
+              <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;rand_val&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">rint</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">seed_no</span><span class="p">)</span><span class="o">*</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;int&quot;</span><span class="p">))</span>
+<span class="p">)</span>
 
-skewed_df.show(5)
+<span class="n">skewed_df</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1308,9 +1308,9 @@ only showing top 5 rows
 <p>We’ll put this into a function so we can run it again on other DataFrames later.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def print_partitioning_info(sdf):
-    sdf.withColumn(&quot;part_id&quot;, F.spark_partition_id()).groupBy(&quot;part_id&quot;).count().show()
-    print(f&quot;Number of partitions: {sdf.rdd.getNumPartitions()}&quot;)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">print_partitioning_info</span><span class="p">(</span><span class="n">sdf</span><span class="p">):</span>
+    <span class="n">sdf</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;part_id&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">spark_partition_id</span><span class="p">())</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;part_id&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of partitions: </span><span class="si">{</span><span class="n">sdf</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1330,7 +1330,7 @@ only showing top 5 rows
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print_partitioning_info(skewed_df)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">print_partitioning_info</span><span class="p">(</span><span class="n">skewed_df</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1353,13 +1353,13 @@ Number of partitions: 2
 <p>To perform the join we will also need a second DataFrame</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>small_df = spark.createDataFrame([
-    [&quot;A&quot;, 1],
-    [&quot;B&quot;, 2],
-    [&quot;C&quot;, 3],
-    [&quot;D&quot;, 4],
-    [&quot;E&quot;, 5]
-], [&quot;skew_col&quot;, &quot;number_col&quot;])
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">small_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">([</span>
+    <span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="p">],</span> <span class="p">[</span><span class="s2">&quot;skew_col&quot;</span><span class="p">,</span> <span class="s2">&quot;number_col&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -1373,13 +1373,13 @@ Number of partitions: 2
 <p>We will use the <code class="docutils literal notranslate"><span class="pre">checkpoint_path</span></code> from the config.yml file to write the data before deleting it. See the <span class="xref myst">Checkpoint and Staging Tables</span> article for more information.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import subprocess
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">subprocess</span>
 
-def write_delete(sdf):
-    path = config[&quot;checkpoint_path&quot;] + &quot;/temp.parquet&quot;
-    sdf.write.mode(&quot;overwrite&quot;).parquet(path)
-    cmd = f&#39;rm -r -skipTrash {path}&#39;
-    p = subprocess.run(cmd, shell=True)
+<span class="k">def</span> <span class="nf">write_delete</span><span class="p">(</span><span class="n">sdf</span><span class="p">):</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;checkpoint_path&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;/temp.parquet&quot;</span>
+    <span class="n">sdf</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="s2">&quot;overwrite&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;rm -r -skipTrash </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1400,17 +1400,17 @@ def write_delete(sdf):
 <p>Note that the join key, group variable and windows are all set on the <code class="docutils literal notranslate"><span class="pre">skew_col</span></code> variable.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spark.sparkContext.setJobDescription(&quot;join&quot;)
-joined_df = skewed_df.join(small_df, on=&quot;skew_col&quot;, how=&quot;left&quot;)
-write_delete(joined_df)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">setJobDescription</span><span class="p">(</span><span class="s2">&quot;join&quot;</span><span class="p">)</span>
+<span class="n">joined_df</span> <span class="o">=</span> <span class="n">skewed_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">small_df</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;skew_col&quot;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+<span class="n">write_delete</span><span class="p">(</span><span class="n">joined_df</span><span class="p">)</span>
 
-spark.sparkContext.setJobDescription(&quot;groupby&quot;)
-grouped_df = skewed_df.groupBy(&quot;skew_col&quot;).agg(F.sum(&quot;rand_val&quot;).alias(&quot;sum_rand&quot;))
-write_delete(grouped_df)
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">setJobDescription</span><span class="p">(</span><span class="s2">&quot;groupby&quot;</span><span class="p">)</span>
+<span class="n">grouped_df</span> <span class="o">=</span> <span class="n">skewed_df</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;skew_col&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="s2">&quot;rand_val&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;sum_rand&quot;</span><span class="p">))</span>
+<span class="n">write_delete</span><span class="p">(</span><span class="n">grouped_df</span><span class="p">)</span>
 
-spark.sparkContext.setJobDescription(&quot;window&quot;)
-window_df = skewed_df.withColumn(&quot;skew_window_sum&quot;, F.sum(&quot;rand_val&quot;).over(Window.partitionBy(&quot;skew_col&quot;)))
-write_delete(window_df)
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">setJobDescription</span><span class="p">(</span><span class="s2">&quot;window&quot;</span><span class="p">)</span>
+<span class="n">window_df</span> <span class="o">=</span> <span class="n">skewed_df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;skew_window_sum&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="s2">&quot;rand_val&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">over</span><span class="p">(</span><span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s2">&quot;skew_col&quot;</span><span class="p">)))</span>
+<span class="n">write_delete</span><span class="p">(</span><span class="n">window_df</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1486,7 +1486,7 @@ write_delete(window_df)
 <p>One last piece of information we will gather is the partitioning information of the output DataFrames using the <code class="docutils literal notranslate"><span class="pre">print_partitioning_info()</span></code> function we defined above.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print_partitioning_info(joined_df)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">print_partitioning_info</span><span class="p">(</span><span class="n">joined_df</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1511,7 +1511,7 @@ Number of partitions: 200
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print_partitioning_info(grouped_df)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">print_partitioning_info</span><span class="p">(</span><span class="n">grouped_df</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1536,7 +1536,7 @@ Number of partitions: 200
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print_partitioning_info(window_df)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">print_partitioning_info</span><span class="p">(</span><span class="n">window_df</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1581,10 +1581,10 @@ Number of partitions: 200
 <p>Before we demonstrate this by writing the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame as parquet files, we need to remove the <code class="docutils literal notranslate"><span class="pre">£</span></code> signs from the column names as these are not supported by the parquet format. In sparklyr they are replaced automatically when reading in the csv file, so no need for this step.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for col in rescue.columns:
-    if &#39;£&#39; in col:
-        new_name = col.replace(&#39;(£)&#39;,&#39;GBP&#39;)
-        rescue = rescue.withColumnRenamed(col, new_name)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">rescue</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s1">&#39;£&#39;</span> <span class="ow">in</span> <span class="n">col</span><span class="p">:</span>
+        <span class="n">new_name</span> <span class="o">=</span> <span class="n">col</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;(£)&#39;</span><span class="p">,</span><span class="s1">&#39;GBP&#39;</span><span class="p">)</span>
+        <span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">new_name</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1592,8 +1592,8 @@ Number of partitions: 200
 <p>Next let’s create a file path and write the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame to disk in parquet format by partitioning the data in terms of <code class="docutils literal notranslate"><span class="pre">CalYear</span></code></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>repartition_path = config[&quot;checkpoint_path&quot;] + &quot;/rescue_by_year.parquet&quot;
-rescue.write.mode(&#39;overwrite&#39;).partitionBy(&#39;CalYear&#39;).parquet(repartition_path)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">repartition_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;checkpoint_path&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;/rescue_by_year.parquet&quot;</span>
+<span class="n">rescue</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="s1">&#39;overwrite&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s1">&#39;CalYear&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">repartition_path</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1609,10 +1609,10 @@ rescue.write.mode(&#39;overwrite&#39;).partitionBy(&#39;CalYear&#39;).parquet(re
 <p>The easiest way to see this is by navigating to these directories using the file browser in HUE. Alternatively we can use the <a class="reference external" href="https://docs.python.org/3/library/subprocess.html"><code class="docutils literal notranslate"><span class="pre">subprocess</span></code></a> package to run lines of code through the terminal to return the contents of the <code class="docutils literal notranslate"><span class="pre">rescue_by_year.parquet</span></code> directory.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import subprocess
-cmd = f&quot;hdfs dfs -ls -C {repartition_path}&quot;
-p = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, universal_newlines=True)
-print(p.stdout)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;hdfs dfs -ls -C </span><span class="si">{</span><span class="n">repartition_path</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">universal_newlines</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1641,8 +1641,8 @@ file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/_SUCCESS
 <p>Finally, we will delete these files to clean up the file system.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cmd = f&quot;hdfs dfs -rm -r -skipTrash {repartition_path}&quot;
-p = subprocess.run(cmd, shell=True)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;hdfs dfs -rm -r -skipTrash </span><span class="si">{</span><span class="n">repartition_path</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1728,7 +1728,7 @@ p = subprocess.run(cmd, shell=True)
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./raw-notebooks/partitions"
+            path: "./raw-notebooks\partitions"
         },
         predefinedOutput: true
     }

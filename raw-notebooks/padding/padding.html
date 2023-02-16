@@ -717,20 +717,20 @@ title="Print to PDF"
 <p>First, start a Spark session and read in the Animal Rescue data, filter on <code class="docutils literal notranslate"><span class="pre">&quot;Police&quot;</span></code> and select the relevant columns:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import yaml
-from pyspark.sql import SparkSession, functions as F
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
 
-spark = SparkSession.builder.master(&quot;local[2]&quot;).appName(&quot;padding&quot;).getOrCreate()
+<span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;padding&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
 
-with open(&quot;../../../config.yaml&quot;) as f:
-    config = yaml.safe_load(f)
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
     
-rescue_path = config[&quot;rescue_path&quot;]
-rescue = (spark.read.parquet(rescue_path)
-          .filter(F.col(&quot;origin_of_call&quot;) == &quot;Police&quot;)
-          .orderBy(&quot;date_time_of_call&quot;)
-          .select(&quot;incident_number&quot;, &quot;origin_of_call&quot;))
-rescue.show(5)
+<span class="n">rescue_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path&quot;</span><span class="p">]</span>
+<span class="n">rescue</span> <span class="o">=</span> <span class="p">(</span><span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;origin_of_call&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Police&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;date_time_of_call&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;origin_of_call&quot;</span><span class="p">))</span>
+<span class="n">rescue</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -772,7 +772,7 @@ only showing top 5 rows
 <p>The input to <code class="docutils literal notranslate"><span class="pre">lpad()</span></code> will most often be either a string or an integer. In this example, <code class="docutils literal notranslate"><span class="pre">incident_number</span></code> is a string:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue.printSchema()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -790,8 +790,8 @@ only showing top 5 rows
 <p>Use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python//reference/api/pyspark.sql.functions.length.html"><code class="docutils literal notranslate"><span class="pre">F.length()</span></code></a>/<a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#length"><code class="docutils literal notranslate"><span class="pre">length()</span></code></a> to demonstrate that the <code class="docutils literal notranslate"><span class="pre">incident_number</span></code> column is not always the same size:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue = rescue.withColumn(&quot;incident_no_length&quot;, F.length(&quot;incident_number&quot;))
-rescue.groupBy(&quot;incident_no_length&quot;).count().orderBy(&quot;incident_no_length&quot;).show()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;incident_no_length&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">length</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">))</span>
+<span class="n">rescue</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;incident_no_length&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;incident_no_length&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -823,9 +823,9 @@ rescue.groupBy(&quot;incident_no_length&quot;).count().orderBy(&quot;incident_no
 <p><code class="docutils literal notranslate"><span class="pre">lpad()</span></code> takes three arguments. The first argument, <code class="docutils literal notranslate"><span class="pre">col</span></code> is the column name, the second, <code class="docutils literal notranslate"><span class="pre">len</span></code> is the fixed width of the string, and the third, <code class="docutils literal notranslate"><span class="pre">pad</span></code>, the value to pad it with if it is too short, often <code class="docutils literal notranslate"><span class="pre">&quot;0&quot;</span></code>. The data type returned from <code class="docutils literal notranslate"><span class="pre">lpad()</span></code> will always be a string.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue = rescue.withColumn(&quot;padded_incident_no&quot;, F.lpad(F.col(&quot;incident_number&quot;), 9, &quot;0&quot;))
-rescue.orderBy(&quot;incident_no_length&quot;).show(5)
-rescue.orderBy(&quot;incident_no_length&quot;, ascending=False).show(5)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;padded_incident_no&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">lpad</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">),</span> <span class="mi">9</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">))</span>
+<span class="n">rescue</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;incident_no_length&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">rescue</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;incident_no_length&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -874,8 +874,8 @@ only showing top 5 rows
 <p>Be careful; if you set the fixed width to be too short you can lose data:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue = rescue.withColumn(&quot;too_short_inc_no&quot;, F.lpad(F.col(&quot;incident_number&quot;), 3, &quot;0&quot;))
-rescue.orderBy(&quot;incident_no_length&quot;, ascending=False).show(5)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;too_short_inc_no&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">lpad</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">),</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">))</span>
+<span class="n">rescue</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;incident_no_length&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -907,8 +907,8 @@ only showing top 5 rows
 <p>You can have values other than zero for the last argument and they do not have to be width 1, although there are fewer use cases for this. For example:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue = rescue.withColumn(&quot;silly_example&quot;, F.lpad(F.col(&quot;incident_number&quot;), 14, &quot;xyz&quot;))
-rescue.orderBy(&quot;incident_no_length&quot;).show(5)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;silly_example&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">lpad</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">),</span> <span class="mi">14</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">))</span>
+<span class="n">rescue</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;incident_no_length&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -943,8 +943,8 @@ only showing top 5 rows
 <p>There is also a similar function, <a class="reference external" href="https://spark.apache.org/docs/latest/api/python//reference/api/pyspark.sql.functions.rpad.html"><code class="docutils literal notranslate"><span class="pre">F.rpad()</span></code></a>/<a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#rpad"><code class="docutils literal notranslate"><span class="pre">rpad</span></code></a>, that works in the same way with identical arguments, just padding to the right instead:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue = rescue.withColumn(&quot;right_padded_inc_no&quot;, F.rpad(F.col(&quot;incident_number&quot;), 9, &quot;0&quot;))
-rescue.select(&quot;incident_number&quot;, &quot;right_padded_inc_no&quot;).show(5)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;right_padded_inc_no&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">rpad</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">),</span> <span class="mi">9</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">))</span>
+<span class="n">rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;right_padded_inc_no&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1013,7 +1013,7 @@ only showing top 5 rows
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./raw-notebooks/padding"
+            path: "./raw-notebooks\padding"
         },
         predefinedOutput: true
     }

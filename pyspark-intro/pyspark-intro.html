@@ -1198,8 +1198,8 @@ title="Print to PDF"
 <p>The second is the <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/functions.html"><code class="docutils literal notranslate"><span class="pre">pyspark.sql.functions</span></code></a> module, which contain functions that can be applied to Spark DataFrames, or columns within the DataFrames. The standard method is to <a class="reference internal" href="../ancillary-topics/module-imports.html"><span class="doc std std-doc">import the <code class="docutils literal notranslate"><span class="pre">functions</span></code> module with the alias <code class="docutils literal notranslate"><span class="pre">F</span></code></span></a>, which means whenever we want to call a function from this module we write <code class="docutils literal notranslate"><span class="pre">F.function_name()</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from pyspark.sql import SparkSession
-import pyspark.sql.functions as F
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span>
+<span class="kn">import</span> <span class="nn">pyspark.sql.functions</span> <span class="k">as</span> <span class="nn">F</span>
 </pre></div>
 </div>
 </div>
@@ -1207,11 +1207,11 @@ import pyspark.sql.functions as F
 <p>We will also want to import the <a class="reference external" href="https://pandas.pydata.org/"><code class="docutils literal notranslate"><span class="pre">pandas</span></code></a> module as <code class="docutils literal notranslate"><span class="pre">pd</span></code> as it makes viewing data much easier and neater, and <code class="docutils literal notranslate"><span class="pre">yaml</span></code> for reading the config file, which contains the file path of the source data.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import pandas as pd
-import yaml
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
 
-with open(&quot;../../config.yaml&quot;) as f:
-    config = yaml.safe_load(f)
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1225,9 +1225,9 @@ with open(&quot;../../config.yaml&quot;) as f:
 <p>Note that only one Spark session can be running at once. If a session already exists then a new one will not created, instead the connection to the existing session will be used, hence the <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.builder.getOrCreate.html"><code class="docutils literal notranslate"><span class="pre">.getOrCreate()</span></code></a> method.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spark = (SparkSession.builder.master(&quot;local[2]&quot;)
-         .appName(&quot;pyspark-intro&quot;)
-         .getOrCreate())
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;pyspark-intro&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -1240,8 +1240,8 @@ with open(&quot;../../config.yaml&quot;) as f:
 <p>To read in from a CSV file, use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameReader.csv.html"><code class="docutils literal notranslate"><span class="pre">spark.read.csv()</span></code></a>. The file path is stored in the config file as <code class="docutils literal notranslate"><span class="pre">rescue_path_csv</span></code>. Using <code class="docutils literal notranslate"><span class="pre">header=True</span></code> means that the DataFrame will use the column headers from the CSV as the column names. CSV files do not contain information about the <a class="reference internal" href="../spark-overview/data-types.html"><span class="doc std std-doc">data types</span></a>, so use <code class="docutils literal notranslate"><span class="pre">inferSchema=True</span></code> which makes Spark scan the file to infer the data types.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_path_csv = config[&quot;rescue_path_csv&quot;]
-rescue = spark.read.csv(rescue_path_csv, header=True, inferSchema=True)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_path_csv</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path_csv&quot;</span><span class="p">]</span>
+<span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">rescue_path_csv</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1252,7 +1252,7 @@ rescue = spark.read.csv(rescue_path_csv, header=True, inferSchema=True)
 <p>To view the column names and data types use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.printSchema.html"><code class="docutils literal notranslate"><span class="pre">.printSchema()</span></code></a>. This will not return any actual data.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue.printSchema()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1296,7 +1296,7 @@ rescue = spark.read.csv(rescue_path_csv, header=True, inferSchema=True)
 <p>When there are many columns the output can be hard to read, e.g. although the output of <code class="docutils literal notranslate"><span class="pre">.show(3)</span></code> looks fine in this article, in the notebook version every row will appear over several lines:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue.show(3)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1318,9 +1318,9 @@ only showing top 3 rows
 <h2>Convert to pandas: <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code><a class="headerlink" href="#convert-to-pandas-topandas" title="Permalink to this headline">#</a></h2>
 <p>The returned results can look pretty ugly with <code class="docutils literal notranslate"><span class="pre">.show()</span></code> when you have a lot of columns, so often the best way to view the data is to convert to a pandas DataFrame. Be careful: the DataFrame is currently on the <em>Spark cluster</em> with lots of memory capacity, whereas pandas DataFrames are stored on the <em>driver</em>, which will have much less. Trying to use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.toPandas.html"><code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code></a> and a huge PySpark DF will not work. If converting to a pandas DF just to view the data, use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.limit.html"><code class="docutils literal notranslate"><span class="pre">.limit()</span></code></a> to just bring back a small number of rows.</p>
 <p><code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code> is an <em>action</em> and will process the whole plan on the Spark cluster. In this example, it will read the CSV file, return three rows, and then convert the result to the driver as a pandas DF.</p>
-<div class="cell docutils container">
+<div class="cell tag_output_scroll docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue.limit(3).toPandas()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1471,9 +1471,9 @@ only showing top 3 rows
 <p>Selecting columns is a <em>transformation</em>, and so will only be processed once an <em>action</em> is called. As such we are chaining this with <code class="docutils literal notranslate"><span class="pre">.show()</span></code> to preview the data:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>(rescue
-    .select(&quot;IncidentNumber&quot;, &quot;DateTimeofCall&quot;, &quot;FinalDescription&quot;)
-    .show(5, truncate=False))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">rescue</span>
+    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;IncidentNumber&quot;</span><span class="p">,</span> <span class="s2">&quot;DateTimeofCall&quot;</span><span class="p">,</span> <span class="s2">&quot;FinalDescription&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -1499,7 +1499,7 @@ only showing top 5 rows
 <p>Note that unlike pandas DataFrames the row count is not automatically determined when the data are read in as a PySpark DataFrame. This is an example of <em>lazy evaluation</em>. As such, <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.count.html"><code class="docutils literal notranslate"><span class="pre">.count()</span></code></a> is an <em>action</em> and has to be explicitly called.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue.count()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1517,16 +1517,16 @@ only showing top 5 rows
 <p>We then use <code class="docutils literal notranslate"><span class="pre">.printSchema()</span></code> to verify that the columns have been removed.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue = rescue.drop(
-    &quot;WardCode&quot;,
-    &quot;BoroughCode&quot;,
-    &quot;Easting_m&quot;,
-    &quot;Northing_m&quot;,
-    &quot;Easting_rounded&quot;,
-    &quot;Northing_rounded&quot;
-)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span>
+    <span class="s2">&quot;WardCode&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;BoroughCode&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Easting_m&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Northing_m&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Easting_rounded&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Northing_rounded&quot;</span>
+<span class="p">)</span>
 
-rescue.printSchema()
+<span class="n">rescue</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1563,15 +1563,15 @@ rescue.printSchema()
 <p>To rename columns, use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.withColumnRenamed.html"><code class="docutils literal notranslate"><span class="pre">.withColumnRenamed()</span></code></a>. This has two arguments: the original column name, followed by the new name. You need a separate <code class="docutils literal notranslate"><span class="pre">.withColumnRenamed()</span></code> statement for each column name but can chain these together. Once again we are re-assigning the DataFrame as it is immutable.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue = (rescue
-          .withColumnRenamed(&quot;IncidentNumber&quot;, &quot;incident_number&quot;)
-          .withColumnRenamed(&quot;AnimalGroupParent&quot;, &quot;animal_group&quot;)
-          .withColumnRenamed(&quot;CalYear&quot;, &quot;cal_year&quot;)
-          .withColumnRenamed(&quot;IncidentNotionalCost(£)&quot;, &quot;total_cost&quot;)
-          .withColumnRenamed(&quot;PumpHoursTotal&quot;, &quot;job_hours&quot;)
-          .withColumnRenamed(&quot;PumpCount&quot;, &quot;engine_count&quot;))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;IncidentNumber&quot;</span><span class="p">,</span> <span class="s2">&quot;incident_number&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;AnimalGroupParent&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;CalYear&quot;</span><span class="p">,</span> <span class="s2">&quot;cal_year&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;IncidentNotionalCost(£)&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;PumpHoursTotal&quot;</span><span class="p">,</span> <span class="s2">&quot;job_hours&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;PumpCount&quot;</span><span class="p">,</span> <span class="s2">&quot;engine_count&quot;</span><span class="p">))</span>
 
-rescue.printSchema()
+<span class="n">rescue</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1621,24 +1621,24 @@ rescue.printSchema()
 <details>
 <summary><b>Exercise 1: Solution</b></summary><div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># 1a: Chain two .withColumnRenamed() operations
-rescue = (rescue
-          .withColumnRenamed(&quot;FinalDescription&quot;, &quot;description&quot;)
-          .withColumnRenamed(&quot;PostcodeDistrict&quot;, &quot;postcode_district&quot;))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1a: Chain two .withColumnRenamed() operations</span>
+<span class="n">rescue</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;FinalDescription&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;PostcodeDistrict&quot;</span><span class="p">,</span> <span class="s2">&quot;postcode_district&quot;</span><span class="p">))</span>
 
-# 1b: Select the eight columns and assign to rescue
-rescue = rescue.select(
-    &quot;incident_number&quot;,
-    &quot;animal_group&quot;,
-    &quot;cal_year&quot;,
-    &quot;total_cost&quot;,
-    &quot;job_hours&quot;,
-    &quot;engine_count&quot;,
-    &quot;description&quot;,
-    &quot;postcode_district&quot;)
+<span class="c1"># 1b: Select the eight columns and assign to rescue</span>
+<span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+    <span class="s2">&quot;incident_number&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cal_year&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;job_hours&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;engine_count&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;description&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;postcode_district&quot;</span><span class="p">)</span>
 
-# 1c Preview with .show(); can also use .limit(5).toPandas()
-rescue.show(5)
+<span class="c1"># 1c Preview with .show(); can also use .limit(5).toPandas()</span>
+<span class="n">rescue</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1666,8 +1666,8 @@ only showing top 5 rows
 <p>For instance, if we want to select all the rows where <code class="docutils literal notranslate"><span class="pre">animal_group</span></code> is equal to <code class="docutils literal notranslate"><span class="pre">Hamster</span></code>, we can use <code class="docutils literal notranslate"><span class="pre">F.col(&quot;animal_group&quot;)</span> <span class="pre">==</span> <span class="pre">&quot;Hamster&quot;)</span></code>. Note the double equals sign used in a condition. We do not want to change the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame, so assign it to a new DF, <code class="docutils literal notranslate"><span class="pre">hamsters</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>hamsters = rescue.filter(F.col(&quot;animal_group&quot;) == &quot;Hamster&quot;)
-hamsters.select(&quot;incident_number&quot;, &quot;animal_group&quot;).show(3)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hamsters</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Hamster&quot;</span><span class="p">)</span>
+<span class="n">hamsters</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1687,8 +1687,8 @@ only showing top 3 rows
 <p>Alternatively you can just input a string into <code class="docutils literal notranslate"><span class="pre">.filter()</span></code>, although this can be messy to look at if the condition contains a string:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cats = rescue.filter(&quot;animal_group == &#39;Cat&#39;&quot;)
-cats.select(&quot;incident_number&quot;, &quot;animal_group&quot;).show(3)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cats</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s2">&quot;animal_group == &#39;Cat&#39;&quot;</span><span class="p">)</span>
+<span class="n">cats</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1708,14 +1708,14 @@ only showing top 3 rows
 <p>Multiple conditions should be in brackets; putting each condition on a new line makes the code easier to read:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>expensive_olympic_dogs = rescue.filter(
-    (F.col(&quot;animal_group&quot;) == &quot;Dog&quot;) &amp;
-    (F.col(&quot;total_cost&quot;) &gt;= 750) &amp;
-    (F.col(&quot;cal_year&quot;) == 2012))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">expensive_olympic_dogs</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Dog&quot;</span><span class="p">)</span> <span class="o">&amp;</span>
+    <span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;total_cost&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">750</span><span class="p">)</span> <span class="o">&amp;</span>
+    <span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2012</span><span class="p">))</span>
 
-(expensive_olympic_dogs
-    .select(&quot;incident_number&quot;, &quot;animal_group&quot;, &quot;cal_year&quot;, &quot;total_cost&quot;)
-    .show())
+<span class="p">(</span><span class="n">expensive_olympic_dogs</span>
+    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;cal_year&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">show</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -1740,12 +1740,12 @@ only showing top 3 rows
 <details>
 <summary><b>Exercise 2: Solution</b></summary><div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Use F.col() to filter, ensuring that a new DataFrame is created
-# Can also use a string condition instead, e.g. rescue.filter(&quot;animal_group == &#39;Fox&#39;&quot;)
-foxes = rescue.filter(F.col(&quot;animal_group&quot;) == &quot;Fox&quot;)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use F.col() to filter, ensuring that a new DataFrame is created</span>
+<span class="c1"># Can also use a string condition instead, e.g. rescue.filter(&quot;animal_group == &#39;Fox&#39;&quot;)</span>
+<span class="n">foxes</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Fox&quot;</span><span class="p">)</span>
 
-# Preview with .show() or .limit(10).toPandas()
-foxes.show(10)
+<span class="c1"># Preview with .show() or .limit(10).toPandas()</span>
+<span class="n">foxes</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1781,18 +1781,18 @@ only showing top 10 rows
 <p>So to get the duration of the incident, which we will call <code class="docutils literal notranslate"><span class="pre">incident_duration</span></code>, we have to divide <code class="docutils literal notranslate"><span class="pre">job_hours</span></code> by <code class="docutils literal notranslate"><span class="pre">engine_count</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue = rescue.withColumn(
-    &quot;incident_duration&quot;, 
-    F.col(&quot;job_hours&quot;) / F.col(&quot;engine_count&quot;)
-)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span>
+    <span class="s2">&quot;incident_duration&quot;</span><span class="p">,</span> 
+    <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;job_hours&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;engine_count&quot;</span><span class="p">)</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 <p>Now preview the data with <code class="docutils literal notranslate"><span class="pre">.limit(5).toPandas()</span></code>:</p>
-<div class="cell docutils container">
+<div class="cell tag_output_scroll docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue.limit(5).toPandas()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1904,10 +1904,10 @@ only showing top 10 rows
 <p>To sort the data, use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.orderBy.html"><code class="docutils literal notranslate"><span class="pre">.orderBy()</span></code></a>. By default this will sort ascending; to sort descending, use <code class="docutils literal notranslate"><span class="pre">ascending=False</span></code>. To show the highest cost incidents:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>(rescue
-    .orderBy(&quot;total_cost&quot;, ascending=False)
-    .select(&quot;incident_number&quot;, &quot;total_cost&quot;, &quot;animal_group&quot;)
-    .show(10))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">rescue</span>
+    <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -1941,21 +1941,21 @@ only showing top 10 rows
 <details>
 <summary><b>Exercise 3: Solution</b></summary><div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># To get the top 10, sort the DF descending
-top10 = (rescue
-         .orderBy(&quot;incident_duration&quot;, ascending=False)
-         .limit(10))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># To get the top 10, sort the DF descending</span>
+<span class="n">top10</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+         <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;incident_duration&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
 
-top10.show()
+<span class="n">top10</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
-# The bottom 10 can just be sorted ascending
-# Note that .tail() does not exist in Spark 2.4
-bottom10 = (rescue
-         .orderBy(&quot;incident_duration&quot;)
-         .limit(10))
+<span class="c1"># The bottom 10 can just be sorted ascending</span>
+<span class="c1"># Note that .tail() does not exist in Spark 2.4</span>
+<span class="n">bottom10</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+         <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;incident_duration&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
 
-# When previewing the results, the incident_duration are all null
-bottom10.show()
+<span class="c1"># When previewing the results, the incident_duration are all null</span>
+<span class="n">bottom10</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -2001,10 +2001,10 @@ bottom10.show()
 <p>In Spark, grouping and aggregating is similar to pandas or SQL: we first group the data with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.groupBy.html"><code class="docutils literal notranslate"><span class="pre">.groupBy()</span></code></a>, then aggregate it in some way with a function from the <code class="docutils literal notranslate"><span class="pre">functions</span></code> module inside <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.agg.html"><code class="docutils literal notranslate"><span class="pre">.agg()</span></code></a>, e.g. <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.sum.html"><code class="docutils literal notranslate"><span class="pre">F.sum()</span></code></a>, <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.max.html"><code class="docutils literal notranslate"><span class="pre">F.max()</span></code></a>. For instance, to find the average cost by <code class="docutils literal notranslate"><span class="pre">animal_group</span></code> we use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.mean.html"><code class="docutils literal notranslate"><span class="pre">F.mean()</span></code></a>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cost_by_animal = (rescue
-                  .groupBy(&quot;animal_group&quot;)
-                  .agg(F.mean(&quot;total_cost&quot;)))
-cost_by_animal.show(5)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cost_by_animal</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+                  <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span>
+                  <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="s2">&quot;total_cost&quot;</span><span class="p">)))</span>
+<span class="n">cost_by_animal</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -2026,11 +2026,11 @@ only showing top 5 rows
 <p>The new column has been returned as <code class="docutils literal notranslate"><span class="pre">avg(total_cost)</span></code>. We want to give it a more sensible name and avoid using brackets. We saw earlier that we could use <code class="docutils literal notranslate"><span class="pre">.withColumnRenamed()</span></code> once the column has been created, but it is easier to use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.alias.html"><code class="docutils literal notranslate"><span class="pre">.alias()</span></code></a> to rename the column directly in the aggregation:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cost_by_animal = (rescue
-                  .groupBy(&quot;animal_group&quot;)
-                  .agg(F.mean(&quot;total_cost&quot;).alias(&quot;average_cost&quot;)))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cost_by_animal</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+                  <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span>
+                  <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="s2">&quot;total_cost&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;average_cost&quot;</span><span class="p">)))</span>
 
-cost_by_animal.show(5)
+<span class="n">cost_by_animal</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -2052,7 +2052,7 @@ only showing top 5 rows
 <p>Remember that Spark DFs are not ordered unless we specifically do so with <code class="docutils literal notranslate"><span class="pre">.orderBy()</span></code>; now we have renamed the column <code class="docutils literal notranslate"><span class="pre">average_cost</span></code> this is easy to do:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cost_by_animal.orderBy(&quot;average_cost&quot;, ascending=False).show(10)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cost_by_animal</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;average_cost&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -2079,8 +2079,8 @@ only showing top 10 rows
 <p>It looks like <code class="docutils literal notranslate"><span class="pre">Goat</span></code> could be an outlier as it is significantly higher than the other higher average cost incidents. We can investigate this in more detail using <code class="docutils literal notranslate"><span class="pre">.filter()</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>goats = rescue.filter(F.col(&quot;animal_group&quot;) == &quot;Goat&quot;)
-goats.count()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">goats</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Goat&quot;</span><span class="p">)</span>
+<span class="n">goats</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -2093,7 +2093,7 @@ goats.count()
 <p>Just one expensive goat incident! Lets see the description:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>goats.select(&quot;incident_number&quot;, &quot;animal_group&quot;, &quot;description&quot;).toPandas()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">goats</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -2141,9 +2141,9 @@ goats.count()
 <p>The syntax for reading in a parquet file is similar to a CSV: <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameReader.parquet.html"><code class="docutils literal notranslate"><span class="pre">spark.read.parquet()</span></code></a>. There is no need for the <code class="docutils literal notranslate"><span class="pre">header</span></code> or <code class="docutils literal notranslate"><span class="pre">inferSchema</span></code> argument as unlike CSVs parquet files already have the schema defined. We can then preview the data with <code class="docutils literal notranslate"><span class="pre">.limit(5).toPandas()</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>population_path = config[&quot;population_path&quot;]
-population = spark.read.parquet(population_path)
-population.limit(5).toPandas()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">population_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;population_path&quot;</span><span class="p">]</span>
+<span class="n">population</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">population_path</span><span class="p">)</span>
+<span class="n">population</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -2214,11 +2214,11 @@ population.limit(5).toPandas()
 <p>To make the code easier to read we have put these arguments on new lines:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_with_pop = (
-    rescue.join(
-        population,
-        on=&quot;postcode_district&quot;,
-        how=&quot;left&quot;))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_pop</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">rescue</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="n">population</span><span class="p">,</span>
+        <span class="n">on</span><span class="o">=</span><span class="s2">&quot;postcode_district&quot;</span><span class="p">,</span>
+        <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -2226,11 +2226,11 @@ population.limit(5).toPandas()
 <p>Once again, note how quick this code runs. This is because although a join is an expensive operation, we have only created the plan at this point. We need an action to run the plan and return a result; sort the joined DataFrame, subset the columns and then use <code class="docutils literal notranslate"><span class="pre">.limit(5).toPandas()</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_with_pop = (rescue_with_pop
-                   .orderBy(&quot;incident_number&quot;)
-                   .select(&quot;incident_number&quot;, &quot;animal_group&quot;, &quot;postcode_district&quot;, &quot;population&quot;))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_pop</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue_with_pop</span>
+                   <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">)</span>
+                   <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;postcode_district&quot;</span><span class="p">,</span> <span class="s2">&quot;population&quot;</span><span class="p">))</span>
 
-rescue_with_pop.limit(5).toPandas()
+<span class="n">rescue_with_pop</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -2316,8 +2316,8 @@ rescue_with_pop.limit(5).toPandas()
 <p>The key difference between writing out data with Spark and writing out data with pandas is that the data will be distributed, which means that multiple files will be created, stored in a parent folder. Spark can read in these parent folders as one DataFrame. There will be one file written out per partition of the DataFrame.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>output_path_parquet = config[&quot;rescue_with_pop_path_parquet&quot;]
-rescue_with_pop.write.parquet(output_path_parquet)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">output_path_parquet</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_with_pop_path_parquet&quot;</span><span class="p">]</span>
+<span class="n">rescue_with_pop</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">output_path_parquet</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -2330,8 +2330,8 @@ rescue_with_pop.write.parquet(output_path_parquet)
 <p>CSVs will also be written out in a distributed manner as multiple files. While this is desirable in a parquet, it is not very useful with CSV, as the main benefit is to make them human readable. First, write out the data with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameWriter.csv.html"><code class="docutils literal notranslate"><span class="pre">.write.csv()</span></code></a>, using the path defined in the config:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>output_path_csv = config[&quot;rescue_with_pop_path_csv&quot;]
-rescue_with_pop.write.csv(output_path_csv, header=True)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">output_path_csv</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_with_pop_path_csv&quot;</span><span class="p">]</span>
+<span class="n">rescue_with_pop</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">output_path_csv</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -2341,11 +2341,11 @@ rescue_with_pop.write.csv(output_path_csv, header=True)
 <p>As the file will already exist, we need to tell Spark to overwrite the existing file. Use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameWriter.mode.html"><code class="docutils literal notranslate"><span class="pre">.mode(&quot;overwrite&quot;)</span></code></a> after <code class="docutils literal notranslate"><span class="pre">.write</span></code> to do this:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>(rescue_with_pop
-    .coalesce(1)
-    .write
-    .mode(&quot;overwrite&quot;)
-    .csv(output_path_csv, header=True))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">rescue_with_pop</span>
+    <span class="o">.</span><span class="n">coalesce</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">write</span>
+    <span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="s2">&quot;overwrite&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">output_path_csv</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -2358,10 +2358,10 @@ rescue_with_pop.write.csv(output_path_csv, header=True)
 <p>Spark has no native way of removing files, so either use the standard Python methods, or delete them manually through a file browser. If on a local file system, use <a class="reference external" href="https://docs.python.org/3/library/os.html#os.remove"><code class="docutils literal notranslate"><span class="pre">os.remove()</span></code></a> to delete a file and <a class="reference external" href="https://docs.python.org/3/library/shutil.html#shutil.rmtree"><code class="docutils literal notranslate"><span class="pre">shutil.rmtree()</span></code></a> to remove a directory. If using HDFS or similar, then use <a class="reference external" href="https://docs.python.org/3/library/subprocess.html#subprocess.run"><code class="docutils literal notranslate"><span class="pre">subprocess.run()</span></code></a>. Be careful when using the <code class="docutils literal notranslate"><span class="pre">subprocess</span></code> module as you will not get a warning when deleting files.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import subprocess
-for f in [output_path_parquet, output_path_csv]:
-    cmd = f&quot;hdfs dfs -rm -r -skipTrash {f}&quot;
-    subprocess.run(cmd, shell=True)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="p">[</span><span class="n">output_path_parquet</span><span class="p">,</span> <span class="n">output_path_csv</span><span class="p">]:</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;hdfs dfs -rm -r -skipTrash </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

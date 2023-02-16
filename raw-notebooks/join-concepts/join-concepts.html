@@ -814,29 +814,29 @@ title="Print to PDF"
 <p>Let us see an example of a sort merge join and then look at the plan and the Spark UI. The example uses the Animal Rescue (as CSV) and Population (as parquet) datasets, left joining on the <code class="docutils literal notranslate"><span class="pre">postcode_district</span></code>. Note that we are disabling automatic broadcast joins by setting <code class="docutils literal notranslate"><span class="pre">spark.sql.autoBroadcastJoinThreshold</span></code> to <code class="docutils literal notranslate"><span class="pre">-1</span></code>; broadcast joins are covered in the next section. First, start a Spark session, read the data and select and rename the relevant columns:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import os
-import yaml
-from pyspark.sql import SparkSession, functions as F
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
 
-spark = (SparkSession.builder.master(&quot;local[2]&quot;)
-         .appName(&quot;joins&quot;)
-         # Disable broadcast join by default
-         .config(&quot;spark.sql.autoBroadcastJoinThreshold&quot;, -1)
-         .getOrCreate())
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;joins&quot;</span><span class="p">)</span>
+         <span class="c1"># Disable broadcast join by default</span>
+         <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.sql.autoBroadcastJoinThreshold&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
 
-with open(&quot;../../../config.yaml&quot;) as f:
-    config = yaml.safe_load(f)
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
     
-rescue_path = config[&quot;rescue_path_csv&quot;]
-population_path = config[&quot;population_path&quot;]
+<span class="n">rescue_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path_csv&quot;</span><span class="p">]</span>
+<span class="n">population_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;population_path&quot;</span><span class="p">]</span>
 
-rescue = spark.read.csv(rescue_path, header=True, inferSchema=True).select(
-    F.col(&quot;IncidentNumber&quot;).alias(&quot;incident_number&quot;),
-    F.col(&quot;CalYear&quot;).alias(&quot;cal_year&quot;),
-    F.col(&quot;AnimalGroupParent&quot;).alias(&quot;animal_group&quot;),
-    F.col(&quot;PostcodeDistrict&quot;).alias(&quot;postcode_district&quot;))
+<span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+    <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;IncidentNumber&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">),</span>
+    <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;CalYear&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">),</span>
+    <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;AnimalGroupParent&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">),</span>
+    <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;PostcodeDistrict&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;postcode_district&quot;</span><span class="p">))</span>
 
-population = spark.read.parquet(population_path)
+<span class="n">population</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">population_path</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -868,8 +868,8 @@ population = spark.read.parquet(population_path)
 <p>Preview both DataFrames; we can see the desired join column, <code class="docutils literal notranslate"><span class="pre">postcode_district</span></code>, is present and contains data in a standard postcode format:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue.show(5)
-population.show(5)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">population</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -913,14 +913,14 @@ only showing top 5 rows
 <p>We can now join these on <code class="docutils literal notranslate"><span class="pre">PostcodeDistrict</span></code>, using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.join.html"><code class="docutils literal notranslate"><span class="pre">.join()</span></code></a> with <code class="docutils literal notranslate"><span class="pre">how=&quot;left&quot;</span></code> in PySpark or <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/join.tbl_spark.html"><code class="docutils literal notranslate"><span class="pre">left_join()</span></code></a> in sparklyr, then preview:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_with_pop = (
-    rescue.join(
-        population,
-        on=&quot;postcode_district&quot;,
-        how=&quot;left&quot;)
-)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_pop</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">rescue</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="n">population</span><span class="p">,</span>
+        <span class="n">on</span><span class="o">=</span><span class="s2">&quot;postcode_district&quot;</span><span class="p">,</span>
+        <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+<span class="p">)</span>
 
-rescue_with_pop.show(5)
+<span class="n">rescue_with_pop</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -952,7 +952,7 @@ only showing top 5 rows
 <p>We know the result of the join, but to see how Spark actually processed the join we need to look at the <em>plan</em>. Remember that Spark has the concept of <em>lazy evaluation</em>, in which rather than process code line-by-line like in a pandas or base R DataFrame, we instead create a <em>plan</em> which gets executed on the cluster in one go when an <em>action</em> is called. We can see this plan with <code class="docutils literal notranslate"><span class="pre">explain()</span></code>, a <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.explain.html">DataFrame method</a> in PySpark and <a class="reference external" href="https://dplyr.tidyverse.org/reference/explain.html">dplyr function</a> in sparklyr.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_with_pop.explain()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_pop</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1020,14 +1020,14 @@ only showing top 5 rows
 <p>We can use the same source DataFrames as the sort merge join example, <code class="docutils literal notranslate"><span class="pre">rescue</span></code> and <code class="docutils literal notranslate"><span class="pre">population</span></code>. To perform a broadcast join, we just add the broadcast join hint <code class="docutils literal notranslate"><span class="pre">F.broadcast()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_broadcast()</span></code> around <code class="docutils literal notranslate"><span class="pre">population</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_with_pop_broadcast = (
-    rescue.join(
-        F.broadcast(population),
-        on=&quot;postcode_district&quot;,
-        how=&quot;left&quot;)
-)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_pop_broadcast</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">rescue</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="n">F</span><span class="o">.</span><span class="n">broadcast</span><span class="p">(</span><span class="n">population</span><span class="p">),</span>
+        <span class="n">on</span><span class="o">=</span><span class="s2">&quot;postcode_district&quot;</span><span class="p">,</span>
+        <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+<span class="p">)</span>
 
-rescue_with_pop_broadcast.show(5)
+<span class="n">rescue_with_pop_broadcast</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1059,7 +1059,7 @@ only showing top 5 rows
 <p><code class="docutils literal notranslate"><span class="pre">explain()</span></code> will confirm that a broadcast join was used:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_with_pop_broadcast.explain()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_pop_broadcast</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1083,14 +1083,14 @@ only showing top 5 rows
 <p>We can see that we are now using a <strong>BroadcastHashJoin</strong>. Let us look at the UI again:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spark.stop()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
-spark = (SparkSession.builder.master(&quot;local[2]&quot;)
-         .appName(&quot;joins&quot;)
-          # Automatically broadcast DataFrames less than 10MB
-          .config(&quot;spark.sql.autoBroadcastJoinThreshold&quot;, 10 * 1024**2)
-          .getOrCreate()
-)
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;joins&quot;</span><span class="p">)</span>
+          <span class="c1"># Automatically broadcast DataFrames less than 10MB</span>
+          <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.sql.autoBroadcastJoinThreshold&quot;</span><span class="p">,</span> <span class="mi">10</span> <span class="o">*</span> <span class="mi">1024</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1110,14 +1110,14 @@ spark = (SparkSession.builder.master(&quot;local[2]&quot;)
 <p>As this is a new Spark session our old DataFrames no longer exist, so we need to create them again:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue = spark.read.csv(rescue_path, header=True, inferSchema=True).select(
-    F.col(&quot;IncidentNumber&quot;).alias(&quot;incident_number&quot;),
-    F.col(&quot;CalYear&quot;).alias(&quot;cal_year&quot;),
-    F.col(&quot;AnimalGroupParent&quot;).alias(&quot;animal_group&quot;),
-    F.col(&quot;PostcodeDistrict&quot;).alias(&quot;postcode_district&quot;),
-    F.col(&quot;OriginofCall&quot;).alias(&quot;origin_of_call&quot;))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+    <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;IncidentNumber&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">),</span>
+    <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;CalYear&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">),</span>
+    <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;AnimalGroupParent&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">),</span>
+    <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;PostcodeDistrict&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;postcode_district&quot;</span><span class="p">),</span>
+    <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;OriginofCall&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;origin_of_call&quot;</span><span class="p">))</span>
 
-population = spark.read.parquet(population_path)
+<span class="n">population</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">population_path</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1135,14 +1135,14 @@ population = spark.read.parquet(population_path)
 <p>Now try the join. Note that this is identical code to in the sort merge join example, but it will be automatically broadcast as the second DataFrame is below 10MB.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_with_pop_auto_broadcast = (
-    rescue.join(
-        population,
-        on=&quot;postcode_district&quot;,
-        how=&quot;left&quot;)
-)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_pop_auto_broadcast</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">rescue</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="n">population</span><span class="p">,</span>
+        <span class="n">on</span><span class="o">=</span><span class="s2">&quot;postcode_district&quot;</span><span class="p">,</span>
+        <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+<span class="p">)</span>
 
-rescue_with_pop_auto_broadcast.show(5)
+<span class="n">rescue_with_pop_auto_broadcast</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1173,7 +1173,7 @@ only showing top 5 rows
 <p>This can be confirmed with <code class="docutils literal notranslate"><span class="pre">explain()</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_with_pop_auto_broadcast.explain()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_pop_auto_broadcast</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1213,7 +1213,7 @@ only showing top 5 rows
 <p>The rescue data has a column, <code class="docutils literal notranslate"><span class="pre">origin_of_call</span></code>, which contains information about who reported the incident.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue.select(&quot;origin_of_call&quot;).distinct().show(truncate=False)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;origin_of_call&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">distinct</span><span class="p">()</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1244,18 +1244,18 @@ only showing top 5 rows
 <p>Let us categorise these into <code class="docutils literal notranslate"><span class="pre">Emergency</span> <span class="pre">Services</span></code> and <code class="docutils literal notranslate"><span class="pre">Member</span> <span class="pre">of</span> <span class="pre">Public</span></code>; there is also a <code class="docutils literal notranslate"><span class="pre">Not</span> <span class="pre">known</span></code> value which can be mapped to <code class="docutils literal notranslate"><span class="pre">null</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>call_origin = spark.createDataFrame([
-    [&quot;Coastguard&quot;, &quot;Emergency Services&quot;],
-    [&quot;Police&quot;, &quot;Emergency Services&quot;],
-    [&quot;Ambulance&quot;, &quot;Emergency Services&quot;],
-    [&quot;Other FRS&quot;, &quot;Emergency Services&quot;], #Other fire and rescue services
-    [&quot;Person (mobile)&quot;, &quot;Member of Public&quot;],
-    [&quot;Person (land line)&quot;, &quot;Member of Public&quot;],
-    [&quot;Person (running call)&quot;, &quot;Member of Public&quot;],
-    [&quot;Not known&quot;, None],],
-    [&quot;origin_of_call&quot;, &quot;origin_type&quot;])
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">call_origin</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">([</span>
+    <span class="p">[</span><span class="s2">&quot;Coastguard&quot;</span><span class="p">,</span> <span class="s2">&quot;Emergency Services&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;Police&quot;</span><span class="p">,</span> <span class="s2">&quot;Emergency Services&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;Ambulance&quot;</span><span class="p">,</span> <span class="s2">&quot;Emergency Services&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;Other FRS&quot;</span><span class="p">,</span> <span class="s2">&quot;Emergency Services&quot;</span><span class="p">],</span> <span class="c1">#Other fire and rescue services</span>
+    <span class="p">[</span><span class="s2">&quot;Person (mobile)&quot;</span><span class="p">,</span> <span class="s2">&quot;Member of Public&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;Person (land line)&quot;</span><span class="p">,</span> <span class="s2">&quot;Member of Public&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;Person (running call)&quot;</span><span class="p">,</span> <span class="s2">&quot;Member of Public&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;Not known&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">],],</span>
+    <span class="p">[</span><span class="s2">&quot;origin_of_call&quot;</span><span class="p">,</span> <span class="s2">&quot;origin_type&quot;</span><span class="p">])</span>
 
-call_origin.show(truncate=False)
+<span class="n">call_origin</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1292,9 +1292,9 @@ call_origin.show(truncate=False)
 <p>We can do a left join, as we have done previously. As the DataFrame is small, we will ensure it is broadcast with the broadcast hint:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_with_origin = rescue.join(F.broadcast(call_origin), on=&quot;origin_of_call&quot;, how=&quot;left&quot;)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_origin</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">broadcast</span><span class="p">(</span><span class="n">call_origin</span><span class="p">),</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;origin_of_call&quot;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
 
-rescue_with_origin.orderBy(&quot;incident_number&quot;).show(5, truncate=False)
+<span class="n">rescue_with_origin</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1330,14 +1330,14 @@ only showing top 5 rows
 <p>Finally, any values not matching any of these criteria can be mapped to <code class="docutils literal notranslate"><span class="pre">null</span></code> with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.otherwise.html"><code class="docutils literal notranslate"><span class="pre">F.otherwise()</span></code></a> (PySpark) or <code class="docutils literal notranslate"><span class="pre">TRUE</span> <span class="pre">~</span> <span class="pre">NA</span></code> (sparklyr), although no values will match this criteria in our example. Note that this is the default value and could be omitted, but it is better to be explicit where we can.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_with_origin_when = rescue.withColumn(&quot;origin_type&quot;,
-                  F.when(F.col(&quot;origin_of_call&quot;).substr(1, 6) == &quot;Person&quot;, &quot;Member of Public&quot;)
-                   .when(F.col(&quot;origin_of_call&quot;).isin(
-                       &quot;Coastguard&quot;, &quot;Police&quot;, &quot;Ambulance&quot;, &quot;Other FRS&quot;), &quot;Emergency Services&quot;)
-                   .when(F.col(&quot;origin_of_call&quot;) == &quot;Not known&quot;, None)
-                   .otherwise(None))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_origin_when</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;origin_type&quot;</span><span class="p">,</span>
+                  <span class="n">F</span><span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;origin_of_call&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">substr</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Person&quot;</span><span class="p">,</span> <span class="s2">&quot;Member of Public&quot;</span><span class="p">)</span>
+                   <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;origin_of_call&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span>
+                       <span class="s2">&quot;Coastguard&quot;</span><span class="p">,</span> <span class="s2">&quot;Police&quot;</span><span class="p">,</span> <span class="s2">&quot;Ambulance&quot;</span><span class="p">,</span> <span class="s2">&quot;Other FRS&quot;</span><span class="p">),</span> <span class="s2">&quot;Emergency Services&quot;</span><span class="p">)</span>
+                   <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;origin_of_call&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Not known&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                   <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span>
 
-rescue_with_origin_when.orderBy(&quot;incident_number&quot;).show(5, truncate=False)
+<span class="n">rescue_with_origin_when</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1372,7 +1372,7 @@ only showing top 5 rows
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_with_origin_when.explain()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_origin_when</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1477,7 +1477,7 @@ only showing top 5 rows
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./raw-notebooks/join-concepts"
+            path: "./raw-notebooks\join-concepts"
         },
         predefinedOutput: true
     }

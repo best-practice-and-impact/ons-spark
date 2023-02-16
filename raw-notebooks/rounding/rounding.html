@@ -735,16 +735,16 @@ title="Print to PDF"
 <p>Create a DataFrame with numbers all ending in <code class="docutils literal notranslate"><span class="pre">.5</span></code>, both positive and negative, using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.range.html"><code class="docutils literal notranslate"><span class="pre">spark.range()</span></code></a>/<a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_seq.html"><code class="docutils literal notranslate"><span class="pre">sdf_seq()</span></code></a> and then dividing the <code class="docutils literal notranslate"><span class="pre">id</span></code> column by <code class="docutils literal notranslate"><span class="pre">2</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from pyspark.sql import SparkSession, functions as F
-import pandas as pd
-import numpy as np
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-spark = (SparkSession.builder.master(&quot;local[2]&quot;)
-         .appName(&quot;rounding&quot;)
-         .getOrCreate())
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;rounding&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
 
-sdf = spark.range(-7, 8, 2).select((F.col(&quot;id&quot;) / 2).alias(&quot;half_id&quot;))
-sdf.show()
+<span class="n">sdf</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">((</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;half_id&quot;</span><span class="p">))</span>
+<span class="n">sdf</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -785,8 +785,8 @@ sdf.show()
 <p>Round using Spark with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.round.html"><code class="docutils literal notranslate"><span class="pre">F.round()</span></code></a>/<a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#round"><code class="docutils literal notranslate"><span class="pre">round()</span></code></a>; this will round away from zero (up for positive numbers and down for negative):</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sdf = sdf.withColumn(&quot;spark_round&quot;, F.round(&quot;half_id&quot;))
-sdf.toPandas()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sdf</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;spark_round&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="s2">&quot;half_id&quot;</span><span class="p">))</span>
+<span class="n">sdf</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -869,9 +869,9 @@ sdf.toPandas()
 <p>Now try using Python/R; this will use the bankers method of rounding:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pdf = sdf.toPandas()
-pdf[&quot;python_round&quot;] = round(pdf[&quot;half_id&quot;], 0)
-pdf
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pdf</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+<span class="n">pdf</span><span class="p">[</span><span class="s2">&quot;python_round&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">pdf</span><span class="p">[</span><span class="s2">&quot;half_id&quot;</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">pdf</span>
 </pre></div>
 </div>
 </div>
@@ -962,9 +962,9 @@ pdf
 <p>Just like in Python, pandas and numpy also use bankers rounding:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pdf[&quot;pd_round&quot;] = pdf[&quot;half_id&quot;].round()
-pdf[&quot;np_round&quot;] = np.round(pdf[&quot;half_id&quot;])
-pdf
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pdf</span><span class="p">[</span><span class="s2">&quot;pd_round&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pdf</span><span class="p">[</span><span class="s2">&quot;half_id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">()</span>
+<span class="n">pdf</span><span class="p">[</span><span class="s2">&quot;np_round&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">pdf</span><span class="p">[</span><span class="s2">&quot;half_id&quot;</span><span class="p">])</span>
+<span class="n">pdf</span>
 </pre></div>
 </div>
 </div>
@@ -1066,8 +1066,8 @@ pdf
 <p>You can use the Python and R style of bankers rounding in Spark with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.bround.html"><code class="docutils literal notranslate"><span class="pre">F.bround()</span></code></a>/<a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#bround"><code class="docutils literal notranslate"><span class="pre">bround()</span></code></a>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sdf = sdf.withColumn(&quot;spark_bround&quot;, F.bround(&quot;half_id&quot;))
-sdf.toPandas()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sdf</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;spark_bround&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">bround</span><span class="p">(</span><span class="s2">&quot;half_id&quot;</span><span class="p">))</span>
+<span class="n">sdf</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1215,7 +1215,7 @@ sdf.toPandas()
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./raw-notebooks/rounding"
+            path: "./raw-notebooks\rounding"
         },
         predefinedOutput: true
     }

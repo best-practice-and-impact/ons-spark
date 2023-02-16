@@ -906,16 +906,16 @@ title="Print to PDF"
 <p>Note that in sparklyr with a local session <code class="docutils literal notranslate"><span class="pre">spark.sql.local.partitions</span></code> needs to be set; if running on a Spark cluster you can ignore this setting.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import os
-from pyspark.sql import SparkSession, functions as F
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
 
-spark = (
-    SparkSession.builder.master(&quot;local[2]&quot;)
-    .appName(&quot;shuffling&quot;)
-    # Set number of partitions after a shuffle to 2
-    .config(&quot;spark.sql.shuffle.partitions&quot;, 2)
-    .getOrCreate()
-)
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;shuffling&quot;</span><span class="p">)</span>
+    <span class="c1"># Set number of partitions after a shuffle to 2</span>
+    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.sql.shuffle.partitions&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -938,7 +938,7 @@ spark = (
 <p>As we will be using random numbers in this example we set the seed, so that that repeated runs of the code will not change the results.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>seed_no = 999
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">seed_no</span> <span class="o">=</span> <span class="mi">999</span>
 </pre></div>
 </div>
 </div>
@@ -950,8 +950,8 @@ spark = (
 <p>Now look at the DF:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>example_1 = spark.range(20, numPartitions=2)
-example_1.show()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">example_1</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="n">numPartitions</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">example_1</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -995,8 +995,8 @@ example_1.show()
 <p>To see how it is partitioned in Spark add another column using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.spark_partition_id.html"><code class="docutils literal notranslate"><span class="pre">F.spark_partition_id()</span></code></a>/<a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#spark_partition_id"><code class="docutils literal notranslate"><span class="pre">spark_partition_id()</span></code></a>. In PySpark this is from the <code class="docutils literal notranslate"><span class="pre">functions</span></code> module; in sparklyr this is Spark function called inside <code class="docutils literal notranslate"><span class="pre">mutate</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>example_1 = example_1.withColumn(&quot;partition_id&quot;, F.spark_partition_id())
-example_1.show()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">example_1</span> <span class="o">=</span> <span class="n">example_1</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;partition_id&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">spark_partition_id</span><span class="p">())</span>
+<span class="n">example_1</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1041,11 +1041,11 @@ example_1.show()
 <p>Try a transformation on this DataFrame: adding a column of random numbers, <code class="docutils literal notranslate"><span class="pre">rand1</span></code>, between <code class="docutils literal notranslate"><span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">10</span></code> with - <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.rand.html"><code class="docutils literal notranslate"><span class="pre">F.rand()</span></code></a>/<a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#rand"><code class="docutils literal notranslate"><span class="pre">rand()</span></code></a> and <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.ceil.html"><code class="docutils literal notranslate"><span class="pre">F.ceil()</span></code></a>/<a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#ceil"><code class="docutils literal notranslate"><span class="pre">ceil()</span></code></a> (which rounds numbers up to the nearest integer), then recalculate the <code class="docutils literal notranslate"><span class="pre">partition_id</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>example_1 = (example_1
-             .withColumn(&quot;rand1&quot;, F.ceil(F.rand(seed_no) * 10))
-             .withColumn(&quot;partition_id&quot;, F.spark_partition_id()))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">example_1</span> <span class="o">=</span> <span class="p">(</span><span class="n">example_1</span>
+             <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;rand1&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">seed_no</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span><span class="p">))</span>
+             <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;partition_id&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">spark_partition_id</span><span class="p">()))</span>
 
-example_1.show()
+<span class="n">example_1</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1092,11 +1092,11 @@ example_1.show()
 <p>Now try sorting the data by <code class="docutils literal notranslate"><span class="pre">rand1</span></code> in ascending order. Sorting will cause a shuffle, as the data needs to be moved between partitions to get it in the correct order. Then create a column for the <code class="docutils literal notranslate"><span class="pre">partition_id</span></code> after the sort, called <code class="docutils literal notranslate"><span class="pre">partition_id_new</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>example_1 = (example_1
-             .orderBy(&quot;rand1&quot;)
-             .withColumn(&quot;partition_id_new&quot;, F.spark_partition_id()))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">example_1</span> <span class="o">=</span> <span class="p">(</span><span class="n">example_1</span>
+             <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;rand1&quot;</span><span class="p">)</span>
+             <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;partition_id_new&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">spark_partition_id</span><span class="p">()))</span>
 
-example_1.show()
+<span class="n">example_1</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1164,17 +1164,17 @@ example_1.show()
 <p>By default, Spark will try and use the broadcast method for joins. We want to ensure that we demonstrate the behaviour of the regular join (sort merge join) and so are deactivating automatic broadcast joins in the configuration by setting <code class="docutils literal notranslate"><span class="pre">spark.sql.autoBroadcastJoinThreshold</span></code> to <code class="docutils literal notranslate"><span class="pre">-1</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spark.stop()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
-spark = (
-    SparkSession.builder.master(&quot;local[2]&quot;)
-    .appName(&quot;shuffling&quot;)
-    # Set number of partitions after a shuffle to 100
-    .config(&quot;spark.sql.shuffle.partitions&quot;, 100)
-    # Disable broadcast join by default
-    .config(&quot;spark.sql.autoBroadcastJoinThreshold&quot;, -1)
-    .getOrCreate()
-)
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;shuffling&quot;</span><span class="p">)</span>
+    <span class="c1"># Set number of partitions after a shuffle to 100</span>
+    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.sql.shuffle.partitions&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="c1"># Disable broadcast join by default</span>
+    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.sql.autoBroadcastJoinThreshold&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1198,9 +1198,9 @@ spark = (
 <p>Here we create two DataFrames of <span class="math notranslate nohighlight">\(100,000\)</span> rows and add a random number between <code class="docutils literal notranslate"><span class="pre">1</span></code> to <code class="docutils literal notranslate"><span class="pre">10</span> </code>for each called <code class="docutils literal notranslate"><span class="pre">rand1</span></code> and <code class="docutils literal notranslate"><span class="pre">rand2</span></code> respectively, using the same method as previously.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Create two DataFrames
-example_2A = spark.range(10**5).withColumn(&quot;rand1&quot;, F.ceil(F.rand(seed_no) * 10))
-example_2B = spark.range(10**5).withColumn(&quot;rand2&quot;, F.ceil(F.rand(seed_no + 1) * 10))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create two DataFrames</span>
+<span class="n">example_2A</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;rand1&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">seed_no</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">example_2B</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;rand2&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">seed_no</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -1215,11 +1215,11 @@ example_2B = spark.range(10**5).withColumn(&quot;rand2&quot;, F.ceil(F.rand(seed
 <p>We now want to perform some transformations which involve a shuffle. Let’s create a new DataFrame, <code class="docutils literal notranslate"><span class="pre">joined_df</span></code>, by joining <code class="docutils literal notranslate"><span class="pre">example_2B</span></code> to <code class="docutils literal notranslate"><span class="pre">example_2A</span></code>. We then group by <code class="docutils literal notranslate"><span class="pre">rand1</span></code> and <code class="docutils literal notranslate"><span class="pre">rand2</span></code>, then sort by <code class="docutils literal notranslate"><span class="pre">rand1</span></code> and <code class="docutils literal notranslate"><span class="pre">rand2</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>joined_df = (example_2A.
-             join(example_2B, on=&quot;id&quot;, how=&quot;left&quot;)
-             .groupBy(&quot;rand1&quot;, &quot;rand2&quot;)
-             .agg(F.count(F.col(&quot;id&quot;)).alias(&quot;row_count&quot;))
-             .orderBy(&quot;rand1&quot;, &quot;rand2&quot;))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">joined_df</span> <span class="o">=</span> <span class="p">(</span><span class="n">example_2A</span><span class="o">.</span>
+             <span class="n">join</span><span class="p">(</span><span class="n">example_2B</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+             <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;rand1&quot;</span><span class="p">,</span> <span class="s2">&quot;rand2&quot;</span><span class="p">)</span>
+             <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;row_count&quot;</span><span class="p">))</span>
+             <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;rand1&quot;</span><span class="p">,</span> <span class="s2">&quot;rand2&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -1235,11 +1235,11 @@ example_2B = spark.range(10**5).withColumn(&quot;rand2&quot;, F.ceil(F.rand(seed
 <p>Then sanity check the result, by getting the row count and the top and bottom 5 rows:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>collected_df = joined_df.toPandas()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">collected_df</span> <span class="o">=</span> <span class="n">joined_df</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
 
-print(&quot;Row count: &quot;, collected_df.shape[0])
-print(&quot;\nTop 5 rows:\n&quot;, collected_df.head(5))
-print(&quot;\nBottom 5 rows:\n&quot;, collected_df.tail(5))
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Row count: &quot;</span><span class="p">,</span> <span class="n">collected_df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Top 5 rows:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">collected_df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Bottom 5 rows:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">collected_df</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -1338,17 +1338,17 @@ in sparklyr; although this method can be more prone to errors when coding and ha
 <p>Note that the code below is being re-assigned on each line rather than being chained; this is to demonstrate that it is not the chaining which causes Spark to optimise the code.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>unsorted_df = spark.range(10 ** 5).withColumn(&quot;rand1&quot;, F.ceil(F.rand(seed_no) * 10))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">unsorted_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">10</span> <span class="o">**</span> <span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;rand1&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">seed_no</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span><span class="p">))</span>
 
-sorted_df = unsorted_df.orderBy(&quot;rand1&quot;, ascending=True)
-sorted_df = sorted_df.orderBy(&quot;rand1&quot;, ascending=False)
-sorted_df = sorted_df.orderBy(&quot;rand1&quot;, ascending=True)
-sorted_df = sorted_df.orderBy(&quot;rand1&quot;, ascending=False)
-sorted_collected_df = sorted_df.toPandas()
+<span class="n">sorted_df</span> <span class="o">=</span> <span class="n">unsorted_df</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;rand1&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">sorted_df</span> <span class="o">=</span> <span class="n">sorted_df</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;rand1&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">sorted_df</span> <span class="o">=</span> <span class="n">sorted_df</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;rand1&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">sorted_df</span> <span class="o">=</span> <span class="n">sorted_df</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;rand1&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">sorted_collected_df</span> <span class="o">=</span> <span class="n">sorted_df</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
 
-print(&quot;Row count: &quot;, sorted_collected_df.shape[0])
-print(&quot;\nTop 5 rows:\n&quot;, sorted_collected_df.head(5))
-print(&quot;\nBottom 5 rows:\n&quot;, sorted_collected_df.tail(5))
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Row count: &quot;</span><span class="p">,</span> <span class="n">sorted_collected_df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Top 5 rows:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">sorted_collected_df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Bottom 5 rows:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">sorted_collected_df</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -1408,7 +1408,7 @@ Bottom 5 rows:
 in PySpark and with <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/invoke.html"><code class="docutils literal notranslate"><span class="pre">invoke(&quot;queryExecution&quot;)</span></code></a> in sparklyr:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sorted_df.explain(True)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sorted_df</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1560,7 +1560,7 @@ Sort [rand1#77L DESC NULLS LAST], true
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./raw-notebooks/shuffling"
+            path: "./raw-notebooks\shuffling"
         },
         predefinedOutput: true
     }

@@ -715,18 +715,18 @@ title="Print to PDF"
 <p>As an example, start a Spark session then create a DataFrame with ten rows, and add a column of random numbers:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import pandas as pd
-from pyspark.sql import SparkSession, functions as F
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
 
-spark = (SparkSession.builder.master(&quot;local[2]&quot;)
-         .appName(&quot;create-DFs&quot;)
-         .getOrCreate())
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;create-DFs&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
 
-seed_no = 100
-random_numbers = (spark.range(5)
-                  .withColumn(&quot;rand_no&quot;, F.rand(seed_no)))
+<span class="n">seed_no</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">random_numbers</span> <span class="o">=</span> <span class="p">(</span><span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+                  <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;rand_no&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">seed_no</span><span class="p">)))</span>
 
-random_numbers.show()
+<span class="n">random_numbers</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -771,15 +771,15 @@ random_numbers.show()
 <p>As an example, create a DataFrame of the five Grand National winners between 2017 and 2021 using pandas/R:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>winners_pd = pd.DataFrame(
-    {&quot;year&quot;: list(range(2017, 2022)),
-     &quot;winner&quot;: [&quot;Minella Times&quot;, None, &quot;Tiger Roll&quot;, &quot;Tiger Roll&quot;, &quot;One For Arthur&quot;],
-     &quot;starting_price&quot;: [&quot;11/1&quot;, None, &quot;4/1 F&quot;, &quot;10/1&quot;, &quot;14/1&quot;],
-     &quot;age&quot;: [8, None, 9, 8, 8],
-     &quot;jockey&quot;: [&quot;Rachael Blackmore&quot;, None, &quot;Davy Russell&quot;, &quot;Davy Russell&quot;, &quot;Derek Fox&quot;]
-})
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">winners_pd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2017</span><span class="p">,</span> <span class="mi">2022</span><span class="p">)),</span>
+     <span class="s2">&quot;winner&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Minella Times&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Tiger Roll&quot;</span><span class="p">,</span> <span class="s2">&quot;Tiger Roll&quot;</span><span class="p">,</span> <span class="s2">&quot;One For Arthur&quot;</span><span class="p">],</span>
+     <span class="s2">&quot;starting_price&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;11/1&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;4/1 F&quot;</span><span class="p">,</span> <span class="s2">&quot;10/1&quot;</span><span class="p">,</span> <span class="s2">&quot;14/1&quot;</span><span class="p">],</span>
+     <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span>
+     <span class="s2">&quot;jockey&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Rachael Blackmore&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Davy Russell&quot;</span><span class="p">,</span> <span class="s2">&quot;Davy Russell&quot;</span><span class="p">,</span> <span class="s2">&quot;Derek Fox&quot;</span><span class="p">]</span>
+<span class="p">})</span>
 
-winners_pd
+<span class="n">winners_pd</span>
 </pre></div>
 </div>
 </div>
@@ -869,8 +869,8 @@ winners_pd
 <p>Then convert this into a Spark DF and preview. Remember that previewing a DataFrame involves collecting data to the driver.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>winners_spark = spark.createDataFrame(winners_pd)
-winners_spark.show()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">winners_spark</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">winners_pd</span><span class="p">)</span>
+<span class="n">winners_spark</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -903,15 +903,15 @@ winners_spark.show()
 <p>You cannot create a DataFrame in sparklyr in this way; instead, create a base R DF or tibble and use <code class="docutils literal notranslate"><span class="pre">sdf_copy_to()</span></code>, as described above.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>winners_spark = spark.createDataFrame(data=[
-    [2021, &quot;Minella Times&quot;, &quot;11/1&quot;, 8, &quot;Rachael Blackmore&quot;],
-    [2020, None, None, None, None],
-    [2019, &quot;Tiger Roll&quot;, &quot;4/1 F&quot;, 9, &quot;Davy Russell&quot;],
-    [2018, &quot;Tiger Roll&quot;, &quot;10/1&quot;, 8, &quot;Davy Russell&quot;],
-    [2017, &quot;One For Arthur&quot;, &quot;14/1&quot;, 8, &quot;Derek Fox&quot;]],
-    schema=[&quot;year&quot;, &quot;winner&quot;, &quot;starting_price&quot;, &quot;age&quot;, &quot;jockey&quot;])
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">winners_spark</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[</span>
+    <span class="p">[</span><span class="mi">2021</span><span class="p">,</span> <span class="s2">&quot;Minella Times&quot;</span><span class="p">,</span> <span class="s2">&quot;11/1&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">&quot;Rachael Blackmore&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2020</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2019</span><span class="p">,</span> <span class="s2">&quot;Tiger Roll&quot;</span><span class="p">,</span> <span class="s2">&quot;4/1 F&quot;</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="s2">&quot;Davy Russell&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2018</span><span class="p">,</span> <span class="s2">&quot;Tiger Roll&quot;</span><span class="p">,</span> <span class="s2">&quot;10/1&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">&quot;Davy Russell&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2017</span><span class="p">,</span> <span class="s2">&quot;One For Arthur&quot;</span><span class="p">,</span> <span class="s2">&quot;14/1&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">&quot;Derek Fox&quot;</span><span class="p">]],</span>
+    <span class="n">schema</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">,</span> <span class="s2">&quot;winner&quot;</span><span class="p">,</span> <span class="s2">&quot;starting_price&quot;</span><span class="p">,</span> <span class="s2">&quot;age&quot;</span><span class="p">,</span> <span class="s2">&quot;jockey&quot;</span><span class="p">])</span>
 
-winners_spark.show()
+<span class="n">winners_spark</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -967,7 +967,7 @@ winners_spark.show()
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./raw-notebooks/creating-dataframes"
+            path: "./raw-notebooks\creating-dataframes"
         },
         predefinedOutput: true
     }

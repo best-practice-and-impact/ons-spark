@@ -723,18 +723,18 @@ title="Print to PDF"
 <p>We will set a <code class="docutils literal notranslate"><span class="pre">seed_num</span></code> when creating the random numbers to make the results repeatable. The DataFrame will have <code class="docutils literal notranslate"><span class="pre">num_rows</span></code> amount of rows, which we will set to a thousand and the loop will iterate 11 times to create <code class="docutils literal notranslate"><span class="pre">col_1</span></code> to <code class="docutils literal notranslate"><span class="pre">col_11</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import os
-from pyspark.sql import SparkSession, functions as F
-from time import time
-import yaml
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
 
-spark = (SparkSession.builder.master(&quot;local[2]&quot;)
-         .appName(&quot;checkpoint&quot;)
-         .getOrCreate())
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;checkpoint&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
 
-new_cols = 12
-seed_num = 42
-num_rows = 10**3
+<span class="n">new_cols</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">seed_num</span> <span class="o">=</span> <span class="mi">42</span>
+<span class="n">num_rows</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="mi">3</span>
 </pre></div>
 </div>
 </div>
@@ -743,21 +743,21 @@ num_rows = 10**3
 <h3>Without persisting<a class="headerlink" href="#without-persisting" title="Permalink to this headline">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>start_time = time()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
 
-df = spark.range(num_rows)
-df = df.withColumn(&quot;col_0&quot;, F.ceil(F.rand(seed_num) * new_cols))
+<span class="n">df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="n">num_rows</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;col_0&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">seed_num</span><span class="p">)</span> <span class="o">*</span> <span class="n">new_cols</span><span class="p">))</span>
 
-for i in range(1, new_cols):
-    df = (df.withColumn(&quot;col_&quot;+str(i), 
-                        F.when(F.col(&quot;col_&quot;+str(i-1)) &gt; i, 
-                               F.col(&quot;col_&quot;+str(i-1)))
-                        .otherwise(0)))
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">new_cols</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;col_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> 
+                        <span class="n">F</span><span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;col_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">&gt;</span> <span class="n">i</span><span class="p">,</span> 
+                               <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;col_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">)))</span>
+                        <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span>
 
-df.show(10)
+<span class="n">df</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 
-time_taken = time() - start_time
-print(f&quot;Time taken to create the DataFrame:  {time_taken}&quot;)
+<span class="n">time_taken</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Time taken to create the DataFrame:  </span><span class="si">{</span><span class="n">time_taken</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -791,17 +791,17 @@ Time taken to create the DataFrame:  8.401437520980835
 <p>To perform a checkpoint we need to set up a checkpoint directory on the file system, which is where the checkpointed DataFrames will be stored. It’s important to practice good housekeeping with this directory because new files are created with every checkpoint, but they are <strong>not automatically deleted</strong>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spark.stop()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
-spark = (SparkSession.builder.master(&quot;local[2]&quot;)
-         .appName(&quot;checkpoint&quot;)
-         .getOrCreate())
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;checkpoint&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
 
-with open(&quot;../../../config.yaml&quot;) as f:
-    config = yaml.safe_load(f)
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
     
-checkpoint_path = config[&quot;checkpoint_path&quot;]
-spark.sparkContext.setCheckpointDir(checkpoint_path)
+<span class="n">checkpoint_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;checkpoint_path&quot;</span><span class="p">]</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">setCheckpointDir</span><span class="p">(</span><span class="n">checkpoint_path</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -809,23 +809,23 @@ spark.sparkContext.setCheckpointDir(checkpoint_path)
 <p>We will checkpoint the DataFrame every 3 iterations of the loop so that the lineage doesn’t grow as long. Again, we will time how long it takes for Spark to complete the operation.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>start_time = time()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
 
-df = spark.range(num_rows)
-df = df.withColumn(&quot;col_0&quot;, F.ceil(F.rand(seed_num) * new_cols))
+<span class="n">df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="n">num_rows</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;col_0&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">seed_num</span><span class="p">)</span> <span class="o">*</span> <span class="n">new_cols</span><span class="p">))</span>
 
-for i in range(1, new_cols):
-    df = (df.withColumn(&quot;col_&quot;+str(i), 
-                       F.when(F.col(&quot;col_&quot;+str(i-1)) &gt; i, 
-                              F.col(&quot;col_&quot;+str(i-1)))
-                       .otherwise(0)))
-    if i % 3 == 0: # this means if i is divisable by three then...
-        df = df.checkpoint() # here is the checkpoint
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">new_cols</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;col_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> 
+                       <span class="n">F</span><span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;col_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">&gt;</span> <span class="n">i</span><span class="p">,</span> 
+                              <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;col_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">)))</span>
+                       <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># this means if i is divisable by three then...</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">checkpoint</span><span class="p">()</span> <span class="c1"># here is the checkpoint</span>
         
-df.show(10)
+<span class="n">df</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 
-time_taken = time() - start_time
-print(f&quot;Time taken to create the DataFrame:  {time_taken}&quot;)
+<span class="n">time_taken</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Time taken to create the DataFrame:  </span><span class="si">{</span><span class="n">time_taken</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -856,9 +856,9 @@ Time taken to create the DataFrame:  1.0542099475860596
 <p>Often the easiest way to delete files is through some GUI, but the cell below is handy to have at the end of your scripts when using checkpoints to make sure you don’t forget to empty the checkpoint folder.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import subprocess
-cmd = f&#39;hdfs dfs -rm -r -skipTrash {checkpoint_path}&#39; 
-p = subprocess.run(cmd, shell=True)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;hdfs dfs -rm -r -skipTrash </span><span class="si">{</span><span class="n">checkpoint_path</span><span class="si">}</span><span class="s1">&#39;</span> 
+<span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -901,7 +901,7 @@ p = subprocess.run(cmd, shell=True)
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./raw-notebooks/checkpoint-staging"
+            path: "./raw-notebooks\checkpoint-staging"
         },
         predefinedOutput: true
     }

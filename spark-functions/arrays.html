@@ -808,26 +808,26 @@ title="Print to PDF"
 <p>The example used here will use champions of the Wimbledon tennis tournament. The score for a tennis match is often listed by individual sets, which can be displayed as an array. This array will be of variable length, as the match stops once someone wins two sets in women’s matches and three in men’s, meaning the array can vary between two and five elements. As the tournament was cancelled in 2020, these entries will be <code class="docutils literal notranslate"><span class="pre">null</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from pyspark.sql import SparkSession, functions as F
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
     
-spark = (SparkSession.builder.master(&quot;local[2]&quot;)
-         .appName(&quot;arrays&quot;)
-         .getOrCreate())
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;arrays&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
 
-champions = spark.createDataFrame([
-    [2017, &quot;Gentlemen&#39;s Singles&quot;, &quot;Federer&quot;, &quot;Čilić&quot;, [&quot;6-3&quot;, &quot;6-1&quot;, &quot;6-4&quot;]],
-    [2018, &quot;Gentlemen&#39;s Singles&quot;, &quot;Djokovic&quot;, &quot;Anderson&quot;, [&quot;6-2&quot;, &quot;6-2&quot;, &quot;7-6&quot;]],
-    [2019, &quot;Gentlemen&#39;s Singles&quot;, &quot;Djokovic&quot;, &quot;Federer&quot;, [&quot;7-6&quot;, &quot;1-6&quot;, &quot;7-6&quot;, &quot;4-6&quot;, &quot;13-12&quot;]],
-    [2020, &quot;Gentlemen&#39;s Singles&quot;, None, None, None], #No tournament in 2020
-    [2021, &quot;Gentlemen&#39;s Singles&quot;, &quot;Djokovic&quot;, &quot;Berrettini&quot;, [&quot;6-7&quot;, &quot;6-4&quot;, &quot;6-4&quot;, &quot;6-3&quot;]],
-    [2017, &quot;Ladies&#39; Singles&quot;, &quot;Muguruza&quot;, &quot;V Williams&quot;, [&quot;7-5&quot;, &quot;6-0&quot;]],
-    [2018, &quot;Ladies&#39; Singles&quot;, &quot;Kerber&quot;, &quot;S Williams&quot;, [&quot;6-3&quot;, &quot;6-3&quot;]],
-    [2019, &quot;Ladies&#39; Singles&quot;, &quot;Halep&quot;, &quot;S Williams&quot;, [&quot;6-2&quot;, &quot;6-2&quot;]],
-    [2020, &quot;Ladies&#39; Singles&quot;, None, None, None], #No tournament in 2020]
-    [2021, &quot;Ladies&#39; Singles&quot;, &quot;Barty&quot;, &quot;Plíšková&quot;, [&quot;6-3&quot;, &quot;6-7&quot;, &quot;6-3&quot;]],
-    ], [&quot;tournament_year&quot;, &quot;event&quot;, &quot;champion&quot;, &quot;runner_up&quot;, &quot;final_score&quot;])
+<span class="n">champions</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">2017</span><span class="p">,</span> <span class="s2">&quot;Gentlemen&#39;s Singles&quot;</span><span class="p">,</span> <span class="s2">&quot;Federer&quot;</span><span class="p">,</span> <span class="s2">&quot;Čilić&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;6-3&quot;</span><span class="p">,</span> <span class="s2">&quot;6-1&quot;</span><span class="p">,</span> <span class="s2">&quot;6-4&quot;</span><span class="p">]],</span>
+    <span class="p">[</span><span class="mi">2018</span><span class="p">,</span> <span class="s2">&quot;Gentlemen&#39;s Singles&quot;</span><span class="p">,</span> <span class="s2">&quot;Djokovic&quot;</span><span class="p">,</span> <span class="s2">&quot;Anderson&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;6-2&quot;</span><span class="p">,</span> <span class="s2">&quot;6-2&quot;</span><span class="p">,</span> <span class="s2">&quot;7-6&quot;</span><span class="p">]],</span>
+    <span class="p">[</span><span class="mi">2019</span><span class="p">,</span> <span class="s2">&quot;Gentlemen&#39;s Singles&quot;</span><span class="p">,</span> <span class="s2">&quot;Djokovic&quot;</span><span class="p">,</span> <span class="s2">&quot;Federer&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;7-6&quot;</span><span class="p">,</span> <span class="s2">&quot;1-6&quot;</span><span class="p">,</span> <span class="s2">&quot;7-6&quot;</span><span class="p">,</span> <span class="s2">&quot;4-6&quot;</span><span class="p">,</span> <span class="s2">&quot;13-12&quot;</span><span class="p">]],</span>
+    <span class="p">[</span><span class="mi">2020</span><span class="p">,</span> <span class="s2">&quot;Gentlemen&#39;s Singles&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="c1">#No tournament in 2020</span>
+    <span class="p">[</span><span class="mi">2021</span><span class="p">,</span> <span class="s2">&quot;Gentlemen&#39;s Singles&quot;</span><span class="p">,</span> <span class="s2">&quot;Djokovic&quot;</span><span class="p">,</span> <span class="s2">&quot;Berrettini&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;6-7&quot;</span><span class="p">,</span> <span class="s2">&quot;6-4&quot;</span><span class="p">,</span> <span class="s2">&quot;6-4&quot;</span><span class="p">,</span> <span class="s2">&quot;6-3&quot;</span><span class="p">]],</span>
+    <span class="p">[</span><span class="mi">2017</span><span class="p">,</span> <span class="s2">&quot;Ladies&#39; Singles&quot;</span><span class="p">,</span> <span class="s2">&quot;Muguruza&quot;</span><span class="p">,</span> <span class="s2">&quot;V Williams&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;7-5&quot;</span><span class="p">,</span> <span class="s2">&quot;6-0&quot;</span><span class="p">]],</span>
+    <span class="p">[</span><span class="mi">2018</span><span class="p">,</span> <span class="s2">&quot;Ladies&#39; Singles&quot;</span><span class="p">,</span> <span class="s2">&quot;Kerber&quot;</span><span class="p">,</span> <span class="s2">&quot;S Williams&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;6-3&quot;</span><span class="p">,</span> <span class="s2">&quot;6-3&quot;</span><span class="p">]],</span>
+    <span class="p">[</span><span class="mi">2019</span><span class="p">,</span> <span class="s2">&quot;Ladies&#39; Singles&quot;</span><span class="p">,</span> <span class="s2">&quot;Halep&quot;</span><span class="p">,</span> <span class="s2">&quot;S Williams&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;6-2&quot;</span><span class="p">,</span> <span class="s2">&quot;6-2&quot;</span><span class="p">]],</span>
+    <span class="p">[</span><span class="mi">2020</span><span class="p">,</span> <span class="s2">&quot;Ladies&#39; Singles&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="c1">#No tournament in 2020]</span>
+    <span class="p">[</span><span class="mi">2021</span><span class="p">,</span> <span class="s2">&quot;Ladies&#39; Singles&quot;</span><span class="p">,</span> <span class="s2">&quot;Barty&quot;</span><span class="p">,</span> <span class="s2">&quot;Plíšková&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;6-3&quot;</span><span class="p">,</span> <span class="s2">&quot;6-7&quot;</span><span class="p">,</span> <span class="s2">&quot;6-3&quot;</span><span class="p">]],</span>
+    <span class="p">],</span> <span class="p">[</span><span class="s2">&quot;tournament_year&quot;</span><span class="p">,</span> <span class="s2">&quot;event&quot;</span><span class="p">,</span> <span class="s2">&quot;champion&quot;</span><span class="p">,</span> <span class="s2">&quot;runner_up&quot;</span><span class="p">,</span> <span class="s2">&quot;final_score&quot;</span><span class="p">])</span>
 
-champions.show(truncate=False)
+<span class="n">champions</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -853,7 +853,7 @@ champions.show(truncate=False)
 <p>Use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.dtypes.html"><code class="docutils literal notranslate"><span class="pre">.dtypes</span></code></a> to confirm that <code class="docutils literal notranslate"><span class="pre">final_score</span></code> is a string array:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>champions.dtypes
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">champions</span><span class="o">.</span><span class="n">dtypes</span>
 </pre></div>
 </div>
 </div>
@@ -873,8 +873,8 @@ champions.show(truncate=False)
 <p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.size.html"><code class="docutils literal notranslate"><span class="pre">F.size()</span></code></a> returns the number of elements in the array. This returns <code class="docutils literal notranslate"><span class="pre">-1</span></code> for <code class="docutils literal notranslate"><span class="pre">null</span></code> values. In this example, we can see how many sets were played in each match:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>champions_size = champions.withColumn(&quot;total_sets&quot;, F.size(&quot;final_score&quot;))
-champions_size.show(truncate=False)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">champions_size</span> <span class="o">=</span> <span class="n">champions</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;total_sets&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="s2">&quot;final_score&quot;</span><span class="p">))</span>
+<span class="n">champions_size</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -904,14 +904,14 @@ champions_size.show(truncate=False)
 <p>The first argument is the separator, followed by the columns to concatenate.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>champions_concat = (champions
-      # Traditional use of concat_ws: concatenate strings
-      .withColumn(&quot;match&quot;, F.concat_ws(&quot; v &quot;, &quot;champion&quot;, &quot;runner_up&quot;))
-      # Can also use with arrays
-      .withColumn(&quot;final_score_string&quot;, F.concat_ws(&quot;, &quot;, &quot;final_score&quot;))
-      .select(&quot;tournament_year&quot;, &quot;event&quot;, &quot;match&quot;, &quot;final_score&quot;, &quot;final_score_string&quot;))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">champions_concat</span> <span class="o">=</span> <span class="p">(</span><span class="n">champions</span>
+      <span class="c1"># Traditional use of concat_ws: concatenate strings</span>
+      <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;match&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">concat_ws</span><span class="p">(</span><span class="s2">&quot; v &quot;</span><span class="p">,</span> <span class="s2">&quot;champion&quot;</span><span class="p">,</span> <span class="s2">&quot;runner_up&quot;</span><span class="p">))</span>
+      <span class="c1"># Can also use with arrays</span>
+      <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;final_score_string&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">concat_ws</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="p">,</span> <span class="s2">&quot;final_score&quot;</span><span class="p">))</span>
+      <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;tournament_year&quot;</span><span class="p">,</span> <span class="s2">&quot;event&quot;</span><span class="p">,</span> <span class="s2">&quot;match&quot;</span><span class="p">,</span> <span class="s2">&quot;final_score&quot;</span><span class="p">,</span> <span class="s2">&quot;final_score_string&quot;</span><span class="p">))</span>
 
-champions_concat.show(truncate=False)
+<span class="n">champions_concat</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -941,11 +941,11 @@ champions_concat.show(truncate=False)
 <p>Note that the empty strings (that were originally <code class="docutils literal notranslate"><span class="pre">null</span></code> values in the array column) have been mapped to empty arrays.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>champions_array = (champions_concat
-                   .withColumn(&quot;final_score_array&quot;,
-                               F.split(&quot;final_score_string&quot;, &quot;, &quot;)))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">champions_array</span> <span class="o">=</span> <span class="p">(</span><span class="n">champions_concat</span>
+                   <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;final_score_array&quot;</span><span class="p">,</span>
+                               <span class="n">F</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;final_score_string&quot;</span><span class="p">,</span> <span class="s2">&quot;, &quot;</span><span class="p">)))</span>
 
-champions_array.drop(&quot;final_score&quot;).show(truncate=False)
+<span class="n">champions_array</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;final_score&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -975,10 +975,10 @@ champions_array.drop(&quot;final_score&quot;).show(truncate=False)
 <p>In this example, <code class="docutils literal notranslate"><span class="pre">F.explode()</span></code> extracts the results of the individual sets, so the new column is called <code class="docutils literal notranslate"><span class="pre">set_score</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>champions_explode = champions.withColumn(&quot;set_score&quot;,
-                                         F.explode(&quot;final_score&quot;))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">champions_explode</span> <span class="o">=</span> <span class="n">champions</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;set_score&quot;</span><span class="p">,</span>
+                                         <span class="n">F</span><span class="o">.</span><span class="n">explode</span><span class="p">(</span><span class="s2">&quot;final_score&quot;</span><span class="p">))</span>
 
-champions_explode.show(truncate=False)
+<span class="n">champions_explode</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1015,10 +1015,10 @@ only showing top 20 rows
 <p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.explode_outer.html"><code class="docutils literal notranslate"><span class="pre">F.explode_outer()</span></code></a> works in the same way, but retains <code class="docutils literal notranslate"><span class="pre">null</span></code> values:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>champions_explode_outer = champions.withColumn(&quot;set_score&quot;,
-                                               F.explode_outer(&quot;final_score&quot;))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">champions_explode_outer</span> <span class="o">=</span> <span class="n">champions</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;set_score&quot;</span><span class="p">,</span>
+                                               <span class="n">F</span><span class="o">.</span><span class="n">explode_outer</span><span class="p">(</span><span class="s2">&quot;final_score&quot;</span><span class="p">))</span>
 
-champions_explode_outer.show(truncate=False)
+<span class="n">champions_explode_outer</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1059,13 +1059,13 @@ only showing top 20 rows
 <p>Note that you have to use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.select.html"><code class="docutils literal notranslate"><span class="pre">.select()</span></code></a> with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.alias.html"><code class="docutils literal notranslate"><span class="pre">.alias()</span></code></a> rather than <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.withColumn.html"><code class="docutils literal notranslate"><span class="pre">.withColumn()</span></code></a>, due to the function returning two columns. <code class="docutils literal notranslate"><span class="pre">.select(&quot;*&quot;)</span></code> selects all the existing columns, similar to <code class="docutils literal notranslate"><span class="pre">SELECT</span> <span class="pre">*</span></code> in SQL.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>champions_posexplode = (champions
-                        .select(&quot;*&quot;,
-                                F.posexplode(&quot;final_score&quot;).alias(&quot;set_no&quot;, &quot;set_score&quot;))
-                        # Add 1 to set number, as index starts from 0
-                        .withColumn(&quot;set_no&quot;, F.col(&quot;set_no&quot;) + 1))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">champions_posexplode</span> <span class="o">=</span> <span class="p">(</span><span class="n">champions</span>
+                        <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">,</span>
+                                <span class="n">F</span><span class="o">.</span><span class="n">posexplode</span><span class="p">(</span><span class="s2">&quot;final_score&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;set_no&quot;</span><span class="p">,</span> <span class="s2">&quot;set_score&quot;</span><span class="p">))</span>
+                        <span class="c1"># Add 1 to set number, as index starts from 0</span>
+                        <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;set_no&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;set_no&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
 
-champions_posexplode.show(truncate=False)
+<span class="n">champions_posexplode</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1102,7 +1102,7 @@ only showing top 20 rows
 <p>Combine with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.filter.html"><code class="docutils literal notranslate"><span class="pre">.filter()</span></code></a> to extract just the result of the first set:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>champions_posexplode.filter(F.col(&quot;set_no&quot;) == 1).show(truncate=False)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">champions_posexplode</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;set_no&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1126,13 +1126,13 @@ only showing top 20 rows
 <p>Use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.posexplode_outer.html"><code class="docutils literal notranslate"><span class="pre">F.posexplode_outer()</span></code></a> to retain the <code class="docutils literal notranslate"><span class="pre">null</span></code> values:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>champions_posexplode_outer = (champions
-                              .select(&quot;*&quot;,
-                                      F.posexplode_outer(&quot;final_score&quot;).alias(&quot;set_no&quot;, &quot;set_score&quot;))
-                              # Add 1 to set number, as index starts from 0
-                              .withColumn(&quot;set_no&quot;, F.col(&quot;set_no&quot;) + 1))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">champions_posexplode_outer</span> <span class="o">=</span> <span class="p">(</span><span class="n">champions</span>
+                              <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">,</span>
+                                      <span class="n">F</span><span class="o">.</span><span class="n">posexplode_outer</span><span class="p">(</span><span class="s2">&quot;final_score&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;set_no&quot;</span><span class="p">,</span> <span class="s2">&quot;set_score&quot;</span><span class="p">))</span>
+                              <span class="c1"># Add 1 to set number, as index starts from 0</span>
+                              <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;set_no&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;set_no&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
 
-champions_posexplode_outer.show(truncate=False)
+<span class="n">champions_posexplode_outer</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

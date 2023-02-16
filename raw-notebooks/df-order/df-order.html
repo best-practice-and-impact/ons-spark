@@ -731,44 +731,44 @@ title="Print to PDF"
 <p>First, create a new Spark session and a small DataFrame; this example uses the winners of the Six Nations rugby union tournament:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import yaml
-from pyspark.sql import SparkSession, functions as F
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
 
-with open(&quot;../../../config.yaml&quot;) as f:
-    config = yaml.safe_load(f)
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
-spark = (SparkSession.builder.master(&quot;local[2]&quot;)
-         .appName(&quot;df-order&quot;)
-         .config(&quot;spark.sql.shuffle.partitions&quot;, 12)
-         .getOrCreate())
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;df-order&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.sql.shuffle.partitions&quot;</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
 
-winners = spark.createDataFrame([
-    [2022, &quot;France&quot;],
-    [2021, &quot;Wales&quot;],
-    [2020, &quot;England&quot;],
-    [2019, &quot;Wales&quot;],
-    [2018, &quot;Ireland&quot;],
-    [2017, &quot;England&quot;],
-    [2016, &quot;England&quot;],
-    [2015, &quot;Ireland&quot;],
-    [2014, &quot;Ireland&quot;],
-    [2013, &quot;Wales&quot;],
-    [2012, &quot;Wales&quot;],
-    [2011, &quot;England&quot;],
-    [2010, &quot;France&quot;],
-    [2009, &quot;Ireland&quot;],
-    [2008, &quot;Wales&quot;],
-    [2007, &quot;France&quot;],
-    [2006, &quot;France&quot;],
-    [2005, &quot;Wales&quot;],
-    [2004, &quot;France&quot;],
-    [2003, &quot;England&quot;],
-    [2002, &quot;France&quot;],
-    [2001, &quot;England&quot;],
-    [2000, &quot;England&quot;],
-    ],
-    [&quot;year&quot;, &quot;nation&quot;]
-)
+<span class="n">winners</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">2022</span><span class="p">,</span> <span class="s2">&quot;France&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2021</span><span class="p">,</span> <span class="s2">&quot;Wales&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2020</span><span class="p">,</span> <span class="s2">&quot;England&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2019</span><span class="p">,</span> <span class="s2">&quot;Wales&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2018</span><span class="p">,</span> <span class="s2">&quot;Ireland&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2017</span><span class="p">,</span> <span class="s2">&quot;England&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2016</span><span class="p">,</span> <span class="s2">&quot;England&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2015</span><span class="p">,</span> <span class="s2">&quot;Ireland&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2014</span><span class="p">,</span> <span class="s2">&quot;Ireland&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2013</span><span class="p">,</span> <span class="s2">&quot;Wales&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2012</span><span class="p">,</span> <span class="s2">&quot;Wales&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2011</span><span class="p">,</span> <span class="s2">&quot;England&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2010</span><span class="p">,</span> <span class="s2">&quot;France&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2009</span><span class="p">,</span> <span class="s2">&quot;Ireland&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2008</span><span class="p">,</span> <span class="s2">&quot;Wales&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2007</span><span class="p">,</span> <span class="s2">&quot;France&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2006</span><span class="p">,</span> <span class="s2">&quot;France&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2005</span><span class="p">,</span> <span class="s2">&quot;Wales&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2004</span><span class="p">,</span> <span class="s2">&quot;France&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2003</span><span class="p">,</span> <span class="s2">&quot;England&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2002</span><span class="p">,</span> <span class="s2">&quot;France&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2001</span><span class="p">,</span> <span class="s2">&quot;England&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2000</span><span class="p">,</span> <span class="s2">&quot;England&quot;</span><span class="p">],</span>
+    <span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">,</span> <span class="s2">&quot;nation&quot;</span><span class="p">]</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -816,9 +816,9 @@ winners = spark.createDataFrame([
 <p>To demonstrate that these rows are all on the same partition, create a new column using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.spark_partition_id.html"><code class="docutils literal notranslate"><span class="pre">F.spark_partition_id()</span></code></a>/<a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#spark_partition_id"><code class="docutils literal notranslate"><span class="pre">spark_partition_id()</span></code></a>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>winners_ordered = (winners
-                   .orderBy(&quot;nation&quot;)
-                   .withColumn(&quot;partition_id&quot;, F.spark_partition_id()))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">winners_ordered</span> <span class="o">=</span> <span class="p">(</span><span class="n">winners</span>
+                   <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;nation&quot;</span><span class="p">)</span>
+                   <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;partition_id&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">spark_partition_id</span><span class="p">()))</span>
 </pre></div>
 </div>
 </div>
@@ -831,8 +831,8 @@ winners = spark.createDataFrame([
 <p>Now preview this DataFrame several times. Remember that in Spark, the whole plan will be processed, so it will create and order the DataFrame by <code class="docutils literal notranslate"><span class="pre">nation</span></code> each time, but not the <code class="docutils literal notranslate"><span class="pre">year</span></code>, and so this may be different:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for show_no in range(3):
-    winners_ordered.show(5)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">show_no</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+    <span class="n">winners_ordered</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -891,14 +891,14 @@ only showing top 5 rows
 <p>First, import the Animal Rescue CSV data and do some data cleansing. The data is also being sorted by <code class="docutils literal notranslate"><span class="pre">AnimalGroup</span></code>; this causes a shuffle which will repartition the data:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_path_csv = config[&quot;rescue_path_csv&quot;]
-rescue = (spark
-          .read.csv(rescue_path_csv, header=True, inferSchema=True)
-          .withColumnRenamed(&quot;IncidentNumber&quot;, &quot;incident_number&quot;)
-          .withColumnRenamed(&quot;AnimalGroupParent&quot;, &quot;animal_group&quot;)
-          .select(&quot;incident_number&quot;, &quot;animal_group&quot;)
-          .orderBy(&quot;animal_group&quot;)
-         )
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_path_csv</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path_csv&quot;</span><span class="p">]</span>
+<span class="n">rescue</span> <span class="o">=</span> <span class="p">(</span><span class="n">spark</span>
+          <span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">rescue_path_csv</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;IncidentNumber&quot;</span><span class="p">,</span> <span class="s2">&quot;incident_number&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;AnimalGroupParent&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span>
+         <span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -917,14 +917,14 @@ rescue = (spark
 <p>Now group the data by <code class="docutils literal notranslate"><span class="pre">animal_group</span></code>, which will cause another shuffle, count how many of each animal there are, and return <code class="docutils literal notranslate"><span class="pre">Fox</span></code>, <code class="docutils literal notranslate"><span class="pre">Goat</span></code> and <code class="docutils literal notranslate"><span class="pre">Hamster</span></code>, then show the result multiple times:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>animal_counts = (rescue
-                 .groupBy(&quot;animal_group&quot;)
-                 .count()
-                 .withColumn(&quot;partition_id&quot;, F.spark_partition_id())
-                 .filter(F.col(&quot;animal_group&quot;).isin(&quot;Fox&quot;, &quot;Goat&quot;, &quot;Hamster&quot;)))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">animal_counts</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+                 <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span>
+                 <span class="o">.</span><span class="n">count</span><span class="p">()</span>
+                 <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;partition_id&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">spark_partition_id</span><span class="p">())</span>
+                 <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="s2">&quot;Fox&quot;</span><span class="p">,</span> <span class="s2">&quot;Goat&quot;</span><span class="p">,</span> <span class="s2">&quot;Hamster&quot;</span><span class="p">)))</span>
 
-for show_no in range(3):
-    animal_counts.show()
+<span class="k">for</span> <span class="n">show_no</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+    <span class="n">animal_counts</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1023,7 +1023,7 @@ for show_no in range(3):
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./raw-notebooks/df-order"
+            path: "./raw-notebooks\df-order"
         },
         predefinedOutput: true
     }

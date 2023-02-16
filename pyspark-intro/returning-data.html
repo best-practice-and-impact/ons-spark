@@ -859,21 +859,21 @@ title="Print to PDF"
 <p>Note that if you implicitly try and print the DataFrame it will just return the schema, rather than evaluating the DataFrame. First, start a Spark session and load the Animal Rescue data:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from pyspark.sql import SparkSession, functions as F
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
 
-import pandas as pd
-import yaml
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
 
-with open(&quot;../../config.yaml&quot;) as f:
-    config = yaml.safe_load(f)
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
     
-spark = (SparkSession.builder.master(&quot;local[2]&quot;)
-         .appName(&quot;returning-data&quot;)
-         .getOrCreate())
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;returning-data&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
 
-rescue_path = config[&quot;rescue_path&quot;]
+<span class="n">rescue_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path&quot;</span><span class="p">]</span>
 
-rescue = spark.read.parquet(rescue_path)
+<span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -881,7 +881,7 @@ rescue = spark.read.parquet(rescue_path)
 <p>Then type the name of the DataFrame; this will print the column names and types but will not evaluate the DataFrame:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span>
 </pre></div>
 </div>
 </div>
@@ -894,7 +894,7 @@ rescue = spark.read.parquet(rescue_path)
 <p>A better way of getting the schema is with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.printSchema.html"><code class="docutils literal notranslate"><span class="pre">.printSchema()</span></code></a>, which prints out in a much more readable manner. This is not an action as the DataFrame does not need to be evaluated to get this information.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue.printSchema()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -939,9 +939,9 @@ rescue = spark.read.parquet(rescue_path)
 <p>This can look ugly if there are many columns in the DataFrame, so often you will want to use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.select.html"><code class="docutils literal notranslate"><span class="pre">.select()</span></code></a> to only return the columns you are interested in.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>(rescue
-    .select(&quot;incident_number&quot;, &quot;animal_group&quot;, &quot;total_cost&quot;, &quot;description&quot;)
-    .show())
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">rescue</span>
+    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">show</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -978,9 +978,9 @@ only showing top 20 rows
 <p><code class="docutils literal notranslate"><span class="pre">.show()</span></code> has three arguments. <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of rows to return (default <code class="docutils literal notranslate"><span class="pre">20</span></code>), <code class="docutils literal notranslate"><span class="pre">truncate</span></code> will truncate long string entries (default <code class="docutils literal notranslate"><span class="pre">True</span></code>) and <code class="docutils literal notranslate"><span class="pre">vertical</span></code> will return one row per line (default <code class="docutils literal notranslate"><span class="pre">False</span></code>).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>(rescue
-    .select(&quot;incident_number&quot;, &quot;animal_group&quot;, &quot;total_cost&quot;, &quot;description&quot;)
-    .show(n=3, truncate=False, vertical=True))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">rescue</span>
+    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">vertical</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -1013,11 +1013,11 @@ only showing top 3 rows
 <p>You can either print out the results of <code class="docutils literal notranslate"><span class="pre">toPandas()</span></code> immediately, or assign it to a variable:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_pandas = (rescue
-                 .select(&quot;incident_number&quot;, &quot;animal_group&quot;, &quot;total_cost&quot;, &quot;description&quot;)
-                 .limit(5)
-                 .toPandas())
-rescue
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_pandas</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+                 <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">)</span>
+                 <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+                 <span class="o">.</span><span class="n">toPandas</span><span class="p">())</span>
+<span class="n">rescue</span>
 </pre></div>
 </div>
 </div>
@@ -1029,10 +1029,10 @@ rescue
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>(rescue
-    .select(&quot;incident_number&quot;, &quot;animal_group&quot;, &quot;total_cost&quot;, &quot;description&quot;)
-    .limit(5)
-    .toPandas())
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">rescue</span>
+    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">toPandas</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -1104,10 +1104,10 @@ rescue
 <p>An alternative to using <code class="docutils literal notranslate"><span class="pre">.limit()</span></code> is to first check the size of the DataFrame. If it is small there is no need to call <code class="docutils literal notranslate"><span class="pre">.limit()</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>lizards = (rescue
-           .select(&quot;incident_number&quot;, &quot;animal_group&quot;, &quot;total_cost&quot;, &quot;description&quot;)
-           .filter(F.col(&quot;animal_group&quot;) == &quot;Lizard&quot;))
-lizards.count()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lizards</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+           <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">)</span>
+           <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Lizard&quot;</span><span class="p">))</span>
+<span class="n">lizards</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1119,7 +1119,7 @@ lizards.count()
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>lizards.toPandas()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lizards</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1183,21 +1183,21 @@ lizards.count()
 <p>If this is something that you find desirable you may want to add these settings to a <a class="reference internal" href="../spark-overview/spark-defaults.html"><span class="doc std std-doc"><code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code></span></a> file, so they are applied automatically when starting a Spark session.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spark.stop()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
-spark = (SparkSession.builder.master(&quot;local[2]&quot;)
-         .appName(&quot;returning-data&quot;)
-         # Enable eager evaluation of PySpark DFs
-         .config(&quot;spark.sql.repl.eagerEval.enabled&quot;, &#39;true&#39;)
-         # Maximum rows to return from the DF preview
-         .config(&quot;spark.sql.repl.eagerEval.maxNumRows&quot;, 10)
-         # Set number of characters to return per column
-         .config(&quot;spark.sql.repl.eagerEval.truncate&quot;, 100)
-         .getOrCreate())
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;returning-data&quot;</span><span class="p">)</span>
+         <span class="c1"># Enable eager evaluation of PySpark DFs</span>
+         <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.sql.repl.eagerEval.enabled&quot;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">)</span>
+         <span class="c1"># Maximum rows to return from the DF preview</span>
+         <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.sql.repl.eagerEval.maxNumRows&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+         <span class="c1"># Set number of characters to return per column</span>
+         <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.sql.repl.eagerEval.truncate&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
 
-rescue = spark.read.parquet(rescue_path)
+<span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">)</span>
 
-rescue.select(&quot;incident_number&quot;, &quot;animal_group&quot;, &quot;total_cost&quot;, &quot;description&quot;)
+<span class="n">rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1226,11 +1226,11 @@ only showing top 10 rows
 <p>The output of <code class="docutils literal notranslate"><span class="pre">.collect()</span></code> can be assigned to variable or printed out directly:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_collected = (rescue
-                    .select(&quot;incident_number&quot;, &quot;animal_group&quot;, &quot;total_cost&quot;, &quot;description&quot;)
-                    .limit(5)
-                    .collect())
-rescue_collected
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_collected</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+                    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
+<span class="n">rescue_collected</span>
 </pre></div>
 </div>
 </div>
@@ -1246,10 +1246,10 @@ rescue_collected
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>(rescue
-    .select(&quot;incident_number&quot;, &quot;animal_group&quot;, &quot;total_cost&quot;, &quot;description&quot;)
-    .limit(5)
-    .collect())
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">rescue</span>
+    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -1266,7 +1266,7 @@ rescue_collected
 <p>Even just collecting one column still returns a list of <code class="docutils literal notranslate"><span class="pre">Row</span></code> objects. You can use an identity <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.RDD.flatMap.html"><code class="docutils literal notranslate"><span class="pre">.flatMap()</span></code></a> to return a normal Python list. Note that <code class="docutils literal notranslate"><span class="pre">.flatMap()</span></code> is an RDD method and so you need to convert the DF to an RDD first with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.RDD.html"><code class="docutils literal notranslate"><span class="pre">.rdd</span></code></a>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue.select(&quot;incident_number&quot;).limit(5).rdd.flatMap(lambda x: x).collect()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">flatMap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1279,7 +1279,7 @@ rescue_collected
 <p>Although it is much easier in pandas by converting the one column DataFrame into a series with <a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.squeeze.html"><code class="docutils literal notranslate"><span class="pre">.squeeze()</span></code></a> (or by selecting the column name for implicit conversion) then using <a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.tolist.html"><code class="docutils literal notranslate"><span class="pre">.tolist()</span></code></a>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue.select(&quot;incident_number&quot;).limit(5).toPandas().squeeze().tolist()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1291,7 +1291,7 @@ rescue_collected
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue.select(&quot;incident_number&quot;).limit(5).toPandas()[&quot;incident_number&quot;].tolist()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()[</span><span class="s2">&quot;incident_number&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1304,10 +1304,10 @@ rescue_collected
 <p>The main use case for <code class="docutils literal notranslate"><span class="pre">.collect()</span></code> is returning a value from a one row DataFrame as a scalar value and then assigning to a variable:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sum_cost = (rescue
-            .agg(F.sum(&quot;total_cost&quot;))
-            .collect()[0][0])
-sum_cost
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sum_cost</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+            <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="s2">&quot;total_cost&quot;</span><span class="p">))</span>
+            <span class="o">.</span><span class="n">collect</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">sum_cost</span>
 </pre></div>
 </div>
 </div>
@@ -1324,8 +1324,8 @@ sum_cost
 <p>Just like <code class="docutils literal notranslate"><span class="pre">.collect()</span></code> you can assign the output of <code class="docutils literal notranslate"><span class="pre">.take()</span></code> to a variable or print out directly:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_take = rescue.select(&quot;incident_number&quot;, &quot;animal_group&quot;, &quot;total_cost&quot;, &quot;description&quot;).take(5)
-rescue_take
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_take</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">rescue_take</span>
 </pre></div>
 </div>
 </div>
@@ -1346,11 +1346,11 @@ rescue_take
 <p>As PySpark DataFrames are not ordered by default <code class="docutils literal notranslate"><span class="pre">.first()</span></code> is non-deterministic, and so it is generally combined with <code class="docutils literal notranslate"><span class="pre">.orderBy()</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_first = (rescue
-                .select(&quot;incident_number&quot;, &quot;animal_group&quot;, &quot;total_cost&quot;, &quot;description&quot;)
-                .orderBy(F.desc(&quot;total_cost&quot;))
-                .first())
-rescue_first
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_first</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+                <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">desc</span><span class="p">(</span><span class="s2">&quot;total_cost&quot;</span><span class="p">))</span>
+                <span class="o">.</span><span class="n">first</span><span class="p">())</span>
+<span class="n">rescue_first</span>
 </pre></div>
 </div>
 </div>
@@ -1363,8 +1363,8 @@ rescue_first
 <p>This <code class="docutils literal notranslate"><span class="pre">Row</span></code> object is not in a list, and so values can be referenced directly:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>top_cost = rescue_first[&quot;total_cost&quot;]
-top_cost
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">top_cost</span> <span class="o">=</span> <span class="n">rescue_first</span><span class="p">[</span><span class="s2">&quot;total_cost&quot;</span><span class="p">]</span>
+<span class="n">top_cost</span>
 </pre></div>
 </div>
 </div>
@@ -1377,10 +1377,10 @@ top_cost
 <p>Note that if the DataFrame is empty this will return <code class="docutils literal notranslate"><span class="pre">None</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>first_none = (rescue
-              .filter(F.col(&quot;animal_group&quot;) == &quot;Dragon&quot;)
-              .first())
-print(first_none)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">first_none</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+              <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Dragon&quot;</span><span class="p">)</span>
+              <span class="o">.</span><span class="n">first</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">first_none</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1393,10 +1393,10 @@ print(first_none)
 <p>Whereas <code class="docutils literal notranslate"><span class="pre">.collect()</span></code> and <code class="docutils literal notranslate"><span class="pre">.take()</span></code> will return an empty list:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>collect_empty = (rescue
-                 .filter(F.col(&quot;animal_group&quot;) == &quot;Dragon&quot;)
-                 .collect())
-collect_empty
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">collect_empty</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+                 <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Dragon&quot;</span><span class="p">)</span>
+                 <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
+<span class="n">collect_empty</span>
 </pre></div>
 </div>
 </div>
@@ -1412,11 +1412,11 @@ collect_empty
 <p>Another method included for completeness is <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.head.html"><code class="docutils literal notranslate"><span class="pre">.head()</span></code></a>. This works in the same way as <code class="docutils literal notranslate"><span class="pre">.take()</span></code> if you specify the number of rows (returns a list of <code class="docutils literal notranslate"><span class="pre">Row</span></code> objects, even if it only has one row), or <code class="docutils literal notranslate"><span class="pre">.first()</span></code> if not (returns a single <code class="docutils literal notranslate"><span class="pre">Row</span></code> object). This could potentially get confusing so it is better to just use <code class="docutils literal notranslate"><span class="pre">.take()</span></code> or <code class="docutils literal notranslate"><span class="pre">.first()</span></code> instead.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Same as .first()
-rescue_blank = rescue.select(&quot;incident_number&quot;, &quot;animal_group&quot;, &quot;total_cost&quot;, &quot;description&quot;).head()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Same as .first()</span>
+<span class="n">rescue_blank</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 
-# Returns a Row object
-rescue_blank
+<span class="c1"># Returns a Row object</span>
+<span class="n">rescue_blank</span>
 </pre></div>
 </div>
 </div>
@@ -1428,11 +1428,11 @@ rescue_blank
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Same as .take(1)
-rescue_blank = rescue.select(&quot;incident_number&quot;, &quot;animal_group&quot;, &quot;total_cost&quot;, &quot;description&quot;).head(1)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Same as .take(1)</span>
+<span class="n">rescue_blank</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-# Returns a list of Row objects (only one item in this case)
-rescue_blank
+<span class="c1"># Returns a list of Row objects (only one item in this case)</span>
+<span class="n">rescue_blank</span>
 </pre></div>
 </div>
 </div>

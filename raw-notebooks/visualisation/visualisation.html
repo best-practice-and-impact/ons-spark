@@ -680,19 +680,19 @@ title="Print to PDF"
 <p>First, read in the data with Spark and aggregate to the level required in the chart. In this example, we will get the number of animals rescued by year:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import yaml
-from pyspark.sql import SparkSession, functions as F
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
 
-spark = SparkSession.builder.master(&quot;local[2]&quot;).appName(&quot;data-viz&quot;).getOrCreate()
+<span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;data-viz&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
 
-with open(&quot;../../../config.yaml&quot;) as f:
-    config = yaml.safe_load(f)
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
     
-rescue_path = config[&quot;rescue_path&quot;]
-rescue = (spark.read.parquet(rescue_path)
-          .groupBy(&quot;cal_year&quot;)
-          .count()
-          .orderBy(&quot;cal_year&quot;))
+<span class="n">rescue_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path&quot;</span><span class="p">]</span>
+<span class="n">rescue</span> <span class="o">=</span> <span class="p">(</span><span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">count</span><span class="p">()</span>
+          <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -719,7 +719,7 @@ rescue = (spark.read.parquet(rescue_path)
 <p>Now copy the data to to the driver, with <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code> if using Python or <code class="docutils literal notranslate"><span class="pre">collect()</span></code> if using R:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_pd = rescue.toPandas()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_pd</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -730,9 +730,9 @@ rescue = (spark.read.parquet(rescue_path)
 <p>There are several popular charting packages available for Python. Examples include <a class="reference external" href="https://matplotlib.org/">Matplotlib</a> and <a class="reference external" href="https://plotly.com/python/">Plotly</a>. A pandas DataFrame can also be visualised directly with <code class="docutils literal notranslate"><span class="pre">.plot()</span></code>, which will often be the quickest and easiest way if using Spark. <code class="docutils literal notranslate"><span class="pre">.plot()</span></code> is just a wrapper for Matplotlib’s <code class="docutils literal notranslate"><span class="pre">plt.plot()</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%matplotlib inline
-rescue_pd.set_index(&quot;cal_year&quot;, drop=True, inplace=True)
-rescue_pd.plot(kind=&quot;bar&quot;)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="n">rescue_pd</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">rescue_pd</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s2">&quot;bar&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -815,7 +815,7 @@ rescue_pd.plot(kind=&quot;bar&quot;)
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./raw-notebooks/visualisation"
+            path: "./raw-notebooks\visualisation"
         },
         predefinedOutput: true
     }

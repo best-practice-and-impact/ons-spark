@@ -747,18 +747,18 @@ title="Print to PDF"
 <p>First, import the relevant packages and start a Spark session. To use window functions in PySpark, we need to import <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Window.html"><code class="docutils literal notranslate"><span class="pre">Window</span></code></a> from <code class="docutils literal notranslate"><span class="pre">pyspark.sql.window</span></code>. No extra packages are needed for sparklyr, as Spark functions are referenced inside <a class="reference external" href="https://dplyr.tidyverse.org/reference/mutate.html"><code class="docutils literal notranslate"><span class="pre">mutate()</span></code></a>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from pyspark.sql import SparkSession, functions as F
-from pyspark.sql.window import Window
-import yaml
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql.window</span> <span class="kn">import</span> <span class="n">Window</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
 
-with open(&quot;../../../config.yaml&quot;) as f:
-    config = yaml.safe_load(f)
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
     
-spark = (SparkSession.builder.master(&quot;local[2]&quot;)
-         .appName(&quot;window-functions&quot;)
-         .getOrCreate())
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;window-functions&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
 
-rescue_path = config[&quot;rescue_path&quot;]
+<span class="n">rescue_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path&quot;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -777,13 +777,13 @@ rescue_path = config[&quot;rescue_path&quot;]
 <p>In this example we will use an aggregated version of the Animal Rescue data, containing <code class="docutils literal notranslate"><span class="pre">animal_group</span></code>, <code class="docutils literal notranslate"><span class="pre">cal_year</span></code> and <code class="docutils literal notranslate"><span class="pre">animal_count</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_agg = (
-    spark.read.parquet(rescue_path)
-    .withColumn(&quot;animal_group&quot;, F.initcap(F.col(&quot;animal_group&quot;)))
-    .groupBy(&quot;animal_group&quot;, &quot;cal_year&quot;)
-    .agg(F.count(&quot;animal_group&quot;).alias(&quot;animal_count&quot;)))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_agg</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">initcap</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)))</span>
+    <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;cal_year&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;animal_count&quot;</span><span class="p">)))</span>
 
-rescue_agg.show(5, truncate=False)
+<span class="n">rescue_agg</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -830,9 +830,9 @@ only showing top 5 rows
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_annual = (rescue_agg
-                 .withColumn(&quot;annual_count&quot;,
-                     F.sum(&quot;animal_count&quot;).over(Window.partitionBy(&quot;cal_year&quot;))))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_annual</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue_agg</span>
+                 <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;annual_count&quot;</span><span class="p">,</span>
+                     <span class="n">F</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="s2">&quot;animal_count&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">over</span><span class="p">(</span><span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">))))</span>
 </pre></div>
 </div>
 </div>
@@ -846,12 +846,12 @@ only showing top 5 rows
 <p>Now display the DF, using <code class="docutils literal notranslate"><span class="pre">Cat</span></code>, <code class="docutils literal notranslate"><span class="pre">Dog</span></code> and <code class="docutils literal notranslate"><span class="pre">Hamster</span></code> between <code class="docutils literal notranslate"><span class="pre">2012</span></code> and <code class="docutils literal notranslate"><span class="pre">2014</span></code> as an example:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>(rescue_annual
-    .filter(
-        (F.col(&quot;animal_group&quot;).isin(&quot;Cat&quot;, &quot;Dog&quot;, &quot;Hamster&quot;)) &amp;
-        (F.col(&quot;cal_year&quot;).between(2012, 2014)))
-    .orderBy(&quot;cal_year&quot;, &quot;animal_group&quot;)
-    .show())
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">rescue_annual</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="s2">&quot;Cat&quot;</span><span class="p">,</span> <span class="s2">&quot;Dog&quot;</span><span class="p">,</span> <span class="s2">&quot;Hamster&quot;</span><span class="p">))</span> <span class="o">&amp;</span>
+        <span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">between</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span> <span class="mi">2014</span><span class="p">)))</span>
+    <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">show</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -885,12 +885,12 @@ only showing top 5 rows
 <p>Once we have the <code class="docutils literal notranslate"><span class="pre">annual_count</span></code> column we can complete our calculation with a simple narrow transformation to get the percentage and filter on <code class="docutils literal notranslate"><span class="pre">&quot;Dog&quot;</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_annual = (rescue_annual
-                 .withColumn(&quot;animal_pct&quot;,
-                             F.round(
-                                 (F.col(&quot;animal_count&quot;) / F.col(&quot;annual_count&quot;)) * 100, 2)))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_annual</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue_annual</span>
+                 <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;animal_pct&quot;</span><span class="p">,</span>
+                             <span class="n">F</span><span class="o">.</span><span class="n">round</span><span class="p">(</span>
+                                 <span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_count&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;annual_count&quot;</span><span class="p">))</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
 
-rescue_annual.filter(F.col(&quot;animal_group&quot;) == &quot;Dog&quot;).orderBy(&quot;cal_year&quot;).show()
+<span class="n">rescue_annual</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Dog&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -927,14 +927,14 @@ rescue_annual.filter(F.col(&quot;animal_group&quot;) == &quot;Dog&quot;).orderBy
 <p>This example used <code class="docutils literal notranslate"><span class="pre">F.sum()</span></code>/<code class="docutils literal notranslate"><span class="pre">sum()</span></code> but other aggregations are possible too, e.g. <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.mean.html"><code class="docutils literal notranslate"><span class="pre">F.mean()</span></code></a>/<a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#mean"><code class="docutils literal notranslate"><span class="pre">mean()</span></code></a>, <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.max.html"><code class="docutils literal notranslate"><span class="pre">F.max()</span></code></a>/<a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#max"><code class="docutils literal notranslate"><span class="pre">max()</span></code></a>. In PySpark, use multiple <code class="docutils literal notranslate"><span class="pre">.withColumn()</span></code> statements; in sparklyr, you can combine them in <code class="docutils literal notranslate"><span class="pre">mutate()</span></code>. In this example we filter on <code class="docutils literal notranslate"><span class="pre">&quot;Snake&quot;</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_annual = (rescue_annual
-          .withColumn(&quot;avg_count&quot;,
-                     F.mean(&quot;animal_count&quot;).over(Window.partitionBy(&quot;cal_year&quot;)))
-          .withColumn(&quot;max_count&quot;,
-                     F.max(&quot;animal_count&quot;).over(Window.partitionBy(&quot;cal_year&quot;))                     
-                     ))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_annual</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue_annual</span>
+          <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;avg_count&quot;</span><span class="p">,</span>
+                     <span class="n">F</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="s2">&quot;animal_count&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">over</span><span class="p">(</span><span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">)))</span>
+          <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;max_count&quot;</span><span class="p">,</span>
+                     <span class="n">F</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="s2">&quot;animal_count&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">over</span><span class="p">(</span><span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">))</span>                     
+                     <span class="p">))</span>
           
-rescue_annual.filter(F.col(&quot;animal_group&quot;) == &quot;Snake&quot;).show()
+<span class="n">rescue_annual</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Snake&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -969,9 +969,9 @@ rescue_annual.filter(F.col(&quot;animal_group&quot;) == &quot;Snake&quot;).show(
 <p>The alternative to window functions is creating a new grouped and aggregated DF, then joining it back to the original one. As well as being less efficient, the code will also be harder to read. For example:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_counts = rescue_agg.groupBy(&quot;cal_year&quot;).agg(F.sum(&quot;animal_count&quot;).alias(&quot;annual_count&quot;))
-rescue_annual_alternative = rescue_agg.join(rescue_counts, on=&quot;cal_year&quot;, how=&quot;left&quot;)
-rescue_annual_alternative.filter(F.col(&quot;animal_group&quot;) == &quot;Dog&quot;).orderBy(&quot;cal_year&quot;).show()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_counts</span> <span class="o">=</span> <span class="n">rescue_agg</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="s2">&quot;animal_count&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;annual_count&quot;</span><span class="p">))</span>
+<span class="n">rescue_annual_alternative</span> <span class="o">=</span> <span class="n">rescue_agg</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">rescue_counts</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;cal_year&quot;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+<span class="n">rescue_annual_alternative</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Dog&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1016,11 +1016,11 @@ rescue_annual_alternative.filter(F.col(&quot;animal_group&quot;) == &quot;Dog&qu
 <p>In sparklyr, the method is also almost the same as using aggregations. The ordering is done directly with the <code class="docutils literal notranslate"><span class="pre">rank()</span></code> function. <code class="docutils literal notranslate"><span class="pre">desc(animal_count)</span></code> is used to sort descending.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_rank = (
-    rescue_agg
-    .withColumn(&quot;rank&quot;,
-                F.rank().over(
-                    Window.partitionBy(&quot;cal_year&quot;).orderBy(F.desc(&quot;animal_count&quot;)))))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_rank</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">rescue_agg</span>
+    <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;rank&quot;</span><span class="p">,</span>
+                <span class="n">F</span><span class="o">.</span><span class="n">rank</span><span class="p">()</span><span class="o">.</span><span class="n">over</span><span class="p">(</span>
+                    <span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">desc</span><span class="p">(</span><span class="s2">&quot;animal_count&quot;</span><span class="p">)))))</span>
 </pre></div>
 </div>
 </div>
@@ -1034,7 +1034,7 @@ rescue_annual_alternative.filter(F.col(&quot;animal_group&quot;) == &quot;Dog&qu
 <p>Once we have the <code class="docutils literal notranslate"><span class="pre">rank</span></code> column we can filter on those less than or equal to <code class="docutils literal notranslate"><span class="pre">3</span></code>, to get the top 3 animals rescued by year:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_rank.filter(F.col(&quot;rank&quot;) &lt;= 3).orderBy(&quot;cal_year&quot;, &quot;rank&quot;).show(12, truncate=False)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_rank</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;rank&quot;</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">,</span> <span class="s2">&quot;rank&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1071,7 +1071,7 @@ only showing top 12 rows
 <p>Another common use case is getting just the top row from each group:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_rank.filter(F.col(&quot;rank&quot;) == 1).orderBy(&quot;cal_year&quot;).show(truncate=False)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_rank</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;rank&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1113,28 +1113,28 @@ only showing top 12 rows
 <p>We can see the difference by comparing the three methods:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rank_comparison = (rescue_agg
-    .withColumn(&quot;rank&quot;,
-                F.rank().over(
-                    Window
-                    .partitionBy(&quot;cal_year&quot;)
-                    .orderBy(F.desc(&quot;animal_count&quot;))))
-    .withColumn(&quot;dense_rank&quot;,
-                F.dense_rank().over(
-                    Window
-                    .partitionBy(&quot;cal_year&quot;)
-                    .orderBy(F.desc(&quot;animal_count&quot;))))
-    .withColumn(&quot;row_number&quot;,
-                F.row_number().over(
-                    Window
-                    .partitionBy(&quot;cal_year&quot;)
-                    .orderBy(F.desc(&quot;animal_count&quot;))))
-)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rank_comparison</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue_agg</span>
+    <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;rank&quot;</span><span class="p">,</span>
+                <span class="n">F</span><span class="o">.</span><span class="n">rank</span><span class="p">()</span><span class="o">.</span><span class="n">over</span><span class="p">(</span>
+                    <span class="n">Window</span>
+                    <span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">desc</span><span class="p">(</span><span class="s2">&quot;animal_count&quot;</span><span class="p">))))</span>
+    <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;dense_rank&quot;</span><span class="p">,</span>
+                <span class="n">F</span><span class="o">.</span><span class="n">dense_rank</span><span class="p">()</span><span class="o">.</span><span class="n">over</span><span class="p">(</span>
+                    <span class="n">Window</span>
+                    <span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">desc</span><span class="p">(</span><span class="s2">&quot;animal_count&quot;</span><span class="p">))))</span>
+    <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;row_number&quot;</span><span class="p">,</span>
+                <span class="n">F</span><span class="o">.</span><span class="n">row_number</span><span class="p">()</span><span class="o">.</span><span class="n">over</span><span class="p">(</span>
+                    <span class="n">Window</span>
+                    <span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">desc</span><span class="p">(</span><span class="s2">&quot;animal_count&quot;</span><span class="p">))))</span>
+<span class="p">)</span>
 
-(rank_comparison
-    .filter(F.col(&quot;cal_year&quot;) == 2012)
-    .orderBy(&quot;cal_year&quot;, &quot;row_number&quot;)
-    .show(truncate=False))
+<span class="p">(</span><span class="n">rank_comparison</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2012</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">,</span> <span class="s2">&quot;row_number&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -1189,10 +1189,10 @@ only showing top 12 rows
 <p>Remember to be careful as this can be non-deterministic if there are duplicate rows for the ordering condition specified.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>(rescue_agg
-    .withColumn(&quot;row_number&quot;,
-                F.row_number().over(Window.orderBy(&quot;cal_year&quot;)))
-    .show(10, truncate=False))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">rescue_agg</span>
+    <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;row_number&quot;</span><span class="p">,</span>
+                <span class="n">F</span><span class="o">.</span><span class="n">row_number</span><span class="p">()</span><span class="o">.</span><span class="n">over</span><span class="p">(</span><span class="n">Window</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">)))</span>
+    <span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -1233,11 +1233,11 @@ only showing top 10 rows
 <p>We can use <code class="docutils literal notranslate"><span class="pre">lag()</span></code> or <code class="docutils literal notranslate"><span class="pre">lead()</span></code> to get the number of animals rescued in the previous year, with the intention of calculating the annual change. The process for this is identical to the Using Window Functions for Ranking section, just using <code class="docutils literal notranslate"><span class="pre">lag()</span></code> as the function within the window.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>(rescue_agg
-    .withColumn(&quot;previous_count&quot;,
-                F.lag(&quot;animal_count&quot;).over(
-                    Window.partitionBy(&quot;animal_group&quot;).orderBy(&quot;cal_year&quot;)))
-    .show(10, truncate=False))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">rescue_agg</span>
+    <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;previous_count&quot;</span><span class="p">,</span>
+                <span class="n">F</span><span class="o">.</span><span class="n">lag</span><span class="p">(</span><span class="s2">&quot;animal_count&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">over</span><span class="p">(</span>
+                    <span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">)))</span>
+    <span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -1274,27 +1274,27 @@ only showing top 10 rows
 <p>There are several ways to resolve this; one method is using a <span class="xref myst">cross join</span> to get all the combinations of <code class="docutils literal notranslate"><span class="pre">animal_group</span></code> and <code class="docutils literal notranslate"><span class="pre">cal_year</span></code>, join the <code class="docutils literal notranslate"><span class="pre">rescue_agg</span></code> to this, fill the null values with <code class="docutils literal notranslate"><span class="pre">0</span></code>, and then do the window calculation:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Create a DF of all combinations of animal_group and cal_year
-all_animals_years = (rescue_agg
-                     .select(&quot;animal_group&quot;)
-                     .distinct()
-                     .crossJoin(
-                         rescue_agg
-                         .select(&quot;cal_year&quot;)
-                         .distinct()))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a DF of all combinations of animal_group and cal_year</span>
+<span class="n">all_animals_years</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue_agg</span>
+                     <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span>
+                     <span class="o">.</span><span class="n">distinct</span><span class="p">()</span>
+                     <span class="o">.</span><span class="n">crossJoin</span><span class="p">(</span>
+                         <span class="n">rescue_agg</span>
+                         <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">)</span>
+                         <span class="o">.</span><span class="n">distinct</span><span class="p">()))</span>
 
-# Use this DF as a base to join the rescue_agg DF to
-rescue_agg_prev = (
-    all_animals_years
-    .join(rescue_agg, on=[&quot;animal_group&quot;, &quot;cal_year&quot;], how=&quot;left&quot;)
-    # Replace null with 0
-    .fillna(0, &quot;animal_count&quot;)
-    # lag will then reference previous year, even if 0
-    .withColumn(&quot;previous_count&quot;,
-                F.lag(&quot;animal_count&quot;).over(
-                    Window.partitionBy(&quot;animal_group&quot;).orderBy(&quot;cal_year&quot;))))
+<span class="c1"># Use this DF as a base to join the rescue_agg DF to</span>
+<span class="n">rescue_agg_prev</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">all_animals_years</span>
+    <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">rescue_agg</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;cal_year&quot;</span><span class="p">],</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+    <span class="c1"># Replace null with 0</span>
+    <span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;animal_count&quot;</span><span class="p">)</span>
+    <span class="c1"># lag will then reference previous year, even if 0</span>
+    <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;previous_count&quot;</span><span class="p">,</span>
+                <span class="n">F</span><span class="o">.</span><span class="n">lag</span><span class="p">(</span><span class="s2">&quot;animal_count&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">over</span><span class="p">(</span>
+                    <span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">))))</span>
 
-rescue_agg_prev.orderBy(&quot;animal_group&quot;, &quot;cal_year&quot;).show(truncate=False)
+<span class="n">rescue_agg_prev</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;cal_year&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1360,20 +1360,20 @@ only showing top 20 rows
 <p>You can also use the regular SQL syntax for window functions when using Spark, <code class="docutils literal notranslate"><span class="pre">OVER(PARTITION</span> <span class="pre">BY...GROUP</span> <span class="pre">BY)</span></code>. This needs an SQL wrapper to be processed in Spark, <a class="reference external" href="https://spark.apache.org/docs/latest/sql-getting-started.html#running-sql-queries-programmatically"><code class="docutils literal notranslate"><span class="pre">spark.sql()</span></code></a> in PySpark and <a class="reference external" href="https://dplyr.tidyverse.org/reference/tbl.html"><code class="docutils literal notranslate"><span class="pre">tbl(sc,</span> <span class="pre">sql())</span></code></a> in sparklyr. Remember that SQL works on tables rather than DataFrames, so register the DataFrame first.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_agg.registerTempTable(&quot;rescue_agg&quot;)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_agg</span><span class="o">.</span><span class="n">registerTempTable</span><span class="p">(</span><span class="s2">&quot;rescue_agg&quot;</span><span class="p">)</span>
 
-sql_window = spark.sql(
-    &quot;&quot;&quot;
-    SELECT
-        cal_year,
-        animal_group,
-        animal_count,
-        SUM(animal_count) OVER(PARTITION BY cal_year) AS annual_count
-    FROM rescue_agg
-    &quot;&quot;&quot;
-)
+<span class="n">sql_window</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    SELECT</span>
+<span class="sd">        cal_year,</span>
+<span class="sd">        animal_group,</span>
+<span class="sd">        animal_count,</span>
+<span class="sd">        SUM(animal_count) OVER(PARTITION BY cal_year) AS annual_count</span>
+<span class="sd">    FROM rescue_agg</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<span class="p">)</span>
 
-sql_window.filter(F.col(&quot;animal_group&quot;) == &quot;Snake&quot;).show()
+<span class="n">sql_window</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Snake&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1469,7 +1469,7 @@ sql_window.filter(F.col(&quot;animal_group&quot;) == &quot;Snake&quot;).show()
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./raw-notebooks/window-functions"
+            path: "./raw-notebooks\window-functions"
         },
         predefinedOutput: true
     }

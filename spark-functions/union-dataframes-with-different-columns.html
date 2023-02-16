@@ -659,17 +659,17 @@ title="Print to PDF"
 <p>Here’s how we can use PySpark to mimic the behaviour of the <code class="docutils literal notranslate"><span class="pre">sdf_bind_rows()</span></code> function in sparklyr.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import pyspark.sql.functions as F
-from pyspark.sql import SparkSession
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyspark.sql.functions</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spark = (SparkSession.builder.master(&quot;local[2]&quot;)
-         .appName(&quot;union-pyspark&quot;)
-         .getOrCreate())
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;union-pyspark&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -677,24 +677,24 @@ from pyspark.sql import SparkSession
 <p>Create a DataFrame of Wimbledon singles champions from 2017 to 2019:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>df1_schema =  &quot;&quot;&quot;
-    `tournament_year` int,
-    `event` string,
-    `champion` string
-&quot;&quot;&quot;
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df1_schema</span> <span class="o">=</span>  <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    `tournament_year` int,</span>
+<span class="s2">    `event` string,</span>
+<span class="s2">    `champion` string</span>
+<span class="s2">&quot;&quot;&quot;</span>
 
-df1 = spark.createDataFrame([
-    [2017, &quot;Gentlemen&#39;s Singles&quot;, &quot;Federer&quot;],
-    [2018, &quot;Gentlemen&#39;s Singles&quot;, &quot;Djokovic&quot;],
-    [2019, &quot;Gentlemen&#39;s Singles&quot;, &quot;Djokovic&quot;],
-    [2017, &quot;Ladies&#39; Singles&quot;, &quot;Muguruza&quot;],
-    [2018, &quot;Ladies&#39; Singles&quot;, &quot;Kerber&quot;],
-    [2019, &quot;Ladies&#39; Singles&quot;, &quot;Halep&quot;],
-    ], 
-    schema=df1_schema
-)
+<span class="n">df1</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">2017</span><span class="p">,</span> <span class="s2">&quot;Gentlemen&#39;s Singles&quot;</span><span class="p">,</span> <span class="s2">&quot;Federer&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2018</span><span class="p">,</span> <span class="s2">&quot;Gentlemen&#39;s Singles&quot;</span><span class="p">,</span> <span class="s2">&quot;Djokovic&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2019</span><span class="p">,</span> <span class="s2">&quot;Gentlemen&#39;s Singles&quot;</span><span class="p">,</span> <span class="s2">&quot;Djokovic&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2017</span><span class="p">,</span> <span class="s2">&quot;Ladies&#39; Singles&quot;</span><span class="p">,</span> <span class="s2">&quot;Muguruza&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2018</span><span class="p">,</span> <span class="s2">&quot;Ladies&#39; Singles&quot;</span><span class="p">,</span> <span class="s2">&quot;Kerber&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2019</span><span class="p">,</span> <span class="s2">&quot;Ladies&#39; Singles&quot;</span><span class="p">,</span> <span class="s2">&quot;Halep&quot;</span><span class="p">],</span>
+    <span class="p">],</span> 
+    <span class="n">schema</span><span class="o">=</span><span class="n">df1_schema</span>
+<span class="p">)</span>
 
-df1.show()
+<span class="n">df1</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -716,19 +716,19 @@ df1.show()
 <p>Next we want to append 2020 data. However, there was no Wimbledon tournament in 2020. We’ll just create two columns.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>df2_schema = &quot;&quot;&quot;
-    `tournament_year` int,
-    `event` string
-&quot;&quot;&quot;
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df2_schema</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    `tournament_year` int,</span>
+<span class="s2">    `event` string</span>
+<span class="s2">&quot;&quot;&quot;</span>
 
-df2 = spark.createDataFrame([
-    [2020, &quot;Gentlemen&#39;s Singles&quot;],
-    [2020, &quot;Ladies&#39; Singles&quot;]
-    ],
-    schema=df2_schema
-)
+<span class="n">df2</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">2020</span><span class="p">,</span> <span class="s2">&quot;Gentlemen&#39;s Singles&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2020</span><span class="p">,</span> <span class="s2">&quot;Ladies&#39; Singles&quot;</span><span class="p">]</span>
+    <span class="p">],</span>
+    <span class="n">schema</span><span class="o">=</span><span class="n">df2_schema</span>
+<span class="p">)</span>
 
-df2.show()
+<span class="n">df2</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -746,10 +746,10 @@ df2.show()
 <p>Let’s try to union these DataFrames together:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>try:
-    df_joined = df1.union(df2)
-except Exception as e:
-    print(e)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">df_joined</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">df2</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -764,9 +764,9 @@ except Exception as e:
 <p>So let’s try adding a column to <code class="docutils literal notranslate"><span class="pre">df2</span></code> full of <code class="docutils literal notranslate"><span class="pre">Null</span></code> values before the union</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>df_joined = df1.union(df2.withColumn(&quot;champion&quot;, F.lit(None)))
-df_joined.printSchema()
-df_joined.show()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_joined</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;champion&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">lit</span><span class="p">(</span><span class="kc">None</span><span class="p">)))</span>
+<span class="n">df_joined</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
+<span class="n">df_joined</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -796,19 +796,19 @@ df_joined.show()
 <p>However, we need to be careful in doing this. What if the columns in <code class="docutils literal notranslate"><span class="pre">df2</span></code> were defined in a different order?</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>df2_schema = &quot;&quot;&quot;
-    `event` string,
-    `tournament_year` int
-&quot;&quot;&quot;
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df2_schema</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    `event` string,</span>
+<span class="s2">    `tournament_year` int</span>
+<span class="s2">&quot;&quot;&quot;</span>
 
-df2 = spark.createDataFrame([
-    [&quot;Gentlemen&#39;s Singles&quot;, 2020],
-    [&quot;Ladies&#39; Singles&quot;, 2020]
-    ],
-    schema=df2_schema
-)
+<span class="n">df2</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">([</span>
+    <span class="p">[</span><span class="s2">&quot;Gentlemen&#39;s Singles&quot;</span><span class="p">,</span> <span class="mi">2020</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;Ladies&#39; Singles&quot;</span><span class="p">,</span> <span class="mi">2020</span><span class="p">]</span>
+    <span class="p">],</span>
+    <span class="n">schema</span><span class="o">=</span><span class="n">df2_schema</span>
+<span class="p">)</span>
 
-df2.show()
+<span class="n">df2</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -825,9 +825,9 @@ df2.show()
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>df_joined = df1.union(df2.withColumn(&quot;champion&quot;, F.lit(None)))
-df_joined.printSchema()
-df_joined.show()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_joined</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;champion&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">lit</span><span class="p">(</span><span class="kc">None</span><span class="p">)))</span>
+<span class="n">df_joined</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
+<span class="n">df_joined</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -857,10 +857,10 @@ df_joined.show()
 <p>We’ll take the column order from the DataFrame with all the columns, <code class="docutils literal notranslate"><span class="pre">df1</span></code>, and force <code class="docutils literal notranslate"><span class="pre">df2</span></code> to have the same column order before doing the union.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>col_order = df1.columns
-df_joined = df1.union(df2.withColumn(&quot;champion&quot;, F.lit(None)).select(col_order))
-df_joined.printSchema()
-df_joined.show()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">col_order</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">columns</span>
+<span class="n">df_joined</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;champion&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">lit</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">col_order</span><span class="p">))</span>
+<span class="n">df_joined</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
+<span class="n">df_joined</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -889,18 +889,18 @@ df_joined.show()
 <p>Let’s look at one more example where we have a third DataFrame with different columns. Such as results from the 2021 tournament, which hasn’t taken place yet (at the time or writing).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>df3_schema = &quot;&quot;&quot;
-    `tournament_year` int
-&quot;&quot;&quot;
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df3_schema</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    `tournament_year` int</span>
+<span class="s2">&quot;&quot;&quot;</span>
 
-df3 = spark.createDataFrame([
-    [2021],
-    [2021]
-    ],
-    schema=df3_schema
-)
+<span class="n">df3</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">2021</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2021</span><span class="p">]</span>
+    <span class="p">],</span>
+    <span class="n">schema</span><span class="o">=</span><span class="n">df3_schema</span>
+<span class="p">)</span>
 
-df3.show()
+<span class="n">df3</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -918,8 +918,8 @@ df3.show()
 <p>We want a list of unique columns in all the DataFrames along with their types. We can use <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set-types-set-frozenset"><code class="docutils literal notranslate"><span class="pre">set()</span></code></a> to get the unique column names and types, then convert into a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#mapping-types-dict">dictionary</a>) to create key/value pairs</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>col_dict = dict(set(df1.dtypes + df2.dtypes + df3.dtypes))
-col_dict
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">col_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">df1</span><span class="o">.</span><span class="n">dtypes</span> <span class="o">+</span> <span class="n">df2</span><span class="o">.</span><span class="n">dtypes</span> <span class="o">+</span> <span class="n">df3</span><span class="o">.</span><span class="n">dtypes</span><span class="p">))</span>
+<span class="n">col_dict</span>
 </pre></div>
 </div>
 </div>
@@ -932,11 +932,11 @@ col_dict
 <p>Next we’ll create a function that checks to see if a DataFrame has all the columns we need for the union. If the DataFrame is missing a column we’ll add an empty column with that name, and give it the correct type using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.cast.html"><code class="docutils literal notranslate"><span class="pre">.cast()</span></code></a>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def add_empty_columns(df, col_dict):
-    for col in col_dict.keys():
-        if col not in df.columns:
-            df = df.withColumn(col, F.lit(None).cast(col_dict[col]))
-    return df
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add_empty_columns</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">col_dict</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">col_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">lit</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">col_dict</span><span class="p">[</span><span class="n">col</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">df</span>
 </pre></div>
 </div>
 </div>
@@ -944,9 +944,9 @@ col_dict
 <p>Next we apply the function to all three DataFrames</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>df1 = add_empty_columns(df1, col_dict)
-df2 = add_empty_columns(df2, col_dict)
-df3 = add_empty_columns(df3, col_dict)    
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df1</span> <span class="o">=</span> <span class="n">add_empty_columns</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">col_dict</span><span class="p">)</span>
+<span class="n">df2</span> <span class="o">=</span> <span class="n">add_empty_columns</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span> <span class="n">col_dict</span><span class="p">)</span>
+<span class="n">df3</span> <span class="o">=</span> <span class="n">add_empty_columns</span><span class="p">(</span><span class="n">df3</span><span class="p">,</span> <span class="n">col_dict</span><span class="p">)</span>    
 </pre></div>
 </div>
 </div>
@@ -954,8 +954,8 @@ df3 = add_empty_columns(df3, col_dict)
 <p>We need to decide on a column order for the unions, we can get this from <code class="docutils literal notranslate"><span class="pre">col_dict.keys()</span></code></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>col_order = list(col_dict.keys())
-col_order
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">col_order</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">col_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="n">col_order</span>
 </pre></div>
 </div>
 </div>
@@ -968,15 +968,15 @@ col_order
 <p>And finally, do the union. Note we use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.select.html"><code class="docutils literal notranslate"><span class="pre">.select(col_order)</span></code></a> after referencing each DataFrame to make sure the columns are in a consistent order</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>df_joined = df1.select(col_order).union(df2.select(col_order)).union(df3.select(col_order))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_joined</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">col_order</span><span class="p">)</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">col_order</span><span class="p">))</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">df3</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">col_order</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>df_joined.printSchema()
-df_joined.show()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_joined</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
+<span class="n">df_joined</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>

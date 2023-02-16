@@ -718,8 +718,8 @@ title="Print to PDF"
 <p>In R, use <code class="docutils literal notranslate"><span class="pre">?reserved</span></code> to get a list of the reserved words.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import keyword
-print(keyword.kwlist)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">keyword</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">keyword</span><span class="o">.</span><span class="n">kwlist</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -744,7 +744,7 @@ print(keyword.kwlist)
 <p>First, look at the documentation for <code class="docutils literal notranslate"><span class="pre">sum</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>help(sum)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="nb">sum</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -764,7 +764,7 @@ sum(iterable, start=0, /)
 <p>Show that <code class="docutils literal notranslate"><span class="pre">sum</span></code> works with a simple example: adding three integers together:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sum([1, 2, 3])
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">sum</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -777,8 +777,8 @@ sum(iterable, start=0, /)
 <p>Now import the modules we need to use Spark. The recommended way to do this is <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">pyspark.sql.functions</span> <span class="pre">as</span> <span class="pre">F</span></code>, which means that whenever you want to access a function from this module you prefix it with <code class="docutils literal notranslate"><span class="pre">F</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">F.sum()</span></code>. Sometimes the best way to see why something is recommended is to try a different method and show it is a bad idea, in this case, importing all the <code class="docutils literal notranslate"><span class="pre">functions</span></code> as <code class="docutils literal notranslate"><span class="pre">*</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from pyspark.sql import SparkSession
-from pyspark.sql.functions import *
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="o">*</span>
 </pre></div>
 </div>
 </div>
@@ -786,10 +786,10 @@ from pyspark.sql.functions import *
 <p>Attempting to sum the integers will now give an error:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>try:
-    sum([1, 2, 3])
-except AttributeError as e:
-    print(e)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="nb">sum</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -802,7 +802,7 @@ except AttributeError as e:
 <p>To see why this error exists, take another look at <code class="docutils literal notranslate"><span class="pre">help(sum)</span></code>; we can see that the documentation is different to previously.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>help(sum)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="nb">sum</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -821,9 +821,9 @@ sum(col)
 <p>You can also overwrite functions with your own variables, often unintentionally. As an example, first Start a Spark session:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spark = (SparkSession.builder.master(&quot;local[2]&quot;)
-         .appName(&quot;module-imports&quot;)
-         .getOrCreate())
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;module-imports&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -831,8 +831,8 @@ sum(col)
 <p>Create a small DataFrame:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sdf = spark.range(5).withColumn(&quot;double_id&quot;, col(&quot;id&quot;) * 2)
-sdf.show()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sdf</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;double_id&quot;</span><span class="p">,</span> <span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">sdf</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -853,8 +853,8 @@ sdf.show()
 <p>Loop through the columns, using <code class="docutils literal notranslate"><span class="pre">col</span></code> as the control variable. This will work, but is not a good idea as it is overwriting <code class="docutils literal notranslate"><span class="pre">col()</span></code> from <code class="docutils literal notranslate"><span class="pre">functions</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for col in sdf.columns:
-    sdf.select(col).show()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">sdf</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+    <span class="n">sdf</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">col</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -885,10 +885,10 @@ sdf.show()
 <p>If we try adding another column with <code class="docutils literal notranslate"><span class="pre">col()</span></code> then it will not work as we have now reassigned <code class="docutils literal notranslate"><span class="pre">col</span></code> to be <code class="docutils literal notranslate"><span class="pre">double_id</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>try:
-    sdf = sdf.withColumn(&quot;triple_id&quot;, col(&quot;id&quot;) * 3)
-except TypeError as e:
-    print(e)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">sdf</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;triple_id&quot;</span><span class="p">,</span> <span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -900,7 +900,7 @@ except TypeError as e:
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>col
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">col</span>
 </pre></div>
 </div>
 </div>
@@ -913,9 +913,9 @@ except TypeError as e:
 <p>Importing the PySpark <code class="docutils literal notranslate"><span class="pre">functions</span></code> as <code class="docutils literal notranslate"><span class="pre">F</span></code> and using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.col.html"><code class="docutils literal notranslate"><span class="pre">F.col()</span></code></a> solves this problem:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from pyspark.sql import functions as F 
-sdf = sdf.withColumn(&quot;triple_id&quot;, F.col(&quot;id&quot;) * 3)
-sdf.show()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span> 
+<span class="n">sdf</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;triple_id&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">sdf</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -984,7 +984,7 @@ sdf.show()
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./raw-notebooks/module-imports"
+            path: "./raw-notebooks\module-imports"
         },
         predefinedOutput: true
     }

@@ -680,14 +680,14 @@ title="Print to PDF"
 <p>First, create a Spark session. Note that the DataFrame used in this example is artificially created and is ten million rows long, so this may not work if using a local session with only a small amount of memory. Note that broadcast joins are being disabled by default.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import os
-from pyspark.sql import SparkSession, functions as F
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
 
-spark = (SparkSession.builder.master(&quot;local[2]&quot;)
-         .appName(&quot;joins&quot;)
-         # Disable Broadcast join by default
-         .config(&quot;spark.sql.autoBroadcastJoinThreshold&quot;, -1)
-         .getOrCreate())
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;joins&quot;</span><span class="p">)</span>
+         <span class="c1"># Disable Broadcast join by default</span>
+         <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.sql.autoBroadcastJoinThreshold&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -709,12 +709,12 @@ spark = (SparkSession.builder.master(&quot;local[2]&quot;)
 <p>Create a DataFrame with excessive skew by using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.range.html"><code class="docutils literal notranslate"><span class="pre">spark.range()</span></code></a>/<a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_seq.html"><code class="docutils literal notranslate"><span class="pre">sdf_seq()</span></code></a> to create a one column DF with an <code class="docutils literal notranslate"><span class="pre">id</span></code> column, then assigning an arbitrary letter from <code class="docutils literal notranslate"><span class="pre">A</span></code> to <code class="docutils literal notranslate"><span class="pre">E</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>row_ct = 10**7
-skewed_df = spark.range(row_ct).withColumn(&quot;join_col&quot;, F.when(F.col(&quot;id&quot;) &lt; 100, &quot;A&quot;)
-                               .when(F.col(&quot;id&quot;) &lt; 1000, &quot;B&quot;)
-                               .when(F.col(&quot;id&quot;) &lt; 10000, &quot;C&quot;)
-                               .when(F.col(&quot;id&quot;) &lt; 100000, &quot;D&quot;)
-                               .otherwise(&quot;E&quot;))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">row_ct</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="mi">7</span>
+<span class="n">skewed_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="n">row_ct</span><span class="p">)</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;join_col&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">)</span>
+                               <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">)</span>
+                               <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10000</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
+                               <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100000</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">)</span>
+                               <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -732,11 +732,11 @@ skewed_df = spark.range(row_ct).withColumn(&quot;join_col&quot;, F.when(F.col(&q
 <p>To show just how skewed this DF is, group the data by <code class="docutils literal notranslate"><span class="pre">join_col</span></code> and get the row count; 99% of the values of <code class="docutils literal notranslate"><span class="pre">join_col</span></code> are <code class="docutils literal notranslate"><span class="pre">&quot;E&quot;</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>(skewed_df
-    .groupBy(&quot;join_col&quot;)
-    .count()
-    .withColumn(&quot;pct_of_data&quot;, F.round((F.col(&quot;count&quot;) / row_ct) * 100, 3))
-    .show())
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">skewed_df</span>
+    <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;join_col&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">count</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;pct_of_data&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">round</span><span class="p">((</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;count&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="n">row_ct</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="o">.</span><span class="n">show</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -765,13 +765,13 @@ skewed_df = spark.range(row_ct).withColumn(&quot;join_col&quot;, F.when(F.col(&q
 <p>Create another DF, <code class="docutils literal notranslate"><span class="pre">small_df</span></code> that will be joined to <code class="docutils literal notranslate"><span class="pre">skewed_df</span></code>. This is a simple mapping of letters to numbers.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>small_df = spark.createDataFrame([
-    [&quot;A&quot;, 1],
-    [&quot;B&quot;, 2],
-    [&quot;C&quot;, 3],
-    [&quot;D&quot;, 4],
-    [&quot;E&quot;, 5]
-], [&quot;join_col&quot;, &quot;number_col&quot;])
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">small_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">([</span>
+    <span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="p">],</span> <span class="p">[</span><span class="s2">&quot;join_col&quot;</span><span class="p">,</span> <span class="s2">&quot;number_col&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -784,7 +784,7 @@ skewed_df = spark.range(row_ct).withColumn(&quot;join_col&quot;, F.when(F.col(&q
 <p>Now join, using the default Sort Merge Join:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>joined_df = skewed_df.join(small_df, on=&quot;join_col&quot;, how=&quot;left&quot;)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">joined_df</span> <span class="o">=</span> <span class="n">skewed_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">small_df</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;join_col&quot;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -796,8 +796,8 @@ skewed_df = spark.range(row_ct).withColumn(&quot;join_col&quot;, F.when(F.col(&q
 <p>We want to see how the DataFrame is processed on the cluster using the Spark UI, so use <code class="docutils literal notranslate"><span class="pre">.count()</span></code> and <span class="xref myst">set the job description</span> with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.SparkContext.setJobDescription.html"><code class="docutils literal notranslate"><span class="pre">.setJobDescription()</span></code></a>/<a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/invoke.html"><code class="docutils literal notranslate"><span class="pre">invoke(&quot;setJobDescription&quot;,</span> <span class="pre">...)</span></code></a>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spark.sparkContext.setJobDescription(&quot;Row Count&quot;)
-joined_df.count()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">setJobDescription</span><span class="p">(</span><span class="s2">&quot;Row Count&quot;</span><span class="p">)</span>
+<span class="n">joined_df</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -817,8 +817,8 @@ joined_df.count()
 <p>Group the data to verify the result of the join:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spark.sparkContext.setJobDescription(&quot;Show Grouped Data&quot;)
-joined_df.groupBy(&quot;join_col&quot;, &quot;number_col&quot;).count().show()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">setJobDescription</span><span class="p">(</span><span class="s2">&quot;Show Grouped Data&quot;</span><span class="p">)</span>
+<span class="n">joined_df</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;join_col&quot;</span><span class="p">,</span> <span class="s2">&quot;number_col&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -860,16 +860,16 @@ joined_df.groupBy(&quot;join_col&quot;, &quot;number_col&quot;).count().show()
 <p>We could change <code class="docutils literal notranslate"><span class="pre">salt_count</span></code> here; 10 is used as an example but you can change this depending on just how skewed your data are. Our example of 99% of the join keys being the same value is deliberately extreme and a higher <code class="docutils literal notranslate"><span class="pre">salt_count</span></code> would likely improve the efficiency. As with a lot of Spark issues, it is good to experiment and see what works best for your own situation.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spark.sparkContext.setJobDescription(&quot;Salted Join&quot;)
-salt_count = 10
-seed_no = 123
-skewed_df = skewed_df.withColumn(&quot;salted_col&quot;,
-                                 F.concat(
-                                     # Salted column will be in the format A-0, A-1...E-9
-                                     F.col(&quot;join_col&quot;),
-                                     F.lit(&quot;-&quot;),
-                                     F.floor(F.rand(seed_no) * salt_count)))
-skewed_df.show()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">setJobDescription</span><span class="p">(</span><span class="s2">&quot;Salted Join&quot;</span><span class="p">)</span>
+<span class="n">salt_count</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">seed_no</span> <span class="o">=</span> <span class="mi">123</span>
+<span class="n">skewed_df</span> <span class="o">=</span> <span class="n">skewed_df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;salted_col&quot;</span><span class="p">,</span>
+                                 <span class="n">F</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+                                     <span class="c1"># Salted column will be in the format A-0, A-1...E-9</span>
+                                     <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;join_col&quot;</span><span class="p">),</span>
+                                     <span class="n">F</span><span class="o">.</span><span class="n">lit</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">),</span>
+                                     <span class="n">F</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">seed_no</span><span class="p">)</span> <span class="o">*</span> <span class="n">salt_count</span><span class="p">)))</span>
+<span class="n">skewed_df</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -923,7 +923,7 @@ only showing top 20 rows
 <p>Create a DataFrame of the numbers 0 to 9:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>salt_df = spark.range(salt_count)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">salt_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="n">salt_count</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -934,16 +934,16 @@ only showing top 20 rows
 <p>Cross join this to <code class="docutils literal notranslate"><span class="pre">small_df</span></code> to generate every combination, then concatenate it in the same way as previously:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>small_df_salted = (small_df
-                   .crossJoin(salt_df)
-                   .withColumn(&quot;salted_col&quot;,
-                               F.concat(
-                                   F.col(&quot;join_col&quot;),
-                                   F.lit(&quot;-&quot;),
-                                   F.col(&quot;id&quot;)
-                               ))
-                   .drop(&quot;id&quot;, &quot;join_col&quot;))
-small_df_salted.show()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">small_df_salted</span> <span class="o">=</span> <span class="p">(</span><span class="n">small_df</span>
+                   <span class="o">.</span><span class="n">crossJoin</span><span class="p">(</span><span class="n">salt_df</span><span class="p">)</span>
+                   <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;salted_col&quot;</span><span class="p">,</span>
+                               <span class="n">F</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+                                   <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;join_col&quot;</span><span class="p">),</span>
+                                   <span class="n">F</span><span class="o">.</span><span class="n">lit</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">),</span>
+                                   <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
+                               <span class="p">))</span>
+                   <span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;join_col&quot;</span><span class="p">))</span>
+<span class="n">small_df_salted</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -991,9 +991,9 @@ only showing top 20 rows
 <p>Now join on <code class="docutils literal notranslate"><span class="pre">salted_col</span></code> and <code class="docutils literal notranslate"><span class="pre">.count()</span></code> the DataFrame, once again setting the job description first:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>salted_join_df = skewed_df.join(small_df_salted, on=&quot;salted_col&quot;, how=&quot;left&quot;)
-spark.sparkContext.setJobDescription(&quot;Salted Join Row Count&quot;)
-salted_join_df.count()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">salted_join_df</span> <span class="o">=</span> <span class="n">skewed_df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">small_df_salted</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;salted_col&quot;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">setJobDescription</span><span class="p">(</span><span class="s2">&quot;Salted Join Row Count&quot;</span><span class="p">)</span>
+<span class="n">salted_join_df</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1016,8 +1016,8 @@ salted_join_df.count()
 <p>Verify that the result was the same as before:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spark.sparkContext.setJobDescription(&quot;Salted Join Show Grouped Data&quot;)
-salted_join_df.groupBy(&quot;join_col&quot;, &quot;number_col&quot;).count().show()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">setJobDescription</span><span class="p">(</span><span class="s2">&quot;Salted Join Show Grouped Data&quot;</span><span class="p">)</span>
+<span class="n">salted_join_df</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;join_col&quot;</span><span class="p">,</span> <span class="s2">&quot;number_col&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1121,7 +1121,7 @@ salted_join_df.groupBy(&quot;join_col&quot;, &quot;number_col&quot;).count().sho
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./raw-notebooks/salted-joins"
+            path: "./raw-notebooks\salted-joins"
         },
         predefinedOutput: true
     }

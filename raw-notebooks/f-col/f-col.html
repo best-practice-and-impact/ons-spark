@@ -711,16 +711,16 @@ title="Print to PDF"
 <p>First, import the modules and create a Spark session:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import yaml
-from pyspark.sql import SparkSession, functions as F
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
 
-spark = SparkSession.builder.master(&quot;local[2]&quot;).appName(&quot;f-col&quot;).getOrCreate()
+<span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;f-col&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
 
-with open(&quot;../../../config.yaml&quot;) as f:
-    config = yaml.safe_load(f)
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
     
-rescue_path = config[&quot;rescue_path&quot;]
-rescue_path_csv = config[&quot;rescue_path_csv&quot;]
+<span class="n">rescue_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path&quot;</span><span class="p">]</span>
+<span class="n">rescue_path_csv</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path_csv&quot;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -728,8 +728,8 @@ rescue_path_csv = config[&quot;rescue_path_csv&quot;]
 <p>We can filter on columns when reading in the DataFrame. For instance to only read <code class="docutils literal notranslate"><span class="pre">&quot;Cat&quot;</span></code> from the animal rescue data:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cats = spark.read.parquet(rescue_path).filter(F.col(&quot;animal_group&quot;) == &quot;Cat&quot;)
-cats.select(&quot;incident_number&quot;, &quot;animal_group&quot;).show(5)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cats</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Cat&quot;</span><span class="p">)</span>
+<span class="n">cats</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -751,8 +751,8 @@ only showing top 5 rows
 <p>This cannot be done using <code class="docutils literal notranslate"><span class="pre">cats.animal_group</span></code> as we have not defined <code class="docutils literal notranslate"><span class="pre">cats</span></code> when referencing the DataFrame. To use the other notation we need to define <code class="docutils literal notranslate"><span class="pre">rescue</span></code> then filter on <code class="docutils literal notranslate"><span class="pre">cats.animal_group</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue = spark.read.parquet(rescue_path)
-cats.filter(cats.animal_group == &quot;Cat&quot;).select(&quot;incident_number&quot;, &quot;animal_group&quot;).show(5)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">)</span>
+<span class="n">cats</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">cats</span><span class="o">.</span><span class="n">animal_group</span> <span class="o">==</span> <span class="s2">&quot;Cat&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -777,7 +777,7 @@ only showing top 5 rows
 <p>Read in the animal rescue data:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue = spark.read.parquet(rescue_path).select(&quot;incident_number&quot;, &quot;animal_group&quot;)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -786,13 +786,13 @@ only showing top 5 rows
 <p>If we try and immediately filter on this column using <code class="docutils literal notranslate"><span class="pre">rescue.animal_group_upper</span></code>, it will not work. This is because we have yet to define the column in <code class="docutils literal notranslate"><span class="pre">rescue</span></code>. Error handling is being used here; for more information see the article on <span class="xref myst">Handling Errors in PySpark</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>try:
-    (rescue
-     .withColumn(&quot;animal_group_upper&quot;, F.upper(rescue.animal_group))
-     .filter(rescue.animal_group_upper == &quot;CAT&quot;)
-     .show(5))
-except AttributeError as e:
-    print(e)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="p">(</span><span class="n">rescue</span>
+     <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;animal_group_upper&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">upper</span><span class="p">(</span><span class="n">rescue</span><span class="o">.</span><span class="n">animal_group</span><span class="p">))</span>
+     <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">rescue</span><span class="o">.</span><span class="n">animal_group_upper</span> <span class="o">==</span> <span class="s2">&quot;CAT&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -805,8 +805,8 @@ except AttributeError as e:
 <p>We could split this statement up over two different lines:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_upper = rescue.withColumn(&quot;animal_group_upper&quot;, F.upper(rescue.animal_group))
-rescue_upper.filter(rescue_upper.animal_group_upper == &quot;CAT&quot;).show(5)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_upper</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;animal_group_upper&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">upper</span><span class="p">(</span><span class="n">rescue</span><span class="o">.</span><span class="n">animal_group</span><span class="p">))</span>
+<span class="n">rescue_upper</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">rescue_upper</span><span class="o">.</span><span class="n">animal_group_upper</span> <span class="o">==</span> <span class="s2">&quot;CAT&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -828,10 +828,10 @@ only showing top 5 rows
 <p>Using <code class="docutils literal notranslate"><span class="pre">F.col()</span></code> is instead is much neater:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>(rescue
-    .withColumn(&quot;animal_group_upper&quot;, F.upper(F.col(&quot;animal_group&quot;)))
-    .filter(F.col(&quot;animal_group_upper&quot;) == &quot;CAT&quot;)
-    .show(5))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">rescue</span>
+    <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;animal_group_upper&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">upper</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)))</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group_upper&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;CAT&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -856,11 +856,11 @@ only showing top 5 rows
 <p>Using <code class="docutils literal notranslate"><span class="pre">df.column_name</span></code> can also result in bugs when you think you are referencing the latest values, but are actually using the original ones. Here, the values in <code class="docutils literal notranslate"><span class="pre">animal_group</span></code> are changed, but <code class="docutils literal notranslate"><span class="pre">rescue</span></code> is yet to be redefined, and so the old values are used. As such no data is returned:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue = spark.read.parquet(rescue_path).select(&quot;incident_number&quot;, &quot;animal_group&quot;)
-(rescue
-    .withColumn(&quot;animal_group&quot;, F.upper(rescue.animal_group))
-    .filter(rescue.animal_group == &quot;CAT&quot;)
-    .show(5))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">)</span>
+<span class="p">(</span><span class="n">rescue</span>
+    <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">upper</span><span class="p">(</span><span class="n">rescue</span><span class="o">.</span><span class="n">animal_group</span><span class="p">))</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">rescue</span><span class="o">.</span><span class="n">animal_group</span> <span class="o">==</span> <span class="s2">&quot;CAT&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -876,10 +876,10 @@ only showing top 5 rows
 <p>Changing to <code class="docutils literal notranslate"><span class="pre">F.col(&quot;animal_group&quot;)</span></code> gives the correct result:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>(rescue
-    .withColumn(&quot;animal_group&quot;, F.upper(F.col(&quot;animal_group&quot;)))
-    .filter(F.col(&quot;animal_group&quot;) == &quot;CAT&quot;)
-    .show(5))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">rescue</span>
+    <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">upper</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)))</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;CAT&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -904,9 +904,9 @@ only showing top 5 rows
 <p>One final use case for this method is when your source data has column names with spaces or special characters in them. This can happen if reading in from a CSV file rather than parquet or Hive table. The animal rescue CSV has a column called <code class="docutils literal notranslate"><span class="pre">IncidentNotionalCost(£)</span></code>. You cannot refer to the column using <code class="docutils literal notranslate"><span class="pre">rescue.IncidentNotionalCost(£)</span></code>, instead, use <code class="docutils literal notranslate"><span class="pre">F.col(&quot;IncidentNotionalCost(£)&quot;)</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue = (spark.read.csv(rescue_path_csv, header=True)
-          .select(&quot;IncidentNumber&quot;, &quot;IncidentNotionalCost(£)&quot;))
-rescue.filter(F.col(&quot;IncidentNotionalCost(£)&quot;) &gt; 2500).show()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="p">(</span><span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">rescue_path_csv</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;IncidentNumber&quot;</span><span class="p">,</span> <span class="s2">&quot;IncidentNotionalCost(£)&quot;</span><span class="p">))</span>
+<span class="n">rescue</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;IncidentNotionalCost(£)&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2500</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -927,7 +927,7 @@ rescue.filter(F.col(&quot;IncidentNotionalCost(£)&quot;) &gt; 2500).show()
 <p>You can use the pandas style <code class="docutils literal notranslate"><span class="pre">rescue[&quot;IncidentNotionalCost(£)&quot;]</span></code> but this notation is not encouraged in PySpark:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue.filter(rescue[&quot;IncidentNotionalCost(£)&quot;] &gt; 2500).show()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">rescue</span><span class="p">[</span><span class="s2">&quot;IncidentNotionalCost(£)&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2500</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -948,10 +948,10 @@ rescue.filter(F.col(&quot;IncidentNotionalCost(£)&quot;) &gt; 2500).show()
 <p>Of course, the best idea is to rename the column something sensible, which is easier to reference:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue = (rescue
-          .withColumnRenamed(&quot;IncidentNotionalCost(£)&quot;, &quot;notional_cost&quot;)
-          .withColumnRenamed(&quot;IncidentNumber&quot;, &quot;incident_number&quot;))
-rescue.filter(F.col(&quot;notional_cost&quot;) &gt; 2500).show()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;IncidentNotionalCost(£)&quot;</span><span class="p">,</span> <span class="s2">&quot;notional_cost&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;IncidentNumber&quot;</span><span class="p">,</span> <span class="s2">&quot;incident_number&quot;</span><span class="p">))</span>
+<span class="n">rescue</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;notional_cost&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2500</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1004,7 +1004,7 @@ rescue.filter(F.col(&quot;notional_cost&quot;) &gt; 2500).show()
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./raw-notebooks/f-col"
+            path: "./raw-notebooks\f-col"
         },
         predefinedOutput: true
     }

@@ -693,26 +693,26 @@ title="Print to PDF"
 <p>First, start a Spark session (disabling broadcast joins by default) read in the Animal Rescue data, group by <code class="docutils literal notranslate"><span class="pre">animal_group</span></code> and <code class="docutils literal notranslate"><span class="pre">cal_year</span></code>, and then get the sum of <code class="docutils literal notranslate"><span class="pre">total_cost</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import subprocess
-import yaml
-from pyspark.sql import SparkSession, functions as F
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
 
-spark = (SparkSession.builder.master(&quot;local[2]&quot;)
-         .appName(&quot;joins&quot;)
-         # Disable Broadcast join by default
-         .config(&quot;spark.sql.autoBroadcastJoinThreshold&quot;, -1)
-         .getOrCreate())
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;joins&quot;</span><span class="p">)</span>
+         <span class="c1"># Disable Broadcast join by default</span>
+         <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.sql.autoBroadcastJoinThreshold&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
 
-with open(&quot;../../../config.yaml&quot;) as f:
-    config = yaml.safe_load(f)
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
     
-rescue_path = config[&quot;rescue_path&quot;]
+<span class="n">rescue_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path&quot;</span><span class="p">]</span>
 
-rescue = (spark.read.parquet(rescue_path)
-          .groupBy(&quot;animal_group&quot;, &quot;cal_year&quot;)
-          .agg(F.sum(&quot;total_cost&quot;).alias(&quot;cost&quot;)))
+<span class="n">rescue</span> <span class="o">=</span> <span class="p">(</span><span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;cal_year&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="s2">&quot;total_cost&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;cost&quot;</span><span class="p">)))</span>
 
-rescue.show(5, truncate=False)
+<span class="n">rescue</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -756,7 +756,7 @@ only showing top 5 rows
 <p>For instance, no data will be returned for <code class="docutils literal notranslate"><span class="pre">Hamster</span></code> and <code class="docutils literal notranslate"><span class="pre">2012</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue.filter((F.col(&quot;animal_group&quot;) == &quot;Hamster&quot;) &amp; (F.col(&quot;cal_year&quot;) == 2012)).show()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">filter</span><span class="p">((</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Hamster&quot;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2012</span><span class="p">))</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -778,11 +778,11 @@ only showing top 5 rows
 <p>A cross join can be used here, to return every combination of <code class="docutils literal notranslate"><span class="pre">animal_group</span></code> and <code class="docutils literal notranslate"><span class="pre">cal_year</span></code>, which then serves as a base DataFrame which <code class="docutils literal notranslate"><span class="pre">rescue</span></code> can be joined to. First, create a DataFrame for unique <code class="docutils literal notranslate"><span class="pre">animals</span></code> and <code class="docutils literal notranslate"><span class="pre">cal_years</span></code> and sort them:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>animals = rescue.select(&quot;animal_group&quot;).distinct().orderBy(&quot;animal_group&quot;)
-cal_years = rescue.select(&quot;cal_year&quot;).distinct().orderBy(&quot;cal_year&quot;)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">animals</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">distinct</span><span class="p">()</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span>
+<span class="n">cal_years</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">distinct</span><span class="p">()</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">)</span>
 
-print(f&quot;Distinct animal count: {animals.count()}&quot;)
-print(f&quot;Distinct year count: {cal_years.count()}&quot;)
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Distinct animal count: </span><span class="si">{</span><span class="n">animals</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Distinct year count: </span><span class="si">{</span><span class="n">cal_years</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -810,11 +810,11 @@ Distinct year count: 11
 <p>There can be issues in Spark when joining values from a DF to itself, which can be resolved by checkpointing to break the lineage of the DataFrame. See the article on <span class="xref myst">checkpointing</span> for more information.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>checkpoint_path = config[&quot;checkpoint_path&quot;]
-spark.sparkContext.setCheckpointDir(checkpoint_path)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">checkpoint_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;checkpoint_path&quot;</span><span class="p">]</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">setCheckpointDir</span><span class="p">(</span><span class="n">checkpoint_path</span><span class="p">)</span>
 
-animals = animals.checkpoint()
-cal_years = cal_years.checkpoint()
+<span class="n">animals</span> <span class="o">=</span> <span class="n">animals</span><span class="o">.</span><span class="n">checkpoint</span><span class="p">()</span>
+<span class="n">cal_years</span> <span class="o">=</span> <span class="n">cal_years</span><span class="o">.</span><span class="n">checkpoint</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -829,8 +829,8 @@ cal_years = cal_years.checkpoint()
 <p>Note that apart from the order of the columns the result will be the same regardless of which DF is on the left and which is on the right. The <code class="docutils literal notranslate"><span class="pre">result</span></code> DF will have <span class="math notranslate nohighlight">\(27 \times 11 = 297\)</span> rows.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>result = animals.crossJoin(cal_years).orderBy(&quot;animal_group&quot;, &quot;cal_year&quot;)
-result.count()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">animals</span><span class="o">.</span><span class="n">crossJoin</span><span class="p">(</span><span class="n">cal_years</span><span class="p">)</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;cal_year&quot;</span><span class="p">)</span>
+<span class="n">result</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -850,7 +850,7 @@ result.count()
 <p>Previewing <code class="docutils literal notranslate"><span class="pre">result</span></code> we can see that every combination has been returned:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>result.show(15)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">result</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -889,8 +889,8 @@ only showing top 15 rows
 <p>Note that the DF has been reordered during the join, as <a class="reference external" href="../spark-concepts/join-concepts.html#sort-merge-join">sort merge join</a> was used rather than a <a class="reference external" href="../spark-concepts/join-concepts.html#broadcast-join">broadcast join</a>. See the article on <span class="xref myst">optimising joins</span>for more information on this.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>result = result.join(rescue, on = [&quot;animal_group&quot;, &quot;cal_year&quot;], how=&quot;left&quot;)
-result.show(10)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">rescue</span><span class="p">,</span> <span class="n">on</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;cal_year&quot;</span><span class="p">],</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+<span class="n">result</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -927,8 +927,8 @@ only showing top 10 rows
 <p>We can now filter on <code class="docutils literal notranslate"><span class="pre">Hamster</span></code> to see that <code class="docutils literal notranslate"><span class="pre">2012</span></code> now exists and is returned with a zero value:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>result = result.fillna(0, &quot;cost&quot;).orderBy(&quot;animal_group&quot;, &quot;cal_year&quot;)
-result.filter(F.col(&quot;animal_group&quot;) == &quot;Hamster&quot;).show()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;cost&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;cal_year&quot;</span><span class="p">)</span>
+<span class="n">result</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Hamster&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -971,20 +971,20 @@ result.filter(F.col(&quot;animal_group&quot;) == &quot;Hamster&quot;).show()
 <p>To demonstrate this in PySpark (version <code class="docutils literal notranslate"><span class="pre">2.4.0</span></code>), create a new DF, <code class="docutils literal notranslate"><span class="pre">dogs</span></code>, with just one column, <code class="docutils literal notranslate"><span class="pre">animal_group</span></code> containing just <code class="docutils literal notranslate"><span class="pre">Dog</span></code>, and join another DF to it:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from pyspark.sql.utils import AnalysisException
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.utils</span> <span class="kn">import</span> <span class="n">AnalysisException</span>
 
-dogs = spark.range(5).withColumn(&quot;animal_group&quot;, F.lit(&quot;Dog&quot;))
+<span class="n">dogs</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">lit</span><span class="p">(</span><span class="s2">&quot;Dog&quot;</span><span class="p">))</span>
 
-animal_noise = spark.createDataFrame([
-    [&quot;Cat&quot;, &quot;Meow&quot;],
-    [&quot;Dog&quot;, &quot;Woof&quot;],
-    [&quot;Cow&quot;, &quot;Moo&quot;]],
-    [&quot;animal_group&quot;, &quot;animal_noise&quot;])
+<span class="n">animal_noise</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">([</span>
+    <span class="p">[</span><span class="s2">&quot;Cat&quot;</span><span class="p">,</span> <span class="s2">&quot;Meow&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;Dog&quot;</span><span class="p">,</span> <span class="s2">&quot;Woof&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;Cow&quot;</span><span class="p">,</span> <span class="s2">&quot;Moo&quot;</span><span class="p">]],</span>
+    <span class="p">[</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_noise&quot;</span><span class="p">])</span>
 
-try:
-    dogs.join(animal_noise, on=&quot;animal_group&quot;, how=&quot;left&quot;).show()
-except AnalysisException as e:
-    print(e)
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">dogs</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">animal_noise</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="k">except</span> <span class="n">AnalysisException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -997,22 +997,22 @@ except AnalysisException as e:
 <p>To resolve this, start a new Spark session and add <code class="docutils literal notranslate"><span class="pre">.config(&quot;spark.sql.crossJoin.enabled&quot;,</span> <span class="pre">&quot;true&quot;)</span></code> to the config. The DFs will have been cleared by closing the Spark session and so need to be created again.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spark.stop()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
-spark = (SparkSession.builder.master(&quot;local[2]&quot;)
-         .appName(&quot;joins&quot;)
-         .config(&quot;spark.sql.crossJoin.enabled&quot;, &quot;true&quot;)
-         .getOrCreate())
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;joins&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.sql.crossJoin.enabled&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
 
-dogs = spark.range(5).withColumn(&quot;animal_group&quot;, F.lit(&quot;Dog&quot;))
+<span class="n">dogs</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">lit</span><span class="p">(</span><span class="s2">&quot;Dog&quot;</span><span class="p">))</span>
 
-animal_noise = spark.createDataFrame([
-    [&quot;Cat&quot;, &quot;Meow&quot;],
-    [&quot;Dog&quot;, &quot;Woof&quot;],
-    [&quot;Cow&quot;, &quot;Moo&quot;]],
-    [&quot;animal_group&quot;, &quot;animal_noise&quot;])
+<span class="n">animal_noise</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">([</span>
+    <span class="p">[</span><span class="s2">&quot;Cat&quot;</span><span class="p">,</span> <span class="s2">&quot;Meow&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;Dog&quot;</span><span class="p">,</span> <span class="s2">&quot;Woof&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;Cow&quot;</span><span class="p">,</span> <span class="s2">&quot;Moo&quot;</span><span class="p">]],</span>
+    <span class="p">[</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_noise&quot;</span><span class="p">])</span>
 
-dogs.join(animal_noise, on=&quot;animal_group&quot;, how=&quot;left&quot;).show()
+<span class="n">dogs</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">animal_noise</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1033,7 +1033,7 @@ dogs.join(animal_noise, on=&quot;animal_group&quot;, how=&quot;left&quot;).show(
 <p>Finally, clear the checkpoints that were used in the code:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>p = subprocess.run(f&quot;hdfs dfs -rm -r -skipTrash {checkpoint_path}&quot;, shell=True)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;hdfs dfs -rm -r -skipTrash </span><span class="si">{</span><span class="n">checkpoint_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1091,7 +1091,7 @@ dogs.join(animal_noise, on=&quot;animal_group&quot;, how=&quot;left&quot;).show(
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./raw-notebooks/cross-joins"
+            path: "./raw-notebooks\cross-joins"
         },
         predefinedOutput: true
     }

@@ -803,19 +803,19 @@ title="Print to PDF"
 <p>First, set up the Spark session, read the Animal Rescue data, and then get the row count:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import os
-import yaml
-from pyspark.sql import SparkSession, functions as F
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
 
-spark = SparkSession.builder.master(&quot;local[2]&quot;).appName(&quot;sampling&quot;).getOrCreate()
+<span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;sampling&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
 
-with open(&quot;../../../config.yaml&quot;) as f:
-    config = yaml.safe_load(f)
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
     
-rescue_path = config[&quot;rescue_path&quot;]
-rescue = spark.read.parquet(rescue_path)
+<span class="n">rescue_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path&quot;</span><span class="p">]</span>
+<span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">)</span>
 
-rescue.count()
+<span class="n">rescue</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -846,8 +846,8 @@ rescue.count()
 <p>For these functions it is advised to specify the arguments explicitly. One reason is that <code class="docutils literal notranslate"><span class="pre">fraction</span></code> is a compulsory argument, but in PySpark is <em>after</em> <code class="docutils literal notranslate"><span class="pre">withReplacement</span></code>. Another reason is that in sparklyr the arguments are in a different order, with <code class="docutils literal notranslate"><span class="pre">fraction</span></code> listed first; if you use both languages it is easy to make a mistake.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_sample = rescue.sample(withReplacement=False, fraction=0.1)
-rescue_sample.count()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_sample</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">withReplacement</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">rescue_sample</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -864,16 +864,16 @@ rescue_sample.count()
 <p>You can also set a seed, in a similar way to how random numbers generators work. This enables replication, which is useful in Spark given that the DataFrame will be otherwise be re-sampled every time an action is called.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_sample_seed_1 = rescue.sample(withReplacement=None,
-                      fraction=0.1,
-                      seed=99)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_sample_seed_1</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">withReplacement</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">fraction</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                      <span class="n">seed</span><span class="o">=</span><span class="mi">99</span><span class="p">)</span>
 
-rescue_sample_seed_2 = rescue.sample(withReplacement=None,
-                      fraction=0.1,
-                      seed=99)
+<span class="n">rescue_sample_seed_2</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">withReplacement</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">fraction</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                      <span class="n">seed</span><span class="o">=</span><span class="mi">99</span><span class="p">)</span>
 
-print(f&quot;Seed 1 count: {rescue_sample_seed_1.count()}&quot;)
-print(f&quot;Seed 2 count: {rescue_sample_seed_1.count()}&quot;)
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Seed 1 count: </span><span class="si">{</span><span class="n">rescue_sample_seed_1</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Seed 2 count: </span><span class="si">{</span><span class="n">rescue_sample_seed_1</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -904,9 +904,9 @@ Seed 2 count: 589
 <p>To return an exact sample, one method is to calculate how many rows are required in the sample, create a new column of random numbers and sort by it, and use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.limit.html"><code class="docutils literal notranslate"><span class="pre">.limit()</span></code></a> in PySpark or <a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/utils/html/head.html"><code class="docutils literal notranslate"><span class="pre">head()</span></code></a> in sparklyr. This requires an action and a wide transformation, and so will take longer to process than using <code class="docutils literal notranslate"><span class="pre">.sample()</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fraction = 0.1
-row_count = round(rescue.count() * fraction)
-row_count
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fraction</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">row_count</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">rescue</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">*</span> <span class="n">fraction</span><span class="p">)</span>
+<span class="n">row_count</span>
 </pre></div>
 </div>
 </div>
@@ -923,7 +923,7 @@ row_count
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue.withColumn(&quot;rand_no&quot;, F.rand()).orderBy(&quot;rand_no&quot;).limit(row_count).drop(&quot;rand_no&quot;).count()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;rand_no&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">rand</span><span class="p">())</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;rand_no&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">row_count</span><span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;rand_no&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -951,7 +951,7 @@ row_count
 <p>If the primary reason for using sampling is to process less data during development then an alternative is to filter the data and specify a condition which gives approximately the desired number of rows. This will give consistent results, which may or may not be desirable. For instance, in the Animal Rescue data we could use two years data:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue.filter(F.col(&quot;cal_year&quot;).isin(2012, 2017)).count()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span> <span class="mi">2017</span><span class="p">))</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -978,11 +978,11 @@ row_count
 <p>For instance, to split the animal rescue data into three DFs with a weighting of <span class="math notranslate nohighlight">\(50\%\)</span>, <span class="math notranslate nohighlight">\(40\%\)</span> and <span class="math notranslate nohighlight">\(10\%\)</span> in PySpark:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>split1, split2, split3 = rescue.randomSplit([0.5, 0.4, 0.1])
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">split1</span><span class="p">,</span> <span class="n">split2</span><span class="p">,</span> <span class="n">split3</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">randomSplit</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">])</span>
 
-print(f&quot;Split1: {split1.count()}&quot;)
-print(f&quot;Split2: {split2.count()}&quot;)
-print(f&quot;Split3: {split3.count()}&quot;)
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Split1: </span><span class="si">{</span><span class="n">split1</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Split2: </span><span class="si">{</span><span class="n">split2</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Split3: </span><span class="si">{</span><span class="n">split3</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1007,8 +1007,8 @@ Split3: 600
 <p>Check that the count of the splits equals the total row count:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(f&quot;DF count: {rescue.count()}&quot;)
-print(f&quot;Split count total: {split1.count() + split2.count() + split3.count()}&quot;)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DF count: </span><span class="si">{</span><span class="n">rescue</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Split count total: </span><span class="si">{</span><span class="n">split1</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">+</span> <span class="n">split2</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">+</span> <span class="n">split3</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1035,13 +1035,13 @@ Split count total: 5898
 <p>In PySpark, to return <span class="math notranslate nohighlight">\(5\%\)</span> of cats, <span class="math notranslate nohighlight">\(10\%\)</span> of dogs and <span class="math notranslate nohighlight">\(50\%\)</span> of hamsters:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>weights = {&quot;Cat&quot;: 0.05, &quot;Dog&quot;: 0.1, &quot;Hamster&quot;: 0.5}
-stratified_sample = rescue.sampleBy(&quot;animal_group&quot;, fractions=weights)
-stratified_sample_count = (stratified_sample
-                           .groupBy(&quot;animal_group&quot;)
-                           .agg(F.count(&quot;animal_group&quot;).alias(&quot;row_count&quot;))
-                           .orderBy(&quot;animal_group&quot;))
-stratified_sample_count.show()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">weights</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Cat&quot;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="s2">&quot;Dog&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s2">&quot;Hamster&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">}</span>
+<span class="n">stratified_sample</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">sampleBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="n">fractions</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
+<span class="n">stratified_sample_count</span> <span class="o">=</span> <span class="p">(</span><span class="n">stratified_sample</span>
+                           <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span>
+                           <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;row_count&quot;</span><span class="p">))</span>
+                           <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">))</span>
+<span class="n">stratified_sample_count</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1060,16 +1060,16 @@ stratified_sample_count.show()
 <p>We can quickly compare the number of rows for each animal to the expected to confirm that they are approximately equal:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>weights_df = spark.createDataFrame(list(weights.items()), schema=[&quot;animal_group&quot;, &quot;weight&quot;])
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">weights_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">weights</span><span class="o">.</span><span class="n">items</span><span class="p">()),</span> <span class="n">schema</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;weight&quot;</span><span class="p">])</span>
 
-(rescue
-    .groupBy(&quot;animal_group&quot;).count()
-    .join(weights_df, on=&quot;animal_group&quot;, how=&quot;inner&quot;)
-    .withColumn(&quot;expected_rows&quot;, F.round(F.col(&quot;count&quot;) * F.col(&quot;weight&quot;), 0))
-    .join(stratified_sample_count, on=&quot;animal_group&quot;, how=&quot;left&quot;)
-    .orderBy(&quot;animal_group&quot;)
-    .show()
-)
+<span class="p">(</span><span class="n">rescue</span>
+    <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">weights_df</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;expected_rows&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;count&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;weight&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stratified_sample_count</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1130,7 +1130,7 @@ stratified_sample_count.show()
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./raw-notebooks/sampling"
+            path: "./raw-notebooks\sampling"
         },
         predefinedOutput: true
     }

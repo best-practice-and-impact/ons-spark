@@ -781,8 +781,8 @@ package allows you to bypass Spark and read in the data directly to a pandas Dat
 <p>Then import <code class="docutils literal notranslate"><span class="pre">hdfs</span></code> from Pydoop, as well as pandas; note that PySpark is not being imported:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import pydoop.hdfs as hdfs
-import pandas as pd
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pydoop.hdfs</span> <span class="k">as</span> <span class="nn">hdfs</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 </pre></div>
 </div>
 </div>
@@ -794,9 +794,9 @@ import pandas as pd
 <p>Reading in the data is then a two stage process; first open the file with <code class="docutils literal notranslate"><span class="pre">hdfs.open()</span></code>, then read in as a pandas DataFrame with <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html"><code class="docutils literal notranslate"><span class="pre">pd.read_csv()</span></code></a>. If a <code class="docutils literal notranslate"><span class="pre">with</span></code> statement is used you do not need to explicitly close the file with <code class="docutils literal notranslate"><span class="pre">f.close()</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>file_path = &quot;/training/animal_rescue.csv&quot;
-with hdfs.open(file_path, &quot;r&quot;) as f:
-    pandas_df = pd.read_csv(f)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">file_path</span> <span class="o">=</span> <span class="s2">&quot;/training/animal_rescue.csv&quot;</span>
+<span class="k">with</span> <span class="n">hdfs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">pandas_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -805,7 +805,7 @@ with hdfs.open(file_path, &quot;r&quot;) as f:
 <p>e.g. we can preview the first five rows and columns of the DataFrame with <a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.iloc.html"><code class="docutils literal notranslate"><span class="pre">.iloc</span></code></a> and <a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.head.html"><code class="docutils literal notranslate"><span class="pre">.head()</span></code></a>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pandas_df.iloc[:, :5].head()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pandas_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -883,7 +883,7 @@ with hdfs.open(file_path, &quot;r&quot;) as f:
 <p>Get count of rows and columns with <a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.shape.html"><code class="docutils literal notranslate"><span class="pre">.shape()</span></code></a>; as we are in pandas not Spark the concept of lazy evaluation does not apply:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pandas_df.shape
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pandas_df</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
 </div>
 </div>
@@ -901,9 +901,9 @@ with hdfs.open(file_path, &quot;r&quot;) as f:
 <p>First of all, get the path to write out to; e.g. if using the ONS development and testing environment the following code will get a path to your own user area on HDFS:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import os
-username = os.getenv(&quot;HADOOP_USER_NAME&quot;) 
-write_path = f&quot;/user/{username}/rescue_copy.csv&quot;
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">username</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;HADOOP_USER_NAME&quot;</span><span class="p">)</span> 
+<span class="n">write_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/user/</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">/rescue_copy.csv&quot;</span>
 </pre></div>
 </div>
 </div>
@@ -911,8 +911,8 @@ write_path = f&quot;/user/{username}/rescue_copy.csv&quot;
 <p>Similar to reading, use <code class="docutils literal notranslate"><span class="pre">hdfs.open()</span></code>, then <a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_csv.html"><code class="docutils literal notranslate"><span class="pre">.to_csv()</span></code></a>. Importantly, we are using <code class="docutils literal notranslate"><span class="pre">wt</span></code> for the <code class="docutils literal notranslate"><span class="pre">mode</span></code> option when opening the file, where <code class="docutils literal notranslate"><span class="pre">w</span></code> means <code class="docutils literal notranslate"><span class="pre">write</span></code> and <code class="docutils literal notranslate"><span class="pre">t</span></code> means <code class="docutils literal notranslate"><span class="pre">text</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>with hdfs.open(write_path, &quot;wt&quot;) as f:
-    pandas_df.to_csv(f, index=False)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">hdfs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">write_path</span><span class="p">,</span> <span class="s2">&quot;wt&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">pandas_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -927,7 +927,7 @@ write_path = f&quot;/user/{username}/rescue_copy.csv&quot;
 <p><code class="docutils literal notranslate"><span class="pre">hdfs.path.isdir(dir_path)</span></code> will return <code class="docutils literal notranslate"><span class="pre">True</span></code> if a file exists:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>hdfs.path.isfile(write_path)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hdfs</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">write_path</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -940,7 +940,7 @@ write_path = f&quot;/user/{username}/rescue_copy.csv&quot;
 <p>It returns <code class="docutils literal notranslate"><span class="pre">False</span></code> if the file does not exist:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>hdfs.path.isfile(&quot;/not/a_file&quot;)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hdfs</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">&quot;/not/a_file&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -958,8 +958,8 @@ write_path = f&quot;/user/{username}/rescue_copy.csv&quot;
 <p><code class="docutils literal notranslate"><span class="pre">getsize()</span></code> returns the file size in bytes. For large files, bytes are often not a practical unit to use so you may want to divide it to get it in KB or MB:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>size = hdfs.path.getsize(write_path) / (1024 ** 2)
-print(f&quot;{round(size, 2)} MB&quot;)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">size</span> <span class="o">=</span> <span class="n">hdfs</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">write_path</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1024</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2"> MB&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -972,7 +972,7 @@ print(f&quot;{round(size, 2)} MB&quot;)
 <p><code class="docutils literal notranslate"><span class="pre">rm()</span></code> is used to delete files and directories, and is another command you may know from Unix. Be careful, there is no recovery option with this!</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>hdfs.rm(write_path)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hdfs</span><span class="o">.</span><span class="n">rm</span><span class="p">(</span><span class="n">write_path</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -980,7 +980,7 @@ print(f&quot;{round(size, 2)} MB&quot;)
 <p>Verify that this has been removed by checking that <code class="docutils literal notranslate"><span class="pre">isfile()</span></code> returns <code class="docutils literal notranslate"><span class="pre">False</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>hdfs.path.isfile(write_path)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hdfs</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">write_path</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

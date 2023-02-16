@@ -823,11 +823,11 @@ title="Print to PDF"
 <p>Let’s start with the necessary imports and create an application.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import os, IPython
-import yaml
-from pyspark.sql import SparkSession, functions as F
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">IPython</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
 
-spark = SparkSession.builder.master(&quot;local[2]&quot;).appName(&quot;spark-app-ui&quot;).getOrCreate()
+<span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;spark-app-ui&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -854,13 +854,13 @@ spark = SparkSession.builder.master(&quot;local[2]&quot;).appName(&quot;spark-ap
 <p>Let’s import the animal rescue data and find out the number of partitions in which our <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame is processed. The number of partitions will be useful later when we’re investigating our application’s tasks.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>with open(&quot;../../../config.yaml&quot;) as f:
-    config = yaml.safe_load(f)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
     
-rescue_path = config[&quot;rescue_path&quot;]
-rescue = spark.read.parquet(rescue_path)
+<span class="n">rescue_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path&quot;</span><span class="p">]</span>
+<span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">)</span>
 
-print(&quot;Number of partitions: &quot;,rescue.rdd.getNumPartitions())
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of partitions: &quot;</span><span class="p">,</span><span class="n">rescue</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -880,16 +880,16 @@ print(&quot;Number of partitions: &quot;,rescue.rdd.getNumPartitions())
 <p>Next we’ll carry out some basic processes to see how this translates into jobs, stages and tasks in the Spark UI. We will  group the incident costs by creating a new column called <code class="docutils literal notranslate"><span class="pre">cost_group</span></code> containing three groups <code class="docutils literal notranslate"><span class="pre">small</span></code>, <code class="docutils literal notranslate"><span class="pre">medium</span></code> and <code class="docutils literal notranslate"><span class="pre">large</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue = (
-    rescue.withColumn(&quot;cost_group&quot;,
-                      F.when(F.col(&quot;total_cost&quot;)&lt;300, &quot;small&quot;)
-                      .when((F.col(&quot;total_cost&quot;)&gt;=300) &amp; (F.col(&quot;total_cost&quot;)&lt;900), &quot;medium&quot;)
-                      .when(F.col(&quot;total_cost&quot;)&gt;=1000, &quot;large&quot;)
-                      .otherwise(None)
-                     )
-)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;cost_group&quot;</span><span class="p">,</span>
+                      <span class="n">F</span><span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;total_cost&quot;</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">300</span><span class="p">,</span> <span class="s2">&quot;small&quot;</span><span class="p">)</span>
+                      <span class="o">.</span><span class="n">when</span><span class="p">((</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;total_cost&quot;</span><span class="p">)</span><span class="o">&gt;=</span><span class="mi">300</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;total_cost&quot;</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">900</span><span class="p">),</span> <span class="s2">&quot;medium&quot;</span><span class="p">)</span>
+                      <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;total_cost&quot;</span><span class="p">)</span><span class="o">&gt;=</span><span class="mi">1000</span><span class="p">,</span> <span class="s2">&quot;large&quot;</span><span class="p">)</span>
+                      <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                     <span class="p">)</span>
+<span class="p">)</span>
 
-rescue.select(&quot;animal_group&quot;, &quot;description&quot;, &quot;total_cost&quot;, &quot;cost_group&quot;).show(7, truncate=80)
+<span class="n">rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;cost_group&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -927,7 +927,7 @@ only showing top 7 rows
 <p>To produce the above output Spark didn’t need to process all of the partitions, there are enough rows on one partition to create the output so Spark only processed one partition. If we want Spark to process all of the partitions we need to call an action that involves all rows of the DataFrame, such as getting the row count.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue.count()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1036,11 +1036,11 @@ only showing top 7 rows
 <p>First step is to aggregate the data, we’ll find the count of incidents in each <code class="docutils literal notranslate"><span class="pre">cost_group</span></code>. We will distinguish between the Spark and Pandas/R DataFrames using <code class="docutils literal notranslate"><span class="pre">_spark</span></code> or <code class="docutils literal notranslate"><span class="pre">_pandas</span></code>/<code class="docutils literal notranslate"><span class="pre">_r</span></code> as suffixes respectively.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>aggregated_spark = rescue.groupBy(&quot;cost_group&quot;).agg(F.count(&quot;incident_number&quot;).alias(&quot;count&quot;))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">aggregated_spark</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;cost_group&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;count&quot;</span><span class="p">))</span>
 
-aggregated_pandas = aggregated_spark.toPandas()
+<span class="n">aggregated_pandas</span> <span class="o">=</span> <span class="n">aggregated_spark</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
 
-aggregated_pandas
+<span class="n">aggregated_pandas</span>
 </pre></div>
 </div>
 </div>
@@ -1103,13 +1103,13 @@ aggregated_pandas
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>aggregated_pandas_plot = (
-    aggregated_pandas.fillna(&quot;missing&quot;)
-    .set_index(&quot;cost_group&quot;)
-    .loc[[&quot;large&quot;, &quot;medium&quot;, &quot;small&quot;, &quot;missing&quot;]]
-)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">aggregated_pandas_plot</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">aggregated_pandas</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s2">&quot;missing&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;cost_group&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">loc</span><span class="p">[[</span><span class="s2">&quot;large&quot;</span><span class="p">,</span> <span class="s2">&quot;medium&quot;</span><span class="p">,</span> <span class="s2">&quot;small&quot;</span><span class="p">,</span> <span class="s2">&quot;missing&quot;</span><span class="p">]]</span>
+<span class="p">)</span>
 
-aggregated_pandas_plot.plot(kind=&quot;bar&quot;)
+<span class="n">aggregated_pandas_plot</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s2">&quot;bar&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1149,8 +1149,8 @@ aggregated_pandas_plot.plot(kind=&quot;bar&quot;)
 <p>As we’re running in local mode with 2 cores (or threads), the processing of these 200 tasks took place on the driver. The tasks seem to show relatively poor performance, which is indicated by the non-green colours in the timeline. Also by comparing the <em>Duration</em> (useful processing time) metrics with that of <em>Scheduler Delay</em> and <em>Task Deserialization Time</em> in the <em>Summary Metrics</em> table. Would we get better performance if the <code class="docutils literal notranslate"><span class="pre">aggregated_spark</span></code> DataFrame had fewer partitions? Let’s try to improve the performance by reducing the number of partitions from 200 to 2 with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.coalesce.html"><code class="docutils literal notranslate"><span class="pre">.coalesce()</span></code></a>/<a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html"><code class="docutils literal notranslate"><span class="pre">sdf_coalesce()</span></code></a>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>aggregated_spark = rescue.groupBy(&quot;cost_group&quot;).agg(F.count(&quot;incident_number&quot;).alias(&quot;count&quot;)).coalesce(2)
-aggregated_pandas = aggregated_spark.toPandas()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">aggregated_spark</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;cost_group&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;count&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">coalesce</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">aggregated_pandas</span> <span class="o">=</span> <span class="n">aggregated_spark</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1252,7 +1252,7 @@ aggregated_pandas = aggregated_spark.toPandas()
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./raw-notebooks/spark-app"
+            path: "./raw-notebooks\spark-app"
         },
         predefinedOutput: true
     }

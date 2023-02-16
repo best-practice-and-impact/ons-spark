@@ -719,20 +719,20 @@ title="Print to PDF"
 <p>Create a new Spark session and read the Animal Rescue data. To make the example easier to read, just filter on a few animal groups:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import yaml
-from pyspark.sql import SparkSession, functions as F
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
 
-spark = (SparkSession.builder.master(&quot;local[2]&quot;)
-         .appName(&quot;pivot&quot;)
-         .getOrCreate())
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;pivot&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
 
-with open(&quot;../../../config.yaml&quot;) as f:
-    config = yaml.safe_load(f)
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
     
-rescue_path = config[&quot;rescue_path&quot;]
-rescue = (spark.read.parquet(rescue_path)
-          .select(&quot;incident_number&quot;, &quot;animal_group&quot;, &quot;cal_year&quot;, &quot;total_cost&quot;, &quot;origin_of_call&quot;)
-          .filter(F.col(&quot;animal_group&quot;).isin(&quot;Cat&quot;, &quot;Dog&quot;, &quot;Hamster&quot;, &quot;Sheep&quot;)))
+<span class="n">rescue_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path&quot;</span><span class="p">]</span>
+<span class="n">rescue</span> <span class="o">=</span> <span class="p">(</span><span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;cal_year&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;origin_of_call&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="s2">&quot;Cat&quot;</span><span class="p">,</span> <span class="s2">&quot;Dog&quot;</span><span class="p">,</span> <span class="s2">&quot;Hamster&quot;</span><span class="p">,</span> <span class="s2">&quot;Sheep&quot;</span><span class="p">)))</span>
 </pre></div>
 </div>
 </div>
@@ -759,12 +759,12 @@ rescue = (spark.read.parquet(rescue_path)
 <p>In PySpark, use <code class="docutils literal notranslate"><span class="pre">.groupBy()</span></code> and <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.count.html"><code class="docutils literal notranslate"><span class="pre">.count()</span></code></a> as you normally would when grouping and getting the row count, but add <code class="docutils literal notranslate"><span class="pre">.pivot()</span></code> between the two functions.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_pivot = (rescue
-                .groupBy(&quot;animal_group&quot;)
-                .pivot(&quot;cal_year&quot;)
-                .count())
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_pivot</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+                <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">count</span><span class="p">())</span>
 
-rescue_pivot.show()
+<span class="n">rescue_pivot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -800,12 +800,12 @@ rescue_pivot.show()
 <summary><b>Python Example</b></summary>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_grouped = (rescue
-                  .groupBy(&quot;animal_group&quot;, &quot;cal_year&quot;)
-                  .count()
-                  .orderBy(&quot;animal_group&quot;, &quot;cal_year&quot;))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_grouped</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+                  <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;cal_year&quot;</span><span class="p">)</span>
+                  <span class="o">.</span><span class="n">count</span><span class="p">()</span>
+                  <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;cal_year&quot;</span><span class="p">))</span>
 
-rescue_grouped.show(40)
+<span class="n">rescue_grouped</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -872,12 +872,12 @@ rescue_grouped.show(40)
 <p>The <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.GroupedData.pivot.html">documentation</a> explains why it is more efficient to manually provide the <code class="docutils literal notranslate"><span class="pre">values</span></code> argument; as an example, we just look at three years.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_pivot = (rescue
-                .groupBy(&quot;animal_group&quot;)
-                .pivot(&quot;cal_year&quot;, values=[&quot;2009&quot;, &quot;2010&quot;, &quot;2011&quot;])
-                .agg(F.sum(&quot;total_cost&quot;)))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_pivot</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+                <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;2009&quot;</span><span class="p">,</span> <span class="s2">&quot;2010&quot;</span><span class="p">,</span> <span class="s2">&quot;2011&quot;</span><span class="p">])</span>
+                <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="s2">&quot;total_cost&quot;</span><span class="p">)))</span>
 
-rescue_pivot.show()
+<span class="n">rescue_pivot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -921,14 +921,14 @@ rescue_pivot.show()
 <p>If grouping by multiple columns you may also want to add <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.orderBy.html"><code class="docutils literal notranslate"><span class="pre">.orderBy()</span></code></a>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rescue_pivot = (rescue
-           .groupBy(&quot;animal_group&quot;, &quot;origin_of_call&quot;)
-           .pivot(&quot;cal_year&quot;, values = [&quot;2009&quot;, &quot;2010&quot;, &quot;2011&quot;])
-           .agg(F.sum(&quot;total_cost&quot;).alias(&quot;sum&quot;), F.max(&quot;total_cost&quot;).alias(&quot;max&quot;))
-           .fillna(0)
-           .orderBy(&quot;animal_group&quot;, &quot;origin_of_call&quot;))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_pivot</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+           <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;origin_of_call&quot;</span><span class="p">)</span>
+           <span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;2009&quot;</span><span class="p">,</span> <span class="s2">&quot;2010&quot;</span><span class="p">,</span> <span class="s2">&quot;2011&quot;</span><span class="p">])</span>
+           <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="s2">&quot;total_cost&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;sum&quot;</span><span class="p">),</span> <span class="n">F</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="s2">&quot;total_cost&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;max&quot;</span><span class="p">))</span>
+           <span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+           <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;origin_of_call&quot;</span><span class="p">))</span>
 
-rescue_pivot.show()
+<span class="n">rescue_pivot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1049,7 +1049,7 @@ rescue_pivot.show()
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./raw-notebooks/pivot-tables"
+            path: "./raw-notebooks\pivot-tables"
         },
         predefinedOutput: true
     }
