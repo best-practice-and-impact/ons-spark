@@ -133,18 +133,18 @@ Time taken to create the DataFrame:  8.401437520980835
 # A tibble: 10 × 14
       id col_0 col_1 col_2 col_3 col_4 col_5 col_6 col_7 col_8 col_9 col_10
    <int> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl>
- 1     1     9     9     9     9     9     9     9     9     9    NA     NA
- 2     2     5     5     5     5     5    NA    NA    NA    NA    NA     NA
- 3     3     5     5     5     5     5    NA    NA    NA    NA    NA     NA
- 4     4    12    12    12    12    12    12    12    12    12    12     12
- 5     5    10    10    10    10    10    10    10    10    10    10     NA
- 6     6     3     3     3    NA    NA    NA    NA    NA    NA    NA     NA
- 7     7     9     9     9     9     9     9     9     9     9    NA     NA
- 8     8     3     3     3    NA    NA    NA    NA    NA    NA    NA     NA
- 9     9     5     5     5     5     5    NA    NA    NA    NA    NA     NA
+ 1     1     8     8     8     8     8     8     8     8    NA    NA     NA
+ 2     2     8     8     8     8     8     8     8     8    NA    NA     NA
+ 3     3     1    NA    NA    NA    NA    NA    NA    NA    NA    NA     NA
+ 4     4     6     6     6     6     6     6    NA    NA    NA    NA     NA
+ 5     5     5     5     5     5     5    NA    NA    NA    NA    NA     NA
+ 6     6     8     8     8     8     8     8     8     8    NA    NA     NA
+ 7     7    12    12    12    12    12    12    12    12    12    12     12
+ 8     8     9     9     9     9     9     9     9     9     9    NA     NA
+ 9     9     2     2    NA    NA    NA    NA    NA    NA    NA    NA     NA
 10    10    11    11    11    11    11    11    11    11    11    11     11
 # … with 2 more variables: col_11 <dbl>, col_12 <dbl>
-Time taken to create DataFrame 13.78039```
+Time taken to create DataFrame 14.71731```
 ````
 The result above shows how long Spark took to create the plan and execute it to show the top 10 rows. 
 
@@ -266,21 +266,21 @@ Time taken to create the DataFrame:  1.0542099475860596
 ```
 
 ```{code-tab} plaintext R Output
-# A tibble: 10 × 14
+1# A tibble: 10 × 14
       id col_0 col_1 col_2 col_3 col_4 col_5 col_6 col_7 col_8 col_9 col_10
    <int> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl>
- 1     1     3     3     3    NA    NA    NA    NA    NA    NA    NA     NA
- 2     2    10    10    10    10    10    10    10    10    10    10     NA
- 3     3     5     5     5     5     5    NA    NA    NA    NA    NA     NA
- 4     4     6     6     6     6     6     6    NA    NA    NA    NA     NA
- 5     5     5     5     5     5     5    NA    NA    NA    NA    NA     NA
- 6     6     7     7     7     7     7     7     7    NA    NA    NA     NA
+ 1     1    12    12    12    12    12    12    12    12    12    12     12
+ 2     2     7     7     7     7     7     7     7    NA    NA    NA     NA
+ 3     3    10    10    10    10    10    10    10    10    10    10     NA
+ 4     4    10    10    10    10    10    10    10    10    10    10     NA
+ 5     5     4     4     4     4    NA    NA    NA    NA    NA    NA     NA
+ 6     6     1    NA    NA    NA    NA    NA    NA    NA    NA    NA     NA
  7     7    12    12    12    12    12    12    12    12    12    12     12
- 8     8    12    12    12    12    12    12    12    12    12    12     12
- 9     9    10    10    10    10    10    10    10    10    10    10     NA
-10    10     6     6     6     6     6     6    NA    NA    NA    NA     NA
+ 8     8     2     2    NA    NA    NA    NA    NA    NA    NA    NA     NA
+ 9     9     6     6     6     6     6     6    NA    NA    NA    NA     NA
+10    10    11    11    11    11    11    11    11    11    11    11     11
 # … with 2 more variables: col_11 <dbl>, col_12 <dbl>
-Time taken to create DataFrame:  22.26507```
+Time taken to create DataFrame:  23.7858```
 ````
 The exact times will vary with each run of this notebook, but hopefully you will see that using the [`.checkpoint()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.checkpoint.html) was more efficient.
 
@@ -305,7 +305,7 @@ p <- system(command = cmd)
 ````{tabs}
 
 ```{code-tab} plaintext R Output
-eleted file:///home/cdsw/ons-spark/checkpoints
+6Deleted file:///home/cdsw/ons-spark/checkpoints
 ```
 ````
 ### How often should I checkpoint?
