@@ -55,6 +55,12 @@ num_rows <- 10^3
 
 ```
 ````
+
+````{tabs}
+
+```{code-tab} plaintext Python Output
+```
+````
 #### Without persisting
 ````{tabs}
 ```{code-tab} py
@@ -133,18 +139,18 @@ Time taken to create the DataFrame:  8.401437520980835
 # A tibble: 10 × 14
       id col_0 col_1 col_2 col_3 col_4 col_5 col_6 col_7 col_8 col_9 col_10
    <int> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl>
- 1     1     8     8     8     8     8     8     8     8    NA    NA     NA
- 2     2     8     8     8     8     8     8     8     8    NA    NA     NA
- 3     3     1    NA    NA    NA    NA    NA    NA    NA    NA    NA     NA
- 4     4     6     6     6     6     6     6    NA    NA    NA    NA     NA
- 5     5     5     5     5     5     5    NA    NA    NA    NA    NA     NA
- 6     6     8     8     8     8     8     8     8     8    NA    NA     NA
- 7     7    12    12    12    12    12    12    12    12    12    12     12
- 8     8     9     9     9     9     9     9     9     9     9    NA     NA
- 9     9     2     2    NA    NA    NA    NA    NA    NA    NA    NA     NA
-10    10    11    11    11    11    11    11    11    11    11    11     11
+ 1     1     1    NA    NA    NA    NA    NA    NA    NA    NA    NA     NA
+ 2     2     2     2    NA    NA    NA    NA    NA    NA    NA    NA     NA
+ 3     3    11    11    11    11    11    11    11    11    11    11     11
+ 4     4     9     9     9     9     9     9     9     9     9    NA     NA
+ 5     5     3     3     3    NA    NA    NA    NA    NA    NA    NA     NA
+ 6     6     6     6     6     6     6     6    NA    NA    NA    NA     NA
+ 7     7     4     4     4     4    NA    NA    NA    NA    NA    NA     NA
+ 8     8     7     7     7     7     7     7     7    NA    NA    NA     NA
+ 9     9     9     9     9     9     9     9     9     9     9    NA     NA
+10    10     1    NA    NA    NA    NA    NA    NA    NA    NA    NA     NA
 # … with 2 more variables: col_11 <dbl>, col_12 <dbl>
-Time taken to create DataFrame 14.71731```
+Time taken to create DataFrame 14.15697```
 ````
 The result above shows how long Spark took to create the plan and execute it to show the top 10 rows. 
 
@@ -220,7 +226,9 @@ for (i in 1: new_cols)
   column_name = paste0('col_', i)
   prev_column = paste0('col_', i-1)
   df1 <- df1 %>%
-    mutate(!!column_name := case_when(!!as.symbol(prev_column) > i ~ !!as.symbol(prev_column) ))
+    mutate(
+    !!column_name := case_when(
+        !!as.symbol(prev_column) > i ~ !!as.symbol(prev_column) ))
   
   
   if (i %% 3 == 0) 
@@ -266,21 +274,21 @@ Time taken to create the DataFrame:  1.0542099475860596
 ```
 
 ```{code-tab} plaintext R Output
-1# A tibble: 10 × 14
+# A tibble: 10 × 14
       id col_0 col_1 col_2 col_3 col_4 col_5 col_6 col_7 col_8 col_9 col_10
    <int> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl>
- 1     1    12    12    12    12    12    12    12    12    12    12     12
- 2     2     7     7     7     7     7     7     7    NA    NA    NA     NA
- 3     3    10    10    10    10    10    10    10    10    10    10     NA
- 4     4    10    10    10    10    10    10    10    10    10    10     NA
- 5     5     4     4     4     4    NA    NA    NA    NA    NA    NA     NA
- 6     6     1    NA    NA    NA    NA    NA    NA    NA    NA    NA     NA
- 7     7    12    12    12    12    12    12    12    12    12    12     12
- 8     8     2     2    NA    NA    NA    NA    NA    NA    NA    NA     NA
- 9     9     6     6     6     6     6     6    NA    NA    NA    NA     NA
-10    10    11    11    11    11    11    11    11    11    11    11     11
+ 1     1     6     6     6     6     6     6    NA    NA    NA    NA     NA
+ 2     2    10    10    10    10    10    10    10    10    10    10     NA
+ 3     3     6     6     6     6     6     6    NA    NA    NA    NA     NA
+ 4     4     8     8     8     8     8     8     8     8    NA    NA     NA
+ 5     5    11    11    11    11    11    11    11    11    11    11     11
+ 6     6     8     8     8     8     8     8     8     8    NA    NA     NA
+ 7     7     8     8     8     8     8     8     8     8    NA    NA     NA
+ 8     8     5     5     5     5     5    NA    NA    NA    NA    NA     NA
+ 9     9     1    NA    NA    NA    NA    NA    NA    NA    NA    NA     NA
+10    10    12    12    12    12    12    12    12    12    12    12     12
 # … with 2 more variables: col_11 <dbl>, col_12 <dbl>
-Time taken to create DataFrame:  23.7858```
+Time taken to create DataFrame:  23.05468```
 ````
 The exact times will vary with each run of this notebook, but hopefully you will see that using the [`.checkpoint()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.checkpoint.html) was more efficient.
 
@@ -292,6 +300,8 @@ Often the easiest way to delete files is through some GUI, but the cell below is
 import subprocess
 cmd = f'hdfs dfs -rm -r -skipTrash {checkpoint_path}' 
 p = subprocess.run(cmd, shell=True)
+
+spark.stop()
 ```
 
 ```{code-tab} r R
@@ -299,13 +309,15 @@ p = subprocess.run(cmd, shell=True)
 cmd <- paste0("hdfs dfs -rm -r -skipTrash ", config$checkpoint_path)
 p <- system(command = cmd)
 
+spark_disconnect(sc)
+
 ```
 ````
 
 ````{tabs}
 
 ```{code-tab} plaintext R Output
-6Deleted file:///home/cdsw/ons-spark/checkpoints
+Deleted file:///home/cdsw/ons-spark/checkpoints
 ```
 ````
 ### How often should I checkpoint?
@@ -355,11 +367,35 @@ spark = (SparkSession.builder.master("local[2]")
          .appName("staging-tables")
          .getOrCreate())
 ```
+
+```{code-tab} r R
+ 
+library(sparklyr)
+library(dplyr)
+
+sc <- sparklyr::spark_connect(
+    master = "local[2]",
+    app_name = "staging_tables",
+    config = sparklyr::spark_config())
+
+```
 ````
 Now read in the CSV:
 ````{tabs}
 ```{code-tab} py
+rescue_path = config['rescue_path_csv']
 df = spark.read.csv("/training/animal_rescue.csv", header = True)
+```
+
+```{code-tab} r R
+ 
+animal_rescue_csv = config$rescue_path_csv
+
+df = sparklyr::spark_read_csv(sc,
+                              path=animal_rescue_csv,
+                              header=TRUE,
+                              infer_schema=TRUE)
+
 ```
 ````
 Then do some preparation: drop and rename some columns, change the format, then sort.
@@ -392,6 +428,32 @@ df = (df.
     )
 
 df.limit(3).toPandas()
+```
+
+```{code-tab} r R
+
+df %>%
+    sparklyr::select( 
+             -("WardCode"), 
+             -("BoroughCode"), 
+             -("Easting_m"), 
+             -("Northing_m"), 
+             -("Easting_rounded"), 
+             -("Northing_rounded"), 
+            "EngineCount" = "PumpCount",
+            "Description" = "FinalDescription",
+            "HourlyCost" = "HourlyNotionalCostGBP",
+            "TotalCost" = "IncidentNotionalCostGBP",
+            "OriginOfCall" = "OriginofCall",
+            "JobHours" = "PumpHoursTotal",
+            "AnimalGroup" = "AnimalGroupParent") %>%
+
+    sparklyr::mutate(DateTimeOfCall = to_date(DateTimeOfCall, "dd/MM/yyyy")) %>%
+    dplyr::arrange(desc(IncidentNumber)) %>%
+    head(3) %>%
+    sparklyr::collect() %>%
+    print() 
+
 ```
 ````
 
@@ -433,11 +495,32 @@ df.limit(3).toPandas()
 1       Bromley              BR2  
 2       Croydon              CR0  
 ```
+
+```{code-tab} plaintext R Output
+# A tibble: 3 × 20
+  IncidentN…¹ DateTime…² CalYear FinYear TypeO…³ Engin…⁴ JobHo…⁵ Hourl…⁶ Total…⁷
+  <chr>       <date>       <int> <chr>   <chr>     <dbl>   <dbl>   <int>   <dbl>
+1 99960101    2010-06-25    2010 2010/11 Specia…       1       1     260     260
+2 99912121    2012-08-26    2012 2012/13 Specia…       1       1     260     260
+3 99846101    2010-06-25    2010 2010/11 Specia…       1       1     260     260
+# … with 11 more variables: Description <chr>, AnimalGroup <chr>,
+#   OriginOfCall <chr>, PropertyType <chr>, PropertyCategory <chr>,
+#   SpecialServiceTypeCategory <chr>, SpecialServiceType <chr>, Ward <chr>,
+#   Borough <chr>, StnGroundName <chr>, PostcodeDistrict <chr>, and abbreviated
+#   variable names ¹​IncidentNumber, ²​DateTimeOfCall, ³​TypeOfIncident,
+#   ⁴​EngineCount, ⁵​JobHours, ⁶​HourlyCost, ⁷​TotalCost
+```
 ````
 Let's look at the plan with `df.explain()`. This displays what precisely Spark will do once an action is called (*lazy evaluation*). This is a simple example but in long pipelines this plan can get complicated. Using a staging table can split this process, referred to as *cutting the lineage*.
 ````{tabs}
 ```{code-tab} py
 df.explain()
+```
+
+```{code-tab} r R
+
+explain(df)
+
 ```
 ````
 
@@ -450,6 +533,16 @@ df.explain()
    +- *(1) Project [IncidentNumber#439, cast(unix_timestamp(DateTimeOfCall#440, dd/MM/yyyy, Some(Europe/London)) as timestamp) AS DateTimeOfCall#658, CalYear#441, FinYear#442, TypeOfIncident#443, PumpCount#444 AS EngineCount#511, PumpHoursTotal#445 AS JobHours#616, HourlyNotionalCost(£)#446 AS HourlyCost#553, IncidentNotionalCost(£)#447 AS TotalCost#574, FinalDescription#448 AS Description#532, AnimalGroupParent#449 AS AnimalGroup#637, OriginofCall#450 AS OriginOfCall#595, PropertyType#451, PropertyCategory#452, SpecialServiceTypeCategory#453, SpecialServiceType#454, Ward#456, Borough#458, StnGroundName#459, PostcodeDistrict#460]
       +- *(1) FileScan csv [IncidentNumber#439,DateTimeOfCall#440,CalYear#441,FinYear#442,TypeOfIncident#443,PumpCount#444,PumpHoursTotal#445,HourlyNotionalCost(£)#446,IncidentNotionalCost(£)#447,FinalDescription#448,AnimalGroupParent#449,OriginofCall#450,PropertyType#451,PropertyCategory#452,SpecialServiceTypeCategory#453,SpecialServiceType#454,Ward#456,Borough#458,StnGroundName#459,PostcodeDistrict#460] Batched: false, Format: CSV, Location: InMemoryFileIndex[hdfs://dnt01/training/animal_rescue.csv], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<IncidentNumber:string,DateTimeOfCall:string,CalYear:string,FinYear:string,TypeOfIncident:s...
 ```
+
+```{code-tab} plaintext R Output
+SQL>
+SELECT *
+FROM `animal_rescue_b1cba080_bbed_4fe5_a2aa_109ac715314c`
+
+<PLAN>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        plan
+1 == Physical Plan ==\nInMemoryTableScan [IncidentNumber#62, DateTimeOfCall#63, CalYear#64, FinYear#65, TypeOfIncident#66, PumpCount#67, PumpHoursTotal#68, HourlyNotionalCostGBP#69, IncidentNotionalCostGBP#70, FinalDescription#71, AnimalGroupParent#72, OriginofCall#73, PropertyType#74, PropertyCategory#75, SpecialServiceTypeCategory#76, SpecialServiceType#77, WardCode#78, Ward#79, BoroughCode#80, Borough#81, StnGroundName#82, PostcodeDistrict#83, Easting_m#84, Northing_m#85, ... 2 more fields]\n   +- InMemoryRelation [IncidentNumber#62, DateTimeOfCall#63, CalYear#64, FinYear#65, TypeOfIncident#66, PumpCount#67, PumpHoursTotal#68, HourlyNotionalCostGBP#69, IncidentNotionalCostGBP#70, FinalDescription#71, AnimalGroupParent#72, OriginofCall#73, PropertyType#74, PropertyCategory#75, SpecialServiceTypeCategory#76, SpecialServiceType#77, WardCode#78, Ward#79, BoroughCode#80, Borough#81, StnGroundName#82, PostcodeDistrict#83, Easting_m#84, Northing_m#85, ... 2 more fields], StorageLevel(disk, memory, deserialized, 1 replicas)\n         +- *(1) Project [IncidentNumber#10, DateTimeOfCall#11, CalYear#12, FinYear#13, TypeOfIncident#14, PumpCount#15, PumpHoursTotal#16, HourlyNotionalCost(£)#17 AS HourlyNotionalCostGBP#69, IncidentNotionalCost(£)#18 AS IncidentNotionalCostGBP#70, FinalDescription#19, AnimalGroupParent#20, OriginofCall#21, PropertyType#22, PropertyCategory#23, SpecialServiceTypeCategory#24, SpecialServiceType#25, WardCode#26, Ward#27, BoroughCode#28, Borough#29, StnGroundName#30, PostcodeDistrict#31, Easting_m#32, Northing_m#33, ... 2 more fields]\n            +- *(1) FileScan csv [IncidentNumber#10,DateTimeOfCall#11,CalYear#12,FinYear#13,TypeOfIncident#14,PumpCount#15,PumpHoursTotal#16,HourlyNotionalCost(£)#17,IncidentNotionalCost(£)#18,FinalDescription#19,AnimalGroupParent#20,OriginofCall#21,PropertyType#22,PropertyCategory#23,SpecialServiceTypeCategory#24,SpecialServiceType#25,WardCode#26,Ward#27,BoroughCode#28,Borough#29,StnGroundName#30,PostcodeDistrict#31,Easting_m#32,Northing_m#33,... 2 more fields] Batched: false, Format: CSV, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/animal_rescue.csv], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<IncidentNumber:string,DateTimeOfCall:string,CalYear:int,FinYear:string,TypeOfIncident:stri...
+```
 ````
 Now save the DataFrame as table, using `mode("overwrite")`, which overwrites the existing table if there is one. The first time you create a staging table this option will be redundant, but on subsequent runs on the code you will get an error without this as the table will already exist.
 ````{tabs}
@@ -459,12 +552,44 @@ table_name = f"train_tmp.staging_example_{username}"
 
 df.write.mode("overwrite").saveAsTable(table_name, format="parquet")
 ```
+
+```{code-tab} r R
+
+username <- Sys.getenv('HADOOP_USER_NAME')
+invisible(sdf_register(df, 'df'))
+sql <- paste0('DROP TABLE IF EXISTS train_tmp.staging_example_', username)
+dbExecute(sc, sql)
+
+tbl_change_db(sc, "train_tmp")
+table_name <- paste0('staging_example_', username) 
+spark_write_table(df, name = table_name)
+
+```
+````
+
+````{tabs}
+
+```{code-tab} plaintext R Output
+1] 0
+```
 ````
 Now read the data in again and preview:
 ````{tabs}
 ```{code-tab} py
 df = spark.read.table(table_name)
 df.limit(3).toPandas()
+```
+
+```{code-tab} r R
+
+df <- spark_read_table(sc, table_name, repartition = 0)
+
+df %>%
+    head(3) %>%
+    sparklyr::collect() %>%
+    print()
+
+
 ```
 ````
 
@@ -506,11 +631,34 @@ df.limit(3).toPandas()
 1       Mitcham              CR4  
 2     Tottenham              N15  
 ```
+
+```{code-tab} plaintext R Output
+0
+# A tibble: 3 × 26
+  IncidentNumber DateT…¹ CalYear FinYear TypeO…² PumpC…³ PumpH…⁴ Hourl…⁵ Incid…⁶
+  <chr>          <chr>     <int> <chr>   <chr>     <dbl>   <dbl>   <int>   <dbl>
+1 139091         01/01/…    2009 2008/09 Specia…       1       2     255     510
+2 275091         01/01/…    2009 2008/09 Specia…       1       1     255     255
+3 2075091        04/01/…    2009 2008/09 Specia…       1       1     255     255
+# … with 17 more variables: FinalDescription <chr>, AnimalGroupParent <chr>,
+#   OriginofCall <chr>, PropertyType <chr>, PropertyCategory <chr>,
+#   SpecialServiceTypeCategory <chr>, SpecialServiceType <chr>, WardCode <chr>,
+#   Ward <chr>, BoroughCode <chr>, Borough <chr>, StnGroundName <chr>,
+#   PostcodeDistrict <chr>, Easting_m <dbl>, Northing_m <dbl>,
+#   Easting_rounded <int>, Northing_rounded <int>, and abbreviated variable
+#   names ¹​DateTimeOfCall, ²​TypeOfIncident, ³​PumpCount, ⁴​PumpHoursTotal, …
+```
 ````
 The DataFrame has the same structure as previously, but when we look at the plan with `df.explain()` we can see that less is being done. This is an example of cutting the lineage and can be useful when you have complex plans.
 ````{tabs}
 ```{code-tab} py
 df.explain()
+```
+
+```{code-tab} r R
+
+explain(df)
+
 ```
 ````
 
@@ -519,6 +667,16 @@ df.explain()
 ```{code-tab} plaintext Python Output
 == Physical Plan ==
 *(1) FileScan parquet train_tmp.staging_example_mitchs[IncidentNumber#739,DateTimeOfCall#740,CalYear#741,FinYear#742,TypeOfIncident#743,EngineCount#744,JobHours#745,HourlyCost#746,TotalCost#747,Description#748,AnimalGroup#749,OriginOfCall#750,PropertyType#751,PropertyCategory#752,SpecialServiceTypeCategory#753,SpecialServiceType#754,Ward#755,Borough#756,StnGroundName#757,PostcodeDistrict#758] Batched: true, Format: Parquet, Location: InMemoryFileIndex[hdfs://dnt01/training/train_tmp/hive/staging_example_mitchs], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<IncidentNumber:string,DateTimeOfCall:timestamp,CalYear:string,FinYear:string,TypeOfInciden...
+```
+
+```{code-tab} plaintext R Output
+<SQL>
+SELECT *
+FROM `staging_example_mitchs`
+
+<PLAN>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               plan
+1 == Physical Plan ==\nInMemoryTableScan [IncidentNumber#1473, DateTimeOfCall#1474, CalYear#1475, FinYear#1476, TypeOfIncident#1477, PumpCount#1478, PumpHoursTotal#1479, HourlyNotionalCostGBP#1480, IncidentNotionalCostGBP#1481, FinalDescription#1482, AnimalGroupParent#1483, OriginofCall#1484, PropertyType#1485, PropertyCategory#1486, SpecialServiceTypeCategory#1487, SpecialServiceType#1488, WardCode#1489, Ward#1490, BoroughCode#1491, Borough#1492, StnGroundName#1493, PostcodeDistrict#1494, Easting_m#1495, Northing_m#1496, ... 2 more fields]\n   +- InMemoryRelation [IncidentNumber#1473, DateTimeOfCall#1474, CalYear#1475, FinYear#1476, TypeOfIncident#1477, PumpCount#1478, PumpHoursTotal#1479, HourlyNotionalCostGBP#1480, IncidentNotionalCostGBP#1481, FinalDescription#1482, AnimalGroupParent#1483, OriginofCall#1484, PropertyType#1485, PropertyCategory#1486, SpecialServiceTypeCategory#1487, SpecialServiceType#1488, WardCode#1489, Ward#1490, BoroughCode#1491, Borough#1492, StnGroundName#1493, PostcodeDistrict#1494, Easting_m#1495, Northing_m#1496, ... 2 more fields], StorageLevel(disk, memory, deserialized, 1 replicas)\n         +- *(1) FileScan parquet train_tmp.staging_example_mitchs[IncidentNumber#1473,DateTimeOfCall#1474,CalYear#1475,FinYear#1476,TypeOfIncident#1477,PumpCount#1478,PumpHoursTotal#1479,HourlyNotionalCostGBP#1480,IncidentNotionalCostGBP#1481,FinalDescription#1482,AnimalGroupParent#1483,OriginofCall#1484,PropertyType#1485,PropertyCategory#1486,SpecialServiceTypeCategory#1487,SpecialServiceType#1488,WardCode#1489,Ward#1490,BoroughCode#1491,Borough#1492,StnGroundName#1493,PostcodeDistrict#1494,Easting_m#1495,Northing_m#1496,... 2 more fields] Batched: true, Format: Parquet, Location: InMemoryFileIndex[hdfs://dnt01/training/train_tmp/hive/staging_example_mitchs], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<IncidentNumber:string,DateTimeOfCall:string,CalYear:int,FinYear:string,TypeOfIncident:stri...
 ```
 ````
 ### Using `.insertInto()`
