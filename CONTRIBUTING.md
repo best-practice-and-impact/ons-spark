@@ -138,6 +138,9 @@ nb_maker = (markdown_from_notebook(in_path + "/" + page + ".ipynb",
 
 ```
 
+Once you have converted the notebook and the resulting files are stored in the right locations, you can now build the book with your new changes. 
+
+In the case that you are adding R code to a page in the book that is currently a Jupyter Notebook you will need to change the table of contents to point to the markdown file created by the conversion. To do this, inside the ons-spark folder modify the ```_toc.yml``` file such that the newly modified markdown file is included correctly. To learn a little more about Table of Contents in JupyterBooks see the Jupyter documentation [here](https://jupyterbook.org/en/stable/structure/toc.html)
 
 ## Code of Conduct
 
