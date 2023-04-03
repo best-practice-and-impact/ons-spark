@@ -80,7 +80,7 @@ Now all the appropriate dependencies should be installed we can now build the bo
 jb build ons-spark
 ```
 
-## Contributing to Notebooks to contaim both Python and R code
+## Contributing to Notebooks to contain both Python and R code
 
 The conversion of notebook files into markdown files that have code tabs to display both Python and R code requires the use of some of the functionality contained in the utilities file of this repo. 
 `notebook_converter.py` contains the function markdown_from_notebook that (as the name suggests) will convert a Jupyter Notebook into a Markdown file with appropriate code tabs, extract and run the R code, store both python and R outputs and put them in appropriate tabs in the notebook. This function takes as an argument the notebook that is to be converted and the output location of where you would like the resulting markdown file. 
