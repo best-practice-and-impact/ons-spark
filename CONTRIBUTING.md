@@ -100,8 +100,6 @@ spark = (SparkSession.builder.master("local[2]")
 An in a markdown cell right below you would have the following code:
 
 
-
-```r
 `` ```r
 library(sparklyr)
 library(dplyr)
@@ -112,7 +110,6 @@ sc <- sparklyr::spark_connect(
 ``` ``
 
 
-```
 
 
 
