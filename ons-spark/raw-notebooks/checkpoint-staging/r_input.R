@@ -23,7 +23,7 @@ for (i in 1: new_cols)
   column_name = paste0('col_', i)
   prev_column = paste0('col_', i-1)
   df <- df %>%
-    mutate(
+    sparklyr::mutate(
       !!column_name := case_when(
         !!as.symbol(prev_column) > i ~ !!as.symbol(prev_column)))
   
@@ -31,7 +31,7 @@ for (i in 1: new_cols)
 
 df %>%
     head(10)%>%
-    collect()%>%
+    sparklyr::collect()%>%
     print()
 
 end_time <- Sys.time()
@@ -41,7 +41,7 @@ cat("Time taken to create DataFrame", time_taken)
 
  
 
-spark_disconnect(sc)
+sparklyr::spark_disconnect(sc)
 
 sc <- sparklyr::spark_connect(
     master = "local[2]",
@@ -49,9 +49,9 @@ sc <- sparklyr::spark_connect(
     config = sparklyr::spark_config())
 
 
-config <- yaml::yaml.load_file("/home/cdsw/ons-spark/config.yaml")
+config <- yaml::yaml.load_file("ons-spark/config.yaml")
 
-spark_set_checkpoint_dir(sc, config$checkpoint_path)
+sparklyr::spark_set_checkpoint_dir(sc, config$checkpoint_path)
 
  
 start_time <- Sys.time()
@@ -64,20 +64,20 @@ for (i in 1: new_cols)
   column_name = paste0('col_', i)
   prev_column = paste0('col_', i-1)
   df1 <- df1 %>%
-    mutate(
+    sparklyr::mutate(
     !!column_name := case_when(
         !!as.symbol(prev_column) > i ~ !!as.symbol(prev_column) ))
   
   
   if (i %% 3 == 0) 
   {
-    sdf_checkpoint(df1, eager= TRUE)
+    sparklyr::sdf_checkpoint(df1, eager= TRUE)
   }
 }
 
 df1 %>%
     head(10)%>%
-    collect()%>%
+    sparklyr::collect()%>%
     print()
 
 end_time <- Sys.time()
@@ -89,7 +89,7 @@ cat("Time taken to create DataFrame: ", time_taken)
 cmd <- paste0("hdfs dfs -rm -r -skipTrash ", config$checkpoint_path)
 p <- system(command = cmd)
 
-spark_disconnect(sc)
+sparklyr::spark_disconnect(sc)
  
 library(sparklyr)
 library(dplyr)
@@ -131,15 +131,20 @@ df %>%
 explain(df)
 
 username <- Sys.getenv('HADOOP_USER_NAME')
-invisible(sdf_register(df, 'df'))
-sql <- paste0('DROP TABLE IF EXISTS train_tmp.staging_example_', username)
+invisible(sparklyr::sdf_register(df, 'df'))
+
+database <- config$database
+
+table_name_plain <- config$staging_table_example
+table_name <- paste0(table_name_plain, username)
+
+sql <- paste0('DROP TABLE IF EXISTS ', database, '.', table_name)
 dbExecute(sc, sql)
 
-tbl_change_db(sc, "train_tmp")
-table_name <- paste0('staging_example_', username) 
-spark_write_table(df, name = table_name)
+tbl_change_db(sc, database)
+sparklyr::spark_write_table(df, name = table_name)
 
-df <- spark_read_table(sc, table_name, repartition = 0)
+df <- sparklyr::spark_read_table(sc, table_name, repartition = 0)
 
 df %>%
     head(3) %>%

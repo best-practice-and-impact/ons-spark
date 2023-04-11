@@ -93,7 +93,7 @@ for (i in 1: new_cols)
   column_name = paste0('col_', i)
   prev_column = paste0('col_', i-1)
   df <- df %>%
-    mutate(
+    sparklyr::mutate(
       !!column_name := case_when(
         !!as.symbol(prev_column) > i ~ !!as.symbol(prev_column)))
   
@@ -101,7 +101,7 @@ for (i in 1: new_cols)
 
 df %>%
     head(10)%>%
-    collect()%>%
+    sparklyr::collect()%>%
     print()
 
 end_time <- Sys.time()
@@ -139,18 +139,18 @@ Time taken to create the DataFrame:  8.401437520980835
 # A tibble: 10 × 14
       id col_0 col_1 col_2 col_3 col_4 col_5 col_6 col_7 col_8 col_9 col_10
    <int> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl>
- 1     1     1    NA    NA    NA    NA    NA    NA    NA    NA    NA     NA
- 2     2     2     2    NA    NA    NA    NA    NA    NA    NA    NA     NA
- 3     3    11    11    11    11    11    11    11    11    11    11     11
- 4     4     9     9     9     9     9     9     9     9     9    NA     NA
- 5     5     3     3     3    NA    NA    NA    NA    NA    NA    NA     NA
- 6     6     6     6     6     6     6     6    NA    NA    NA    NA     NA
- 7     7     4     4     4     4    NA    NA    NA    NA    NA    NA     NA
- 8     8     7     7     7     7     7     7     7    NA    NA    NA     NA
- 9     9     9     9     9     9     9     9     9     9     9    NA     NA
-10    10     1    NA    NA    NA    NA    NA    NA    NA    NA    NA     NA
+ 1     1     3     3     3    NA    NA    NA    NA    NA    NA    NA     NA
+ 2     2    10    10    10    10    10    10    10    10    10    10     NA
+ 3     3     7     7     7     7     7     7     7    NA    NA    NA     NA
+ 4     4    11    11    11    11    11    11    11    11    11    11     11
+ 5     5    10    10    10    10    10    10    10    10    10    10     NA
+ 6     6     7     7     7     7     7     7     7    NA    NA    NA     NA
+ 7     7    11    11    11    11    11    11    11    11    11    11     11
+ 8     8     8     8     8     8     8     8     8     8    NA    NA     NA
+ 9     9    12    12    12    12    12    12    12    12    12    12     12
+10    10     6     6     6     6     6     6    NA    NA    NA    NA     NA
 # … with 2 more variables: col_11 <dbl>, col_12 <dbl>
-Time taken to create DataFrame 14.15697```
+Time taken to create DataFrame 14.23906```
 ````
 The result above shows how long Spark took to create the plan and execute it to show the top 10 rows. 
 
@@ -177,7 +177,7 @@ spark.sparkContext.setCheckpointDir(checkpoint_path)
 ```{code-tab} r R
  
 
-spark_disconnect(sc)
+sparklyr::spark_disconnect(sc)
 
 sc <- sparklyr::spark_connect(
     master = "local[2]",
@@ -185,9 +185,9 @@ sc <- sparklyr::spark_connect(
     config = sparklyr::spark_config())
 
 
-config <- yaml::yaml.load_file("/home/cdsw/ons-spark/config.yaml")
+config <- yaml::yaml.load_file("ons-spark/config.yaml")
 
-spark_set_checkpoint_dir(sc, config$checkpoint_path)
+sparklyr::spark_set_checkpoint_dir(sc, config$checkpoint_path)
 
 
 ```
@@ -226,20 +226,20 @@ for (i in 1: new_cols)
   column_name = paste0('col_', i)
   prev_column = paste0('col_', i-1)
   df1 <- df1 %>%
-    mutate(
+    sparklyr::mutate(
     !!column_name := case_when(
         !!as.symbol(prev_column) > i ~ !!as.symbol(prev_column) ))
   
   
   if (i %% 3 == 0) 
   {
-    sdf_checkpoint(df1, eager= TRUE)
+    sparklyr::sdf_checkpoint(df1, eager= TRUE)
   }
 }
 
 df1 %>%
     head(10)%>%
-    collect()%>%
+    sparklyr::collect()%>%
     print()
 
 end_time <- Sys.time()
@@ -277,18 +277,18 @@ Time taken to create the DataFrame:  1.0542099475860596
 # A tibble: 10 × 14
       id col_0 col_1 col_2 col_3 col_4 col_5 col_6 col_7 col_8 col_9 col_10
    <int> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl>
- 1     1     6     6     6     6     6     6    NA    NA    NA    NA     NA
- 2     2    10    10    10    10    10    10    10    10    10    10     NA
- 3     3     6     6     6     6     6     6    NA    NA    NA    NA     NA
- 4     4     8     8     8     8     8     8     8     8    NA    NA     NA
- 5     5    11    11    11    11    11    11    11    11    11    11     11
- 6     6     8     8     8     8     8     8     8     8    NA    NA     NA
- 7     7     8     8     8     8     8     8     8     8    NA    NA     NA
- 8     8     5     5     5     5     5    NA    NA    NA    NA    NA     NA
- 9     9     1    NA    NA    NA    NA    NA    NA    NA    NA    NA     NA
-10    10    12    12    12    12    12    12    12    12    12    12     12
+ 1     1    12    12    12    12    12    12    12    12    12    12     12
+ 2     2     9     9     9     9     9     9     9     9     9    NA     NA
+ 3     3    10    10    10    10    10    10    10    10    10    10     NA
+ 4     4     1    NA    NA    NA    NA    NA    NA    NA    NA    NA     NA
+ 5     5     1    NA    NA    NA    NA    NA    NA    NA    NA    NA     NA
+ 6     6     3     3     3    NA    NA    NA    NA    NA    NA    NA     NA
+ 7     7     7     7     7     7     7     7     7    NA    NA    NA     NA
+ 8     8     3     3     3    NA    NA    NA    NA    NA    NA    NA     NA
+ 9     9     7     7     7     7     7     7     7    NA    NA    NA     NA
+10    10     7     7     7     7     7     7     7    NA    NA    NA     NA
 # … with 2 more variables: col_11 <dbl>, col_12 <dbl>
-Time taken to create DataFrame:  23.05468```
+Time taken to create DataFrame:  21.24906```
 ````
 The exact times will vary with each run of this notebook, but hopefully you will see that using the [`.checkpoint()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.checkpoint.html) was more efficient.
 
@@ -309,7 +309,7 @@ spark.stop()
 cmd <- paste0("hdfs dfs -rm -r -skipTrash ", config$checkpoint_path)
 p <- system(command = cmd)
 
-spark_disconnect(sc)
+sparklyr::spark_disconnect(sc)
 
 ```
 ````
@@ -317,7 +317,7 @@ spark_disconnect(sc)
 ````{tabs}
 
 ```{code-tab} plaintext R Output
-Deleted file:///home/cdsw/ons-spark/checkpoints
+eleted file:///home/cdsw/ons-spark/checkpoints
 ```
 ````
 ### How often should I checkpoint?
@@ -380,11 +380,18 @@ sc <- sparklyr::spark_connect(
 
 ```
 ````
+
+````{tabs}
+
+```{code-tab} plaintext R Output
+
+```
+````
 Now read in the CSV:
 ````{tabs}
 ```{code-tab} py
 rescue_path = config['rescue_path_csv']
-df = spark.read.csv("/training/animal_rescue.csv", header = True)
+df = spark.read.csv(rescue_path, header = True)
 ```
 
 ```{code-tab} r R
@@ -535,9 +542,9 @@ explain(df)
 ```
 
 ```{code-tab} plaintext R Output
-SQL>
+<SQL>
 SELECT *
-FROM `animal_rescue_b1cba080_bbed_4fe5_a2aa_109ac715314c`
+FROM `animal_rescue_fca1d349_bf84_4b59_b9e8_aac16a4299b0`
 
 <PLAN>
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         plan
@@ -548,7 +555,9 @@ Now save the DataFrame as table, using `mode("overwrite")`, which overwrites the
 ````{tabs}
 ```{code-tab} py
 username = os.getenv('HADOOP_USER_NAME') 
-table_name = f"train_tmp.staging_example_{username}"
+
+table_name_plain = config['staging_table_example']
+table_name = table_name_plain+username
 
 df.write.mode("overwrite").saveAsTable(table_name, format="parquet")
 ```
@@ -556,13 +565,18 @@ df.write.mode("overwrite").saveAsTable(table_name, format="parquet")
 ```{code-tab} r R
 
 username <- Sys.getenv('HADOOP_USER_NAME')
-invisible(sdf_register(df, 'df'))
-sql <- paste0('DROP TABLE IF EXISTS train_tmp.staging_example_', username)
+invisible(sparklyr::sdf_register(df, 'df'))
+
+database <- config$database
+
+table_name_plain <- config$staging_table_example
+table_name <- paste0(table_name_plain, username)
+
+sql <- paste0('DROP TABLE IF EXISTS ', database, '.', table_name)
 dbExecute(sc, sql)
 
-tbl_change_db(sc, "train_tmp")
-table_name <- paste0('staging_example_', username) 
-spark_write_table(df, name = table_name)
+tbl_change_db(sc, database)
+sparklyr::spark_write_table(df, name = table_name)
 
 ```
 ````
@@ -570,7 +584,7 @@ spark_write_table(df, name = table_name)
 ````{tabs}
 
 ```{code-tab} plaintext R Output
-1] 0
+[1] 0
 ```
 ````
 Now read the data in again and preview:
@@ -582,7 +596,7 @@ df.limit(3).toPandas()
 
 ```{code-tab} r R
 
-df <- spark_read_table(sc, table_name, repartition = 0)
+df <- sparklyr::spark_read_table(sc, table_name, repartition = 0)
 
 df %>%
     head(3) %>%
@@ -633,7 +647,6 @@ df %>%
 ```
 
 ```{code-tab} plaintext R Output
-0
 # A tibble: 3 × 26
   IncidentNumber DateT…¹ CalYear FinYear TypeO…² PumpC…³ PumpH…⁴ Hourl…⁵ Incid…⁶
   <chr>          <chr>     <int> <chr>   <chr>     <dbl>   <dbl>   <int>   <dbl>
@@ -765,8 +778,23 @@ PySpark Documentation:
 - [spark.read.csv()](https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrameReader.csv)
 - [spark.read.table()](https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrameReader.table)
 
+SparklyR Documentation:
+- [spark_write_table](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_write_table.html)
+- [spark_read_csv](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_read_csv.html)
+- [spark_read_table](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_read_table.html)
+
+
+
 Python Documentation:
 - [`time`](https://docs.python.org/3/library/time.html)
 
+R Documentation:
+- [`time`](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/Sys.time)
+
 Other material:
 - <a href="https://en.wikipedia.org/wiki/Staging_(data)">Staging (data) article on Wikipedia</a>
+````{tabs}
+```{code-tab} py
+
+```
+````
