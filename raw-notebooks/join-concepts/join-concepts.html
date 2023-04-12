@@ -1,51 +1,69 @@
 
+
 <!DOCTYPE html>
 
-<html lang="en">
+
+<html lang="en" >
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Optimising Joins &#8212; Spark at the ONS</title>
-    
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
-    
-  <link rel="stylesheet"
-    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/accessibility.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
-    
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
-    <script src="../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../../_static/togglebutton.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../_static/design-tabs.js"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-95MGHSRD0S');
+            </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -54,65 +72,88 @@ const thebe_selector_output = ".output, .cell_output"
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en">
-    
-
-    <!-- Google Analytics -->
-    
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
-<script>
-                    window.dataLayer = window.dataLayer || [];
-                    function gtag(){ dataLayer.push(arguments); }
-                    gtag('js', new Date());
-                    gtag('config', 'G-95MGHSRD0S');
-                </script>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay overlay-navbar" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<!-- Checkboxes to toggle the in-page toc -->
-<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
-<label class="overlay overlay-pagetoc" for="__page-toc">
-    <div class="visually-hidden">Toggle in-page Table of Contents</div>
-</label>
-<!-- Headers at the top -->
-<div class="announcement header-item noprint"></div>
-<div class="header header-item noprint"></div>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
-    
-    <div class="container-fluid" id="banner"></div>
-
-    
-
-    <div class="container-xl">
-      <div class="row">
-          
-<!-- Sidebar -->
-<div class="bd-sidebar noprint" id="site-navigation">
-    <div class="bd-sidebar__content">
-        <div class="bd-sidebar__top"><div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="../../index.html">
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
       
-        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+      <div class="bd-sidebar-primary bd-sidebar">
         
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../../intro.html">
+  
+  
+  
+  
+    
+    
       
-      
-      <img src="../../_static/logo.png" class="logo" alt="logo">
-      
-      
-      <h1 class="site-logo" id="site-title">Spark at the ONS</h1>
-      
-    </a>
-</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item active">
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
             <li class="toctree-l1">
@@ -121,665 +162,300 @@ const thebe_selector_output = ".output, .cell_output"
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Spark overview
- </span>
-</p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark overview</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-overview/spark-start.html">
-   Getting Started with Spark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-overview/when-to-use-spark.html">
-   When To Use Spark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-overview/spark-session-guidance.html">
-   Guidance on Spark Sessions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-overview/example-spark-sessions.html">
-   Example Spark Sessions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-overview/spark-defaults.html">
-   Configuration Hierarchy and
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     spark-defaults.conf
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-overview/data-types.html">
-   Data Types in Spark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-overview/creating-dataframes.html">
-   Creating DataFrames Manually
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-overview/data-storage.html">
-   Data Storage
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/spark-start.html">Getting Started with Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/when-to-use-spark.html">When To Use Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/spark-session-guidance.html">Guidance on Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/example-spark-sessions.html">Example Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/spark-defaults.html">Configuration Hierarchy and <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/data-types.html">Data Types in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/creating-dataframes.html">Creating DataFrames Manually</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/data-storage.html">Data Storage</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Introduction to PySpark
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to PySpark</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../../pyspark-intro/pyspark-intro.html">
-   Introduction to PySpark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../pyspark-intro/reading-data-pyspark.html">
-   Reading Data in PySpark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../pyspark-intro/returning-data.html">
-   Returning Data from Cluster to Driver
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../pyspark-intro/f-col.html">
-   Reference columns by name:
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     F.col()
-    </span>
-   </code>
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyspark-intro/pyspark-intro.html">Introduction to PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyspark-intro/reading-data-pyspark.html">Reading Data in PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyspark-intro/returning-data.html">Returning Data from Cluster to Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyspark-intro/f-col.html">Reference columns by name: <code class="docutils literal notranslate"><span class="pre">F.col()</span></code></a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Introduction to sparklyr
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to sparklyr</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../../sparklyr-intro/sparklyr-intro.html">
-   Introduction to sparklyr
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../sparklyr-intro/reading-data-sparklyr.html">
-   Reading Data in sparklyr
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../sparklyr-intro/sparklyr-functions.html">
-   Using Spark functions in sparklyr
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../../sparklyr-intro/sparklyr-intro.html">Introduction to sparklyr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sparklyr-intro/reading-data-sparklyr.html">Reading Data in sparklyr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sparklyr-intro/sparklyr-functions.html">Using Spark functions in sparklyr</a></li>
+
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Spark functions
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark functions</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-functions/union-dataframes-with-different-columns.html">
-   Union two DataFrames with different columns
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-functions/padding.html">
-   Add leading zeros with
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     lpad()
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-functions/sampling.html">
-   Sampling:
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     .sample()
-    </span>
-   </code>
-   and
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     sdf_sample()
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-functions/pivot-tables.html">
-   Pivot tables in Spark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-functions/rounding.html">
-   Rounding differences in Python, R and Spark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-functions/window-functions.html">
-   Window Functions in Spark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-functions/cross-joins.html">
-   Cross Joins
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-functions/arrays.html">
-   Arrays Functions in PySpark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-functions/writing-data.html">
-   Writing Data
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-functions/job-description.html">
-   Set Spark Job Description
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/union-dataframes-with-different-columns.html">Union two DataFrames with different columns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/padding.html">Add leading zeros with <code class="docutils literal notranslate"><span class="pre">lpad()</span></code></a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/sampling.html">Sampling: <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/pivot-tables.html">Pivot tables in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/rounding.html">Rounding differences in Python, R and Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/window-functions.html">Window Functions in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/cross-joins.html">Cross Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/arrays.html">Arrays Functions in PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/writing-data.html">Writing Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/job-description.html">Set Spark Job Description</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Understanding and Optimising Spark
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Understanding and Optimising Spark</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-concepts/optimisation-tips.html">
-   Ideas for optimising Spark code
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-concepts/spark-application-and-ui.html">
-   Spark Application and UI
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-concepts/shuffling.html">
-   Shuffling
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-concepts/join-concepts.html">
-   Optimising Joins
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-concepts/salted-joins.html">
-   Salted Joins
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-concepts/partitions.html">
-   Managing Partitions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-concepts/persistence.html">
-   Persisting in Spark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-concepts/cache.html">
-   Caching
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../checkpoint-staging/checkpoint-staging.html">
-   Checkpoint
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-concepts/garbage-collection.html">
-   Garbage Collection
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-concepts/df-order.html">
-   Spark DataFrames Are Not Ordered
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../spark-concepts/exercises.html">
-   Exercises
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/optimisation-tips.html">Ideas for optimising Spark code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/spark-application-and-ui.html">Spark Application and UI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/shuffling.html">Shuffling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/join-concepts.html">Optimising Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/salted-joins.html">Salted Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/partitions.html">Managing Partitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/persistence.html">Persisting in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/cache.html">Caching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../checkpoint-staging/checkpoint-staging.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/garbage-collection.html">Garbage Collection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/df-order.html">Spark DataFrames Are Not Ordered</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/exercises.html">Exercises</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Testing and Debugging
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Testing and Debugging</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../../testing-debugging/spark-errors.html">
-   Understanding and Handling Spark Errors
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../testing-debugging/unit-testing.html">
-   Unit Testing in Spark
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../../testing-debugging/spark-errors.html">Understanding and Handling Spark Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../testing-debugging/unit-testing.html">Unit Testing in Spark</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Ancillary Topics
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Ancillary Topics</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../../ancillary-topics/visualisation.html">
-   Spark and Visualisation
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../ancillary-topics/module-imports.html">
-   Naming Conflicts in Module Imports
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../ancillary-topics/pydoop.html">
-   Pydoop: HDFS to pandas
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/visualisation.html">Spark and Visualisation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/module-imports.html">Naming Conflicts in Module Imports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/pydoop.html">Pydoop: HDFS to pandas</a></li>
 </ul>
 
     </div>
 </nav></div>
-        <div class="bd-sidebar__bottom">
-             <!-- To handle the deprecated key -->
-            
-            <div class="navbar_extra_footer">
-            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-            </div>
-            
-        </div>
     </div>
-    <div id="rtd-footer-container"></div>
-</div>
-
-
-          
-
-
-          
-<!-- A tiny helper pixel to detect if we've scrolled -->
-<div class="sbt-scroll-pixel-helper"></div>
-<!-- Main content -->
-<div class="col py-0 content-container">
-    
-    <div class="header-article row sticky-top noprint">
-        
-
-
-
-<div class="col py-1 d-flex header-article-main">
-    <div class="header-article__left">
-        
-        <label for="__navigation"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="right"
-title="Toggle navigation"
->
   
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-bars"></i>
-  </span>
-
-</label>
-
-        
-    </div>
-    <div class="header-article__right">
-<div class="menu-dropdown menu-dropdown-launch-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Launch interactive content">
-      <i class="fas fa-rocket"></i>
-  </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="https://mybinder.org/v2/gh/best-practice-and-impact/ons-spark/main?urlpath=tree/docs/raw-notebooks/join-concepts/join-concepts.ipynb"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Launch on Binder"
->
   
-
-<span class="headerbtn__icon-container">
-  
-    <img src="../../_static/images/logo_binder.svg">
-  </span>
-<span class="headerbtn__text-container">Binder</span>
-</a>
-
-      </li>
-      
-    </ul>
+  <div class="sidebar-primary-items__end sidebar-primary__section">
   </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fraw-notebooks/join-concepts/join-concepts.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
 </div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/raw-notebooks/join-concepts/join-concepts.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
 
 <button onclick="toggleFullScreen()"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="bottom"
-title="Fullscreen mode"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fas fa-expand"></i>
   </span>
 
 </button>
 
-<div class="menu-dropdown menu-dropdown-repository-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Source repositories">
-      <i class="fab fa-github"></i>
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="https://github.com/best-practice-and-impact/ons-spark"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Source repository"
->
-  
+`);
+</script>
 
-<span class="headerbtn__icon-container">
-  <i class="fab fa-github"></i>
-  </span>
-<span class="headerbtn__text-container">repository</span>
-</a>
-
-      </li>
-      
-      <li>
-        <a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fraw-notebooks/join-concepts/join-concepts.html&body=Your%20issue%20content%20here."
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Open an issue"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-lightbulb"></i>
-  </span>
-<span class="headerbtn__text-container">open issue</span>
-</a>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-
-<div class="menu-dropdown menu-dropdown-download-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Download this page">
-      <i class="fas fa-download"></i>
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="../../_sources/raw-notebooks/join-concepts/join-concepts.ipynb"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Download source file"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file"></i>
-  </span>
-<span class="headerbtn__text-container">.ipynb</span>
-</a>
-
-      </li>
-      
-      <li>
-        
-<button onclick="printPdf(this)"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="left"
-title="Print to PDF"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file-pdf"></i>
-  </span>
-<span class="headerbtn__text-container">.pdf</span>
-</button>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
-  </span>
-
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
 </label>
-
+</div></div>
+      
     </div>
+  
 </div>
-
-<!-- Table of contents -->
-<div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-join-algorithms-in-spark">
-   The Join Algorithms in Spark
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#shuffle-hash-join">
-   Shuffle Hash Join
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#sort-merge-join">
-   Sort Merge Join
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#sort-merge-join-example">
-     Sort Merge Join Example
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#understanding-sort-merge-join">
-     Understanding Sort Merge Join
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#broadcast-join">
-   Broadcast Join
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#example-using-a-broadcast-hint">
-     Example: Using a Broadcast Hint
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#replacing-a-join-with-a-narrow-transformation">
-   Replacing a join with a narrow transformation
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#example-narrow-transformations">
-     Example: Narrow Transformations
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#when-to-use-each-method">
-   When to use each method
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#salted-joins">
-   Salted Joins
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#further-resources">
-   Further Resources
-  </a>
- </li>
-</ul>
-
-    </nav>
 </div>
-    </div>
-    <div class="article row">
-        <div class="col pl-md-3 pl-lg-5 content-container">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Optimising Joins</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-join-algorithms-in-spark">
-   The Join Algorithms in Spark
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#shuffle-hash-join">
-   Shuffle Hash Join
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#sort-merge-join">
-   Sort Merge Join
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#sort-merge-join-example">
-     Sort Merge Join Example
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#understanding-sort-merge-join">
-     Understanding Sort Merge Join
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#broadcast-join">
-   Broadcast Join
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#example-using-a-broadcast-hint">
-     Example: Using a Broadcast Hint
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#replacing-a-join-with-a-narrow-transformation">
-   Replacing a join with a narrow transformation
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#example-narrow-transformations">
-     Example: Narrow Transformations
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#when-to-use-each-method">
-   When to use each method
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#salted-joins">
-   Salted Joins
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#further-resources">
-   Further Resources
-  </a>
- </li>
-</ul>
+              
+              
 
-                        </nav>
-                    </div>
-                </div>
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Optimising Joins</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
             </div>
-            <main id="main-content" role="main">
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-join-algorithms-in-spark">The Join Algorithms in Spark</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#shuffle-hash-join">Shuffle Hash Join</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sort-merge-join">Sort Merge Join</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sort-merge-join-example">Sort Merge Join Example</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-sort-merge-join">Understanding Sort Merge Join</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#broadcast-join">Broadcast Join</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-using-a-broadcast-hint">Example: Using a Broadcast Hint</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#replacing-a-join-with-a-narrow-transformation">Replacing a join with a narrow transformation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-narrow-transformations">Example: Narrow Transformations</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#when-to-use-each-method">When to use each method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#salted-joins">Salted Joins</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further Resources</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
                 
-              <div>
-                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
   <section id="optimising-joins">
-<h1>Optimising Joins<a class="headerlink" href="#optimising-joins" title="Permalink to this headline">#</a></h1>
+<h1>Optimising Joins<a class="headerlink" href="#optimising-joins" title="Permalink to this heading">#</a></h1>
 <p>Joining DataFrames is a common and often essential operation in Spark. However, joins are one of the more expensive operations in terms of processing time. This is because by default both source DataFrames are first sorted, which is a <em>wide transformation</em>, causing a <em>shuffle</em> (or <em>exchange</em>). As such, it is worth paying extra attention to where joins occur in the code and trying to figure out which method to use to make them more efficient.</p>
 <p>This article describes the different join algorithms in Spark, explains how they work, when to use them, and shows examples of each. It also covers replacing joins entirely with narrow transformations, and gives a brief overview of <span class="xref myst"><em>salted joins</em></span>, that can be used when the data are skewed.</p>
 <p>Before reading this article ensure that you understand how to join two DataFrames in Spark. Knowledge of <span class="xref myst">shuffles</span> and the difference between wide and narrow transformations will also help understanding of why some methods are faster than others, although not mandatory. Useful resources on this include the <a class="reference external" href="https://databricks.com/glossary/what-are-transformations">DataBricks Transformations definition</a>, and the <span class="xref myst">Spark Application and UI</span>, <span class="xref myst">Shuffling</span> and <span class="xref myst">Partitions</span> articles in this book.</p>
 <p>It is important to note that in this notebook when we talk about different joins and the way they are processed we are not talking about left, right, inner or outer joins, but how it is processed on the cluster. The result of the join will always be the same, regardless of which of the algorithms described in this article is used.</p>
 <section id="the-join-algorithms-in-spark">
-<h2>The Join Algorithms in Spark<a class="headerlink" href="#the-join-algorithms-in-spark" title="Permalink to this headline">#</a></h2>
+<h2>The Join Algorithms in Spark<a class="headerlink" href="#the-join-algorithms-in-spark" title="Permalink to this heading">#</a></h2>
 <p>You do not need to know how joins work when writing Spark code, but you can make them more efficient by understanding that there are different ways for them to be processed and coding appropriately. These are:</p>
 <ul class="simple">
 <li><p>Shuffle Hash Join</p></li>
@@ -790,13 +466,13 @@ title="Print to PDF"
 <p>We will look at each in more detail, get a better idea of how they are processed by looking at the Spark UI. We will then compare them and give the advantages and disadvantages of using each.</p>
 </section>
 <section id="shuffle-hash-join">
-<h2>Shuffle Hash Join<a class="headerlink" href="#shuffle-hash-join" title="Permalink to this headline">#</a></h2>
+<h2>Shuffle Hash Join<a class="headerlink" href="#shuffle-hash-join" title="Permalink to this heading">#</a></h2>
 <p>In the development of Spark, the shuffle hash join was the original join implementation.</p>
 <p>This consists of two stages: <em>shuffle</em> and <em>hash</em>. First a <em>shuffle</em>, where data with the same keys from both DataFrames are moved to the same executors. Once all the data are on the relevant executors, they are joined using the hash join algorithm. This involves building a hash table in memory and may fail for some larger joins.</p>
 <p>Shuffle hash joins will not be explored further as they have been superseded by sort merge join, which is similar apart from the processing stage.</p>
 </section>
 <section id="sort-merge-join">
-<h2>Sort Merge Join<a class="headerlink" href="#sort-merge-join" title="Permalink to this headline">#</a></h2>
+<h2>Sort Merge Join<a class="headerlink" href="#sort-merge-join" title="Permalink to this heading">#</a></h2>
 <p>This is now the default method of joining two DataFrames in Spark.</p>
 <p>It consists of two key stages, as suggested by the name: <em>sort</em> and <em>merge</em>.</p>
 <p>First of all, the data in each DataFrame will be sorted. A sort operation requires a shuffle on each DataFrame. This will also ensure that all the same key values are on the same partition. This also means that the join can be done in parallel on each partition, although it can potentially be a problem if your data are skewed (in which case a <em>salted join</em> may be useful).</p>
@@ -810,7 +486,7 @@ title="Print to PDF"
 </figure>
 <p>Both sort merge joins and shuffle hash joins use a shuffle; the difference is in the processing stage, where the former uses a searching algorithm and the latter uses a hash table.</p>
 <section id="sort-merge-join-example">
-<h3>Sort Merge Join Example<a class="headerlink" href="#sort-merge-join-example" title="Permalink to this headline">#</a></h3>
+<h3>Sort Merge Join Example<a class="headerlink" href="#sort-merge-join-example" title="Permalink to this heading">#</a></h3>
 <p>Let us see an example of a sort merge join and then look at the plan and the Spark UI. The example uses the Animal Rescue (as CSV) and Population (as parquet) datasets, left joining on the <code class="docutils literal notranslate"><span class="pre">postcode_district</span></code>. Note that we are disabling automatic broadcast joins by setting <code class="docutils literal notranslate"><span class="pre">spark.sql.autoBroadcastJoinThreshold</span></code> to <code class="docutils literal notranslate"><span class="pre">-1</span></code>; broadcast joins are covered in the next section. First, start a Spark session, read the data and select and rename the relevant columns:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -844,25 +520,25 @@ title="Print to PDF"
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
 <span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
 
-<span class="n">joins_config</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">()</span>
+<span class="n">joins_config</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">()</span>
 <span class="c1"># Disable broadcast join by default</span>
-<span class="n">joins_config</span><span class="o">$</span><span class="n">spark.sql.autoBroadcastJoinThreshold</span> <span class="o">&lt;-</span> <span class="m">-1</span>
+<span class="n">joins_config</span><span class="o">$</span><span class="n">spark.sql.autoBroadcastJoinThreshold</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">-1</span>
 
-<span class="n">sc</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
-    <span class="n">master</span> <span class="o">=</span> <span class="s">&quot;local[2]&quot;</span><span class="p">,</span>
-    <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;joins&quot;</span><span class="p">,</span>
-    <span class="n">config</span> <span class="o">=</span> <span class="n">joins_config</span><span class="p">)</span>
+<span class="n">sc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
+<span class="w">    </span><span class="n">master</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;local[2]&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">app_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;joins&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">joins_config</span><span class="p">)</span>
 
-<span class="n">config</span> <span class="o">&lt;-</span> <span class="n">yaml</span><span class="o">::</span><span class="nf">yaml.load_file</span><span class="p">(</span><span class="s">&quot;ons-spark/config.yaml&quot;</span><span class="p">)</span>
+<span class="n">config</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">yaml</span><span class="o">::</span><span class="nf">yaml.load_file</span><span class="p">(</span><span class="s">&quot;ons-spark/config.yaml&quot;</span><span class="p">)</span>
 
-<span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_csv</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">config</span><span class="o">$</span><span class="n">rescue_path_csv</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">incident_number</span> <span class="o">=</span> <span class="n">IncidentNumber</span><span class="p">,</span>
-                     <span class="n">cal_year</span><span class="o">=</span> <span class="n">CalYear</span><span class="p">,</span>
-                     <span class="n">animal_group</span> <span class="o">=</span> <span class="n">AnimalGroupParent</span><span class="p">,</span>
-                     <span class="n">postcode_district</span> <span class="o">=</span> <span class="n">PostcodeDistrict</span><span class="p">)</span>
+<span class="n">rescue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_csv</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">rescue_path_csv</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">inferSchema</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">incident_number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">IncidentNumber</span><span class="p">,</span>
+<span class="w">                     </span><span class="n">cal_year</span><span class="o">=</span><span class="w"> </span><span class="n">CalYear</span><span class="p">,</span>
+<span class="w">                     </span><span class="n">animal_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AnimalGroupParent</span><span class="p">,</span>
+<span class="w">                     </span><span class="n">postcode_district</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PostcodeDistrict</span><span class="p">)</span>
 
 
-<span class="n">population</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_parquet</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">config</span><span class="o">$</span><span class="n">population_path</span><span class="p">)</span>            
+<span class="n">population</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_parquet</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">population_path</span><span class="p">)</span><span class="w">            </span>
 </pre></div>
 </div>
 <p>Preview both DataFrames; we can see the desired join column, <code class="docutils literal notranslate"><span class="pre">postcode_district</span></code>, is present and contains data in a standard postcode format:</p>
@@ -899,15 +575,15 @@ only showing top 5 rows
 </div>
 </div>
 </div>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">%&gt;%</span>
-    <span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
-    <span class="nf">print</span><span class="p">()</span>
-    
-<span class="n">population</span> <span class="o">%&gt;%</span>
-    <span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
-    <span class="nf">print</span><span class="p">()</span>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">()</span>
+<span class="w">    </span>
+<span class="n">population</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>We can now join these on <code class="docutils literal notranslate"><span class="pre">PostcodeDistrict</span></code>, using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.join.html"><code class="docutils literal notranslate"><span class="pre">.join()</span></code></a> with <code class="docutils literal notranslate"><span class="pre">how=&quot;left&quot;</span></code> in PySpark or <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/join.tbl_spark.html"><code class="docutils literal notranslate"><span class="pre">left_join()</span></code></a> in sparklyr, then preview:</p>
@@ -939,13 +615,13 @@ only showing top 5 rows
 </div>
 </div>
 </div>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_pop</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">left_join</span><span class="p">(</span><span class="n">population</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s">&quot;postcode_district&quot;</span><span class="p">)</span>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_pop</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">left_join</span><span class="p">(</span><span class="n">population</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="o">=</span><span class="s">&quot;postcode_district&quot;</span><span class="p">)</span>
 
-<span class="n">rescue_with_pop</span> <span class="o">%&gt;%</span>
-    <span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
-    <span class="nf">print</span><span class="p">()</span>
+<span class="n">rescue_with_pop</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Note that the order of the DataFrame has not been preserved and that this preview has only given us rows with idential <code class="docutils literal notranslate"><span class="pre">PostcodeDistrict</span></code> values. This is due to two Spark concepts: lazy evaluation and the sort merge join algorithm. As the action only requires five rows to be returned, Spark can get all these from the first partition rather than having to return data from multiple partitions, ensuring that the job is completed faster. The sort merge join algorithm has sorted the DataFrame by the hashed join key, and put all these values in the first partition, and so these are the values that are returned. See the article on <span class="xref myst">partitions</span> for more information.</p>
@@ -973,7 +649,7 @@ only showing top 5 rows
 </div>
 </div>
 </div>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_pop</span> <span class="o">%&gt;%</span> <span class="n">dplyr</span><span class="o">::</span><span class="nf">explain</span><span class="p">()</span>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_pop</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">explain</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Spark plans can be tricky to read if you are not familiar with them but we can see some key terms being used:</p>
@@ -994,13 +670,13 @@ only showing top 5 rows
 <p>This diagram has the same information as the <code class="docutils literal notranslate"><span class="pre">explain()</span></code>, just presented in a much nicer way. Again, we can see that there is an <strong>Exchange</strong> for each DataFrame, before the <strong>SortMergeJoin</strong>, and a <strong>Filter</strong> when reading the parquet.</p>
 </section>
 <section id="understanding-sort-merge-join">
-<h3>Understanding Sort Merge Join<a class="headerlink" href="#understanding-sort-merge-join" title="Permalink to this headline">#</a></h3>
+<h3>Understanding Sort Merge Join<a class="headerlink" href="#understanding-sort-merge-join" title="Permalink to this heading">#</a></h3>
 <p>The sort merge join involves two <strong>Exchanges</strong> (also called <em>shuffles</em>), one for the sorting of each source DataFrame (see the Shuffles article for a full discussion of this topic). Spark is most powerful when it can process data in parallel (<em>narrow transformations</em>), and sorting is instead a <em>wide transformation</em>, causing a <em>shuffle</em>, meaning that a sort merge join can take significant time to process, depending on the size and composition of your data. There is a full discussion in the when to use each join method section.</p>
 <p>The sort merge join is the <em>default</em> join although not always chosen automatically; the next section on <em>broadcast joins</em> explains this further.</p>
 </section>
 </section>
 <section id="broadcast-join">
-<h2>Broadcast Join<a class="headerlink" href="#broadcast-join" title="Permalink to this headline">#</a></h2>
+<h2>Broadcast Join<a class="headerlink" href="#broadcast-join" title="Permalink to this heading">#</a></h2>
 <p>The other common method is the broadcast join. This can be used when you are joining a small DataFrame to a large one. The smaller DataFrame is copied to every node on the cluster and then a traditional hash join is performed. This avoids the need for the sorting step that exists in the sort merge join, and therefore the expensive shuffles.</p>
 <p>Broadcast joins are suitable when you are joining a small DataFrame to a larger one. As one DataFrame is pushed to several places, this may actually be too slow or impossible if you are joining two large DataFrames.</p>
 <p>The diagram below shows how a broadcast join works visually:</p>
@@ -1011,12 +687,12 @@ only showing top 5 rows
 </figcaption>
 </figure>
 <p>There are two ways to trigger a broadcast join:</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>Use the broadcast hint: <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.broadcast.html"><code class="docutils literal notranslate"><span class="pre">F.broadcast()</span></code></a> in PySpark or <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_broadcast.html"><code class="docutils literal notranslate"><span class="pre">sdf_broadcast()</span></code></a> in sparklyr</p></li>
 <li><p>Spark will use a broadcast join by default if the size of the DataFrame to be broadcast is known and smaller 10MB; this value can be changed with the <a class="reference external" href="https://spark.apache.org/docs/latest/sql-performance-tuning.html"><code class="docutils literal notranslate"><span class="pre">spark.sql.autoBroadcastJoinThreshold</span></code></a> configuration setting.</p></li>
 </ol>
 <section id="example-using-a-broadcast-hint">
-<h3>Example: Using a Broadcast Hint<a class="headerlink" href="#example-using-a-broadcast-hint" title="Permalink to this headline">#</a></h3>
+<h3>Example: Using a Broadcast Hint<a class="headerlink" href="#example-using-a-broadcast-hint" title="Permalink to this heading">#</a></h3>
 <p>We can use the same source DataFrames as the sort merge join example, <code class="docutils literal notranslate"><span class="pre">rescue</span></code> and <code class="docutils literal notranslate"><span class="pre">population</span></code>. To perform a broadcast join, we just add the broadcast join hint <code class="docutils literal notranslate"><span class="pre">F.broadcast()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_broadcast()</span></code> around <code class="docutils literal notranslate"><span class="pre">population</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1046,13 +722,13 @@ only showing top 5 rows
 </div>
 </div>
 </div>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_pop_broadcast</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">left_join</span><span class="p">(</span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_broadcast</span><span class="p">(</span><span class="n">population</span><span class="p">),</span> <span class="n">by</span><span class="o">=</span><span class="s">&quot;postcode_district&quot;</span><span class="p">)</span>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_pop_broadcast</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">left_join</span><span class="p">(</span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_broadcast</span><span class="p">(</span><span class="n">population</span><span class="p">),</span><span class="w"> </span><span class="n">by</span><span class="o">=</span><span class="s">&quot;postcode_district&quot;</span><span class="p">)</span>
 
-<span class="n">rescue_with_pop_broadcast</span> <span class="o">%&gt;%</span>
-    <span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
-    <span class="nf">print</span><span class="p">()</span>
+<span class="n">rescue_with_pop_broadcast</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Unlike the first example, the <code class="docutils literal notranslate"><span class="pre">postcode_district</span></code> values are not identical. The DataFrame has not needed to be shuffled and so the same <code class="docutils literal notranslate"><span class="pre">PostcodeDistrict</span></code> values may be on different partitions.</p>
@@ -1077,7 +753,7 @@ only showing top 5 rows
 </div>
 </div>
 </div>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_pop_broadcast</span> <span class="o">%&gt;%</span> <span class="n">dplyr</span><span class="o">::</span><span class="nf">explain</span><span class="p">()</span>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_pop_broadcast</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">explain</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>We can see that we are now using a <strong>BroadcastHashJoin</strong>. Let us look at the UI again:</p>
@@ -1097,14 +773,14 @@ only showing top 5 rows
 </div>
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_disconnect</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
 
-<span class="n">joins_config</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">()</span>
+<span class="n">joins_config</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">()</span>
 <span class="c1"># Automatically broadcast DataFrames less than 10MB</span>
-<span class="n">joins_config</span><span class="o">$</span><span class="n">spark.sql.autoBroadcastJoinThreshold</span> <span class="o">&lt;-</span> <span class="m">10</span> <span class="o">*</span> <span class="m">1024</span><span class="o">**</span><span class="m">2</span>
+<span class="n">joins_config</span><span class="o">$</span><span class="n">spark.sql.autoBroadcastJoinThreshold</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">1024</span><span class="o">**</span><span class="m">2</span>
 
-<span class="n">sc</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
-    <span class="n">master</span> <span class="o">=</span> <span class="s">&quot;local[2]&quot;</span><span class="p">,</span>
-    <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;joins&quot;</span><span class="p">,</span>
-    <span class="n">config</span> <span class="o">=</span> <span class="n">joins_config</span><span class="p">)</span>
+<span class="n">sc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
+<span class="w">    </span><span class="n">master</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;local[2]&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">app_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;joins&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">joins_config</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>As this is a new Spark session our old DataFrames no longer exist, so we need to create them again:</p>
@@ -1122,14 +798,14 @@ only showing top 5 rows
 </div>
 </div>
 </div>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_csv</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">config</span><span class="o">$</span><span class="n">rescue_path_csv</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">incident_number</span> <span class="o">=</span> <span class="n">IncidentNumber</span><span class="p">,</span>
-                     <span class="n">cal_year</span><span class="o">=</span> <span class="n">CalYear</span><span class="p">,</span>
-                     <span class="n">animal_group</span> <span class="o">=</span> <span class="n">AnimalGroupParent</span><span class="p">,</span>
-                     <span class="n">postcode_district</span> <span class="o">=</span> <span class="n">PostcodeDistrict</span><span class="p">,</span>
-                     <span class="n">origin_of_call</span> <span class="o">=</span> <span class="n">OriginofCall</span><span class="p">)</span>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_csv</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">rescue_path_csv</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">inferSchema</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">incident_number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">IncidentNumber</span><span class="p">,</span>
+<span class="w">                     </span><span class="n">cal_year</span><span class="o">=</span><span class="w"> </span><span class="n">CalYear</span><span class="p">,</span>
+<span class="w">                     </span><span class="n">animal_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AnimalGroupParent</span><span class="p">,</span>
+<span class="w">                     </span><span class="n">postcode_district</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PostcodeDistrict</span><span class="p">,</span>
+<span class="w">                     </span><span class="n">origin_of_call</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">OriginofCall</span><span class="p">)</span>
 
-<span class="n">population</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_parquet</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">config</span><span class="o">$</span><span class="n">population_path</span><span class="p">)</span>
+<span class="n">population</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_parquet</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">population_path</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Now try the join. Note that this is identical code to in the sort merge join example, but it will be automatically broadcast as the second DataFrame is below 10MB.</p>
@@ -1161,13 +837,13 @@ only showing top 5 rows
 </div>
 </div>
 </div>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_pop_auto_broadcast</span><span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">left_join</span><span class="p">(</span><span class="n">population</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s">&quot;postcode_district&quot;</span><span class="p">)</span>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_pop_auto_broadcast</span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">left_join</span><span class="p">(</span><span class="n">population</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="o">=</span><span class="s">&quot;postcode_district&quot;</span><span class="p">)</span>
 
-<span class="n">rescue_with_pop_auto_broadcast</span> <span class="o">%&gt;%</span>
-    <span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
-    <span class="nf">print</span><span class="p">()</span>
+<span class="n">rescue_with_pop_auto_broadcast</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>This can be confirmed with <code class="docutils literal notranslate"><span class="pre">explain()</span></code>:</p>
@@ -1191,7 +867,7 @@ only showing top 5 rows
 </div>
 </div>
 </div>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_pop_auto_broadcast</span> <span class="o">%&gt;%</span> <span class="n">dplyr</span><span class="o">::</span><span class="nf">explain</span><span class="p">()</span>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_pop_auto_broadcast</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">explain</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Both ways of broadcasting give the same result. You can leave it to Spark to decide, or if you want more control over how you DataFrames are joined, turn off automatic broadcasting by setting <code class="docutils literal notranslate"><span class="pre">spark.sql.autoBroadcastJoinThreshold</span></code> to <code class="docutils literal notranslate"><span class="pre">-1</span></code>.</p>
@@ -1199,7 +875,7 @@ only showing top 5 rows
 </section>
 </section>
 <section id="replacing-a-join-with-a-narrow-transformation">
-<h2>Replacing a join with a narrow transformation<a class="headerlink" href="#replacing-a-join-with-a-narrow-transformation" title="Permalink to this headline">#</a></h2>
+<h2>Replacing a join with a narrow transformation<a class="headerlink" href="#replacing-a-join-with-a-narrow-transformation" title="Permalink to this heading">#</a></h2>
 <p>If your second DataFrame is tiny, you could potentially even not do a join at all, and replace it with a series of <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.when.html"><code class="docutils literal notranslate"><span class="pre">F.when()</span></code></a> statements in PySpark or <a class="reference external" href="https://dplyr.tidyverse.org/reference/case_when.html"><code class="docutils literal notranslate"><span class="pre">case_when()</span></code></a> in sparklyr. These will be processed as a <em>narrow transformation</em> in parallel rather than a <em>wide transformation</em>, meaning that it should be quicker than joining using the usual methods.</p>
 <p>The following diagram from the  shows how this works visually; the <code class="docutils literal notranslate"><span class="pre">F.when()</span></code>/<code class="docutils literal notranslate"><span class="pre">case_when()</span></code> method is a narrow <em>narrow transformation</em> is within the same stage, rather than a <em>wide transformation</em> between stages:</p>
 <figure class="align-default" id="sparkapplication">
@@ -1209,7 +885,7 @@ only showing top 5 rows
 </figcaption>
 </figure>
 <section id="example-narrow-transformations">
-<h3>Example: Narrow Transformations<a class="headerlink" href="#example-narrow-transformations" title="Permalink to this headline">#</a></h3>
+<h3>Example: Narrow Transformations<a class="headerlink" href="#example-narrow-transformations" title="Permalink to this heading">#</a></h3>
 <p>The rescue data has a column, <code class="docutils literal notranslate"><span class="pre">origin_of_call</span></code>, which contains information about who reported the incident.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1234,11 +910,11 @@ only showing top 5 rows
 </div>
 </div>
 </div>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">%&gt;%</span> 
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">origin_of_call</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_distinct</span><span class="p">()</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
-    <span class="nf">print</span><span class="p">()</span>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">origin_of_call</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_distinct</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Let us categorise these into <code class="docutils literal notranslate"><span class="pre">Emergency</span> <span class="pre">Services</span></code> and <code class="docutils literal notranslate"><span class="pre">Member</span> <span class="pre">of</span> <span class="pre">Public</span></code>; there is also a <code class="docutils literal notranslate"><span class="pre">Not</span> <span class="pre">known</span></code> value which can be mapped to <code class="docutils literal notranslate"><span class="pre">null</span></code>:</p>
@@ -1276,17 +952,17 @@ only showing top 5 rows
 </div>
 </div>
 </div>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">call_origin</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_copy_to</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="nf">data.frame</span><span class="p">(</span>
-    <span class="s">&quot;origin_of_call&quot;</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;Coastguard&quot;</span><span class="p">,</span> <span class="s">&quot;Police&quot;</span><span class="p">,</span> <span class="s">&quot;Ambulance&quot;</span><span class="p">,</span> <span class="s">&quot;Other FRS&quot;</span><span class="p">,</span>
-                         <span class="s">&quot;Person (mobile)&quot;</span><span class="p">,</span> <span class="s">&quot;Person (land line)&quot;</span><span class="p">,</span> <span class="s">&quot;Person (running call)&quot;</span><span class="p">,</span>
-                         <span class="s">&quot;Not known&quot;</span><span class="p">),</span>
-    <span class="s">&quot;origin_type&quot;</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="nf">rep</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;Emergency Services&quot;</span><span class="p">),</span> <span class="m">4</span><span class="p">),</span>
-                      <span class="nf">rep</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;Member of Public&quot;</span><span class="p">),</span> <span class="m">3</span><span class="p">),</span>
-                      <span class="kc">NA</span><span class="p">)))</span>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">call_origin</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_copy_to</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;origin_of_call&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;Coastguard&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Police&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Ambulance&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Other FRS&quot;</span><span class="p">,</span>
+<span class="w">                         </span><span class="s">&quot;Person (mobile)&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Person (land line)&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Person (running call)&quot;</span><span class="p">,</span>
+<span class="w">                         </span><span class="s">&quot;Not known&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="s">&quot;origin_type&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="nf">rep</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;Emergency Services&quot;</span><span class="p">),</span><span class="w"> </span><span class="m">4</span><span class="p">),</span>
+<span class="w">                      </span><span class="nf">rep</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;Member of Public&quot;</span><span class="p">),</span><span class="w"> </span><span class="m">3</span><span class="p">),</span>
+<span class="w">                      </span><span class="kc">NA</span><span class="p">)))</span>
 
-<span class="n">call_origin</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
-    <span class="nf">print</span><span class="p">()</span>
+<span class="n">call_origin</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>We can do a left join, as we have done previously. As the DataFrame is small, we will ensure it is broadcast with the broadcast hint:</p>
@@ -1313,14 +989,14 @@ only showing top 5 rows
 </div>
 </div>
 </div>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_origin</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">left_join</span><span class="p">(</span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_broadcast</span><span class="p">(</span><span class="n">call_origin</span><span class="p">),</span> <span class="n">by</span><span class="o">=</span><span class="s">&quot;origin_of_call&quot;</span><span class="p">)</span>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_origin</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">left_join</span><span class="p">(</span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_broadcast</span><span class="p">(</span><span class="n">call_origin</span><span class="p">),</span><span class="w"> </span><span class="n">by</span><span class="o">=</span><span class="s">&quot;origin_of_call&quot;</span><span class="p">)</span>
 
-<span class="n">rescue_with_origin</span> <span class="o">%&gt;%</span>
-    <span class="n">dplyr</span><span class="o">::</span><span class="nf">arrange</span><span class="p">(</span><span class="n">incident_number</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
-    <span class="nf">print</span><span class="p">()</span>
+<span class="n">rescue_with_origin</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">arrange</span><span class="p">(</span><span class="n">incident_number</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>An alternative to a join here is using chained <code class="docutils literal notranslate"><span class="pre">F.when()</span></code> statements in PySpark or <code class="docutils literal notranslate"><span class="pre">case_when</span></code> inside <code class="docutils literal notranslate"><span class="pre">mutate</span></code> in sparklyr.</p>
@@ -1356,18 +1032,18 @@ only showing top 5 rows
 </div>
 </div>
 </div>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_origin_when</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">origin_type</span> <span class="o">=</span> <span class="nf">case_when</span><span class="p">(</span>
-        <span class="nf">substr</span><span class="p">(</span><span class="n">origin_of_call</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">6</span><span class="p">)</span> <span class="o">==</span> <span class="s">&quot;Person&quot;</span> <span class="o">~</span> <span class="s">&quot;Member of Public&quot;</span><span class="p">,</span>
-        <span class="n">origin_of_call</span> <span class="o">%in%</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;Coastguard&quot;</span><span class="p">,</span> <span class="s">&quot;Police&quot;</span><span class="p">,</span> <span class="s">&quot;Ambulance&quot;</span><span class="p">,</span> <span class="s">&quot;Other FRS&quot;</span><span class="p">)</span> <span class="o">~</span> <span class="s">&quot;Emergency Services&quot;</span><span class="p">,</span>
-        <span class="n">origin_of_call</span> <span class="o">==</span> <span class="s">&quot;Not known&quot;</span> <span class="o">~</span> <span class="kc">NA</span><span class="p">,</span>
-        <span class="kc">TRUE</span> <span class="o">~</span> <span class="kc">NA</span><span class="p">))</span>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_origin_when</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">origin_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">case_when</span><span class="p">(</span>
+<span class="w">        </span><span class="nf">substr</span><span class="p">(</span><span class="n">origin_of_call</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">6</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;Person&quot;</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s">&quot;Member of Public&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">origin_of_call</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;Coastguard&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Police&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Ambulance&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Other FRS&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s">&quot;Emergency Services&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">origin_of_call</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;Not known&quot;</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span>
+<span class="w">        </span><span class="kc">TRUE</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="kc">NA</span><span class="p">))</span>
 
-<span class="n">rescue_with_origin_when</span> <span class="o">%&gt;%</span>
-    <span class="n">dplyr</span><span class="o">::</span><span class="nf">arrange</span><span class="p">(</span><span class="n">incident_number</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
-    <span class="nf">print</span><span class="p">()</span>
+<span class="n">rescue_with_origin_when</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">arrange</span><span class="p">(</span><span class="n">incident_number</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">()</span>
 </pre></div>
 </div>
 <div class="cell docutils container">
@@ -1384,7 +1060,7 @@ only showing top 5 rows
 </div>
 </div>
 </div>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_origin_when</span> <span class="o">%&gt;%</span> <span class="n">dplyr</span><span class="o">::</span><span class="nf">explain</span><span class="p">()</span>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_origin_when</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">explain</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>The plan here confirms that no join is taking place; instead, the conditional statements are interpreted as an SQL style <code class="docutils literal notranslate"><span class="pre">CASE</span> <span class="pre">WHEN</span></code> statement. There are only narrow transformations, meaning that the data can stay within the partitions and no shuffle is needed and therefore should be more efficient than a join.</p>
@@ -1401,7 +1077,7 @@ only showing top 5 rows
 </section>
 </section>
 <section id="when-to-use-each-method">
-<h2>When to use each method<a class="headerlink" href="#when-to-use-each-method" title="Permalink to this headline">#</a></h2>
+<h2>When to use each method<a class="headerlink" href="#when-to-use-each-method" title="Permalink to this heading">#</a></h2>
 <p>We have seen examples of three ways of joining data:</p>
 <ul class="simple">
 <li><p>Sort Merge Join</p></li>
@@ -1418,11 +1094,11 @@ only showing top 5 rows
 <p>The analysis above assumes that the join keys in the DataFrames are roughly equally partitioned. If your DataFrame is skewed so that some partitions contain significantly more data than others, then the efficiency of the join could be affected. See the article on <span class="xref myst">partitions</span> for more detail. The solution here is to use a <em>salted join</em>.</p>
 </section>
 <section id="salted-joins">
-<h2>Salted Joins<a class="headerlink" href="#salted-joins" title="Permalink to this headline">#</a></h2>
+<h2>Salted Joins<a class="headerlink" href="#salted-joins" title="Permalink to this heading">#</a></h2>
 <p>A sort merge join will move all the data with the same join keys to the same partition, which can lead to skew in the DataFrame and cause the join to process inefficiently, or not at all in some cases. This can be resolved with a <em>salted join</em>: splitting the join keys, so that the DataFrame is distributed into more equal partition sizes. See the article on <span class="xref myst">salted joins</span> for more information.</p>
 </section>
 <section id="further-resources">
-<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">#</a></h2>
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this heading">#</a></h2>
 <p>Spark at the ONS Articles:</p>
 <ul class="simple">
 <li><p><span class="xref myst">Salted Joins</span></p></li>
@@ -1476,43 +1152,105 @@ only showing top 5 rows
             mode: "python"
         },
         kernelOptions: {
-            kernelName: "python3",
-            path: "./raw-notebooks\join-concepts"
+            name: "python3",
+            path: "./raw-notebooks/join-concepts"
         },
         predefinedOutput: true
     }
     </script>
     <script>kernelName = 'python3'</script>
 
-              </div>
+                </article>
               
-            </main>
-            <footer class="footer-article noprint">
-                
-    <!-- Previous / next buttons -->
-<div class='prev-next-area'>
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
 </div>
-            </footer>
-        </div>
-    </div>
-    <div class="footer-content row">
-        <footer class="col footer"><p>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-join-algorithms-in-spark">The Join Algorithms in Spark</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#shuffle-hash-join">Shuffle Hash Join</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sort-merge-join">Sort Merge Join</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sort-merge-join-example">Sort Merge Join Example</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-sort-merge-join">Understanding Sort Merge Join</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#broadcast-join">Broadcast Join</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-using-a-broadcast-hint">Example: Using a Broadcast Hint</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#replacing-a-join-with-a-narrow-transformation">Replacing a join with a narrow transformation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-narrow-transformations">Example: Narrow Transformations</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#when-to-use-each-method">When to use each method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#salted-joins">Salted Joins</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further Resources</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
   
-    By Wil Roberts & Adrian Prince<br/>
-  
-</p>
-        </footer>
-    </div>
+  <div class="footer-item">
     
+<p class="component-author">
+By Wil Roberts & Adrian Prince
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
 </div>
+          </footer>
+        
 
-
-      </div>
+      </main>
     </div>
+  </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <script src="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
 
-
+  <footer class="bd-footer">
+  </footer>
   </body>
 </html>

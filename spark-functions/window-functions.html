@@ -1,121 +1,163 @@
 
+
 <!DOCTYPE html>
 
-<html lang="en">
+
+<html lang="en" >
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Window Functions in Spark &#8212; Spark at the ONS</title>
-    
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
-    
-  <link rel="stylesheet"
-    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../_static/accessibility.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
-    
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
     <script src="../_static/tabs.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../_static/design-tabs.js"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-95MGHSRD0S');
+            </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'spark-functions/window-functions';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Cross Joins" href="cross-joins.html" />
     <link rel="prev" title="Rounding differences in Python, R and Spark" href="rounding.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en">
-    
-
-    <!-- Google Analytics -->
-    
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
-<script>
-                    window.dataLayer = window.dataLayer || [];
-                    function gtag(){ dataLayer.push(arguments); }
-                    gtag('js', new Date());
-                    gtag('config', 'G-95MGHSRD0S');
-                </script>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay overlay-navbar" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<!-- Checkboxes to toggle the in-page toc -->
-<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
-<label class="overlay overlay-pagetoc" for="__page-toc">
-    <div class="visually-hidden">Toggle in-page Table of Contents</div>
-</label>
-<!-- Headers at the top -->
-<div class="announcement header-item noprint"></div>
-<div class="header header-item noprint"></div>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
-    
-    <div class="container-fluid" id="banner"></div>
-
-    
-
-    <div class="container-xl">
-      <div class="row">
-          
-<!-- Sidebar -->
-<div class="bd-sidebar noprint" id="site-navigation">
-    <div class="bd-sidebar__content">
-        <div class="bd-sidebar__top"><div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="../index.html">
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
       
-        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+      <div class="bd-sidebar-primary bd-sidebar">
         
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+    
+    
       
-      
-      <img src="../_static/logo.png" class="logo" alt="logo">
-      
-      
-      <h1 class="site-logo" id="site-title">Spark at the ONS</h1>
-      
-    </a>
-</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item active">
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
             <li class="toctree-l1">
@@ -124,598 +166,289 @@ const thebe_selector_output = ".output, .cell_output"
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Spark overview
- </span>
-</p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark overview</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/spark-start.html">
-   Getting Started with Spark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/when-to-use-spark.html">
-   When To Use Spark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/spark-session-guidance.html">
-   Guidance on Spark Sessions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/example-spark-sessions.html">
-   Example Spark Sessions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/spark-defaults.html">
-   Configuration Hierarchy and
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     spark-defaults.conf
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/data-types.html">
-   Data Types in Spark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/creating-dataframes.html">
-   Creating DataFrames Manually
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/data-storage.html">
-   Data Storage
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-start.html">Getting Started with Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/when-to-use-spark.html">When To Use Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-session-guidance.html">Guidance on Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/example-spark-sessions.html">Example Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-defaults.html">Configuration Hierarchy and <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/data-types.html">Data Types in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/creating-dataframes.html">Creating DataFrames Manually</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/data-storage.html">Data Storage</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Introduction to PySpark
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to PySpark</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../pyspark-intro/pyspark-intro.html">
-   Introduction to PySpark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../pyspark-intro/reading-data-pyspark.html">
-   Reading Data in PySpark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../pyspark-intro/returning-data.html">
-   Returning Data from Cluster to Driver
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../pyspark-intro/f-col.html">
-   Reference columns by name:
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     F.col()
-    </span>
-   </code>
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/pyspark-intro.html">Introduction to PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/reading-data-pyspark.html">Reading Data in PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/returning-data.html">Returning Data from Cluster to Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/f-col.html">Reference columns by name: <code class="docutils literal notranslate"><span class="pre">F.col()</span></code></a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Introduction to sparklyr
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to sparklyr</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../sparklyr-intro/sparklyr-intro.html">
-   Introduction to sparklyr
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../sparklyr-intro/reading-data-sparklyr.html">
-   Reading Data in sparklyr
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">
-   Using Spark functions in sparklyr
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/sparklyr-intro.html">Introduction to sparklyr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/reading-data-sparklyr.html">Reading Data in sparklyr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">Using Spark functions in sparklyr</a></li>
+
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Spark functions
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark functions</span></p>
 <ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="union-dataframes-with-different-columns.html">
-   Union two DataFrames with different columns
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="padding.html">
-   Add leading zeros with
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     lpad()
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="sampling.html">
-   Sampling:
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     .sample()
-    </span>
-   </code>
-   and
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     sdf_sample()
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="pivot-tables.html">
-   Pivot tables in Spark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="rounding.html">
-   Rounding differences in Python, R and Spark
-  </a>
- </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   Window Functions in Spark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="cross-joins.html">
-   Cross Joins
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="arrays.html">
-   Arrays Functions in PySpark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="writing-data.html">
-   Writing Data
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="job-description.html">
-   Set Spark Job Description
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="union-dataframes-with-different-columns.html">Union two DataFrames with different columns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="padding.html">Add leading zeros with <code class="docutils literal notranslate"><span class="pre">lpad()</span></code></a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="sampling.html">Sampling: <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="pivot-tables.html">Pivot tables in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rounding.html">Rounding differences in Python, R and Spark</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Window Functions in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cross-joins.html">Cross Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arrays.html">Arrays Functions in PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="writing-data.html">Writing Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="job-description.html">Set Spark Job Description</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Understanding and Optimising Spark
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Understanding and Optimising Spark</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/optimisation-tips.html">
-   Ideas for optimising Spark code
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/spark-application-and-ui.html">
-   Spark Application and UI
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/shuffling.html">
-   Shuffling
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/join-concepts.html">
-   Optimising Joins
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/salted-joins.html">
-   Salted Joins
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/partitions.html">
-   Managing Partitions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/persistence.html">
-   Persisting in Spark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/cache.html">
-   Caching
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html">
-   Checkpoint
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/garbage-collection.html">
-   Garbage Collection
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/df-order.html">
-   Spark DataFrames Are Not Ordered
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/exercises.html">
-   Exercises
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/optimisation-tips.html">Ideas for optimising Spark code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/spark-application-and-ui.html">Spark Application and UI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/shuffling.html">Shuffling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/join-concepts.html">Optimising Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/salted-joins.html">Salted Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/partitions.html">Managing Partitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/persistence.html">Persisting in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/cache.html">Caching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/garbage-collection.html">Garbage Collection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/df-order.html">Spark DataFrames Are Not Ordered</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/exercises.html">Exercises</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Testing and Debugging
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Testing and Debugging</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/spark-errors.html">
-   Understanding and Handling Spark Errors
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/unit-testing.html">
-   Unit Testing in Spark
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../testing-debugging/spark-errors.html">Understanding and Handling Spark Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing-debugging/unit-testing.html">Unit Testing in Spark</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Ancillary Topics
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Ancillary Topics</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../ancillary-topics/visualisation.html">
-   Spark and Visualisation
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../ancillary-topics/module-imports.html">
-   Naming Conflicts in Module Imports
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../ancillary-topics/pydoop.html">
-   Pydoop: HDFS to pandas
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/visualisation.html">Spark and Visualisation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/module-imports.html">Naming Conflicts in Module Imports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/pydoop.html">Pydoop: HDFS to pandas</a></li>
 </ul>
 
     </div>
 </nav></div>
-        <div class="bd-sidebar__bottom">
-             <!-- To handle the deprecated key -->
-            
-            <div class="navbar_extra_footer">
-            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-            </div>
-            
-        </div>
     </div>
-    <div id="rtd-footer-container"></div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fspark-functions/window-functions.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
 </div>
 
 
-          
-
-
-          
-<!-- A tiny helper pixel to detect if we've scrolled -->
-<div class="sbt-scroll-pixel-helper"></div>
-<!-- Main content -->
-<div class="col py-0 content-container">
-    
-    <div class="header-article row sticky-top noprint">
-        
 
 
 
-<div class="col py-1 d-flex header-article-main">
-    <div class="header-article__left">
-        
-        <label for="__navigation"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="right"
-title="Toggle navigation"
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/spark-functions/window-functions.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
-  <i class="fas fa-bars"></i>
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
   </span>
-
-</label>
-
-        
-    </div>
-    <div class="header-article__right">
-<button onclick="toggleFullScreen()"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="bottom"
-title="Fullscreen mode"
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
   <i class="fas fa-expand"></i>
   </span>
 
 </button>
 
-<div class="menu-dropdown menu-dropdown-repository-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Source repositories">
-      <i class="fab fa-github"></i>
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="https://github.com/best-practice-and-impact/ons-spark"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Source repository"
->
-  
+`);
+</script>
 
-<span class="headerbtn__icon-container">
-  <i class="fab fa-github"></i>
-  </span>
-<span class="headerbtn__text-container">repository</span>
-</a>
-
-      </li>
-      
-      <li>
-        <a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fspark-functions/window-functions.html&body=Your%20issue%20content%20here."
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Open an issue"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-lightbulb"></i>
-  </span>
-<span class="headerbtn__text-container">open issue</span>
-</a>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-
-<div class="menu-dropdown menu-dropdown-download-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Download this page">
-      <i class="fas fa-download"></i>
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="../_sources/spark-functions/window-functions.md"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Download source file"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file"></i>
-  </span>
-<span class="headerbtn__text-container">.md</span>
-</a>
-
-      </li>
-      
-      <li>
-        
-<button onclick="printPdf(this)"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="left"
-title="Print to PDF"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file-pdf"></i>
-  </span>
-<span class="headerbtn__text-container">.pdf</span>
-</button>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
-  </span>
-
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
 </label>
-
+</div></div>
+      
     </div>
+  
 </div>
-
-<!-- Table of contents -->
-<div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#window-functions-for-aggregations">
-   Window Functions for Aggregations
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#using-window-functions-for-ranking">
-   Using Window Functions for Ranking
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#comparison-of-ranking-methods">
-     Comparison of ranking methods
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#generating-unique-row-numbers">
-     Generating unique row numbers
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#reference-other-rows-with-lag-and-lead">
-   Reference other rows with
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     lag()
-    </span>
-   </code>
-   and
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     lead()
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#window-functions-in-sql">
-   Window Functions in SQL
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#further-resources">
-   Further Resources
-  </a>
- </li>
-</ul>
-
-    </nav>
 </div>
-    </div>
-    <div class="article row">
-        <div class="col pl-md-3 pl-lg-5 content-container">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Window Functions in Spark</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#window-functions-for-aggregations">
-   Window Functions for Aggregations
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#using-window-functions-for-ranking">
-   Using Window Functions for Ranking
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#comparison-of-ranking-methods">
-     Comparison of ranking methods
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#generating-unique-row-numbers">
-     Generating unique row numbers
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#reference-other-rows-with-lag-and-lead">
-   Reference other rows with
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     lag()
-    </span>
-   </code>
-   and
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     lead()
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#window-functions-in-sql">
-   Window Functions in SQL
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#further-resources">
-   Further Resources
-  </a>
- </li>
-</ul>
+              
+              
 
-                        </nav>
-                    </div>
-                </div>
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Window Functions in Spark</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
             </div>
-            <main id="main-content" role="main">
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#window-functions-for-aggregations">Window Functions for Aggregations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-window-functions-for-ranking">Using Window Functions for Ranking</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#comparison-of-ranking-methods">Comparison of ranking methods</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#generating-unique-row-numbers">Generating unique row numbers</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reference-other-rows-with-lag-and-lead">Reference other rows with <code class="docutils literal notranslate"><span class="pre">lag()</span></code> and <code class="docutils literal notranslate"><span class="pre">lead()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#window-functions-in-sql">Window Functions in SQL</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further Resources</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
                 
-              <div>
-                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
   <section id="window-functions-in-spark">
-<h1>Window Functions in Spark<a class="headerlink" href="#window-functions-in-spark" title="Permalink to this headline">#</a></h1>
+<h1>Window Functions in Spark<a class="headerlink" href="#window-functions-in-spark" title="Permalink to this heading">#</a></h1>
 <p>Window functions use values from other rows within the same group, or <em>window</em>, and return a value in a new column for every row. This can be in the form of aggregations (similar to a <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.groupBy.html"><code class="docutils literal notranslate"><span class="pre">.groupBy()</span></code></a>/<a class="reference external" href="https://dplyr.tidyverse.org/reference/group_by.html"><code class="docutils literal notranslate"><span class="pre">group_by()</span></code></a> but preserving the original DataFrame), ranking rows within groups, or returning values from previous rows. If you’re familiar with SQL then a window function in PySpark works in the same way.</p>
 <p>This article explains how to use window functions in three ways: for aggregation, ranking, and referencing the previous row. An SQL example is also given.</p>
 <section id="window-functions-for-aggregations">
-<h2>Window Functions for Aggregations<a class="headerlink" href="#window-functions-for-aggregations" title="Permalink to this headline">#</a></h2>
+<h2>Window Functions for Aggregations<a class="headerlink" href="#window-functions-for-aggregations" title="Permalink to this heading">#</a></h2>
 <p>You can use a window function for aggregations. Rather than returning an aggregated DataFrame, the result of the aggregation will be placed in a new column.</p>
 <p>One example of where this is useful is for deriving a total to be used as the denominator for another calculation. For instance, in the Animal Rescue data we may want to work out what percentage of animals rescued each year are dogs. We can do this by getting the total of all animals by year, then dividing each animal group count by this.</p>
 <p>First, import the relevant packages and start a Spark session. To use window functions in PySpark, we need to import <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Window.html"><code class="docutils literal notranslate"><span class="pre">Window</span></code></a> from <code class="docutils literal notranslate"><span class="pre">pyspark.sql.window</span></code>. No extra packages are needed for sparklyr, as Spark functions are referenced inside <a class="reference external" href="https://dplyr.tidyverse.org/reference/mutate.html"><code class="docutils literal notranslate"><span class="pre">mutate()</span></code></a>.</p>
@@ -737,12 +470,12 @@ title="Print to PDF"
 </div><div aria-labelledby="tab-0-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
 <span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
 
-<span class="n">sc</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
-    <span class="n">master</span> <span class="o">=</span> <span class="s">&quot;local[2]&quot;</span><span class="p">,</span>
-    <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;window-functions&quot;</span><span class="p">,</span>
-    <span class="n">config</span> <span class="o">=</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">())</span>
+<span class="n">sc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
+<span class="w">    </span><span class="n">master</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;local[2]&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">app_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;window-functions&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">())</span>
 
-<span class="n">config</span> <span class="o">&lt;-</span> <span class="n">yaml</span><span class="o">::</span><span class="nf">yaml.load_file</span><span class="p">(</span><span class="s">&quot;ons-spark/config.yaml&quot;</span><span class="p">)</span>
+<span class="n">config</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">yaml</span><span class="o">::</span><span class="nf">yaml.load_file</span><span class="p">(</span><span class="s">&quot;ons-spark/config.yaml&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></div>
@@ -757,16 +490,16 @@ title="Print to PDF"
 <span class="n">rescue_agg</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-1-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_agg</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_parquet</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">config</span><span class="o">$</span><span class="n">rescue_path</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">animal_group</span> <span class="o">=</span> <span class="nf">initcap</span><span class="p">(</span><span class="n">animal_group</span><span class="p">))</span> <span class="o">%&gt;%</span>
-    <span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">animal_group</span><span class="p">,</span> <span class="n">cal_year</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">dplyr</span><span class="o">::</span><span class="nf">summarise</span><span class="p">(</span><span class="n">animal_count</span> <span class="o">=</span> <span class="nf">n</span><span class="p">())</span> <span class="o">%&gt;%</span>
-    <span class="n">dplyr</span><span class="o">::</span><span class="nf">ungroup</span><span class="p">()</span>
-    
-<span class="n">rescue_agg</span> <span class="o">%&gt;%</span>
-    <span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
-    <span class="nf">print</span><span class="p">()</span>
+</div><div aria-labelledby="tab-1-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_agg</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_parquet</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">rescue_path</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">animal_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">initcap</span><span class="p">(</span><span class="n">animal_group</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">animal_group</span><span class="p">,</span><span class="w"> </span><span class="n">cal_year</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">summarise</span><span class="p">(</span><span class="n">animal_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n</span><span class="p">())</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">ungroup</span><span class="p">()</span>
+<span class="w">    </span>
+<span class="n">rescue_agg</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">()</span>
 </pre></div>
 </div>
 </div></div>
@@ -814,10 +547,10 @@ only showing top 5 rows
                      <span class="n">F</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="s2">&quot;animal_count&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">over</span><span class="p">(</span><span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">))))</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-3-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_annual</span> <span class="o">&lt;-</span> <span class="n">rescue_agg</span> <span class="o">%&gt;%</span>
-    <span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">cal_year</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">annual_count</span> <span class="o">=</span> <span class="nf">sum</span><span class="p">(</span><span class="n">animal_count</span><span class="p">))</span> <span class="o">%&gt;%</span>
-    <span class="n">dplyr</span><span class="o">::</span><span class="nf">ungroup</span><span class="p">()</span>
+</div><div aria-labelledby="tab-3-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_annual</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue_agg</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">cal_year</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">annual_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">animal_count</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">ungroup</span><span class="p">()</span>
 </pre></div>
 </div>
 </div></div>
@@ -831,13 +564,13 @@ only showing top 5 rows
     <span class="o">.</span><span class="n">show</span><span class="p">())</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-4-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_annual</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span>
-        <span class="p">(</span><span class="n">animal_group</span> <span class="o">%in%</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;Cat&quot;</span><span class="p">,</span> <span class="s">&quot;Dog&quot;</span><span class="p">,</span> <span class="s">&quot;Hamster&quot;</span><span class="p">))</span> <span class="o">&amp;</span>
-        <span class="p">(</span><span class="n">cal_year</span> <span class="o">%in%</span> <span class="m">2012</span><span class="o">:</span><span class="m">2014</span><span class="p">))</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_sort</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;cal_year&quot;</span><span class="p">,</span> <span class="s">&quot;animal_group&quot;</span><span class="p">))</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
-    <span class="nf">print</span><span class="p">()</span>
+</div><div aria-labelledby="tab-4-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_annual</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span>
+<span class="w">        </span><span class="p">(</span><span class="n">animal_group</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;Cat&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Dog&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Hamster&quot;</span><span class="p">))</span><span class="w"> </span><span class="o">&amp;</span>
+<span class="w">        </span><span class="p">(</span><span class="n">cal_year</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="m">2012</span><span class="o">:</span><span class="m">2014</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_sort</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;cal_year&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;animal_group&quot;</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">()</span>
 </pre></div>
 </div>
 </div></div>
@@ -881,14 +614,14 @@ only showing top 5 rows
 <span class="n">rescue_annual</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Dog&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-6-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_annual</span> <span class="o">&lt;-</span> <span class="n">rescue_annual</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">animal_pct</span> <span class="o">=</span> <span class="nf">round</span><span class="p">((</span><span class="n">animal_count</span> <span class="o">/</span> <span class="n">annual_count</span><span class="p">)</span> <span class="o">*</span> <span class="m">100</span><span class="p">,</span> <span class="m">2</span><span class="p">))</span>
+</div><div aria-labelledby="tab-6-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_annual</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue_annual</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">animal_pct</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">round</span><span class="p">((</span><span class="n">animal_count</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">annual_count</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">))</span>
 
-<span class="n">rescue_annual</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">animal_group</span> <span class="o">==</span> <span class="s">&quot;Dog&quot;</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_sort</span><span class="p">(</span><span class="s">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
-    <span class="nf">print</span><span class="p">()</span>
+<span class="n">rescue_annual</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">animal_group</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;Dog&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_sort</span><span class="p">(</span><span class="s">&quot;animal_group&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">()</span>
 </pre></div>
 </div>
 </div></div>
@@ -939,18 +672,18 @@ only showing top 5 rows
 <span class="n">rescue_annual</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Snake&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-8-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-8-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_annual</span> <span class="o">=</span> <span class="n">rescue_annual</span> <span class="o">%&gt;%</span>
-    <span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">cal_year</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span>
-        <span class="n">avg_count</span> <span class="o">=</span> <span class="nf">mean</span><span class="p">(</span><span class="n">animal_count</span><span class="p">),</span>
-        <span class="n">max_count</span> <span class="o">=</span> <span class="nf">max</span><span class="p">(</span><span class="n">animal_count</span><span class="p">))</span> <span class="o">%&gt;%</span>
-    <span class="n">dplyr</span><span class="o">::</span><span class="nf">ungroup</span><span class="p">()</span>
+</div><div aria-labelledby="tab-8-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-8-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_annual</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rescue_annual</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">cal_year</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">        </span><span class="n">avg_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">animal_count</span><span class="p">),</span>
+<span class="w">        </span><span class="n">max_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">max</span><span class="p">(</span><span class="n">animal_count</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">ungroup</span><span class="p">()</span>
 
-<span class="n">rescue_annual</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">animal_group</span> <span class="o">==</span> <span class="s">&quot;Snake&quot;</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="nf">head</span><span class="p">(</span><span class="m">10</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
-    <span class="nf">print</span><span class="p">()</span>
+<span class="n">rescue_annual</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">animal_group</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;Snake&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">head</span><span class="p">(</span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">()</span>
 </pre></div>
 </div>
 </div></div>
@@ -984,17 +717,17 @@ only showing top 5 rows
 <span class="n">rescue_annual_alternative</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Dog&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-10-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-10-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_counts</span> <span class="o">&lt;-</span> <span class="n">rescue_agg</span> <span class="o">%&gt;%</span>
-    <span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">cal_year</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">dplyr</span><span class="o">::</span><span class="nf">summarise</span><span class="p">(</span><span class="n">annual_count</span> <span class="o">=</span> <span class="nf">sum</span><span class="p">(</span><span class="n">animal_count</span><span class="p">))</span>
+</div><div aria-labelledby="tab-10-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-10-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_counts</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue_agg</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">cal_year</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">summarise</span><span class="p">(</span><span class="n">annual_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">animal_count</span><span class="p">))</span>
 
-<span class="n">rescue_annual_alternative</span> <span class="o">&lt;-</span> <span class="n">rescue_agg</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">left_join</span><span class="p">(</span><span class="n">rescue_counts</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s">&quot;cal_year&quot;</span><span class="p">)</span>
+<span class="n">rescue_annual_alternative</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue_agg</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">left_join</span><span class="p">(</span><span class="n">rescue_counts</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="o">=</span><span class="s">&quot;cal_year&quot;</span><span class="p">)</span>
 
-<span class="n">rescue_annual_alternative</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">animal_group</span> <span class="o">==</span> <span class="s">&quot;Dog&quot;</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
-    <span class="nf">print</span><span class="p">()</span>
+<span class="n">rescue_annual_alternative</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">animal_group</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;Dog&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">()</span>
 </pre></div>
 </div>
 </div></div>
@@ -1035,7 +768,7 @@ only showing top 5 rows
 </div></div>
 </section>
 <section id="using-window-functions-for-ranking">
-<h2>Using Window Functions for Ranking<a class="headerlink" href="#using-window-functions-for-ranking" title="Permalink to this headline">#</a></h2>
+<h2>Using Window Functions for Ranking<a class="headerlink" href="#using-window-functions-for-ranking" title="Permalink to this heading">#</a></h2>
 <p>Window functions can also be ordered as well as grouped. This can be combined with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.rank.html"><code class="docutils literal notranslate"><span class="pre">F.rank()</span></code></a>/<a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#rank"><code class="docutils literal notranslate"><span class="pre">rank()</span></code></a> or <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.row_number.html"><code class="docutils literal notranslate"><span class="pre">F.row_number()</span></code></a>/<a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#rank"><code class="docutils literal notranslate"><span class="pre">row_number()</span></code></a> to get ranks within groups. For instance, we can get the ranking of the most commonly rescued animals by year, then filter on the top three.</p>
 <p>The syntax is again different between PySpark and sparklyr. In PySpark, use the same method as described above for aggregations, but replace <code class="docutils literal notranslate"><span class="pre">F.sum()</span></code> with <code class="docutils literal notranslate"><span class="pre">F.rank()</span></code> (or another ordered function), and add <code class="docutils literal notranslate"><span class="pre">orderBy()</span></code>. In this example, use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.desc.html"><code class="docutils literal notranslate"><span class="pre">F.desc(&quot;animal_count&quot;)</span></code></a> to sort descending. The <code class="docutils literal notranslate"><span class="pre">.partitionBy()</span></code> step is optional; without a <code class="docutils literal notranslate"><span class="pre">.partitionBy()</span></code> it will treat the whole DataFrame as one group.</p>
 <p>In sparklyr, the method is also almost the same as using aggregations. The ordering is done directly with the <code class="docutils literal notranslate"><span class="pre">rank()</span></code> function. <code class="docutils literal notranslate"><span class="pre">desc(animal_count)</span></code> is used to sort descending.</p>
@@ -1047,10 +780,10 @@ only showing top 5 rows
                     <span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">desc</span><span class="p">(</span><span class="s2">&quot;animal_count&quot;</span><span class="p">)))))</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-12-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-12-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_rank</span> <span class="o">=</span> <span class="n">rescue_agg</span> <span class="o">%&gt;%</span>
-    <span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">cal_year</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">rank</span> <span class="o">=</span> <span class="nf">rank</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">animal_count</span><span class="p">)))</span> <span class="o">%&gt;%</span>
-    <span class="n">dplyr</span><span class="o">::</span><span class="nf">ungroup</span><span class="p">()</span>
+</div><div aria-labelledby="tab-12-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-12-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_rank</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rescue_agg</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">cal_year</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">rank</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">rank</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">animal_count</span><span class="p">)))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">ungroup</span><span class="p">()</span>
 </pre></div>
 </div>
 </div></div>
@@ -1059,12 +792,12 @@ only showing top 5 rows
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-13-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-13-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-13-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-13-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_rank</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;rank&quot;</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">,</span> <span class="s2">&quot;rank&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-13-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-13-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_rank</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">rank</span> <span class="o">&lt;=</span> <span class="m">3</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_sort</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;cal_year&quot;</span><span class="p">,</span> <span class="s">&quot;rank&quot;</span><span class="p">))</span> <span class="o">%&gt;%</span>
-    <span class="nf">head</span><span class="p">(</span><span class="m">12</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
-    <span class="nf">print</span><span class="p">()</span>
+</div><div aria-labelledby="tab-13-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-13-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_rank</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">rank</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="m">3</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_sort</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;cal_year&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;rank&quot;</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">head</span><span class="p">(</span><span class="m">12</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">()</span>
 </pre></div>
 </div>
 </div></div>
@@ -1111,11 +844,11 @@ only showing top 12 rows
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-15-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-15-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-15-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-15-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-15-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-15-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_rank</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;rank&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-15-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-15-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_rank</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">rank</span> <span class="o">==</span> <span class="m">1</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_sort</span><span class="p">(</span><span class="s">&quot;cal_year&quot;</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
-    <span class="nf">print</span><span class="p">()</span>
+</div><div aria-labelledby="tab-15-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-15-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_rank</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">rank</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_sort</span><span class="p">(</span><span class="s">&quot;cal_year&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">()</span>
 </pre></div>
 </div>
 </div></div>
@@ -1155,7 +888,7 @@ only showing top 12 rows
 </div>
 </div></div>
 <section id="comparison-of-ranking-methods">
-<h3>Comparison of ranking methods<a class="headerlink" href="#comparison-of-ranking-methods" title="Permalink to this headline">#</a></h3>
+<h3>Comparison of ranking methods<a class="headerlink" href="#comparison-of-ranking-methods" title="Permalink to this heading">#</a></h3>
 <p>Note that you can have duplicate ranks within each group when using <code class="docutils literal notranslate"><span class="pre">rank()</span></code>; if this is not desirable then one method is to partition by more columns to break ties. There are also alternatives to <code class="docutils literal notranslate"><span class="pre">rank()</span></code> depending on your use case:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">F.rank()</span></code>/<code class="docutils literal notranslate"><span class="pre">rank()</span></code> will assign the same value to ties.</p></li>
@@ -1188,19 +921,19 @@ only showing top 12 rows
     <span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-17-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-17-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rank_comparison</span> <span class="o">&lt;-</span> <span class="n">rescue_agg</span> <span class="o">%&gt;%</span>
-    <span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">cal_year</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span>
-        <span class="n">rank</span> <span class="o">=</span> <span class="nf">rank</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">animal_count</span><span class="p">)),</span>
-        <span class="n">dense_rank</span> <span class="o">=</span> <span class="nf">dense_rank</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">animal_count</span><span class="p">)),</span>
-        <span class="n">row_number</span> <span class="o">=</span> <span class="nf">row_number</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">animal_count</span><span class="p">)))</span> <span class="o">%&gt;%</span>
-    <span class="n">dplyr</span><span class="o">::</span><span class="nf">ungroup</span><span class="p">()</span>
+</div><div aria-labelledby="tab-17-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-17-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rank_comparison</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue_agg</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">cal_year</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">        </span><span class="n">rank</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">rank</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">animal_count</span><span class="p">)),</span>
+<span class="w">        </span><span class="n">dense_rank</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">dense_rank</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">animal_count</span><span class="p">)),</span>
+<span class="w">        </span><span class="n">row_number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">row_number</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">animal_count</span><span class="p">)))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">ungroup</span><span class="p">()</span>
 
-<span class="n">rank_comparison</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">cal_year</span> <span class="o">==</span> <span class="m">2012</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_sort</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;cal_year&quot;</span><span class="p">,</span> <span class="s">&quot;row_number&quot;</span><span class="p">))</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
-    <span class="nf">print</span><span class="p">()</span>
+<span class="n">rank_comparison</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">cal_year</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">2012</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_sort</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;cal_year&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;row_number&quot;</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">()</span>
 </pre></div>
 </div>
 </div></div>
@@ -1252,7 +985,7 @@ only showing top 12 rows
 <p><code class="docutils literal notranslate"><span class="pre">row_number</span></code> has a unique value for each row, even for tied values.</p>
 </section>
 <section id="generating-unique-row-numbers">
-<h3>Generating unique row numbers<a class="headerlink" href="#generating-unique-row-numbers" title="Permalink to this headline">#</a></h3>
+<h3>Generating unique row numbers<a class="headerlink" href="#generating-unique-row-numbers" title="Permalink to this heading">#</a></h3>
 <p>Spark DataFrames do not have an index in the same way as pandas or base R DataFrames as they are partitioned on the cluster. You can however use <code class="docutils literal notranslate"><span class="pre">row_number()</span></code> to generate a unique identifier for each row.</p>
 <p>Whereas in the previous example we ranked within groups, here we need to treat the whole DataFrame as one group.</p>
 <p>To do this in PySpark, use just <code class="docutils literal notranslate"><span class="pre">Window.orderBy(col1,</span> <span class="pre">col2,</span> <span class="pre">...)</span></code> without the <code class="docutils literal notranslate"><span class="pre">partitionBy()</span></code>. In sparklyr, just use <code class="docutils literal notranslate"><span class="pre">mutate()</span></code> without <code class="docutils literal notranslate"><span class="pre">group_by()</span></code> and <code class="docutils literal notranslate"><span class="pre">ungroup()</span></code>.</p>
@@ -1264,11 +997,11 @@ only showing top 12 rows
     <span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-19-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-19-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_agg</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">row_number</span> <span class="o">=</span> <span class="nf">row_number</span><span class="p">(</span><span class="n">cal_year</span><span class="p">))</span> <span class="o">%&gt;%</span>
-    <span class="nf">head</span><span class="p">(</span><span class="m">10</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
-    <span class="nf">print</span><span class="p">()</span>
+</div><div aria-labelledby="tab-19-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-19-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_agg</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">row_number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">row_number</span><span class="p">(</span><span class="n">cal_year</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">head</span><span class="p">(</span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">()</span>
 </pre></div>
 </div>
 </div></div>
@@ -1309,7 +1042,7 @@ only showing top 10 rows
 </section>
 </section>
 <section id="reference-other-rows-with-lag-and-lead">
-<h2>Reference other rows with <code class="docutils literal notranslate"><span class="pre">lag()</span></code> and <code class="docutils literal notranslate"><span class="pre">lead()</span></code><a class="headerlink" href="#reference-other-rows-with-lag-and-lead" title="Permalink to this headline">#</a></h2>
+<h2>Reference other rows with <code class="docutils literal notranslate"><span class="pre">lag()</span></code> and <code class="docutils literal notranslate"><span class="pre">lead()</span></code><a class="headerlink" href="#reference-other-rows-with-lag-and-lead" title="Permalink to this heading">#</a></h2>
 <p>The window function <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.lag.html"><code class="docutils literal notranslate"><span class="pre">F.lag()</span></code></a>/<a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#lag"><code class="docutils literal notranslate"><span class="pre">lag()</span></code></a>  allows you to reference the values of previous rows within a group, and <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.lead.html"><code class="docutils literal notranslate"><span class="pre">F.lead()</span></code></a>/<a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#lead"><code class="docutils literal notranslate"><span class="pre">lead()</span></code></a> will do the same for subsequent rows. You can specify how many previous rows you want to reference with the <code class="docutils literal notranslate"><span class="pre">count</span></code> argument. By default this is <code class="docutils literal notranslate"><span class="pre">1</span></code>. Note that <code class="docutils literal notranslate"><span class="pre">count</span></code> can be negative, so <code class="docutils literal notranslate"><span class="pre">lag(col,</span> <span class="pre">count=1)</span></code> is the same as <code class="docutils literal notranslate"><span class="pre">lead(col,</span> <span class="pre">count=-1)</span></code>.</p>
 <p>The first or last row within the window partition will be null values, as they do not have a previous or subsequent row to reference. This can be changed by setting the <code class="docutils literal notranslate"><span class="pre">default</span></code> parameter, which by default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 <p>These window functions differ from <code class="docutils literal notranslate"><span class="pre">rank()</span></code> and <code class="docutils literal notranslate"><span class="pre">row_number()</span></code> as they are referencing values, rather than returning a rank. They do however use ordering in the same way.</p>
@@ -1322,13 +1055,13 @@ only showing top 10 rows
     <span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-21-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-21-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_agg</span> <span class="o">%&gt;%</span>
-    <span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">animal_group</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">previous_count</span> <span class="o">=</span> <span class="nf">lag</span><span class="p">(</span><span class="n">animal_count</span><span class="p">,</span> <span class="n">order_by</span> <span class="o">=</span> <span class="n">cal_year</span><span class="p">))</span> <span class="o">%&gt;%</span>
-    <span class="n">dplyr</span><span class="o">::</span><span class="nf">ungroup</span><span class="p">()</span> <span class="o">%&gt;%</span>
-    <span class="nf">head</span><span class="p">(</span><span class="m">10</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
-    <span class="nf">print</span><span class="p">()</span>
+</div><div aria-labelledby="tab-21-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-21-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_agg</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">animal_group</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">previous_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">lag</span><span class="p">(</span><span class="n">animal_count</span><span class="p">,</span><span class="w"> </span><span class="n">order_by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cal_year</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">ungroup</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">head</span><span class="p">(</span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">()</span>
 </pre></div>
 </div>
 </div></div>
@@ -1393,29 +1126,29 @@ only showing top 10 rows
 </pre></div>
 </div>
 </div><div aria-labelledby="tab-23-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-23-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a DF of all combinations of animal_group and cal_year</span>
-<span class="n">all_animals_years</span> <span class="o">&lt;-</span> <span class="n">rescue_agg</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">animal_group</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_distinct</span><span class="p">()</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">full_join</span><span class="p">(</span>
-        <span class="n">rescue_agg</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">cal_year</span><span class="p">)</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_distinct</span><span class="p">(),</span>
-        <span class="n">by</span><span class="o">=</span><span class="nf">character</span><span class="p">())</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_sort</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s">&quot;cal_year&quot;</span><span class="p">))</span>
+<span class="n">all_animals_years</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue_agg</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">animal_group</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_distinct</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">full_join</span><span class="p">(</span>
+<span class="w">        </span><span class="n">rescue_agg</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">cal_year</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_distinct</span><span class="p">(),</span>
+<span class="w">        </span><span class="n">by</span><span class="o">=</span><span class="nf">character</span><span class="p">())</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_sort</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;animal_group&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;cal_year&quot;</span><span class="p">))</span>
 
 <span class="c1"># Use this DF as a base to join the rescue_agg DF to</span>
-<span class="n">rescue_agg_prev</span> <span class="o">&lt;-</span> <span class="n">all_animals_years</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">left_join</span><span class="p">(</span><span class="n">rescue_agg</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s">&quot;cal_year&quot;</span><span class="p">))</span> <span class="o">%&gt;%</span>
-    <span class="c1"># Replace null with 0</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">animal_count</span> <span class="o">=</span> <span class="nf">ifnull</span><span class="p">(</span><span class="n">animal_count</span><span class="p">,</span> <span class="m">0</span><span class="p">))</span> <span class="o">%&gt;%</span>
-    <span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">animal_group</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="c1"># lag will then reference previous year, even if 0</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">previous_count</span> <span class="o">=</span> <span class="nf">lag</span><span class="p">(</span><span class="n">animal_count</span><span class="p">,</span> <span class="n">order_by</span> <span class="o">=</span> <span class="n">cal_year</span><span class="p">))</span> <span class="o">%&gt;%</span>
-    <span class="n">dplyr</span><span class="o">::</span><span class="nf">ungroup</span><span class="p">()</span>
+<span class="n">rescue_agg_prev</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">all_animals_years</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">left_join</span><span class="p">(</span><span class="n">rescue_agg</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;animal_group&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;cal_year&quot;</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="c1"># Replace null with 0</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">animal_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">ifnull</span><span class="p">(</span><span class="n">animal_count</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">animal_group</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="c1"># lag will then reference previous year, even if 0</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">previous_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">lag</span><span class="p">(</span><span class="n">animal_count</span><span class="p">,</span><span class="w"> </span><span class="n">order_by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cal_year</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">ungroup</span><span class="p">()</span>
 
-<span class="n">rescue_agg_prev</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_sort</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s">&quot;cal_year&quot;</span><span class="p">))</span> <span class="o">%&gt;%</span>
-    <span class="nf">head</span><span class="p">(</span><span class="m">20</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
-    <span class="nf">print</span><span class="p">()</span>
+<span class="n">rescue_agg_prev</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_sort</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;animal_group&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;cal_year&quot;</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">head</span><span class="p">(</span><span class="m">20</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">()</span>
 </pre></div>
 </div>
 </div></div>
@@ -1475,13 +1208,13 @@ only showing top 20 rows
 </div></div>
 </section>
 <section id="window-functions-in-sql">
-<h2>Window Functions in SQL<a class="headerlink" href="#window-functions-in-sql" title="Permalink to this headline">#</a></h2>
+<h2>Window Functions in SQL<a class="headerlink" href="#window-functions-in-sql" title="Permalink to this heading">#</a></h2>
 <p>You can also use the regular SQL syntax for window functions when using Spark, <code class="docutils literal notranslate"><span class="pre">OVER(PARTITION</span> <span class="pre">BY...GROUP</span> <span class="pre">BY)</span></code>. This needs an SQL wrapper to be processed in Spark, <a class="reference external" href="https://spark.apache.org/docs/latest/sql-getting-started.html#running-sql-queries-programmatically"><code class="docutils literal notranslate"><span class="pre">spark.sql()</span></code></a> in PySpark and <a class="reference external" href="https://dplyr.tidyverse.org/reference/tbl.html"><code class="docutils literal notranslate"><span class="pre">tbl(sc,</span> <span class="pre">sql())</span></code></a> in sparklyr. Remember that SQL works on tables rather than DataFrames, so register the DataFrame first.</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-25-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-25-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-25-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-25-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-25-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-25-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_agg</span><span class="o">.</span><span class="n">registerTempTable</span><span class="p">(</span><span class="s2">&quot;rescue_agg&quot;</span><span class="p">)</span>
 
 <span class="n">sql_window</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    SELECT</span>
 <span class="sd">        cal_year,</span>
 <span class="sd">        animal_group,</span>
@@ -1494,10 +1227,10 @@ only showing top 20 rows
 <span class="n">sql_window</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Snake&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-25-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-25-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_register</span><span class="p">(</span><span class="n">rescue_agg</span><span class="p">,</span> <span class="s">&quot;rescue_agg&quot;</span><span class="p">)</span>
+</div><div aria-labelledby="tab-25-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-25-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_register</span><span class="p">(</span><span class="n">rescue_agg</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;rescue_agg&quot;</span><span class="p">)</span>
 
-<span class="n">sql_window</span> <span class="o">&lt;-</span> <span class="n">dplyr</span><span class="o">::</span><span class="nf">tbl</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">dplyr</span><span class="o">::</span><span class="nf">sql</span><span class="p">(</span>
-    <span class="s">&quot;</span>
+<span class="n">sql_window</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">tbl</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">sql</span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;</span>
 <span class="s">    SELECT</span>
 <span class="s">        cal_year,</span>
 <span class="s">        animal_group,</span>
@@ -1506,10 +1239,10 @@ only showing top 20 rows
 <span class="s">    FROM rescue_agg</span>
 <span class="s">    &quot;</span><span class="p">))</span>
 
-<span class="n">sql_window</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">animal_group</span> <span class="o">==</span> <span class="s">&quot;Snake&quot;</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span> <span class="o">%&gt;%</span>
-    <span class="nf">print</span><span class="p">()</span>
+<span class="n">sql_window</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">animal_group</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;Snake&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">()</span>
 </pre></div>
 </div>
 </div></div>
@@ -1552,7 +1285,7 @@ only showing top 20 rows
 </div></div>
 </section>
 <section id="further-resources">
-<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">#</a></h2>
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this heading">#</a></h2>
 <p>Spark at the ONS Articles:</p>
 <ul class="simple">
 <li><p><span class="xref myst">Cross Joins</span></p></li>
@@ -1609,7 +1342,7 @@ only showing top 20 rows
             mode: "python"
         },
         kernelOptions: {
-            kernelName: "python3",
+            name: "python3",
             path: "./spark-functions"
         },
         predefinedOutput: true
@@ -1617,49 +1350,106 @@ only showing top 20 rows
     </script>
     <script>kernelName = 'python3'</script>
 
-              </div>
+                </article>
               
-            </main>
-            <footer class="footer-article noprint">
-                
-    <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="rounding.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Rounding differences in Python, R and Spark</p>
-        </div>
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="rounding.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Rounding differences in Python, R and Spark</p>
+      </div>
     </a>
-    <a class='right-next' id="next-link" href="cross-joins.html" title="next page">
-    <div class="prev-next-info">
+    <a class="right-next"
+       href="cross-joins.html"
+       title="next page">
+      <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
         <p class="prev-next-title">Cross Joins</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
-</div>
-            </footer>
-        </div>
-    </div>
-    <div class="footer-content row">
-        <footer class="col footer"><p>
-  
-    By Wil Roberts & Adrian Prince<br/>
-  
-</p>
-        </footer>
-    </div>
-    
-</div>
-
-
       </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#window-functions-for-aggregations">Window Functions for Aggregations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-window-functions-for-ranking">Using Window Functions for Ranking</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#comparison-of-ranking-methods">Comparison of ranking methods</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#generating-unique-row-numbers">Generating unique row numbers</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reference-other-rows-with-lag-and-lead">Reference other rows with <code class="docutils literal notranslate"><span class="pre">lag()</span></code> and <code class="docutils literal notranslate"><span class="pre">lead()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#window-functions-in-sql">Window Functions in SQL</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further Resources</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Wil Roberts & Adrian Prince
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
     </div>
+  </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
 
-
+  <footer class="bd-footer">
+  </footer>
   </body>
 </html>

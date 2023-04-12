@@ -1,119 +1,161 @@
 
+
 <!DOCTYPE html>
 
-<html lang="en">
+
+<html lang="en" >
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Spark Application and UI &#8212; Spark at the ONS</title>
-    
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
-    
-  <link rel="stylesheet"
-    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../_static/accessibility.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
-    
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
     <script src="../_static/tabs.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../_static/design-tabs.js"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-95MGHSRD0S');
+            </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'spark-app/spark_application_and_ui';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en">
-    
-
-    <!-- Google Analytics -->
-    
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
-<script>
-                    window.dataLayer = window.dataLayer || [];
-                    function gtag(){ dataLayer.push(arguments); }
-                    gtag('js', new Date());
-                    gtag('config', 'G-95MGHSRD0S');
-                </script>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay overlay-navbar" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<!-- Checkboxes to toggle the in-page toc -->
-<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
-<label class="overlay overlay-pagetoc" for="__page-toc">
-    <div class="visually-hidden">Toggle in-page Table of Contents</div>
-</label>
-<!-- Headers at the top -->
-<div class="announcement header-item noprint"></div>
-<div class="header header-item noprint"></div>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
-    
-    <div class="container-fluid" id="banner"></div>
-
-    
-
-    <div class="container-xl">
-      <div class="row">
-          
-<!-- Sidebar -->
-<div class="bd-sidebar noprint" id="site-navigation">
-    <div class="bd-sidebar__content">
-        <div class="bd-sidebar__top"><div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="../index.html">
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
       
-        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+      <div class="bd-sidebar-primary bd-sidebar">
         
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+    
+    
       
-      
-      <img src="../_static/logo.png" class="logo" alt="logo">
-      
-      
-      <h1 class="site-logo" id="site-title">Spark at the ONS</h1>
-      
-    </a>
-</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item active">
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
             <li class="toctree-l1">
@@ -122,647 +164,302 @@ const thebe_selector_output = ".output, .cell_output"
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Spark overview
- </span>
-</p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark overview</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/spark-start.html">
-   Getting Started with Spark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/when-to-use-spark.html">
-   When To Use Spark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/spark-session-guidance.html">
-   Guidance on Spark Sessions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/example-spark-sessions.html">
-   Example Spark Sessions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/spark-defaults.html">
-   Configuration Hierarchy and
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     spark-defaults.conf
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/data-types.html">
-   Data Types in Spark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/creating-dataframes.html">
-   Creating DataFrames Manually
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/data-storage.html">
-   Data Storage
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-start.html">Getting Started with Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/when-to-use-spark.html">When To Use Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-session-guidance.html">Guidance on Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/example-spark-sessions.html">Example Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-defaults.html">Configuration Hierarchy and <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/data-types.html">Data Types in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/creating-dataframes.html">Creating DataFrames Manually</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/data-storage.html">Data Storage</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Introduction to PySpark
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to PySpark</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../pyspark-intro/pyspark-intro.html">
-   Introduction to PySpark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../pyspark-intro/reading-data-pyspark.html">
-   Reading Data in PySpark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../pyspark-intro/returning-data.html">
-   Returning Data from Cluster to Driver
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../pyspark-intro/f-col.html">
-   Reference columns by name:
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     F.col()
-    </span>
-   </code>
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/pyspark-intro.html">Introduction to PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/reading-data-pyspark.html">Reading Data in PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/returning-data.html">Returning Data from Cluster to Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/f-col.html">Reference columns by name: <code class="docutils literal notranslate"><span class="pre">F.col()</span></code></a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Introduction to sparklyr
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to sparklyr</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../sparklyr-intro/sparklyr-intro.html">
-   Introduction to sparklyr
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../sparklyr-intro/reading-data-sparklyr.html">
-   Reading Data in sparklyr
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">
-   Using Spark functions in sparklyr
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/sparklyr-intro.html">Introduction to sparklyr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/reading-data-sparklyr.html">Reading Data in sparklyr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">Using Spark functions in sparklyr</a></li>
+
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Spark functions
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark functions</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/union-dataframes-with-different-columns.html">
-   Union two DataFrames with different columns
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/padding.html">
-   Add leading zeros with
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     lpad()
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/sampling.html">
-   Sampling:
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     .sample()
-    </span>
-   </code>
-   and
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     sdf_sample()
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/pivot-tables.html">
-   Pivot tables in Spark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/rounding.html">
-   Rounding differences in Python, R and Spark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/window-functions.html">
-   Window Functions in Spark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/cross-joins.html">
-   Cross Joins
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/arrays.html">
-   Arrays Functions in PySpark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/writing-data.html">
-   Writing Data
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/job-description.html">
-   Set Spark Job Description
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/union-dataframes-with-different-columns.html">Union two DataFrames with different columns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/padding.html">Add leading zeros with <code class="docutils literal notranslate"><span class="pre">lpad()</span></code></a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/sampling.html">Sampling: <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/pivot-tables.html">Pivot tables in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/rounding.html">Rounding differences in Python, R and Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/window-functions.html">Window Functions in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/cross-joins.html">Cross Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/arrays.html">Arrays Functions in PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/writing-data.html">Writing Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/job-description.html">Set Spark Job Description</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Understanding and Optimising Spark
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Understanding and Optimising Spark</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/optimisation-tips.html">
-   Ideas for optimising Spark code
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/spark-application-and-ui.html">
-   Spark Application and UI
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/shuffling.html">
-   Shuffling
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/join-concepts.html">
-   Optimising Joins
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/salted-joins.html">
-   Salted Joins
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/partitions.html">
-   Managing Partitions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/persistence.html">
-   Persisting in Spark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/cache.html">
-   Caching
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html">
-   Checkpoint
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/garbage-collection.html">
-   Garbage Collection
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/df-order.html">
-   Spark DataFrames Are Not Ordered
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/exercises.html">
-   Exercises
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/optimisation-tips.html">Ideas for optimising Spark code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/spark-application-and-ui.html">Spark Application and UI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/shuffling.html">Shuffling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/join-concepts.html">Optimising Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/salted-joins.html">Salted Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/partitions.html">Managing Partitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/persistence.html">Persisting in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/cache.html">Caching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/garbage-collection.html">Garbage Collection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/df-order.html">Spark DataFrames Are Not Ordered</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/exercises.html">Exercises</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Testing and Debugging
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Testing and Debugging</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/spark-errors.html">
-   Understanding and Handling Spark Errors
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/unit-testing.html">
-   Unit Testing in Spark
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../testing-debugging/spark-errors.html">Understanding and Handling Spark Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing-debugging/unit-testing.html">Unit Testing in Spark</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Ancillary Topics
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Ancillary Topics</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../ancillary-topics/visualisation.html">
-   Spark and Visualisation
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../ancillary-topics/module-imports.html">
-   Naming Conflicts in Module Imports
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../ancillary-topics/pydoop.html">
-   Pydoop: HDFS to pandas
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/visualisation.html">Spark and Visualisation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/module-imports.html">Naming Conflicts in Module Imports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/pydoop.html">Pydoop: HDFS to pandas</a></li>
 </ul>
 
     </div>
 </nav></div>
-        <div class="bd-sidebar__bottom">
-             <!-- To handle the deprecated key -->
-            
-            <div class="navbar_extra_footer">
-            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-            </div>
-            
-        </div>
     </div>
-    <div id="rtd-footer-container"></div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fspark-app/spark_application_and_ui.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
 </div>
 
 
-          
-
-
-          
-<!-- A tiny helper pixel to detect if we've scrolled -->
-<div class="sbt-scroll-pixel-helper"></div>
-<!-- Main content -->
-<div class="col py-0 content-container">
-    
-    <div class="header-article row sticky-top noprint">
-        
 
 
 
-<div class="col py-1 d-flex header-article-main">
-    <div class="header-article__left">
-        
-        <label for="__navigation"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="right"
-title="Toggle navigation"
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/spark-app/spark_application_and_ui.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
-  <i class="fas fa-bars"></i>
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
   </span>
-
-</label>
-
-        
-    </div>
-    <div class="header-article__right">
-<button onclick="toggleFullScreen()"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="bottom"
-title="Fullscreen mode"
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
   <i class="fas fa-expand"></i>
   </span>
 
 </button>
 
-<div class="menu-dropdown menu-dropdown-repository-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Source repositories">
-      <i class="fab fa-github"></i>
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="https://github.com/best-practice-and-impact/ons-spark"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Source repository"
->
-  
+`);
+</script>
 
-<span class="headerbtn__icon-container">
-  <i class="fab fa-github"></i>
-  </span>
-<span class="headerbtn__text-container">repository</span>
-</a>
-
-      </li>
-      
-      <li>
-        <a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fspark-app/spark_application_and_ui.html&body=Your%20issue%20content%20here."
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Open an issue"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-lightbulb"></i>
-  </span>
-<span class="headerbtn__text-container">open issue</span>
-</a>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-
-<div class="menu-dropdown menu-dropdown-download-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Download this page">
-      <i class="fas fa-download"></i>
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="../_sources/spark-app/spark_application_and_ui.md"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Download source file"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file"></i>
-  </span>
-<span class="headerbtn__text-container">.md</span>
-</a>
-
-      </li>
-      
-      <li>
-        
-<button onclick="printPdf(this)"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="left"
-title="Print to PDF"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file-pdf"></i>
-  </span>
-<span class="headerbtn__text-container">.pdf</span>
-</button>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
-  </span>
-
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
 </label>
-
+</div></div>
+      
     </div>
+  
 </div>
-
-<!-- Table of contents -->
-<div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#spark-application-overview">
-   Spark Application Overview
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#investigate-the-spark-ui">
-   Investigate the Spark UI
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#create-an-application">
-     Create an application
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#jobs-page">
-     Jobs page
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#stages-page">
-     Stages page
-    </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#task-event-timeline">
-       Task Event timeline
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#summary-metrics">
-       Summary Metrics
-      </a>
-     </li>
-    </ul>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#more-information">
-   More information
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#documentation">
-     Documentation
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#moving-data-outside-spark">
-     Moving data outside Spark
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#improving-performance">
-     Improving performance
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#summary">
-   Summary
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#exercises">
-   Exercises
-  </a>
- </li>
-</ul>
-
-    </nav>
 </div>
-    </div>
-    <div class="article row">
-        <div class="col pl-md-3 pl-lg-5 content-container">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Spark Application and UI</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#spark-application-overview">
-   Spark Application Overview
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#investigate-the-spark-ui">
-   Investigate the Spark UI
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#create-an-application">
-     Create an application
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#jobs-page">
-     Jobs page
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#stages-page">
-     Stages page
-    </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#task-event-timeline">
-       Task Event timeline
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#summary-metrics">
-       Summary Metrics
-      </a>
-     </li>
-    </ul>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#more-information">
-   More information
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#documentation">
-     Documentation
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#moving-data-outside-spark">
-     Moving data outside Spark
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#improving-performance">
-     Improving performance
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#summary">
-   Summary
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#exercises">
-   Exercises
-  </a>
- </li>
-</ul>
+              
+              
 
-                        </nav>
-                    </div>
-                </div>
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Spark Application and UI</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
             </div>
-            <main id="main-content" role="main">
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spark-application-overview">Spark Application Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#investigate-the-spark-ui">Investigate the Spark UI</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-an-application">Create an application</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jobs-page">Jobs page</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stages-page">Stages page</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#task-event-timeline">Task Event timeline</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-metrics">Summary Metrics</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#more-information">More information</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation">Documentation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#moving-data-outside-spark">Moving data outside Spark</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#improving-performance">Improving performance</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">Exercises</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
                 
-              <div>
-                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
   <section class="tex2jax_ignore mathjax_ignore" id="spark-application-and-ui">
-<h1>Spark Application and UI<a class="headerlink" href="#spark-application-and-ui" title="Permalink to this headline">#</a></h1>
+<h1>Spark Application and UI<a class="headerlink" href="#spark-application-and-ui" title="Permalink to this heading">#</a></h1>
 <p>This article introduces the structure of a Spark application and how the structure relates to the various pages within the application monitoring interface, the Spark UI.</p>
 <p>The Spark UI is used to monitor the status and resource consumption of your Spark cluster and is the main tool for troubleshooting slow Spark code.</p>
 <p>Understanding the structure of a Spark application helps to understand how Spark works so you can begin to think differently as you code to get the most out of Spark.</p>
 <section id="spark-application-overview">
-<h2>Spark Application Overview<a class="headerlink" href="#spark-application-overview" title="Permalink to this headline">#</a></h2>
+<h2>Spark Application Overview<a class="headerlink" href="#spark-application-overview" title="Permalink to this heading">#</a></h2>
 <p>A Spark application has an underlining structure and learning about this structure will help us</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>understand the difference between a narrow transformation, wide transformation and an action,</p></li>
 <li><p>navigate around the Spark UI</p></li>
 </ol>
@@ -782,10 +479,10 @@ title="Print to PDF"
 <p>As we execute the wide and narrow transformations nothing happens to the data at this point in time, Spark just builds up a plan of what to do with the DataFrame. This plan is a called the execution plan and is a set of instructions of how to transform the data from one state to another. More on the execution plan in the <strong>Persisting Article</strong>. An action initiates the execution plan and so this is when the DataFrame is processed. All the previous transformations, along with the action, are put into Spark <em>jobs</em> and deployed on the Spark cluster.</p>
 </section>
 <section id="investigate-the-spark-ui">
-<h2>Investigate the Spark UI<a class="headerlink" href="#investigate-the-spark-ui" title="Permalink to this headline">#</a></h2>
+<h2>Investigate the Spark UI<a class="headerlink" href="#investigate-the-spark-ui" title="Permalink to this heading">#</a></h2>
 <p>We will create an application and execute some code to create jobs. Then we can drill down from Job to Stage to Task and investigate their performance. In most cases this is where we look first when trying to diagnose a slow Spark application.</p>
 <section id="create-an-application">
-<h3>Create an application<a class="headerlink" href="#create-an-application" title="Permalink to this headline">#</a></h3>
+<h3>Create an application<a class="headerlink" href="#create-an-application" title="Permalink to this heading">#</a></h3>
 <p>The first step is to create an application. Once we create a Spark application we can look at the Spark UI. If we stop the session using <code class="docutils literal notranslate"><span class="pre">spark.stop()</span></code>/<code class="docutils literal notranslate"><span class="pre">spark_disconnect()</span></code> or stopping the CDSW session, the Spark UI for our application can no longer be accessed.</p>
 <p>Let’s start with the necesarry imports and create an application.</p>
 <div class="sphinx-tabs docutils container">
@@ -798,12 +495,12 @@ title="Print to PDF"
 </div>
 </div><div aria-labelledby="tab-0-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
 
-<span class="n">default_config</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">()</span>
+<span class="n">default_config</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">()</span>
 
-<span class="n">sc</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
-    <span class="n">master</span> <span class="o">=</span> <span class="s">&quot;local[2]&quot;</span><span class="p">,</span>
-    <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;spark-app-ui&quot;</span><span class="p">,</span>
-    <span class="n">config</span> <span class="o">=</span> <span class="n">default_config</span><span class="p">)</span>
+<span class="n">sc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
+<span class="w">    </span><span class="n">master</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;local[2]&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">app_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;spark-app-ui&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">default_config</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></div>
@@ -817,8 +514,8 @@ title="Print to PDF"
 </pre></div>
 </div>
 </div><div aria-labelledby="tab-1-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="s">&quot;cdsw&quot;</span><span class="p">)</span>
-<span class="n">url</span> <span class="o">=</span> <span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;spark-&quot;</span><span class="p">,</span> <span class="nf">Sys.getenv</span><span class="p">(</span><span class="s">&quot;CDSW_ENGINE_ID&quot;</span><span class="p">),</span> <span class="s">&quot;.&quot;</span><span class="p">,</span> <span class="nf">Sys.getenv</span><span class="p">(</span><span class="s">&quot;CDSW_DOMAIN&quot;</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
-<span class="nf">html</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;&lt;a href=http://&quot;</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="s">&quot;&gt;Spark UI&lt;/a&gt;&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">))</span>
+<span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;spark-&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">Sys.getenv</span><span class="p">(</span><span class="s">&quot;CDSW_ENGINE_ID&quot;</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;.&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">Sys.getenv</span><span class="p">(</span><span class="s">&quot;CDSW_DOMAIN&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">sep</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="nf">html</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;&lt;a href=http://&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">url</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;&gt;Spark UI&lt;/a&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">sep</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
 </div></div>
@@ -839,11 +536,11 @@ title="Print to PDF"
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of partitions: &quot;</span><span class="p">,</span><span class="n">rescue</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">())</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-2-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">config</span> <span class="o">&lt;-</span> <span class="n">yaml</span><span class="o">::</span><span class="nf">yaml.load_file</span><span class="p">(</span><span class="s">&quot;ons-spark/config.yaml&quot;</span><span class="p">)</span>
+</div><div aria-labelledby="tab-2-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">config</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">yaml</span><span class="o">::</span><span class="nf">yaml.load_file</span><span class="p">(</span><span class="s">&quot;ons-spark/config.yaml&quot;</span><span class="p">)</span>
 
-<span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_parquet</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">config</span><span class="o">$</span><span class="n">rescue_path</span><span class="p">)</span>
+<span class="n">rescue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_parquet</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">rescue_path</span><span class="p">)</span>
 
-<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;Number of partitions: &quot;</span><span class="p">,</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_num_partitions</span><span class="p">(</span><span class="n">rescue</span><span class="p">)))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;Number of partitions: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_num_partitions</span><span class="p">(</span><span class="n">rescue</span><span class="p">)))</span>
 </pre></div>
 </div>
 </div></div>
@@ -864,17 +561,17 @@ title="Print to PDF"
 <span class="n">rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;cost_group&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-3-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span> <span class="n">dplyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span>
-    <span class="n">cost_group</span><span class="o">=</span><span class="n">dplyr</span><span class="o">::</span><span class="nf">case_when</span><span class="p">(</span><span class="n">total_cost</span><span class="o">&lt;</span><span class="m">300</span> <span class="o">~</span> <span class="s">&quot;small&quot;</span><span class="p">,</span>
-                                <span class="n">total_cost</span><span class="o">&gt;=</span><span class="m">300</span> <span class="o">&amp;</span> <span class="n">total_cost</span><span class="o">&lt;</span><span class="m">900</span> <span class="o">~</span> <span class="s">&quot;medium&quot;</span><span class="p">,</span>
-                                <span class="n">total_cost</span><span class="o">&gt;=</span><span class="m">900</span> <span class="o">~</span> <span class="s">&quot;large&quot;</span><span class="p">,</span>
-                                <span class="kc">TRUE</span> <span class="o">~</span> <span class="kc">NULL</span><span class="p">)</span>
+</div><div aria-labelledby="tab-3-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">    </span><span class="n">cost_group</span><span class="o">=</span><span class="n">dplyr</span><span class="o">::</span><span class="nf">case_when</span><span class="p">(</span><span class="n">total_cost</span><span class="o">&lt;</span><span class="m">300</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s">&quot;small&quot;</span><span class="p">,</span>
+<span class="w">                                </span><span class="n">total_cost</span><span class="o">&gt;=</span><span class="m">300</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">total_cost</span><span class="o">&lt;</span><span class="m">900</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s">&quot;medium&quot;</span><span class="p">,</span>
+<span class="w">                                </span><span class="n">total_cost</span><span class="o">&gt;=</span><span class="m">900</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s">&quot;large&quot;</span><span class="p">,</span>
+<span class="w">                                </span><span class="kc">TRUE</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="kc">NULL</span><span class="p">)</span>
 <span class="p">)</span>
 
 
-<span class="n">rescue</span> <span class="o">%&gt;%</span> 
-    <span class="n">dplyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="s">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s">&quot;description&quot;</span><span class="p">,</span> <span class="s">&quot;total_cost&quot;</span><span class="p">,</span> <span class="s">&quot;cost_group&quot;</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="nf">head</span><span class="p">(</span><span class="m">7</span><span class="p">)</span>
+<span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="s">&quot;animal_group&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;description&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;total_cost&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;cost_group&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">head</span><span class="p">(</span><span class="m">7</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></div>
@@ -897,7 +594,7 @@ only showing top 7 rows
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-4-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-4-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-4-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-4-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">()</span>
+</div><div aria-labelledby="tab-4-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">()</span>
 </pre></div>
 </div>
 </div></div>
@@ -906,9 +603,9 @@ only showing top 7 rows
 </div>
 </section>
 <section id="jobs-page">
-<h3>Jobs page<a class="headerlink" href="#jobs-page" title="Permalink to this headline">#</a></h3>
+<h3>Jobs page<a class="headerlink" href="#jobs-page" title="Permalink to this heading">#</a></h3>
 <p>Now that we’ve created some jobs let’s have a quick look at the application’s <em>Event timeline</em>. For those who are running this as a notebook:</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>Go into the Spark UI</p></li>
 <li><p>Make sure you’re on the Jobs tab</p></li>
 <li><p>Open the <em>Event timeline</em> collapsable section using the blue arrow to see something similar to the below image.</p></li>
@@ -922,7 +619,7 @@ only showing top 7 rows
 <p>The third job was the <code class="docutils literal notranslate"><span class="pre">.count()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_nrow()</span></code>. The job contains two stages, which themselves consist of 3 tasks. Let’s get more information on these stages and tasks. Within the <em>Completed Jobs</em> table click on the link in the <em>Description</em> column for the latest job that says <code class="docutils literal notranslate"><span class="pre">count</span> <span class="pre">at</span> <span class="pre">NativeMethodAccessorImpl.java:0</span></code>.</p>
 <p>Now we are on the <em>Job Details</em> page which show information about the job’s stages. The first stage had two tasks, one task to count the rows in each partition. The second stage had one task, which was to send the result to the driver for us to see. On this page you will see another type of diagram called a Directed Acyclic Graph or DAG, by opening the <em>DAG Vizualisation</em> collapsable section.</p>
 <p>The DAG shows the two stages. Here are some rough definitions of the terms inside the boxes</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p><em>WholeStageCodegen</em>- this is Spark creating an optimised version of our code</p></li>
 <li><p><em>Exchange</em> - another word for <em>shuffling</em> data, i.e. data is being moved between partitions</p></li>
 <li><p><em>mapPartitionsInternal</em> - bringing information from multiple partitions together</p></li>
@@ -931,15 +628,15 @@ only showing top 7 rows
 <p><img alt="Stage information in Spark UI showing DAG and stage table" src="../_images/spark_app_stages.png" /></p>
 </section>
 <section id="stages-page">
-<h3>Stages page<a class="headerlink" href="#stages-page" title="Permalink to this headline">#</a></h3>
+<h3>Stages page<a class="headerlink" href="#stages-page" title="Permalink to this heading">#</a></h3>
 <p>From the <em>Completed Stages</em> table on the <em>Job Details</em> page, when we click on the link in the <em>Description</em> column for the stage consisting of two tasks (<em>Stage Id</em> 2 in the example above), we get to the <em>Stage Details</em>.</p>
 <p>This page contains lots of detailed information about the individual tasks and it’s one of the more useful places to look for troubleshooting sluggish applications. We will just concentrate on two sections within this page, the <em>Event timeline</em> (for tasks) and the <em>Summary Metrics</em>.</p>
 <section id="task-event-timeline">
-<h4>Task Event timeline<a class="headerlink" href="#task-event-timeline" title="Permalink to this headline">#</a></h4>
+<h4>Task Event timeline<a class="headerlink" href="#task-event-timeline" title="Permalink to this heading">#</a></h4>
 <p>Opening the <em>Event timeline</em> collapseable menu will show a timeline like in the below image. This timeline has a single row, which means one executor (i.e. the driver in our case because we’re running a local session) was used to complete these tasks. This executor has two cores, we know this because the <em>Executor Computing Time</em> (shown in green) of the two task are overlapping. If there was just one core available to the driver the two tasks would not run in parallel.</p>
 <p><img alt="Task event timeline in Spark UI showing parallel processing on tasks" src="../_images/spark_app_task_timeline.png" /></p>
 <p>The colours also indicate what was going on while the task was being completed. In general- green is good, and is an indication that there is no need to spend time optimising the processing. Delays often occur when lots of data are moved around, because the process can involve some or all of the below:</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>serialising data - preparing the data to be moved to disk</p></li>
 <li><p>shuffle write - writing data to disk to be read by a shuffle somewhere else</p></li>
 <li><p>shuffle read - reading a shuffle from disk onto an executor or driver</p></li>
@@ -948,7 +645,7 @@ only showing top 7 rows
 <p>Sometimes when processing many small partitions more time is spent on moving small amounts of data around than useful processing time. This task event timeline will show evidence of this problem in the form of non-green colours. We’ll see this in action later.</p>
 </section>
 <section id="summary-metrics">
-<h4>Summary Metrics<a class="headerlink" href="#summary-metrics" title="Permalink to this headline">#</a></h4>
+<h4>Summary Metrics<a class="headerlink" href="#summary-metrics" title="Permalink to this heading">#</a></h4>
 <p>Summary information about the tasks within a stage are given in the Summary Metrics table. Select the <em>(De)select All</em> option to view more metrics.</p>
 <p>This is a useful indication of the distribution of times taken for various components of task processing. It might not be the most useful part of the UI to look at with only two tasks, so we will revisit this later.</p>
 <p><img alt="Task metrics table in the Spark UI" src="../_images/spark_app_task_metrics.png" /></p>
@@ -957,9 +654,9 @@ only showing top 7 rows
 </section>
 </section>
 <section id="more-information">
-<h2>More information<a class="headerlink" href="#more-information" title="Permalink to this headline">#</a></h2>
+<h2>More information<a class="headerlink" href="#more-information" title="Permalink to this heading">#</a></h2>
 <section id="documentation">
-<h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">#</a></h3>
+<h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this heading">#</a></h3>
 <p>There are tens of blogs available online that introduce some feature in the Spark UI, but most are not particularly useful and are generally rehashes of other blogs.</p>
 <p>Finally, since its release of version 3.0.0, Spark’s online documentation contains information about the <a class="reference external" href="https://spark.apache.org/docs/latest/web-ui.html">Spark web UI</a>. Note however that this is a later version of Spark than what is currently used in DAP at the ONS. Therefore there will be some small differences between what you see in your application’s UI and that documented in the above link.</p>
 <p>The documentation runs through the different pages of the Spark UI with screenshots and a brief description of the various elements. It’s a good place to start and useful for finding definitions. For example, if you want to know what <em>Scheduler delay</em> means, search for this term on the docs page and you will find,</p>
@@ -968,10 +665,10 @@ only showing top 7 rows
 </div></blockquote>
 </section>
 <section id="moving-data-outside-spark">
-<h3>Moving data outside Spark<a class="headerlink" href="#moving-data-outside-spark" title="Permalink to this headline">#</a></h3>
+<h3>Moving data outside Spark<a class="headerlink" href="#moving-data-outside-spark" title="Permalink to this heading">#</a></h3>
 <p>Note that in our case using the Data Access Platform (DAP) we could call the <em>driver</em> here <em>CDSW session</em>, but we’ll use driver to be consistent with other material in this book.</p>
 <p>What can the Spark UI tell us about the processing of Pandas/R DataFrames? Let’s investigate by</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>aggregate the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame</p></li>
 <li><p>use <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code>/<code class="docutils literal notranslate"><span class="pre">collect()</span></code> to move the data to the driver</p></li>
 <li><p>make a plot of the aggregated data</p></li>
@@ -986,11 +683,11 @@ only showing top 7 rows
 <span class="n">aggregated_pandas</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-5-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">aggregated_spark</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span> 
-    <span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">cost_group</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">dplyr</span><span class="o">::</span><span class="nf">summarise</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="nf">n</span><span class="p">())</span>
+</div><div aria-labelledby="tab-5-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">aggregated_spark</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">cost_group</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">summarise</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="nf">n</span><span class="p">())</span>
 
-<span class="n">aggregated_r</span> <span class="o">&lt;-</span> <span class="n">aggregated_spark</span> <span class="o">%&gt;%</span> <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span>
+<span class="n">aggregated_r</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">aggregated_spark</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span>
 
 <span class="n">aggregated_r</span>
 </pre></div>
@@ -1013,10 +710,10 @@ only showing top 7 rows
 <span class="n">aggregated_pandas_plot</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s2">&quot;bar&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-6-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">aggregated_r_plot</span> <span class="o">&lt;-</span> <span class="n">aggregated_r</span> <span class="o">%&gt;%</span> <span class="n">dplyr</span><span class="o">::</span><span class="nf">arrange</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">cost_group</span><span class="p">))</span>
+</div><div aria-labelledby="tab-6-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">aggregated_r_plot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">aggregated_r</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">arrange</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">cost_group</span><span class="p">))</span>
 
-<span class="n">ggplot2</span><span class="o">::</span><span class="nf">ggplot</span><span class="p">(</span><span class="n">aggregated_r_plot</span><span class="p">,</span> <span class="n">ggplot2</span><span class="o">::</span><span class="nf">aes</span><span class="p">(</span><span class="n">cost_group</span><span class="p">,</span> <span class="n">count</span><span class="p">))</span> <span class="o">+</span>
-    <span class="n">ggplot2</span><span class="o">::</span><span class="nf">geom_bar</span><span class="p">(</span><span class="n">stat</span><span class="o">=</span><span class="s">&quot;identity&quot;</span><span class="p">)</span>
+<span class="n">ggplot2</span><span class="o">::</span><span class="nf">ggplot</span><span class="p">(</span><span class="n">aggregated_r_plot</span><span class="p">,</span><span class="w"> </span><span class="n">ggplot2</span><span class="o">::</span><span class="nf">aes</span><span class="p">(</span><span class="n">cost_group</span><span class="p">,</span><span class="w"> </span><span class="n">count</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="n">ggplot2</span><span class="o">::</span><span class="nf">geom_bar</span><span class="p">(</span><span class="n">stat</span><span class="o">=</span><span class="s">&quot;identity&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></div>
@@ -1029,7 +726,7 @@ only showing top 7 rows
 <p>The plotting was done in Pandas/R and so Spark was not involved at all. We therefore don’t expect the Spark UI to show anything that represents those processes.</p>
 </section>
 <section id="improving-performance">
-<h3>Improving performance<a class="headerlink" href="#improving-performance" title="Permalink to this headline">#</a></h3>
+<h3>Improving performance<a class="headerlink" href="#improving-performance" title="Permalink to this heading">#</a></h3>
 <p>Finally, let’s take a look at the stages and tasks for the latest job in the Spark UI and have and see an example of identifying a performance issue, how to solving it, and finding evidence of improvement.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code>/<code class="docutils literal notranslate"><span class="pre">collect()</span></code> job has two stages because the <code class="docutils literal notranslate"><span class="pre">.groupBy().agg()</span></code>/<code class="docutils literal notranslate"><span class="pre">group_by()%&gt;%summarise()</span></code> command is a wide transformation. In the first stage the data is read in, a new column added and then the dataset is aggregated. This stage has 2 tasks because the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame has 2 partitions. The second stage in this job moves the data from the cluster to the CDSW session. This stage has 200 tasks, because <code class="docutils literal notranslate"><span class="pre">aggregated_spark</span></code> has 200 partitions, more on why this is the case in the <strong>Partitions article</strong>. A screenshot of the <em>Stage details</em> for these tasks is below.</p>
 <p><img alt="Task information for 200 tasks" src="../_images/spark_app_200_tasks.png" /></p>
@@ -1039,14 +736,14 @@ only showing top 7 rows
 <span class="n">aggregated_pandas</span> <span class="o">=</span> <span class="n">aggregated_spark</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-7-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-7-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">aggregated_spark</span> <span class="o">&lt;-</span> <span class="n">rescue</span> <span class="o">%&gt;%</span> 
-    <span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">cost_group</span><span class="p">)</span> <span class="o">%&gt;%</span>
-    <span class="n">dplyr</span><span class="o">::</span><span class="nf">summarise</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="nf">n</span><span class="p">())</span> <span class="o">%&gt;%</span>
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_coalesce</span><span class="p">(</span><span class="m">2</span><span class="p">)</span>
+</div><div aria-labelledby="tab-7-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-7-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">aggregated_spark</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">cost_group</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">summarise</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="nf">n</span><span class="p">())</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_coalesce</span><span class="p">(</span><span class="m">2</span><span class="p">)</span>
 
-                                    
-<span class="n">aggregated_r</span> <span class="o">&lt;-</span> <span class="n">aggregated_spark</span> <span class="o">%&gt;%</span> 
-    <span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span>
+<span class="w">                                    </span>
+<span class="n">aggregated_r</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">aggregated_spark</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span>
 </pre></div>
 </div>
 </div></div>
@@ -1061,7 +758,7 @@ only showing top 7 rows
 </section>
 </section>
 <section id="summary">
-<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">#</a></h2>
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this heading">#</a></h2>
 <p><strong>Spark application hierarchy</strong></p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>- Application 
     - Job 
@@ -1083,8 +780,8 @@ only showing top 7 rows
 </ul>
 </section>
 <section id="exercises">
-<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">#</a></h2>
-<ol>
+<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this heading">#</a></h2>
+<ol class="arabic">
 <li><p>In the Stages page section under the Task Event timeline heading it was stated that “If there was just one core available to the driver the two tasks would not run in parallel”. Test this.</p>
 <p>Stop the Spark session using <code class="docutils literal notranslate"><span class="pre">spark.stop()</span></code>/<code class="docutils literal notranslate"><span class="pre">spark_disconnect()</span></code> and re-run this source notebook but this time with one core on the driver using <code class="docutils literal notranslate"><span class="pre">local[1]</span></code> instead of <code class="docutils literal notranslate"><span class="pre">local[2]</span></code> when connecting to Spark.
 a) Is the above statement true?
@@ -1135,7 +832,7 @@ c) Would increasing the cores to three improve performance in this instance?</p>
             mode: "python"
         },
         kernelOptions: {
-            kernelName: "python3",
+            name: "python3",
             path: "./spark-app"
         },
         predefinedOutput: true
@@ -1143,35 +840,98 @@ c) Would increasing the cores to three improve performance in this instance?</p>
     </script>
     <script>kernelName = 'python3'</script>
 
-              </div>
+                </article>
               
-            </main>
-            <footer class="footer-article noprint">
-                
-    <!-- Previous / next buttons -->
-<div class='prev-next-area'>
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
 </div>
-            </footer>
-        </div>
-    </div>
-    <div class="footer-content row">
-        <footer class="col footer"><p>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spark-application-overview">Spark Application Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#investigate-the-spark-ui">Investigate the Spark UI</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-an-application">Create an application</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jobs-page">Jobs page</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stages-page">Stages page</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#task-event-timeline">Task Event timeline</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-metrics">Summary Metrics</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#more-information">More information</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation">Documentation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#moving-data-outside-spark">Moving data outside Spark</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#improving-performance">Improving performance</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">Exercises</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
   
-    By Wil Roberts & Adrian Prince<br/>
-  
-</p>
-        </footer>
-    </div>
+  <div class="footer-item">
     
+<p class="component-author">
+By Wil Roberts & Adrian Prince
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
 </div>
+          </footer>
+        
 
-
-      </div>
+      </main>
     </div>
+  </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
 
-
+  <footer class="bd-footer">
+  </footer>
   </body>
 </html>

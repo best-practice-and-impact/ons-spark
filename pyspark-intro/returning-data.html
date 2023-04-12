@@ -1,51 +1,69 @@
 
+
 <!DOCTYPE html>
 
-<html lang="en">
+
+<html lang="en" >
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Returning Data from Cluster to Driver &#8212; Spark at the ONS</title>
-    
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
-    
-  <link rel="stylesheet"
-    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../_static/accessibility.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
-    
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../_static/design-tabs.js"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-95MGHSRD0S');
+            </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -58,65 +76,88 @@ const thebe_selector_output = ".output, .cell_output"
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Reference columns by name: F.col()" href="f-col.html" />
     <link rel="prev" title="Reading Data in PySpark" href="reading-data-pyspark.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en">
-    
-
-    <!-- Google Analytics -->
-    
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
-<script>
-                    window.dataLayer = window.dataLayer || [];
-                    function gtag(){ dataLayer.push(arguments); }
-                    gtag('js', new Date());
-                    gtag('config', 'G-95MGHSRD0S');
-                </script>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay overlay-navbar" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<!-- Checkboxes to toggle the in-page toc -->
-<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
-<label class="overlay overlay-pagetoc" for="__page-toc">
-    <div class="visually-hidden">Toggle in-page Table of Contents</div>
-</label>
-<!-- Headers at the top -->
-<div class="announcement header-item noprint"></div>
-<div class="header header-item noprint"></div>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
-    
-    <div class="container-fluid" id="banner"></div>
-
-    
-
-    <div class="container-xl">
-      <div class="row">
-          
-<!-- Sidebar -->
-<div class="bd-sidebar noprint" id="site-navigation">
-    <div class="bd-sidebar__content">
-        <div class="bd-sidebar__top"><div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="../index.html">
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
       
-        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+      <div class="bd-sidebar-primary bd-sidebar">
         
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+    
+    
       
-      
-      <img src="../_static/logo.png" class="logo" alt="logo">
-      
-      
-      <h1 class="site-logo" id="site-title">Spark at the ONS</h1>
-      
-    </a>
-</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item active">
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
             <li class="toctree-l1">
@@ -125,736 +166,305 @@ const thebe_selector_output = ".output, .cell_output"
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Spark overview
- </span>
-</p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark overview</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/spark-start.html">
-   Getting Started with Spark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/when-to-use-spark.html">
-   When To Use Spark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/spark-session-guidance.html">
-   Guidance on Spark Sessions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/example-spark-sessions.html">
-   Example Spark Sessions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/spark-defaults.html">
-   Configuration Hierarchy and
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     spark-defaults.conf
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/data-types.html">
-   Data Types in Spark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/creating-dataframes.html">
-   Creating DataFrames Manually
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-overview/data-storage.html">
-   Data Storage
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-start.html">Getting Started with Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/when-to-use-spark.html">When To Use Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-session-guidance.html">Guidance on Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/example-spark-sessions.html">Example Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-defaults.html">Configuration Hierarchy and <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/data-types.html">Data Types in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/creating-dataframes.html">Creating DataFrames Manually</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/data-storage.html">Data Storage</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Introduction to PySpark
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to PySpark</span></p>
 <ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="pyspark-intro.html">
-   Introduction to PySpark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="reading-data-pyspark.html">
-   Reading Data in PySpark
-  </a>
- </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   Returning Data from Cluster to Driver
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="f-col.html">
-   Reference columns by name:
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     F.col()
-    </span>
-   </code>
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="pyspark-intro.html">Introduction to PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reading-data-pyspark.html">Reading Data in PySpark</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Returning Data from Cluster to Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="f-col.html">Reference columns by name: <code class="docutils literal notranslate"><span class="pre">F.col()</span></code></a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Introduction to sparklyr
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to sparklyr</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../sparklyr-intro/sparklyr-intro.html">
-   Introduction to sparklyr
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../sparklyr-intro/reading-data-sparklyr.html">
-   Reading Data in sparklyr
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">
-   Using Spark functions in sparklyr
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/sparklyr-intro.html">Introduction to sparklyr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/reading-data-sparklyr.html">Reading Data in sparklyr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">Using Spark functions in sparklyr</a></li>
+
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Spark functions
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark functions</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/union-dataframes-with-different-columns.html">
-   Union two DataFrames with different columns
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/padding.html">
-   Add leading zeros with
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     lpad()
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/sampling.html">
-   Sampling:
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     .sample()
-    </span>
-   </code>
-   and
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     sdf_sample()
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/pivot-tables.html">
-   Pivot tables in Spark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/rounding.html">
-   Rounding differences in Python, R and Spark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/window-functions.html">
-   Window Functions in Spark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/cross-joins.html">
-   Cross Joins
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/arrays.html">
-   Arrays Functions in PySpark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/writing-data.html">
-   Writing Data
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-functions/job-description.html">
-   Set Spark Job Description
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/union-dataframes-with-different-columns.html">Union two DataFrames with different columns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/padding.html">Add leading zeros with <code class="docutils literal notranslate"><span class="pre">lpad()</span></code></a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/sampling.html">Sampling: <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/pivot-tables.html">Pivot tables in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/rounding.html">Rounding differences in Python, R and Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/window-functions.html">Window Functions in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/cross-joins.html">Cross Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/arrays.html">Arrays Functions in PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/writing-data.html">Writing Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/job-description.html">Set Spark Job Description</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Understanding and Optimising Spark
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Understanding and Optimising Spark</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/optimisation-tips.html">
-   Ideas for optimising Spark code
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/spark-application-and-ui.html">
-   Spark Application and UI
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/shuffling.html">
-   Shuffling
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/join-concepts.html">
-   Optimising Joins
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/salted-joins.html">
-   Salted Joins
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/partitions.html">
-   Managing Partitions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/persistence.html">
-   Persisting in Spark
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/cache.html">
-   Caching
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html">
-   Checkpoint
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/garbage-collection.html">
-   Garbage Collection
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/df-order.html">
-   Spark DataFrames Are Not Ordered
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../spark-concepts/exercises.html">
-   Exercises
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/optimisation-tips.html">Ideas for optimising Spark code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/spark-application-and-ui.html">Spark Application and UI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/shuffling.html">Shuffling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/join-concepts.html">Optimising Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/salted-joins.html">Salted Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/partitions.html">Managing Partitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/persistence.html">Persisting in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/cache.html">Caching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/garbage-collection.html">Garbage Collection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/df-order.html">Spark DataFrames Are Not Ordered</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/exercises.html">Exercises</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Testing and Debugging
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Testing and Debugging</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/spark-errors.html">
-   Understanding and Handling Spark Errors
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../testing-debugging/unit-testing.html">
-   Unit Testing in Spark
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../testing-debugging/spark-errors.html">Understanding and Handling Spark Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing-debugging/unit-testing.html">Unit Testing in Spark</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Ancillary Topics
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Ancillary Topics</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../ancillary-topics/visualisation.html">
-   Spark and Visualisation
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../ancillary-topics/module-imports.html">
-   Naming Conflicts in Module Imports
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../ancillary-topics/pydoop.html">
-   Pydoop: HDFS to pandas
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/visualisation.html">Spark and Visualisation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/module-imports.html">Naming Conflicts in Module Imports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/pydoop.html">Pydoop: HDFS to pandas</a></li>
 </ul>
 
     </div>
 </nav></div>
-        <div class="bd-sidebar__bottom">
-             <!-- To handle the deprecated key -->
-            
-            <div class="navbar_extra_footer">
-            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-            </div>
-            
-        </div>
     </div>
-    <div id="rtd-footer-container"></div>
-</div>
-
-
-          
-
-
-          
-<!-- A tiny helper pixel to detect if we've scrolled -->
-<div class="sbt-scroll-pixel-helper"></div>
-<!-- Main content -->
-<div class="col py-0 content-container">
-    
-    <div class="header-article row sticky-top noprint">
-        
-
-
-
-<div class="col py-1 d-flex header-article-main">
-    <div class="header-article__left">
-        
-        <label for="__navigation"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="right"
-title="Toggle navigation"
->
   
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-bars"></i>
-  </span>
-
-</label>
-
-        
-    </div>
-    <div class="header-article__right">
-<div class="menu-dropdown menu-dropdown-launch-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Launch interactive content">
-      <i class="fas fa-rocket"></i>
-  </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="https://mybinder.org/v2/gh/best-practice-and-impact/ons-spark/main?urlpath=tree/docs/pyspark-intro/returning-data.ipynb"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Launch on Binder"
->
   
-
-<span class="headerbtn__icon-container">
-  
-    <img src="../_static/images/logo_binder.svg">
-  </span>
-<span class="headerbtn__text-container">Binder</span>
-</a>
-
-      </li>
-      
-    </ul>
+  <div class="sidebar-primary-items__end sidebar-primary__section">
   </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fpyspark-intro/returning-data.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
 </div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/pyspark-intro/returning-data.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
 
 <button onclick="toggleFullScreen()"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="bottom"
-title="Fullscreen mode"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
   <i class="fas fa-expand"></i>
   </span>
 
 </button>
 
-<div class="menu-dropdown menu-dropdown-repository-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Source repositories">
-      <i class="fab fa-github"></i>
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="https://github.com/best-practice-and-impact/ons-spark"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Source repository"
->
-  
+`);
+</script>
 
-<span class="headerbtn__icon-container">
-  <i class="fab fa-github"></i>
-  </span>
-<span class="headerbtn__text-container">repository</span>
-</a>
-
-      </li>
-      
-      <li>
-        <a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fpyspark-intro/returning-data.html&body=Your%20issue%20content%20here."
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Open an issue"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-lightbulb"></i>
-  </span>
-<span class="headerbtn__text-container">open issue</span>
-</a>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-
-<div class="menu-dropdown menu-dropdown-download-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Download this page">
-      <i class="fas fa-download"></i>
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="../_sources/pyspark-intro/returning-data.ipynb"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Download source file"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file"></i>
-  </span>
-<span class="headerbtn__text-container">.ipynb</span>
-</a>
-
-      </li>
-      
-      <li>
-        
-<button onclick="printPdf(this)"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="left"
-title="Print to PDF"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file-pdf"></i>
-  </span>
-<span class="headerbtn__text-container">.pdf</span>
-</button>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
-  </span>
-
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
 </label>
-
+</div></div>
+      
     </div>
+  
 </div>
-
-<!-- Table of contents -->
-<div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#lazy-evaluation-and-printschema">
-   Lazy Evaluation and
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     .printSchema()
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#show">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     .show()
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#topandas">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     .toPandas()
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#eager-evaluation">
-   Eager Evaluation
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#collect-and-variations">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     .collect()
-    </span>
-   </code>
-   and variations
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#take-combine-limit-and-collect">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       .take()
-      </span>
-     </code>
-     : combine
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       .limit()
-      </span>
-     </code>
-     and
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       .collect()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#first-return-one-row">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       .first()
-      </span>
-     </code>
-     : return one row
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#head-a-confusing-function">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       .head()
-      </span>
-     </code>
-     : a confusing function
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#source-code">
-     Source Code
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#further-resources">
-   Further Resources
-  </a>
- </li>
-</ul>
-
-    </nav>
 </div>
-    </div>
-    <div class="article row">
-        <div class="col pl-md-3 pl-lg-5 content-container">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Returning Data from Cluster to Driver</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#lazy-evaluation-and-printschema">
-   Lazy Evaluation and
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     .printSchema()
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#show">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     .show()
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#topandas">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     .toPandas()
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#eager-evaluation">
-   Eager Evaluation
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#collect-and-variations">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     .collect()
-    </span>
-   </code>
-   and variations
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#take-combine-limit-and-collect">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       .take()
-      </span>
-     </code>
-     : combine
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       .limit()
-      </span>
-     </code>
-     and
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       .collect()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#first-return-one-row">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       .first()
-      </span>
-     </code>
-     : return one row
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#head-a-confusing-function">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       .head()
-      </span>
-     </code>
-     : a confusing function
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#source-code">
-     Source Code
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#further-resources">
-   Further Resources
-  </a>
- </li>
-</ul>
+              
+              
 
-                        </nav>
-                    </div>
-                </div>
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Returning Data from Cluster to Driver</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
             </div>
-            <main id="main-content" role="main">
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lazy-evaluation-and-printschema">Lazy Evaluation and <code class="docutils literal notranslate"><span class="pre">.printSchema()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#show"><code class="docutils literal notranslate"><span class="pre">.show()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topandas"><code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#eager-evaluation">Eager Evaluation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#collect-and-variations"><code class="docutils literal notranslate"><span class="pre">.collect()</span></code> and variations</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#take-combine-limit-and-collect"><code class="docutils literal notranslate"><span class="pre">.take()</span></code>: combine <code class="docutils literal notranslate"><span class="pre">.limit()</span></code> and <code class="docutils literal notranslate"><span class="pre">.collect()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#first-return-one-row"><code class="docutils literal notranslate"><span class="pre">.first()</span></code>: return one row</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#head-a-confusing-function"><code class="docutils literal notranslate"><span class="pre">.head()</span></code>: a confusing function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#source-code">Source Code</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further Resources</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
                 
-              <div>
-                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
   <section id="returning-data-from-cluster-to-driver">
-<h1>Returning Data from Cluster to Driver<a class="headerlink" href="#returning-data-from-cluster-to-driver" title="Permalink to this headline">#</a></h1>
+<h1>Returning Data from Cluster to Driver<a class="headerlink" href="#returning-data-from-cluster-to-driver" title="Permalink to this heading">#</a></h1>
 <p>This article explores different ways of moving small amounts of data from a PySpark DataFrame, which is lazily evaluated on the Spark <em>cluster</em>, into the <em>driver</em>. Remember that the Spark cluster will have more memory than the driver, so be careful about the amount of data that you are returning.</p>
 <p>There are lots of ways to do this; most users will use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.show.html"><code class="docutils literal notranslate"><span class="pre">.show()</span></code></a>, the <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.limit.html"><code class="docutils literal notranslate"><span class="pre">.limit()</span></code></a>
 <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.toPandas.html"><code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code></a> combination or use eager evaluation. Several other methods are included for completeness, including the original method, <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.collect.html"><code class="docutils literal notranslate"><span class="pre">.collect()</span></code></a>:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="#show"><code class="docutils literal notranslate"><span class="pre">.show()</span></code></a></p></li>
-<li><p><a class="reference external" href="#topandas"><code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code></a></p></li>
-<li><p><a class="reference external" href="#eager-evaluation">Eager Evaluation</a></p></li>
-<li><p><a class="reference external" href="#collect-and-variations"><code class="docutils literal notranslate"><span class="pre">.collect()</span></code> and Variations</a></p>
+<li><p><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">.show()</span></code></span></p></li>
+<li><p><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code></span></p></li>
+<li><p><span class="xref myst">Eager Evaluation</span></p></li>
+<li><p><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">.collect()</span></code> and Variations</span></p>
 <ul>
-<li><p><a class="reference external" href="#take-combine-limit-and-collect"><code class="docutils literal notranslate"><span class="pre">.take()</span></code></a></p></li>
-<li><p><a class="reference external" href="#first-return-one-row"><code class="docutils literal notranslate"><span class="pre">.first()</span></code></a></p></li>
-<li><p><a class="reference external" href="#head-a-confusing-function"><code class="docutils literal notranslate"><span class="pre">.head()</span></code></a></p></li>
+<li><p><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">.take()</span></code></span></p></li>
+<li><p><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">.first()</span></code></span></p></li>
+<li><p><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">.head()</span></code></span></p></li>
 </ul>
 </li>
 </ul>
 <section id="lazy-evaluation-and-printschema">
-<h2>Lazy Evaluation and <code class="docutils literal notranslate"><span class="pre">.printSchema()</span></code><a class="headerlink" href="#lazy-evaluation-and-printschema" title="Permalink to this headline">#</a></h2>
+<h2>Lazy Evaluation and <code class="docutils literal notranslate"><span class="pre">.printSchema()</span></code><a class="headerlink" href="#lazy-evaluation-and-printschema" title="Permalink to this heading">#</a></h2>
 <p>Before looking at each of the methods in turn, it is worth revisiting the concept of lazy evaluation. Spark DataFrames are not evaluated by default. An <em>action</em> has to be called in order for the cluster to process the Spark plan. <code class="docutils literal notranslate"><span class="pre">.show()</span></code>, <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code> and <code class="docutils literal notranslate"><span class="pre">.collect()</span></code> are all examples of <em>actions</em>.</p>
 <p>Note that if you implicitly try and print the DataFrame it will just return the schema, rather than evaluating the DataFrame. First, start a Spark session and load the Animal Rescue data:</p>
 <div class="cell docutils container">
@@ -932,7 +542,7 @@ title="Print to PDF"
 </div>
 </section>
 <section id="show">
-<h2><code class="docutils literal notranslate"><span class="pre">.show()</span></code><a class="headerlink" href="#show" title="Permalink to this headline">#</a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">.show()</span></code><a class="headerlink" href="#show" title="Permalink to this heading">#</a></h2>
 <p>Using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.show.html"><code class="docutils literal notranslate"><span class="pre">.show()</span></code></a> is the easiest way to preview a PySpark DataFrame. By default it will print out <span class="math notranslate nohighlight">\(20\)</span> rows of the DataFrame.</p>
 <p>You cannot assign the results of <code class="docutils literal notranslate"><span class="pre">.show()</span></code> to a variable, so it is purely for information.</p>
 <p>By default Spark DataFrames are not ordered, due to the fact they are distributed on the cluster. This means that calling <code class="docutils literal notranslate"><span class="pre">.show()</span></code> on the same DataFrame several times can return different results.</p>
@@ -1007,7 +617,7 @@ only showing top 3 rows
 </div>
 </section>
 <section id="topandas">
-<h2><code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code><a class="headerlink" href="#topandas" title="Permalink to this headline">#</a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code><a class="headerlink" href="#topandas" title="Permalink to this heading">#</a></h2>
 <p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.toPandas.html"><code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code></a> converts a PySpark DataFrame into a pandas DataFrame. You can then use all the usual methods on a pandas DataFrame and it will have the standard pandas properties of being mutable, with a fixed row order.</p>
 <p>Be careful with <code class="docutils literal notranslate"><span class="pre">toPandas()</span></code> as it will convert the whole DF, which is an issue when you are dealing with large data on the Spark cluster. Calling <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.limit.html"><code class="docutils literal notranslate"><span class="pre">limit()</span></code></a> before <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code> is a good way to ensure that you do not overload the driver.</p>
 <p>You can either print out the results of <code class="docutils literal notranslate"><span class="pre">toPandas()</span></code> immediately, or assign it to a variable:</p>
@@ -1176,7 +786,7 @@ only showing top 3 rows
 </div>
 </section>
 <section id="eager-evaluation">
-<h2>Eager Evaluation<a class="headerlink" href="#eager-evaluation" title="Permalink to this headline">#</a></h2>
+<h2>Eager Evaluation<a class="headerlink" href="#eager-evaluation" title="Permalink to this heading">#</a></h2>
 <p>By default, Spark does not display the contents of your DataFrame when you type the name of your DataFrame to implicitly print, instead returning the column name and type; we saw the output from printing <code class="docutils literal notranslate"><span class="pre">rescue</span></code> earlier.</p>
 <p>There is a way to change this behaviour so that typing the name of your DataFrame returns a nicely formatted preview of the results: add <code class="docutils literal notranslate"><span class="pre">.config(&quot;spark.sql.repl.eagerEval.enabled&quot;,</span> <span class="pre">'true')</span></code> to the Spark session builder. This will make the behaviour of typing the DF similar to <code class="docutils literal notranslate"><span class="pre">.show()</span></code>. The number of rows returned will be limited automatically so there is no need to apply the <code class="docutils literal notranslate"><span class="pre">.limit()</span></code> command to your DataFrame. You can set the number of rows to be returned with <code class="docutils literal notranslate"><span class="pre">.config(&quot;spark.sql.repl.eagerEval.maxNumRows&quot;,</span> <span class="pre">number_of_rows)</span></code>; by default this is <code class="docutils literal notranslate"><span class="pre">20</span></code>. Columns are truncated to <code class="docutils literal notranslate"><span class="pre">20</span></code> characters by default; this can be changed with <code class="docutils literal notranslate"><span class="pre">spark.sql.repl.eagerEval.truncate</span></code>. More information is in the <a class="reference external" href="https://spark.apache.org/docs/latest/configuration.html#runtime-sql-configuration">Spark Configuration</a> documentation.</p>
 <p>Before setting this property we need to stop the existing Spark session with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.stop.html"><code class="docutils literal notranslate"><span class="pre">spark.stop()</span></code></a>.</p>
@@ -1220,8 +830,8 @@ only showing top 10 rows
 </div>
 </section>
 <section id="collect-and-variations">
-<h2><code class="docutils literal notranslate"><span class="pre">.collect()</span></code> and variations<a class="headerlink" href="#collect-and-variations" title="Permalink to this headline">#</a></h2>
-<p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.collect.html"><code class="docutils literal notranslate"><span class="pre">.collect()</span></code></a> is the original way of converting Spark DataFrames from the cluster to the driver and can also be used directly on <a class="reference external" href="../spark-concepts/shuffling.html#a-quick-note-on-rdds">RDDs (Resilient Distributed Datasets)</a> as well as DataFrames. Like with <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code> this will bring back the whole DataFrame to the driver, so either combine with <code class="docutils literal notranslate"><span class="pre">.limit()</span></code> or verify that the DF is not too large with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.count.html"><code class="docutils literal notranslate"><span class="pre">.count()</span></code></a> first.</p>
+<h2><code class="docutils literal notranslate"><span class="pre">.collect()</span></code> and variations<a class="headerlink" href="#collect-and-variations" title="Permalink to this heading">#</a></h2>
+<p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.collect.html"><code class="docutils literal notranslate"><span class="pre">.collect()</span></code></a> is the original way of converting Spark DataFrames from the cluster to the driver and can also be used directly on <span class="xref myst">RDDs (Resilient Distributed Datasets)</span> as well as DataFrames. Like with <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code> this will bring back the whole DataFrame to the driver, so either combine with <code class="docutils literal notranslate"><span class="pre">.limit()</span></code> or verify that the DF is not too large with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.count.html"><code class="docutils literal notranslate"><span class="pre">.count()</span></code></a> first.</p>
 <p>Manipulating the output of <code class="docutils literal notranslate"><span class="pre">.collect()</span></code> is quite awkward, as it returns a list of <code class="docutils literal notranslate"><span class="pre">Row</span></code> objects. It is generally better to just use <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code>, as pandas DataFrames are easy to manipulate and have built in methods to convert to other data structures if desired.</p>
 <p>The output of <code class="docutils literal notranslate"><span class="pre">.collect()</span></code> can be assigned to variable or printed out directly:</p>
 <div class="cell docutils container">
@@ -1318,7 +928,7 @@ only showing top 10 rows
 </div>
 </div>
 <section id="take-combine-limit-and-collect">
-<h3><code class="docutils literal notranslate"><span class="pre">.take()</span></code>: combine <code class="docutils literal notranslate"><span class="pre">.limit()</span></code> and <code class="docutils literal notranslate"><span class="pre">.collect()</span></code><a class="headerlink" href="#take-combine-limit-and-collect" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">.take()</span></code>: combine <code class="docutils literal notranslate"><span class="pre">.limit()</span></code> and <code class="docutils literal notranslate"><span class="pre">.collect()</span></code><a class="headerlink" href="#take-combine-limit-and-collect" title="Permalink to this heading">#</a></h3>
 <p>An alternative to <code class="docutils literal notranslate"><span class="pre">.collect()</span></code> is to use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.take.html"><code class="docutils literal notranslate"><span class="pre">.take(num)</span></code></a> which will only return a maximum of <code class="docutils literal notranslate"><span class="pre">num</span></code> rows (or the whole DataFrame if the number of rows is less than <code class="docutils literal notranslate"><span class="pre">num</span></code>). This is equivalent to <code class="docutils literal notranslate"><span class="pre">.limit(num).collect()</span></code>. Remember that using <code class="docutils literal notranslate"><span class="pre">.collect()</span></code> will bring the entire DataFrame into the driver, so if it is large you need to reduce the size first. Using <code class="docutils literal notranslate"><span class="pre">.take()</span></code> removes this problem.</p>
 <p><code class="docutils literal notranslate"><span class="pre">.take()</span></code> has no default value, so you must supply <code class="docutils literal notranslate"><span class="pre">num</span></code> (unlike <code class="docutils literal notranslate"><span class="pre">.show()</span></code>, which has a default of <code class="docutils literal notranslate"><span class="pre">20</span></code>).</p>
 <p>Just like <code class="docutils literal notranslate"><span class="pre">.collect()</span></code> you can assign the output of <code class="docutils literal notranslate"><span class="pre">.take()</span></code> to a variable or print out directly:</p>
@@ -1341,7 +951,7 @@ only showing top 10 rows
 </div>
 </section>
 <section id="first-return-one-row">
-<h3><code class="docutils literal notranslate"><span class="pre">.first()</span></code>: return one row<a class="headerlink" href="#first-return-one-row" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">.first()</span></code>: return one row<a class="headerlink" href="#first-return-one-row" title="Permalink to this heading">#</a></h3>
 <p>If you only want one row, use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.first.html"><code class="docutils literal notranslate"><span class="pre">.first()</span></code></a>. The advantage of <code class="docutils literal notranslate"><span class="pre">.first()</span></code> over <code class="docutils literal notranslate"><span class="pre">.take(1)</span></code> or <code class="docutils literal notranslate"><span class="pre">.limit(1).collect()</span></code> is that a single <code class="docutils literal notranslate"><span class="pre">Row</span></code> object is returned, rather than a <code class="docutils literal notranslate"><span class="pre">Row</span></code> object within a list of length 1. This means the code looks neater if you only want to extract one value.</p>
 <p>As PySpark DataFrames are not ordered by default <code class="docutils literal notranslate"><span class="pre">.first()</span></code> is non-deterministic, and so it is generally combined with <code class="docutils literal notranslate"><span class="pre">.orderBy()</span></code>:</p>
 <div class="cell docutils container">
@@ -1408,7 +1018,7 @@ only showing top 10 rows
 </div>
 </section>
 <section id="head-a-confusing-function">
-<h3><code class="docutils literal notranslate"><span class="pre">.head()</span></code>: a confusing function<a class="headerlink" href="#head-a-confusing-function" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">.head()</span></code>: a confusing function<a class="headerlink" href="#head-a-confusing-function" title="Permalink to this heading">#</a></h3>
 <p>Another method included for completeness is <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.head.html"><code class="docutils literal notranslate"><span class="pre">.head()</span></code></a>. This works in the same way as <code class="docutils literal notranslate"><span class="pre">.take()</span></code> if you specify the number of rows (returns a list of <code class="docutils literal notranslate"><span class="pre">Row</span></code> objects, even if it only has one row), or <code class="docutils literal notranslate"><span class="pre">.first()</span></code> if not (returns a single <code class="docutils literal notranslate"><span class="pre">Row</span></code> object). This could potentially get confusing so it is better to just use <code class="docutils literal notranslate"><span class="pre">.take()</span></code> or <code class="docutils literal notranslate"><span class="pre">.first()</span></code> instead.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1444,16 +1054,16 @@ only showing top 10 rows
 </div>
 </section>
 <section id="source-code">
-<h3>Source Code<a class="headerlink" href="#source-code" title="Permalink to this headline">#</a></h3>
+<h3>Source Code<a class="headerlink" href="#source-code" title="Permalink to this heading">#</a></h3>
 <p>For these functions it is interesting to take a look at the PySpark source code; normally all you need is in the documentation, but here you can see how the methods actually work. For instance, <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/_modules/pyspark/sql/dataframe.html#DataFrame.take"><code class="docutils literal notranslate"><span class="pre">df.take(10)</span></code> is the same as <code class="docutils literal notranslate"><span class="pre">df.limit(10).collect()</span></code></a>.</p>
 </section>
 </section>
 <section id="further-resources">
-<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">#</a></h2>
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this heading">#</a></h2>
 <p>Spark at the ONS Articles:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../spark-overview/spark-defaults.html"><span class="doc std std-doc">Configuration Hierarchy and <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code></span></a></p></li>
-<li><p><a class="reference external" href="../spark-concepts/shuffling.html#a-quick-note-on-rdds">RDDs (Resilient Distributed Datasets)</a></p></li>
+<li><p><span class="xref myst">RDDs (Resilient Distributed Datasets)</span></p></li>
 </ul>
 <p>PySpark Documentation:</p>
 <ul class="simple">
@@ -1493,7 +1103,7 @@ only showing top 10 rows
             mode: "python"
         },
         kernelOptions: {
-            kernelName: "python3",
+            name: "python3",
             path: "./pyspark-intro"
         },
         predefinedOutput: true
@@ -1501,49 +1111,109 @@ only showing top 10 rows
     </script>
     <script>kernelName = 'python3'</script>
 
-              </div>
+                </article>
               
-            </main>
-            <footer class="footer-article noprint">
-                
-    <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="reading-data-pyspark.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Reading Data in PySpark</p>
-        </div>
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="reading-data-pyspark.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Reading Data in PySpark</p>
+      </div>
     </a>
-    <a class='right-next' id="next-link" href="f-col.html" title="next page">
-    <div class="prev-next-info">
+    <a class="right-next"
+       href="f-col.html"
+       title="next page">
+      <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
         <p class="prev-next-title">Reference columns by name: <code class="docutils literal notranslate"><span class="pre">F.col()</span></code></p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
-</div>
-            </footer>
-        </div>
-    </div>
-    <div class="footer-content row">
-        <footer class="col footer"><p>
-  
-    By Wil Roberts & Adrian Prince<br/>
-  
-</p>
-        </footer>
-    </div>
-    
-</div>
-
-
       </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lazy-evaluation-and-printschema">Lazy Evaluation and <code class="docutils literal notranslate"><span class="pre">.printSchema()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#show"><code class="docutils literal notranslate"><span class="pre">.show()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topandas"><code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#eager-evaluation">Eager Evaluation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#collect-and-variations"><code class="docutils literal notranslate"><span class="pre">.collect()</span></code> and variations</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#take-combine-limit-and-collect"><code class="docutils literal notranslate"><span class="pre">.take()</span></code>: combine <code class="docutils literal notranslate"><span class="pre">.limit()</span></code> and <code class="docutils literal notranslate"><span class="pre">.collect()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#first-return-one-row"><code class="docutils literal notranslate"><span class="pre">.first()</span></code>: return one row</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#head-a-confusing-function"><code class="docutils literal notranslate"><span class="pre">.head()</span></code>: a confusing function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#source-code">Source Code</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further Resources</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Wil Roberts & Adrian Prince
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
     </div>
+  </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
 
-
+  <footer class="bd-footer">
+  </footer>
   </body>
 </html>
