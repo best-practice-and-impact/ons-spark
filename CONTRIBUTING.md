@@ -149,6 +149,40 @@ Once you have converted the notebook and the resulting files are stored in the r
 
 In the case that you are adding R code to a page in the book that is currently a Jupyter Notebook you will need to change the table of contents to point to the markdown file created by the conversion. To do this, inside the ons-spark folder modify the ```_toc.yml``` file such that the newly modified markdown file is included correctly. To learn a little more about Table of Contents in JupyterBooks see the Jupyter documentation [here](https://jupyterbook.org/en/stable/structure/toc.html). 
 
+
+## Publishing changes
+
+Internal contributors can trigger a new release of the book.
+
+### Preparation
+
+To create a new release and publish the `main` branch, you will need to install the dependencies:
+
+```
+pip install -r requirements.txt
+```
+
+### Releasing
+
+To create a new release, use the command line tool `bump2version`, which will be installed with the dev dependencies.
+The version number references the current `year` and an incremental `build` count.
+
+For a the first release of a year, provide the `year` as the command argument, otherwise provide `build`.
+
+```
+bump2version build
+```
+
+`bumpversion` will create a new Git `tag` and `commit`.
+If you're happy with the version increase, `push` these to the remote to trigger the publication, by running both:
+
+```
+git push
+git push --tags
+```
+
+
+
 ## Code of Conduct
 
 Please note that the Spark at the ONS project is released with a [Contributor Code of Conduct](CONDUCT.md). By contributing to this project you agree to abide by its terms.
