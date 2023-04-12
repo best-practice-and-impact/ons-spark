@@ -87,7 +87,7 @@ The conversion of notebook files into markdown files that have code tabs to disp
 
 N.B. it is not neccessary to convert ALL notebooks, only ones that you would like to show code examples of both Python and R code. For example notebooks in the PySpark specific section (i.e. not relevant to Sparklyr and therefore not containing any R code) can remain as notebooks and JupyterBook will include them in the book without any issue. 
 
-However, pages that contain code examples from both languages will be native Jupyter notebooks that have been converted using the convert in the utilities folder of this repo. An as a result the notebooks must be correctly formatted in order for the converter to work correctly. For any code that you wish to include in both languages, place the Python code in a code cell in the notebook as normal. Place the R code in a markdown cell directly below the Python code cell contained between `` ```r and ``` ``. 
+Pages that contain code examples in both Python and R have been converted using the above mentioned function in the utilities folder of this repo. And as a result the notebooks must be correctly formatted in order for the converter to work correctly. For any code that you wish to include in both languages, place the Python code in a code cell in the notebook as normal. Place the R code in a markdown cell directly below the Python code cell contained between `` ```r and ``` ``.  The notebook converter function uses these symbols as a marker to produce the R code tabs and R output tabs.
 
 For example, if you like the code to start a local spark session to be displayed in both Python and R, you would place the following in a code cell of a jupyter notebook:
 ```python 
