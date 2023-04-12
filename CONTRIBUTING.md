@@ -54,7 +54,7 @@ Ready to contribute? Here's how to set up `Spark at the ONS` for local developme
 
 ## Environment Set-up
 
-This repository is built using a specific set of dependencies and both Python and R programming languages. To be able to appropriately modify the Jupyter Notebooks and convert them into markdown files (such that code tabs can be displayed to show demo code of both Python and R) and as a result an environment to have a full capability needs both Python and R. A list of environment requirements is below:
+This repository is built using a relatively complex set of dependencies, including both Python and R programming languages and Spark. A list of environment requirements is below:
 - Python >= 3.6 
 - R >=3.5,<4
 - git
