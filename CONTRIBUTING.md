@@ -83,7 +83,14 @@ jb build ons-spark
 ## Contributing to Notebooks to contain both Python and R code
 
 The conversion of notebook files into markdown files that have code tabs to display both Python and R code requires the use of some of the functionality contained in the utilities folder of this repo. 
-`notebook_converter.py` contains the function markdown_from_notebook that (as the name suggests) will convert a Jupyter Notebook into a Markdown file with appropriate code tabs, extract and run the R code, store both python and R outputs and put them in appropriate tabs in the notebook. This function takes as an argument the notebook that is to be converted and the output location of where you would like the resulting markdown file. 
+`notebook_converter.py` contains the function markdown_from_notebook that (as the name suggests) will:
+
+- convert a Jupyter Notebook into a Markdown file with appropriate code tabs
+- extract and run the R code
+- store both python and R outputs and put them in appropriate tabs in the notebook. 
+
+This function takes as an argument the notebook that is to be converted and the output location of where you would like the resulting markdown file. 
+
 
 N.B. it is not neccessary to convert ALL notebooks, only ones that you would like to show code examples of both Python and R code. For example notebooks in the PySpark specific section (i.e. not relevant to Sparklyr and therefore not containing any R code) can remain as notebooks and JupyterBook will include them in the book without any issue. 
 
