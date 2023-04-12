@@ -59,7 +59,7 @@ This repository is built using a relatively complex set of dependencies, includi
 - R >=3.5,<4
 - git
 - Java Development Kit (for Spark) >=1.8.0_121
-- PySpark 3.2.3 (on Apache Spark 2.4).
+- PySpark >= 2.4.0
 - Sparklyr 1.8.0 (on Apache Spark 2.4)
 
 other versions of Spark 2 may be compatible but have not been tested. 
