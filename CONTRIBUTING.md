@@ -60,7 +60,7 @@ This repository is built using a relatively complex set of dependencies, includi
 - git
 - Java Development Kit (for Spark) >=1.8.0_121
 - PySpark >= 2.4.0
-- Sparklyr 1.8.0 (on Apache Spark 2.4)
+- sparklyr >= 1.7.5
 
 other versions of Spark 2 may be compatible but have not been tested. 
 
