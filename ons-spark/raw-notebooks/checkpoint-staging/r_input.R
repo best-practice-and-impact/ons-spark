@@ -73,7 +73,7 @@ for (i in 1: new_cols)
   
   if (i %% 3 == 0) 
   {
-    sparklyr::sdf_checkpoint(df1, eager= TRUE)
+    df1 <- sparklyr::sdf_checkpoint(df1, eager= TRUE)
   }
 }
 
@@ -135,7 +135,7 @@ df %>%
 explain(df)
 
 username <- Sys.getenv('HADOOP_USER_NAME')
-sparklyr::sdf_register(df, 'df')
+df <- sparklyr::sdf_register(df, 'df')
 
 database <- config$database
 
@@ -143,7 +143,7 @@ table_name_plain <- config$staging_table_example
 table_name <- paste0(table_name_plain, username)
 
 sql <- paste0('DROP TABLE IF EXISTS ', database, '.', table_name)
-invisible(dbExecute(sc, sql))
+invisible(DBI::dbExecute(sc, sql))
 
 tbl_change_db(sc, database)
 sparklyr::spark_write_table(df, name = table_name)
