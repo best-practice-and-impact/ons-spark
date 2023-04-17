@@ -20,18 +20,18 @@ Time taken to create the DataFrame:  8.401437520980835
 ","# A tibble: 10 × 14
       id col_0 col_1 col_2 col_3 col_4 col_5 col_6 col_7 col_8 col_9 col_10
    <int> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl>
- 1     1     8     8     8     8     8     8     8     8    NA    NA     NA
- 2     2     7     7     7     7     7     7     7    NA    NA    NA     NA
- 3     3    11    11    11    11    11    11    11    11    11    11     11
- 4     4     5     5     5     5     5    NA    NA    NA    NA    NA     NA
- 5     5     8     8     8     8     8     8     8     8    NA    NA     NA
- 6     6     2     2    NA    NA    NA    NA    NA    NA    NA    NA     NA
- 7     7     3     3     3    NA    NA    NA    NA    NA    NA    NA     NA
- 8     8    12    12    12    12    12    12    12    12    12    12     12
- 9     9     9     9     9     9     9     9     9     9     9    NA     NA
-10    10    12    12    12    12    12    12    12    12    12    12     12
+ 1     1    12    12    12    12    12    12    12    12    12    12     12
+ 2     2     2     2     0     0     0     0     0     0     0     0      0
+ 3     3     6     6     6     6     6     6     0     0     0     0      0
+ 4     4    10    10    10    10    10    10    10    10    10    10      0
+ 5     5     9     9     9     9     9     9     9     9     9     0      0
+ 6     6    12    12    12    12    12    12    12    12    12    12     12
+ 7     7    10    10    10    10    10    10    10    10    10    10      0
+ 8     8     7     7     7     7     7     7     7     0     0     0      0
+ 9     9     2     2     0     0     0     0     0     0     0     0      0
+10    10     1     0     0     0     0     0     0     0     0     0      0
 # … with 2 more variables: col_11 <dbl>, col_12 <dbl>
-Time taken to create DataFrame 14.67728"
+Time taken to create DataFrame 17.05854"
 7,3.0,,
 10,4.0,"+---+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+------+------+
 | id|col_0|col_1|col_2|col_3|col_4|col_5|col_6|col_7|col_8|col_9|col_10|col_11|
@@ -53,18 +53,18 @@ Time taken to create the DataFrame:  1.0542099475860596
 ","# A tibble: 10 × 14
       id col_0 col_1 col_2 col_3 col_4 col_5 col_6 col_7 col_8 col_9 col_10
    <int> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl>
- 1     1     2     2    NA    NA    NA    NA    NA    NA    NA    NA     NA
- 2     2     7     7     7     7     7     7     7    NA    NA    NA     NA
- 3     3     6     6     6     6     6     6    NA    NA    NA    NA     NA
- 4     4     6     6     6     6     6     6    NA    NA    NA    NA     NA
- 5     5    11    11    11    11    11    11    11    11    11    11     11
- 6     6     1    NA    NA    NA    NA    NA    NA    NA    NA    NA     NA
- 7     7     3     3     3    NA    NA    NA    NA    NA    NA    NA     NA
- 8     8     2     2    NA    NA    NA    NA    NA    NA    NA    NA     NA
- 9     9     6     6     6     6     6     6    NA    NA    NA    NA     NA
-10    10     5     5     5     5     5    NA    NA    NA    NA    NA     NA
+ 1     1     4     4     4     4     0     0     0     0     0     0      0
+ 2     2     7     7     7     7     7     7     7     0     0     0      0
+ 3     3     9     9     9     9     9     9     9     9     9     0      0
+ 4     4     7     7     7     7     7     7     7     0     0     0      0
+ 5     5     3     3     3     0     0     0     0     0     0     0      0
+ 6     6    11    11    11    11    11    11    11    11    11    11     11
+ 7     7     6     6     6     6     6     6     0     0     0     0      0
+ 8     8    10    10    10    10    10    10    10    10    10    10      0
+ 9     9     8     8     8     8     8     8     8     8     0     0      0
+10    10     2     2     0     0     0     0     0     0     0     0      0
 # … with 2 more variables: col_11 <dbl>, col_12 <dbl>
-Time taken to create DataFrame:  24.10783"
+Time taken to create DataFrame:  28.99567"
 13,5.0,,"Deleted file:///home/cdsw/ons-spark/checkpoints
 "
 18,14.0,,
@@ -103,7 +103,8 @@ Time taken to create DataFrame:  24.10783"
 0    Wallington              CR8  
 1       Bromley              BR2  
 2       Croydon              CR0  
-","# A tibble: 3 × 20
+","
+# A tibble: 3 × 20
   IncidentN…¹ DateTime…² CalYear FinYear TypeO…³ Engin…⁴ JobHo…⁵ Hourl…⁶ Total…⁷
   <chr>       <date>       <int> <chr>   <chr>     <dbl>   <dbl>   <int>   <dbl>
 1 99960101    2010-06-25    2010 2010/11 Specia…       1       1     260     260
@@ -122,14 +123,76 @@ Time taken to create DataFrame:  24.10783"
    +- *(1) Project [IncidentNumber#439, cast(unix_timestamp(DateTimeOfCall#440, dd/MM/yyyy, Some(Europe/London)) as timestamp) AS DateTimeOfCall#658, CalYear#441, FinYear#442, TypeOfIncident#443, PumpCount#444 AS EngineCount#511, PumpHoursTotal#445 AS JobHours#616, HourlyNotionalCost(£)#446 AS HourlyCost#553, IncidentNotionalCost(£)#447 AS TotalCost#574, FinalDescription#448 AS Description#532, AnimalGroupParent#449 AS AnimalGroup#637, OriginofCall#450 AS OriginOfCall#595, PropertyType#451, PropertyCategory#452, SpecialServiceTypeCategory#453, SpecialServiceType#454, Ward#456, Borough#458, StnGroundName#459, PostcodeDistrict#460]
       +- *(1) FileScan csv [IncidentNumber#439,DateTimeOfCall#440,CalYear#441,FinYear#442,TypeOfIncident#443,PumpCount#444,PumpHoursTotal#445,HourlyNotionalCost(£)#446,IncidentNotionalCost(£)#447,FinalDescription#448,AnimalGroupParent#449,OriginofCall#450,PropertyType#451,PropertyCategory#452,SpecialServiceTypeCategory#453,SpecialServiceType#454,Ward#456,Borough#458,StnGroundName#459,PostcodeDistrict#460] Batched: false, Format: CSV, Location: InMemoryFileIndex[hdfs://dnt01/training/animal_rescue.csv], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<IncidentNumber:string,DateTimeOfCall:string,CalYear:string,FinYear:string,TypeOfIncident:s...
 ","<SQL>
-SELECT *
-FROM `animal_rescue_51f3797c_d221_416f_b5a7_0c265aab3aba`
+SELECT
+  `IncidentNumber`,
+  to_date(`DateTimeOfCall`, ""dd/MM/yyyy"") AS `DateTimeOfCall`,
+  `CalYear`,
+  `FinYear`,
+  `TypeOfIncident`,
+  `EngineCount`,
+  `JobHours`,
+  `HourlyCost`,
+  `TotalCost`,
+  `Description`,
+  `AnimalGroup`,
+  `OriginOfCall`,
+  `PropertyType`,
+  `PropertyCategory`,
+  `SpecialServiceTypeCategory`,
+  `SpecialServiceType`,
+  `Ward`,
+  `Borough`,
+  `StnGroundName`,
+  `PostcodeDistrict`
+FROM (
+  SELECT
+    `IncidentNumber`,
+    `DateTimeOfCall`,
+    `CalYear`,
+    `FinYear`,
+    `TypeOfIncident`,
+    `PumpCount` AS `EngineCount`,
+    `PumpHoursTotal` AS `JobHours`,
+    `HourlyNotionalCostGBP` AS `HourlyCost`,
+    `IncidentNotionalCostGBP` AS `TotalCost`,
+    `FinalDescription` AS `Description`,
+    `AnimalGroupParent` AS `AnimalGroup`,
+    `OriginofCall` AS `OriginOfCall`,
+    `PropertyType`,
+    `PropertyCategory`,
+    `SpecialServiceTypeCategory`,
+    `SpecialServiceType`,
+    `Ward`,
+    `Borough`,
+    `StnGroundName`,
+    `PostcodeDistrict`
+  FROM `animal_rescue_89660913_8ce8_4063_a41c_139b0702959a`
+) `q01`
+ORDER BY `IncidentNumber` DESC
 
 <PLAN>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        plan
-1 == Physical Plan ==\nInMemoryTableScan [IncidentNumber#62, DateTimeOfCall#63, CalYear#64, FinYear#65, TypeOfIncident#66, PumpCount#67, PumpHoursTotal#68, HourlyNotionalCostGBP#69, IncidentNotionalCostGBP#70, FinalDescription#71, AnimalGroupParent#72, OriginofCall#73, PropertyType#74, PropertyCategory#75, SpecialServiceTypeCategory#76, SpecialServiceType#77, WardCode#78, Ward#79, BoroughCode#80, Borough#81, StnGroundName#82, PostcodeDistrict#83, Easting_m#84, Northing_m#85, ... 2 more fields]\n   +- InMemoryRelation [IncidentNumber#62, DateTimeOfCall#63, CalYear#64, FinYear#65, TypeOfIncident#66, PumpCount#67, PumpHoursTotal#68, HourlyNotionalCostGBP#69, IncidentNotionalCostGBP#70, FinalDescription#71, AnimalGroupParent#72, OriginofCall#73, PropertyType#74, PropertyCategory#75, SpecialServiceTypeCategory#76, SpecialServiceType#77, WardCode#78, Ward#79, BoroughCode#80, Borough#81, StnGroundName#82, PostcodeDistrict#83, Easting_m#84, Northing_m#85, ... 2 more fields], StorageLevel(disk, memory, deserialized, 1 replicas)\n         +- *(1) Project [IncidentNumber#10, DateTimeOfCall#11, CalYear#12, FinYear#13, TypeOfIncident#14, PumpCount#15, PumpHoursTotal#16, HourlyNotionalCost(£)#17 AS HourlyNotionalCostGBP#69, IncidentNotionalCost(£)#18 AS IncidentNotionalCostGBP#70, FinalDescription#19, AnimalGroupParent#20, OriginofCall#21, PropertyType#22, PropertyCategory#23, SpecialServiceTypeCategory#24, SpecialServiceType#25, WardCode#26, Ward#27, BoroughCode#28, Borough#29, StnGroundName#30, PostcodeDistrict#31, Easting_m#32, Northing_m#33, ... 2 more fields]\n            +- *(1) FileScan csv [IncidentNumber#10,DateTimeOfCall#11,CalYear#12,FinYear#13,TypeOfIncident#14,PumpCount#15,PumpHoursTotal#16,HourlyNotionalCost(£)#17,IncidentNotionalCost(£)#18,FinalDescription#19,AnimalGroupParent#20,OriginofCall#21,PropertyType#22,PropertyCategory#23,SpecialServiceTypeCategory#24,SpecialServiceType#25,WardCode#26,Ward#27,BoroughCode#28,Borough#29,StnGroundName#30,PostcodeDistrict#31,Easting_m#32,Northing_m#33,... 2 more fields] Batched: false, Format: CSV, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/animal_rescue.csv], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<IncidentNumber:string,DateTimeOfCall:string,CalYear:int,FinYear:string,TypeOfIncident:stri...
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      plan
+1 == Physical Plan ==\n*(2) Sort [IncidentNumber#62 DESC NULLS LAST], true, 0\n+- Exchange rangepartitioning(IncidentNumber#62 DESC NULLS LAST, 32)\n   +- *(1) Project [IncidentNumber#62, cast(cast(unix_timestamp(DateTimeOfCall#63, dd/MM/yyyy, Some(Europe/London)) as timestamp) as date) AS DateTimeOfCall#975, CalYear#64, FinYear#65, TypeOfIncident#66, PumpCount#67 AS EngineCount#968, PumpHoursTotal#68 AS JobHours#969, HourlyNotionalCostGBP#69 AS HourlyCost#970, IncidentNotionalCostGBP#70 AS TotalCost#971, FinalDescription#71 AS Description#972, AnimalGroupParent#72 AS AnimalGroup#973, OriginofCall#73 AS OriginOfCall#974, PropertyType#74, PropertyCategory#75, SpecialServiceTypeCategory#76, SpecialServiceType#77, Ward#79, Borough#81, StnGroundName#82, PostcodeDistrict#83]\n      +- InMemoryTableScan [AnimalGroupParent#72, Borough#81, CalYear#64, DateTimeOfCall#63, FinYear#65, FinalDescription#71, HourlyNotionalCostGBP#69, IncidentNotionalCostGBP#70, IncidentNumber#62, OriginofCall#73, PostcodeDistrict#83, PropertyCategory#75, PropertyType#74, PumpCount#67, PumpHoursTotal#68, SpecialServiceType#77, SpecialServiceTypeCategory#76, StnGroundName#82, TypeOfIncident#66, Ward#79]\n            +- InMemoryRelation [IncidentNumber#62, DateTimeOfCall#63, CalYear#64, FinYear#65, TypeOfIncident#66, PumpCount#67, PumpHoursTotal#68, HourlyNotionalCostGBP#69, IncidentNotionalCostGBP#70, FinalDescription#71, AnimalGroupParent#72, OriginofCall#73, PropertyType#74, PropertyCategory#75, SpecialServiceTypeCategory#76, SpecialServiceType#77, WardCode#78, Ward#79, BoroughCode#80, Borough#81, StnGroundName#82, PostcodeDistrict#83, Easting_m#84, Northing_m#85, ... 2 more fields], StorageLevel(disk, memory, deserialized, 1 replicas)\n                  +- *(1) Project [IncidentNumber#10, DateTimeOfCall#11, CalYear#12, FinYear#13, TypeOfIncident#14, PumpCount#15, PumpHoursTotal#16, HourlyNotionalCost(£)#17 AS HourlyNotionalCostGBP#69, IncidentNotionalCost(£)#18 AS IncidentNotionalCostGBP#70, FinalDescription#19, AnimalGroupParent#20, OriginofCall#21, PropertyType#22, PropertyCategory#23, SpecialServiceTypeCategory#24, SpecialServiceType#25, WardCode#26, Ward#27, BoroughCode#28, Borough#29, StnGroundName#30, PostcodeDistrict#31, Easting_m#32, Northing_m#33, ... 2 more fields]\n                     +- *(1) FileScan csv [IncidentNumber#10,DateTimeOfCall#11,CalYear#12,FinYear#13,TypeOfIncident#14,PumpCount#15,PumpHoursTotal#16,HourlyNotionalCost(£)#17,IncidentNotionalCost(£)#18,FinalDescription#19,AnimalGroupParent#20,OriginofCall#21,PropertyType#22,PropertyCategory#23,SpecialServiceTypeCategory#24,SpecialServiceType#25,WardCode#26,Ward#27,BoroughCode#28,Borough#29,StnGroundName#30,PostcodeDistrict#31,Easting_m#32,Northing_m#33,... 2 more fields] Batched: false, Format: CSV, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/animal_rescue.csv], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<IncidentNumber:string,DateTimeOfCall:string,CalYear:int,FinYear:string,TypeOfIncident:stri...
 "
-30,18.0,,"[1] 0
+30,18.0,,"# Source: spark<df> [?? x 20]
+   Incident…¹ DateTime…² CalYear FinYear TypeO…³ Engin…⁴ JobHo…⁵ Hourl…⁶ Total…⁷
+   <chr>      <date>       <int> <chr>   <chr>     <dbl>   <dbl>   <int>   <dbl>
+ 1 99960101   2010-06-25    2010 2010/11 Specia…       1       1     260     260
+ 2 99912121   2012-08-26    2012 2012/13 Specia…       1       1     260     260
+ 3 99846101   2010-06-25    2010 2010/11 Specia…       1       1     260     260
+ 4 9975122    2012-06-04    2012 2012/13 Specia…       1       1     260     260
+ 5 9973131    2013-01-24    2013 2012/13 Specia…       1       2     260     520
+ 6 99675111   2011-06-26    2011 2011/12 Specia…       1       1     260     260
+ 7 99545101   2010-06-25    2010 2010/11 Specia…       1       1     260     260
+ 8 99536121   2012-08-25    2012 2012/13 Specia…       1       2     260     520
+ 9 99469141   2014-07-28    2014 2014/15 Specia…       1       1     295     295
+10 99402091   2009-06-11    2009 2009/10 Specia…       1       1     260     260
+# … with more rows, 11 more variables: Description <chr>, AnimalGroup <chr>,
+#   OriginOfCall <chr>, PropertyType <chr>, PropertyCategory <chr>,
+#   SpecialServiceTypeCategory <chr>, SpecialServiceType <chr>, Ward <chr>,
+#   Borough <chr>, StnGroundName <chr>, PostcodeDistrict <chr>, and abbreviated
+#   variable names ¹​IncidentNumber, ²​DateTimeOfCall, ³​TypeOfIncident,
+#   ⁴​EngineCount, ⁵​JobHours, ⁶​HourlyCost, ⁷​TotalCost
 "
 33,19.0,"    IncidentNumber DateTimeOfCall CalYear  FinYear   TypeOfIncident  \
 0  004812-12012017     2017-01-12    2017  2016/17  Special Service   
@@ -165,19 +228,18 @@ FROM `animal_rescue_51f3797c_d221_416f_b5a7_0c265aab3aba`
 0    Twickenham             TW12  
 1       Mitcham              CR4  
 2     Tottenham              N15  
-","# A tibble: 3 × 26
-  IncidentNumber DateT…¹ CalYear FinYear TypeO…² PumpC…³ PumpH…⁴ Hourl…⁵ Incid…⁶
-  <chr>          <chr>     <int> <chr>   <chr>     <dbl>   <dbl>   <int>   <dbl>
-1 139091         01/01/…    2009 2008/09 Specia…       1       2     255     510
-2 275091         01/01/…    2009 2008/09 Specia…       1       1     255     255
-3 2075091        04/01/…    2009 2008/09 Specia…       1       1     255     255
-# … with 17 more variables: FinalDescription <chr>, AnimalGroupParent <chr>,
-#   OriginofCall <chr>, PropertyType <chr>, PropertyCategory <chr>,
-#   SpecialServiceTypeCategory <chr>, SpecialServiceType <chr>, WardCode <chr>,
-#   Ward <chr>, BoroughCode <chr>, Borough <chr>, StnGroundName <chr>,
-#   PostcodeDistrict <chr>, Easting_m <dbl>, Northing_m <dbl>,
-#   Easting_rounded <int>, Northing_rounded <int>, and abbreviated variable
-#   names ¹​DateTimeOfCall, ²​TypeOfIncident, ³​PumpCount, ⁴​PumpHoursTotal, …
+","# A tibble: 3 × 20
+  IncidentN…¹ DateTime…² CalYear FinYear TypeO…³ Engin…⁴ JobHo…⁵ Hourl…⁶ Total…⁷
+  <chr>       <date>       <int> <chr>   <chr>     <dbl>   <dbl>   <int>   <dbl>
+1 019962-170… 2018-02-17    2018 2017/18 Specia…       1       1     328     328
+2 019684-170… 2016-02-17    2016 2015/16 Specia…       1       1     298     298
+3 019419-170… 2016-02-17    2016 2015/16 Specia…       1       1     298     298
+# … with 11 more variables: Description <chr>, AnimalGroup <chr>,
+#   OriginOfCall <chr>, PropertyType <chr>, PropertyCategory <chr>,
+#   SpecialServiceTypeCategory <chr>, SpecialServiceType <chr>, Ward <chr>,
+#   Borough <chr>, StnGroundName <chr>, PostcodeDistrict <chr>, and abbreviated
+#   variable names ¹​IncidentNumber, ²​DateTimeOfCall, ³​TypeOfIncident,
+#   ⁴​EngineCount, ⁵​JobHours, ⁶​HourlyCost, ⁷​TotalCost
 "
 36,20.0,"== Physical Plan ==
 *(1) FileScan parquet train_tmp.staging_example_mitchs[IncidentNumber#739,DateTimeOfCall#740,CalYear#741,FinYear#742,TypeOfIncident#743,EngineCount#744,JobHours#745,HourlyCost#746,TotalCost#747,Description#748,AnimalGroup#749,OriginOfCall#750,PropertyType#751,PropertyCategory#752,SpecialServiceTypeCategory#753,SpecialServiceType#754,Ward#755,Borough#756,StnGroundName#757,PostcodeDistrict#758] Batched: true, Format: Parquet, Location: InMemoryFileIndex[hdfs://dnt01/training/train_tmp/hive/staging_example_mitchs], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<IncidentNumber:string,DateTimeOfCall:timestamp,CalYear:string,FinYear:string,TypeOfInciden...
@@ -186,8 +248,8 @@ SELECT *
 FROM `staging_example_mitchs`
 
 <PLAN>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               plan
-1 == Physical Plan ==\nInMemoryTableScan [IncidentNumber#1473, DateTimeOfCall#1474, CalYear#1475, FinYear#1476, TypeOfIncident#1477, PumpCount#1478, PumpHoursTotal#1479, HourlyNotionalCostGBP#1480, IncidentNotionalCostGBP#1481, FinalDescription#1482, AnimalGroupParent#1483, OriginofCall#1484, PropertyType#1485, PropertyCategory#1486, SpecialServiceTypeCategory#1487, SpecialServiceType#1488, WardCode#1489, Ward#1490, BoroughCode#1491, Borough#1492, StnGroundName#1493, PostcodeDistrict#1494, Easting_m#1495, Northing_m#1496, ... 2 more fields]\n   +- InMemoryRelation [IncidentNumber#1473, DateTimeOfCall#1474, CalYear#1475, FinYear#1476, TypeOfIncident#1477, PumpCount#1478, PumpHoursTotal#1479, HourlyNotionalCostGBP#1480, IncidentNotionalCostGBP#1481, FinalDescription#1482, AnimalGroupParent#1483, OriginofCall#1484, PropertyType#1485, PropertyCategory#1486, SpecialServiceTypeCategory#1487, SpecialServiceType#1488, WardCode#1489, Ward#1490, BoroughCode#1491, Borough#1492, StnGroundName#1493, PostcodeDistrict#1494, Easting_m#1495, Northing_m#1496, ... 2 more fields], StorageLevel(disk, memory, deserialized, 1 replicas)\n         +- *(1) FileScan parquet train_tmp.staging_example_mitchs[IncidentNumber#1473,DateTimeOfCall#1474,CalYear#1475,FinYear#1476,TypeOfIncident#1477,PumpCount#1478,PumpHoursTotal#1479,HourlyNotionalCostGBP#1480,IncidentNotionalCostGBP#1481,FinalDescription#1482,AnimalGroupParent#1483,OriginofCall#1484,PropertyType#1485,PropertyCategory#1486,SpecialServiceTypeCategory#1487,SpecialServiceType#1488,WardCode#1489,Ward#1490,BoroughCode#1491,Borough#1492,StnGroundName#1493,PostcodeDistrict#1494,Easting_m#1495,Northing_m#1496,... 2 more fields] Batched: true, Format: Parquet, Location: InMemoryFileIndex[hdfs://dnt01/training/train_tmp/hive/staging_example_mitchs], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<IncidentNumber:string,DateTimeOfCall:string,CalYear:int,FinYear:string,TypeOfIncident:stri...
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             plan
+1 == Physical Plan ==\nInMemoryTableScan [IncidentNumber#1654, DateTimeOfCall#1655, CalYear#1656, FinYear#1657, TypeOfIncident#1658, EngineCount#1659, JobHours#1660, HourlyCost#1661, TotalCost#1662, Description#1663, AnimalGroup#1664, OriginOfCall#1665, PropertyType#1666, PropertyCategory#1667, SpecialServiceTypeCategory#1668, SpecialServiceType#1669, Ward#1670, Borough#1671, StnGroundName#1672, PostcodeDistrict#1673]\n   +- InMemoryRelation [IncidentNumber#1654, DateTimeOfCall#1655, CalYear#1656, FinYear#1657, TypeOfIncident#1658, EngineCount#1659, JobHours#1660, HourlyCost#1661, TotalCost#1662, Description#1663, AnimalGroup#1664, OriginOfCall#1665, PropertyType#1666, PropertyCategory#1667, SpecialServiceTypeCategory#1668, SpecialServiceType#1669, Ward#1670, Borough#1671, StnGroundName#1672, PostcodeDistrict#1673], StorageLevel(disk, memory, deserialized, 1 replicas)\n         +- *(1) FileScan parquet train_tmp.staging_example_mitchs[IncidentNumber#1654,DateTimeOfCall#1655,CalYear#1656,FinYear#1657,TypeOfIncident#1658,EngineCount#1659,JobHours#1660,HourlyCost#1661,TotalCost#1662,Description#1663,AnimalGroup#1664,OriginOfCall#1665,PropertyType#1666,PropertyCategory#1667,SpecialServiceTypeCategory#1668,SpecialServiceType#1669,Ward#1670,Borough#1671,StnGroundName#1672,PostcodeDistrict#1673] Batched: true, Format: Parquet, Location: InMemoryFileIndex[hdfs://dnt01/training/train_tmp/hive/staging_example_mitchs], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<IncidentNumber:string,DateTimeOfCall:date,CalYear:int,FinYear:string,TypeOfIncident:string...
 "
 39,21.0,"DataFrame[]
 ",

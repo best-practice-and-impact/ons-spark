@@ -20,22 +20,23 @@ df = sparklyr::sdf_seq(sc, 1, num_rows) %>%
 
 for (i in 1: new_cols)
 {
-  column_name = paste0('col_', i)
-  prev_column = paste0('col_', i-1)
+  column_name <- paste0('col_', i)
+  prev_column <- paste0('col_', i-1)
   df <- df %>%
     sparklyr::mutate(
       !!column_name := case_when(
-        !!as.symbol(prev_column) > i ~ !!as.symbol(prev_column)))
+        !!as.symbol(prev_column) > i ~ !!as.symbol(prev_column),
+        TRUE ~ 0 ))
   
 }
 
 df %>%
-    head(10)%>%
-    sparklyr::collect()%>%
+    head(10) %>%
+    sparklyr::collect() %>%
     print()
 
 end_time <- Sys.time()
-time_taken = end_time - start_time
+time_taken <- end_time - start_time
 
 cat("Time taken to create DataFrame", time_taken)
 
@@ -61,12 +62,13 @@ df1 = sparklyr::sdf_seq(sc, 1, num_rows) %>%
 
 for (i in 1: new_cols)
 {
-  column_name = paste0('col_', i)
-  prev_column = paste0('col_', i-1)
+  column_name <- paste0('col_', i)
+  prev_column <- paste0('col_', i-1)
   df1 <- df1 %>%
     sparklyr::mutate(
     !!column_name := case_when(
-        !!as.symbol(prev_column) > i ~ !!as.symbol(prev_column) ))
+        !!as.symbol(prev_column) > i ~ !!as.symbol(prev_column),
+        TRUE ~ 0 ))
   
   
   if (i %% 3 == 0) 
@@ -76,12 +78,12 @@ for (i in 1: new_cols)
 }
 
 df1 %>%
-    head(10)%>%
-    sparklyr::collect()%>%
+    head(10) %>%
+    sparklyr::collect() %>%
     print()
 
 end_time <- Sys.time()
-time_taken = end_time - start_time
+time_taken <- end_time - start_time
 
 
 cat("Time taken to create DataFrame: ", time_taken)
@@ -106,14 +108,14 @@ df = sparklyr::spark_read_csv(sc,
                               header=TRUE,
                               infer_schema=TRUE)
 
-df %>%
-    sparklyr::select( 
-             -("WardCode"), 
-             -("BoroughCode"), 
-             -("Easting_m"), 
-             -("Northing_m"), 
-             -("Easting_rounded"), 
-             -("Northing_rounded"), 
+df <- df %>%
+    sparklyr::select(-c( 
+             "WardCode", 
+             "BoroughCode", 
+             "Easting_m", 
+             "Northing_m", 
+             "Easting_rounded", 
+             "Northing_rounded"), 
             "EngineCount" = "PumpCount",
             "Description" = "FinalDescription",
             "HourlyCost" = "HourlyNotionalCostGBP",
@@ -123,7 +125,9 @@ df %>%
             "AnimalGroup" = "AnimalGroupParent") %>%
 
     sparklyr::mutate(DateTimeOfCall = to_date(DateTimeOfCall, "dd/MM/yyyy")) %>%
-    dplyr::arrange(desc(IncidentNumber)) %>%
+    dplyr::arrange(desc(IncidentNumber)) 
+
+df %>%
     head(3) %>%
     sparklyr::collect() %>%
     print() 
@@ -131,7 +135,7 @@ df %>%
 explain(df)
 
 username <- Sys.getenv('HADOOP_USER_NAME')
-invisible(sparklyr::sdf_register(df, 'df'))
+sparklyr::sdf_register(df, 'df')
 
 database <- config$database
 
@@ -139,7 +143,7 @@ table_name_plain <- config$staging_table_example
 table_name <- paste0(table_name_plain, username)
 
 sql <- paste0('DROP TABLE IF EXISTS ', database, '.', table_name)
-dbExecute(sc, sql)
+invisible(dbExecute(sc, sql))
 
 tbl_change_db(sc, database)
 sparklyr::spark_write_table(df, name = table_name)
