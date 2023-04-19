@@ -57,7 +57,7 @@ sparklyr::spark_set_checkpoint_dir(sc, config$checkpoint_path)
  
 start_time <- Sys.time()
 
-df1 = sparklyr::sdf_seq(sc, 1, num_rows) %>%
+df1 <- sparklyr::sdf_seq(sc, 1, num_rows) %>%
     sparklyr::mutate(col_0 = ceiling(rand()*new_cols))
 
 for (i in 1: new_cols)
@@ -101,9 +101,9 @@ sc <- sparklyr::spark_connect(
     app_name = "staging_tables",
     config = sparklyr::spark_config())
  
-animal_rescue_csv = config$rescue_path_csv
+animal_rescue_csv <- config$rescue_path_csv
 
-df = sparklyr::spark_read_csv(sc,
+df <- sparklyr::spark_read_csv(sc,
                               path=animal_rescue_csv,
                               header=TRUE,
                               infer_schema=TRUE)
