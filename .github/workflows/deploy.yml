@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - main
+    tags: 
+      - 'v*'
 
 # This job installs dependencies, build the book, and pushes it to `gh-pages`
 jobs:
@@ -15,17 +17,17 @@ jobs:
         os: [ubuntu-latest]
         python-version: [3.8]
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     # Install dependencies
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
         pip install -r requirements.txt
-
+        
     # Build the book
     - name: Build the book
       run: |
