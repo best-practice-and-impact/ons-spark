@@ -4,7 +4,7 @@ Pre-merge request checklist (to be completed by the one making the request):
  - [ ] I have performed a full review of this code myself
     - For python code in PySpark specific all code should have been run in jupyter notebooks. 
     - For code in sections of the book containing both Python and R code, the page of the book should be constructed as described in the contributing guide and converted to a markdown file. 
- - [ ] I have formatted the outputs of code blocks correctly
+ - [ ] I have formatted the outputs of code blocks correctly (to match other outputs in the book and in line with the style guide [coming soon])
 
 
 Details of this request (such as):
