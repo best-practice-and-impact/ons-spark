@@ -54,7 +54,23 @@ rescue %>% sparklyr::sdf_nrow()
 [1] 5898
 ```
 ````
+To fully test how spark sampling functions are impacted by partitions we will also make use of a skewed dataframe.
 
+````{tabs}
+
+```{code-tab} plaintext Python
+ skewed_df = spark.range(1e6).withColumn("skew_col",F.when(F.col('id') < 100, 'A')
+                                        .when(F.col('id') < 1000, 'B')
+                                        .when(F.col('id') < 10000, 'C')
+                                        .when(F.col('id') < 100000, 'D')
+                                        .otherwise('E')
+                                        )
+
+skewed_df = skewed_df.repartition('skew_col')
+```
+
+
+````
 
 ### Sampling: `.sample()` and `sdf_sample()`
 
@@ -199,7 +215,7 @@ The following section gives more detail on sampling and how it is processed on t
 
 
 
-### Other sampling functions
+### Additional sampling methods?
 
 #### Returning an exact sample
 
