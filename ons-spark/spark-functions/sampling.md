@@ -224,6 +224,38 @@ skewed_sample = skewed_df.sample(fraction= 0.1, withReplacement= False)
 ````
 
 From the above example, it looks like the original distribution is preserved.
+We will now rerun the above sampleing, but we first repartition our skewed dataframe. 
+````{tabs}
+
+```{code-tab} py
+equal_partitions_df = skewed_df.repartition(20)
+equal_partitions_sample = equal_partitions_df.sample(fraction=0.1, withReplacement=False)
+(equal_partitions_sample.groupBy('skew_col')
+    .agg(F.count('skew_col').alias('count'))
+    .withColumn('percentage_of_dataframe',F.col('count')/equal_partitions_sample.count()*100)
+    .sort('skew_col')
+    .show())
+
+```
+
+````
+
+````{tabs}
+
+```{code-tab} plaintext Python Output
++--------+-----+-----------------------+
+|skew_col|count|percentage_of_dataframe|
++--------+-----+-----------------------+
+|       A|    7|   0.006998670252651997|
+|       B|   95|    0.09498195342884852|
+|       C|  881|     0.8808326417980584|
+|       D| 9238|       9.23624511342845|
+|       E|89798|        89.780941621092|
++--------+-----+-----------------------+
+```
+
+````
+From the above examples we can see that we get similar samples regardless of how the data is partitioned, where each row within the dataframe is equally likely to be added to the sample.
 Although one sample has been shown here, this has been tested using multiple random samples and further worked details can be found in a worked notebook [details on worked notebook]()
 
 #### sampling with replacement
@@ -319,10 +351,40 @@ weights_df = spark.createDataFrame(list(weights.items()), schema=["animal_group"
 ```
 ````
 
-### More details on sampling
+#### An example using the skewed dataset:
 
-The following section gives more detail on sampling and how it is processed on the Spark cluster. is not compulsory reading, but may be of interest to some Spark users.
+Using `.sampleBy()` to sample a skewed dataset is perhaps better than using `.sample()` as you can specify the fractions of each strata within your sample to ensure that the strata in the sample are representative of the overall population. 
 
+
+````{tabs}
+```{code-tab} py
+sk_weights = {"A":0.2, "B": 0.1, "C": 0.5, "D":0.1, "E":0.3}
+stratified_sk_sample = skewed_df.sampleBy("skew_col", fractions=sk_weights)
+
+(stratified_sk_sample
+    .groupBy('skew_col')
+    .agg(F.count('skew_col').alias('count'))
+    .withColumn('percentage_of_dataframe',F.col('count')/stratified_sk_sample.count()*100)
+    .sort('skew_col')
+    .show()
+)
+
+```
+````
+
+````{tabs}
+```{code-tab} plaintext Python Outputs
++--------+------+-----------------------+
+|skew_col| count|percentage_of_dataframe|
++--------+------+-----------------------+
+|       A|    22|   0.007754861769588957|
+|       B|    93|    0.03278191566235332|
+|       C|  4564|      1.608781323472909|
+|       D|  9004|     3.1738534260626805|
+|       E|270010|      95.17682847303247|
++--------+------+-----------------------+
+```
+````
 
 
 ### Additional sampling methods?
@@ -429,7 +491,7 @@ This section briefly discusses similar functions to `.sample()` and `sdf_sample(
 
 Every row in the DF will be allocated to one of the split DFs. In common with the other sampling methods the exact size of each split may vary. An optional seed can also be set.
 
-For instance, to split the animal rescue data into three DFs with a weighting of $50\%$, $40\%$ and $10\%$ in PySpark:
+For instance, to split the animal rescue data into three DFs with a weighting of $50\%$, $40\%$ and $10\%$:
 ````{tabs}
 ```{code-tab} py
 split1, split2, split3 = rescue.randomSplit([0.5, 0.4, 0.1])
