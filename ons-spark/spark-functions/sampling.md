@@ -560,6 +560,35 @@ Split count total: 5898
 ```
 ````
 
+#### Splitting via `monotonically_increasing_id()`
+Finally we will cover an alternate method of splitting a dataframe by using the `monotonically_increasing_id()` spark function.
+This will add a unique id number to each row which is larger than the previous id. 
+Within a partition, rows will be numbered sequentially starting at 0 for the first row in the first partition, with large increases in row id occuring between partitions.
+````{tabs}
+```{code-tab} py
+rescue_id = rescue.repartition(20)
+
+rescue_id = (rescue_id
+             .withColumn('row_id', F.monotonically_increasing_id())
+             .withColumn('group_number', F.col('row_id')%3)
+)
+
+rescue_subsample_1 = rescue_id.filter(F.col('group_number') == 0)
+rescue_subsample_2 = rescue_id.filter(F.col('group_number') == 1)
+rescue_subsample_3 = rescue_id.filter(F.col('group_number') == 2)
+
+print(rescue_subsample_1.count(),
+    rescue_subsample_2.count(),
+    rescue_subsample_3.count())
+
+```
+````
+
+````{tabs}
+```{code-tab} plaintext Python Output
+1966 1966 1966
+```
+````
 ### Further Resources
 
 Spark at the ONS Articles:
