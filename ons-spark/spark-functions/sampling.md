@@ -5,7 +5,7 @@ You can take a sample of a DataFrame with [`.sample()`](https://spark.apache.org
 It is important to note that sampling in Spark returns an approximate fraction of the data, rather than an exact one. The reason for this is explained in the [Returning an exact sample](#returning-an-exact-sample) section.
 
 #### Creating spark session and loading data
-First, set up the Spark session, read the Animal Rescue data, and then get the row count:
+First, set up the Spark session, read the Animal Rescue data:
 ````{tabs}
 ```{code-tab} py
 import os
@@ -154,6 +154,108 @@ Seed 2 count: 589
 We can see that both samples have returned the same number of rows due to the identical seed.
 
 Another way of replicating results is with [persisting](../spark-concepts/persistence). [Caching](../spark-concepts/cache) or [checkpointing](../raw-notebooks/checkpoint-staging/checkpoint-staging) the DataFrame will avoid recalculation of the DF within the same Spark session. Writing out the DF to a Hive table or parquet enables it to be used in subsequent Spark sessions. See the chapter on persisting for more detail.
+
+#### Does `.sample()` preserve the distribution, regardless of partitions?
+
+We also wish to perform checks on the `.sample()` function to determine how this will be impacted by when the original dataframe has a large skew across partitions. 
+Additionally we will verify that the original distribution is preserved when sampling without replacement.
+First we group the data by `skew_col` and caclulate how much of the dataframe each column represents.
+````{tabs}
+
+```{code-tab} py
+(skewed_df.groupBy('skew_col')
+    .agg(F.count('skew_col').alias('count'))
+    .withColumn('percentage_of_dataframe',F.col('count')/skewed_df.count()*100)
+    .sort('skew_col')
+    .show())
+
+```
+
+````
+
+````{tabs}
+
+```{code-tab} plaintext Python Output
++--------+------+-----------------------+
+|skew_col| count|percentage_of_dataframe|
++--------+------+-----------------------+
+|       A|   100|                   0.01|
+|       B|   900|                   0.09|
+|       C|  9000|     0.8999999999999999|
+|       D| 90000|                    9.0|
+|       E|900000|                   90.0|
++--------+------+-----------------------+
+
+```
+
+````
+As expected group `E` makes up 90% of the dataframe. 
+Now we will sample 10% of the dataframe and assess the distribution of the sampled dataframe.
+
+````{tabs}
+
+```{code-tab} py
+skewed_sample = skewed_df.sample(fraction= 0.1, withReplacement= False)
+(skewed_sample.groupBy('skew_col')
+    .agg(F.count('skew_col').alias('count'))
+    .withColumn('percentage_of_dataframe',F.col('count')/skewed_sample.count()*100)
+    .sort('skew_col')
+    .show())
+
+```
+
+````
+
+````{tabs}
+
+```{code-tab} plaintext Python Output
++--------+-----+-----------------------+
+|skew_col|count|percentage_of_dataframe|
++--------+-----+-----------------------+
+|       A|   11|   0.011034759492401063|
+|       B|   79|    0.07924963635451672|
+|       C|  927|     0.9299292772232532|
+|       D| 8820|      8.847870792997943|
+|       E|89848|      90.13191553393189|
++--------+-----+-----------------------+
+
+```
+
+````
+
+From the above example, it looks like the original distribution is preserved.
+Although one sample has been shown here, this has been tested using multiple random samples and further worked details can be found in a worked notebook [details on worked notebook]()
+
+#### sampling with replacement
+We have constructed a small example for sampling with replacement. 
+Here we count the number of times the unique `IncidentNumber` occurs within the sampled dataframe.
+
+````{tabs}
+```{code-tab} py
+replacement_sample = rescue.sample(fraction=0.1,withReplacement=True,seed = 20)
+(replacement_sample.groupBy('IncidentNumber')
+                    .agg(F.count('IncidentNumber')
+                    .alias('count'))
+                    .orderBy('count',ascending = False)
+                    .show(5))
+```
+
+````
+
+````{tabs}
+```{code-tab} plaintext Python Output
++---------------+-----+
+| IncidentNumber|count|
++---------------+-----+
+|       60136101|    3|
+|       96639111|    2|
+|078728-17062017|    2|
+|       55544131|    2|
+|       85777111|    2|
++---------------+-----+
+only showing top 5 rows
+```
+````
 
 ### Stratified samples: `.sampleBy()`
 
