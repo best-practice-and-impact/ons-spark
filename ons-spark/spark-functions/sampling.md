@@ -5,7 +5,6 @@ You can take a sample of a DataFrame with [`.sample()`](https://spark.apache.org
 It is important to note that sampling in Spark returns an approximate fraction of the data, rather than an exact one. The reason for this is explained in the [Returning an exact sample](#returning-an-exact-sample) section.
 
 #### Creating spark session and loading data
-
 First, set up the Spark session, read the Animal Rescue data, and then get the row count:
 ````{tabs}
 ```{code-tab} py
@@ -20,8 +19,6 @@ with open("../../../config.yaml") as f:
     
 rescue_path = config["rescue_path"]
 rescue = spark.read.parquet(rescue_path)
-
-rescue.count()
 ```
 
 ```{code-tab} r R
@@ -39,26 +36,12 @@ config <- yaml::yaml.load_file("ons-spark/config.yaml")
 
 rescue <- sparklyr::spark_read_parquet(sc, config$rescue_path)
 
-rescue %>% sparklyr::sdf_nrow()
-
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-5898
-```
-
-```{code-tab} plaintext R Output
-[1] 5898
 ```
 ````
 To fully test how spark sampling functions are impacted by partitions we will also make use of a skewed dataframe.
 
 ````{tabs}
-
-```{code-tab} plaintext Python
+```{code-tab} py
  skewed_df = spark.range(1e6).withColumn("skew_col",F.when(F.col('id') < 100, 'A')
                                         .when(F.col('id') < 1000, 'B')
                                         .when(F.col('id') < 10000, 'C')
@@ -68,22 +51,43 @@ To fully test how spark sampling functions are impacted by partitions we will al
 
 skewed_df = skewed_df.repartition('skew_col')
 ```
+```{code-tab} r R
+R CODE NEEDS TO BE WRITEN
+ skewed_df <- spark.range(1e6).withColumn("skew_col",F.when(F.col('id') < 100, 'A')
+                                        .when(F.col('id') < 1000, 'B')
+                                        .when(F.col('id') < 10000, 'C')
+                                        .when(F.col('id') < 100000, 'D')
+                                        .otherwise('E')
+                                        )
 
+rescue %>% sparklyr::sdf_nrow()
+
+```
 
 ````
 
 ### Sampling: `.sample()` and `sdf_sample()`
 
+#### Sampling without repacement
 
-To use `.sample()`, set the `fraction`, which is between 0 and 1. So if we want a $20\%$ sample, use `fraction=0.2`. Note that this will give an *approximate* sample and so you will likely get slightly more or fewer rows than you expect.
+First we will sample our dataframes without replacement. From the [PySpark documentation](https://spark.apache.org/docs/3.1.2/api/python/reference/api/pyspark.sql.DataFrame.sample.html), we see that a uniform sampling method is used, where each row is equally likly to be sampled. 
+We should check that this is indeed occuring for an evenly distrubuted dataframe across a number of partitions (`rescue`) and a skewed dataset (`skew_df`).
+To use `.sample()`, we need to specify a `fraction`, which is a value betwen 0 and 1. 
+So if we want to obtain a 20% sample we would use `fraction = 0.2`. 
+As this uses uniform sampling therefore an *approximate* sample is returned, so you will get either slightly more or less than the specified fraction you original input.
 
-You can select to sample with replacement by setting `withReplacement=True` in PySpark or `replacement=TRUE` in sparklyr, which is set to `False` by default.
+For `.sample()` and `sdf_sample()` it is advised to specify the arguments explicitly. 
+One reason is that `fraction` is a compulsory argument, but in PySpark is after `withReplacement`. 
+Another reason is that in sparklyr the arguments are in a different order, with fraction listed first; if you use both languages it is easy to make a mistake.
+Finally a key difference is that by default `.sample()` samples without replacement while `sdf_sample()` samples with replacement which could cause confusion when switching between the languages.
 
-For these functions it is advised to specify the arguments explicitly. One reason is that `fraction` is a compulsory argument, but in PySpark is *after* `withReplacement`. Another reason is that in sparklyr the arguments are in a different order, with `fraction` listed first; if you use both languages it is easy to make a mistake.
+
 ````{tabs}
 ```{code-tab} py
 rescue_sample = rescue.sample(withReplacement=False, fraction=0.1)
-rescue_sample.count()
+print('Total rows in original df:',rescue.count())
+print('Total rows in sampled df:',rescue_sample.count())
+print('Fraction of rows sampled',rescue_sample.count()/rescue.count())
 ```
 
 ```{code-tab} r R
@@ -97,11 +101,15 @@ rescue_sample %>% sparklyr::sdf_nrow()
 ````{tabs}
 
 ```{code-tab} plaintext Python Output
-588
+Total rows in original df: 5898
+Total rows in sampled df: 599
+Fraction of rows sampled 0.1015598507968803
 ```
 
 ```{code-tab} plaintext R Output
-[1] 552
+[1] "Total rows in original df: 5898"
+[1] "Total rows in sampled df: 577"
+[1] "Fraction of rows sampled: 0.0978297728043405"
 ```
 ````
 You can also set a seed, in a similar way to how random numbers generators work. This enables replication, which is useful in Spark given that the DataFrame will be otherwise be re-sampled every time an action is called.
@@ -116,7 +124,7 @@ rescue_sample_seed_2 = rescue.sample(withReplacement=None,
                       seed=99)
 
 print(f"Seed 1 count: {rescue_sample_seed_1.count()}")
-print(f"Seed 2 count: {rescue_sample_seed_1.count()}")
+print(f"Seed 2 count: {rescue_sample_seed_2.count()}")
 ```
 
 ```{code-tab} r R
