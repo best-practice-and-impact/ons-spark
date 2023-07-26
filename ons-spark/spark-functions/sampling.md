@@ -2,17 +2,17 @@
 
 Sampling is something that you may want to do during development or initial analysis of data, as with a smaller amount of data your code will run faster and requires less memory to process. 
 
-There are multiple different methods that can be used to sample your data such as:
+There are many different ways that a dataframe can be sampled, the two main types covered in this page are:
 1) **simple random sampling**: [`.sample()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sample.html) in Pyspark and [`sdf_sample()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_sample.html) in SparklyR and
-2) **stratified sampling**: [`.sampleBy()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sampleBy.html) in Pyspark and XXX in SparklyR.
+2) **stratified sampling**: [`.sampleBy()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sampleBy.html) in Pyspark and XXX in SparklyR (Don't belive the alternate method will work in the current spark version. must have spark > 3.0.0).
 
 Although, these two methods are the focus of this page there are numerous methods that can be used for sampling that will not be covered here, such as systematic sampling and cluster sampling. 
 
 *insert a diagram to give a simple overview of what these sampling methods are OR do this under the individual headings instead*
 
-Both `.sample()` and `.sampleBy()` in Pyspark use the same base functions for sampling with and without replacement. For sampling without replacement spark implements a uniform sampling method using random number generation. A row will be added to the sample if the randomly generated number is smaller than the fraction input and each row has an equal probability of being sampled (more information on this can be found in [link example](#link-example)). Whereas for sampling with replacement numbers are generated from a Poisson distribution (check details on this). A link to the alogirithm breakdown can be found [here](https://github.com/apache/spark/blob/master/python/pyspark/rddsampler.py).
+Both `.sample()` and `.sampleBy()` in Pyspark use the same base functions for sampling with and without replacement. For sampling without replacement spark implements a uniform sampling method using random number generation. A row will be added to the sample if the randomly generated number is smaller than the fraction input and each row has an equal probability of being sampled. Whereas for sampling with replacement numbers are generated from a Poisson sample (check details on this). A link to the alogirithm breakdown can be found [here](https://github.com/apache/spark/blob/master/python/pyspark/rddsampler.py).
 
-It is important to note that sampling in Spark returns an approximate fraction of the data, rather than an exact one. The reason for this is explained in the [Returning an exact sample](#returning-an-exact-sample) section.
+It is important to note that sampling in Spark returns an approximate fraction of the data, rather than an exact one. The reason for this is explained in the [sample](#sampling-sample-and-sdf_sample) section.
 
 #### Creating spark session and loading data
 First, set up the Spark session, read the Animal Rescue data:
@@ -62,15 +62,13 @@ To fully test how spark sampling functions are impacted by partitions we will al
 skewed_df = skewed_df.repartition('skew_col')
 ```
 ```{code-tab} r R
-R CODE NEEDS TO BE WRITEN
- skewed_df <- spark.range(1e6).withColumn("skew_col",F.when(F.col('id') < 100, 'A')
-                                        .when(F.col('id') < 1000, 'B')
-                                        .when(F.col('id') < 10000, 'C')
-                                        .when(F.col('id') < 100000, 'D')
-                                        .otherwise('E')
-                                        )
-
-rescue %>% sparklyr::sdf_nrow()
+skewed_df <- sparklyr::sdf_seq(sc,from = 1, to = 1e6) %>%
+          sparklyr::mutate(skew_col = case_when(
+          id <= 100 ~ 'A',
+          id <= 1000 ~ 'B',
+          id <= 10000 ~ 'C',
+          id <= 100000 ~ 'D',
+          .default = 'E'))
 
 ```
 
@@ -80,11 +78,11 @@ rescue %>% sparklyr::sdf_nrow()
 
 #### Sampling without repacement
 
-First we will sample our dataframes without replacement. From the [PySpark documentation](https://spark.apache.org/docs/3.1.2/api/python/reference/api/pyspark.sql.DataFrame.sample.html), we see that a uniform sampling method is used, where each row is equally likly to be sampled. 
+First we will sample our dataframes without replacement. From the [PySpark documentation](https://spark.apache.org/docs/3.1.2/api/python/reference/api/pyspark.sql.DataFrame.sample.html), we see that a uniform sampling method is used, where each row is equally likely to be sampled. 
 We should check that this is indeed occuring for an evenly distrubuted dataframe across a number of partitions (`rescue`) and a skewed dataset (`skew_df`).
 To use `.sample()`, we need to specify a `fraction`, which is a value betwen 0 and 1. 
 So if we want to obtain a 20% sample we would use `fraction = 0.2`. 
-As this uses uniform sampling therefore an *approximate* sample is returned, so you will get either slightly more or less than the specified fraction you original input.
+As `.sample` and `sdf_sample()` implements uniform sampling, an *approximate* sample is returned, so you will get either slightly more or less than the specified fraction you original input.
 
 For `.sample()` and `sdf_sample()` it is advised to specify the arguments explicitly. 
 One reason is that `fraction` is a compulsory argument, but in PySpark is after `withReplacement`. 
@@ -104,6 +102,10 @@ print('Fraction of rows sampled',rescue_sample.count()/rescue.count())
 
 rescue_sample <- rescue %>% sparklyr::sdf_sample(fraction=0.1, replacement=FALSE)
 rescue_sample %>% sparklyr::sdf_nrow()
+
+print(paste0("Total rows in original df: ", sparklyr::sdf_nrow(rescue)))
+print(paste0("Total rows in sampled df: ", sparklyr::sdf_nrow(rescue_sample)))
+print(paste0("Fraction of rows sampled: ", sparklyr::sdf_nrow(rescue_sample)/sparklyr::sdf_nrow(rescue)))
 
 ```
 ````
@@ -274,7 +276,7 @@ Here we count the number of times the unique `IncidentNumber` occurs within the 
 
 ````{tabs}
 ```{code-tab} py
-replacement_sample = rescue.sample(fraction=0.1,withReplacement=True,seed = 20)
+replacement_sample = rescue.sample(fraction = 0.1, withReplacement = True, seed = 20)
 (replacement_sample.groupBy('IncidentNumber')
                     .agg(F.count('IncidentNumber')
                     .alias('count'))
