@@ -1,4 +1,4 @@
-
+options(warn = -1)
 library(sparklyr)
 
 default_config <- sparklyr::spark_config()
@@ -12,10 +12,23 @@ config <- yaml::yaml.load_file("ons-spark/config.yaml")
 
 rescue <- sparklyr::spark_read_parquet(sc, config$rescue_path)
 
-rescue %>% sparklyr::sdf_nrow()
+
+skewed_df <- sparklyr::sdf_seq(sc,from = 1, to = 1e6) %>%
+          sparklyr::mutate(skew_col = case_when(
+          id <= 100 ~ 'A',
+          id <= 1000 ~ 'B',
+          id <= 10000 ~ 'C',
+          id <= 100000 ~ 'D',
+          .default = 'E'))
+
 
 rescue_sample <- rescue %>% sparklyr::sdf_sample(fraction=0.1, replacement=FALSE)
 rescue_sample %>% sparklyr::sdf_nrow()
+
+print(paste0("Total rows in original df: ", sparklyr::sdf_nrow(rescue)))
+print(paste0("Total rows in sampled df: ", sparklyr::sdf_nrow(rescue_sample)))
+print(paste0("Fraction of rows sampled: ", sparklyr::sdf_nrow(rescue_sample)/sparklyr::sdf_nrow(rescue)))
+
 
 
 rescue_sample_seed_1 <- rescue %>% sparklyr::sdf_sample(fraction=0.1, seed=99)
@@ -28,12 +41,14 @@ fraction <- 0.1
 row_count <- round(sparklyr::sdf_nrow(rescue) * fraction)
 row_count
 
+
 rescue %>%
     sparklyr::mutate(rand_no = rand()) %>%
     dplyr::arrange(rand_no) %>%
     head(row_count) %>%
-    sparklyr::select(-rand_no) %>%
+    sparklyr::select(rand_no) %>%
     sparklyr::sdf_nrow()
+
 
 rescue %>%
     sparklyr::filter(cal_year == 2012 | cal_year == 2017) %>%
