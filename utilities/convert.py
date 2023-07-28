@@ -1,9 +1,9 @@
 from notebook_converter import markdown_from_notebook
 
 
-group = "spark-concepts"
-folder = "checkpoint-staging"
-page = "checkpoint-staging"
+group = "spark-functions"
+folder = "sampling"
+page = "sampling"
 base_path = "/home/cdsw/ons-spark/ons-spark/"
 out_path = base_path + group
 
