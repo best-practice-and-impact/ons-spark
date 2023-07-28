@@ -10,8 +10,7 @@ sc <- sparklyr::spark_connect(
 
 config <- yaml::yaml.load_file("ons-spark/config.yaml")
 
-rescue <- sparklyr::spark_read_parquet(sc, config$rescue_path)
-
+rescue <- sparklyr::spark_read_csv(sc, config$rescue_path_csv, header=TRUE, infer_schema=TRUE)
 
 skewed_df <- sparklyr::sdf_seq(sc,from = 1, to = 1e6) %>%
           sparklyr::mutate(skew_col = case_when(
@@ -51,7 +50,7 @@ rescue %>%
 
 
 rescue %>%
-    sparklyr::filter(cal_year == 2012 | cal_year == 2017) %>%
+    sparklyr::filter(CalYear == 2012 | CalYear == 2017) %>%
     sparklyr::sdf_nrow()
 
 splits <- rescue %>% sparklyr::sdf_random_split(

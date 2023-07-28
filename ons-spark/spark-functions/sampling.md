@@ -46,8 +46,7 @@ sc <- sparklyr::spark_connect(
 
 config <- yaml::yaml.load_file("ons-spark/config.yaml")
 
-rescue <- sparklyr::spark_read_parquet(sc, config$rescue_path)
-
+rescue <- sparklyr::spark_read_csv(sc, config$rescue_path_csv, header=TRUE, infer_schema=TRUE)
 
 ```
 ````
@@ -125,10 +124,10 @@ Fraction of rows sampled 0.09732112580535775
 ```
 
 ```{code-tab} plaintext R Output
-[1] 577
+[1] 609
 [1] "Total rows in original DF: 5898"
-[1] "Total rows in sampled DF: 577"
-[1] "Fraction of rows sampled: 0.0978297728043405"
+[1] "Total rows in sampled DF: 609"
+[1] "Fraction of rows sampled: 0.103255340793489"
 ```
 ````
 You can also set a seed, in a similar way to how random numbers generators work. This enables replication, which is useful in Spark given that the DataFrame will be otherwise be re-sampled every time an action is called.
@@ -166,8 +165,8 @@ Seed 2 count: 593
 ```
 
 ```{code-tab} plaintext R Output
-1] "Seed 1 count: 563"
-[1] "Seed 2 count: 563"
+1] "Seed 1 count: 607"
+[1] "Seed 2 count: 607"
 ```
 ````
 We can see that both samples have returned the same number of rows due to the identical seed.
@@ -452,7 +451,7 @@ row_count
 ```
 
 ```{code-tab} plaintext R Output
-
+"
 [1] 590
 ```
 ````
@@ -483,7 +482,7 @@ rescue %>%
 ```
 
 ```{code-tab} plaintext R Output
-1] 590
+[1] 590
 ```
 ````
 #### Partitioning
@@ -501,7 +500,7 @@ rescue.filter(F.col("CalYear").isin(2012, 2017)).count()
 ```{code-tab} r R
 
 rescue %>%
-    sparklyr::filter(cal_year == 2012 | cal_year == 2017) %>%
+    sparklyr::filter(CalYear == 2012 | CalYear == 2017) %>%
     sparklyr::sdf_nrow()
 
 ```
@@ -514,8 +513,7 @@ rescue %>%
 ```
 
 ```{code-tab} plaintext R Output
-
-[1] 1142
+1] 1142
 ```
 ````
 The disadvantage of this method is that you may have data quality issues in the original DF that will not be encountered, whereas these may be discovered with `.sample()`. Using unit testing and test driven development can mitigate the risk of these issues.
@@ -558,9 +556,10 @@ Split3: 624
 ```
 
 ```{code-tab} plaintext R Output
-1] "Split1: 2915"
-[1] "Split2: 2366"
-[1] "Split3: 617"
+
+[1] "Split1: 2912"
+[1] "Split2: 2361"
+[1] "Split3: 625"
 ```
 ````
 Check that the count of the splits equals the total row count:
@@ -589,7 +588,6 @@ Split count total: 5898
 ```
 
 ```{code-tab} plaintext R Output
-
 [1] "DF count: 5898"
 [1] "Split count total: 5898"
 ```
