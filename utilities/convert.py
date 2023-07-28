@@ -1,4 +1,4 @@
-#from utilities import markdown_from_notebook
+from notebook_converter import markdown_from_notebook
 
 
 group = "spark-concepts"
@@ -16,5 +16,6 @@ nb_maker = (markdown_from_notebook(in_path + "/" + page + ".ipynb",
                                    show_warnings=False,
                                    output_type="tabs")
 )
+
 
 
