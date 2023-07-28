@@ -25,8 +25,8 @@ skewed_df <- sparklyr::sdf_seq(sc,from = 1, to = 1e6) %>%
 rescue_sample <- rescue %>% sparklyr::sdf_sample(fraction=0.1, replacement=FALSE)
 rescue_sample %>% sparklyr::sdf_nrow()
 
-print(paste0("Total rows in original df: ", sparklyr::sdf_nrow(rescue)))
-print(paste0("Total rows in sampled df: ", sparklyr::sdf_nrow(rescue_sample)))
+print(paste0("Total rows in original DF: ", sparklyr::sdf_nrow(rescue)))
+print(paste0("Total rows in sampled DF: ", sparklyr::sdf_nrow(rescue_sample)))
 print(paste0("Fraction of rows sampled: ", sparklyr::sdf_nrow(rescue_sample)/sparklyr::sdf_nrow(rescue)))
 
 
