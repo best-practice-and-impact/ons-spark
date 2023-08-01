@@ -124,10 +124,10 @@ Fraction of rows sampled 0.09732112580535775
 ```
 
 ```{code-tab} plaintext R Output
-[1] 609
+[1] 617
 [1] "Total rows in original DF: 5898"
-[1] "Total rows in sampled DF: 609"
-[1] "Fraction of rows sampled: 0.103255340793489"
+[1] "Total rows in sampled DF: 617"
+[1] "Fraction of rows sampled: 0.104611732790777"
 ```
 ````
 You can also set a seed, in a similar way to how random numbers generators work. This enables replication, which is useful in Spark given that the DataFrame will be otherwise be re-sampled every time an action is called.
@@ -165,7 +165,7 @@ Seed 2 count: 593
 ```
 
 ```{code-tab} plaintext R Output
-1] "Seed 1 count: 607"
+[1] "Seed 1 count: 607"
 [1] "Seed 2 count: 607"
 ```
 ````
@@ -263,7 +263,7 @@ equal_partitions_sample = equal_partitions_df.sample(fraction=0.1, withReplaceme
 From the above examples we can see that we get similar samples regardless of how the data is partitioned, where each row within the dataframe is equally likely to be added to the sample.
 Although one sample has been shown here, this has been tested using multiple random samples and further worked details can be found in a worked notebook [details on worked notebook]()
 
-#### sampling with replacement
+#### Sampling with Replacement
 We have constructed a small example for sampling with replacement. 
 Here we count the number of times the unique `IncidentNumber` occurs within the sampled dataframe.
 ````{tabs}
@@ -274,6 +274,17 @@ replacement_sample = rescue.sample(fraction = 0.1, withReplacement = True, seed 
                      .agg(F.count('IncidentNumber').alias('count'))
                      .orderBy('count',ascending = False)
                      .show(5))
+```
+
+```{code-tab} r R
+
+replacement_sample = rescue %>% sparklyr::sdf_sample(fraction=0.1, replacement=TRUE, seed = 20)
+replacement_sample %>% sparklyr::sdf_nrow()
+
+replacement_sample %>%
+    dplyr::group_by(IncidentNumber) %>%
+    dplyr::count(IncidentNumber)
+
 ```
 ````
 
@@ -290,6 +301,26 @@ replacement_sample = rescue.sample(fraction = 0.1, withReplacement = True, seed 
 |       63575131|    2|
 +---------------+-----+
 only showing top 5 rows
+```
+
+```{code-tab} plaintext R Output
+
+[1] 630
+# Source: spark<?> [?? x 2]
+# Groups: IncidentNumber
+   IncidentNumber     n
+   <chr>          <dbl>
+ 1 46614091           1
+ 2 100131091          1
+ 3 203387091          1
+ 4 231397091          1
+ 5 58950101           1
+ 6 69934101           1
+ 7 99084101           1
+ 8 105429101          1
+ 9 122528101          1
+10 166316101          1
+# ℹ more rows
 ```
 ````
 ### Stratified samples: `.sampleBy()`
@@ -415,7 +446,7 @@ stratified_sk_sample = skewed_df.sampleBy("skew_col", fractions=sk_weights)
 ````
 **Conclusion**: the .sampleBy() function will produce similar results independant of partitions!
 
-### Additional sampling methods?
+### Information on alternate sampling methods
 
 ### More details on sampling
 
@@ -451,7 +482,6 @@ row_count
 ```
 
 ```{code-tab} plaintext R Output
-"
 [1] 590
 ```
 ````
@@ -513,7 +543,7 @@ rescue %>%
 ```
 
 ```{code-tab} plaintext R Output
-1] 1142
+[1] 1142
 ```
 ````
 The disadvantage of this method is that you may have data quality issues in the original DF that will not be encountered, whereas these may be discovered with `.sample()`. Using unit testing and test driven development can mitigate the risk of these issues.
@@ -556,10 +586,9 @@ Split3: 624
 ```
 
 ```{code-tab} plaintext R Output
-
-[1] "Split1: 2912"
-[1] "Split2: 2361"
-[1] "Split3: 625"
+1] "Split1: 2936"
+[1] "Split2: 2385"
+[1] "Split3: 577"
 ```
 ````
 Check that the count of the splits equals the total row count:
@@ -588,6 +617,7 @@ Split count total: 5898
 ```
 
 ```{code-tab} plaintext R Output
+
 [1] "DF count: 5898"
 [1] "Split count total: 5898"
 ```

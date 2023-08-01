@@ -36,6 +36,13 @@ rescue_sample_seed_2 <- rescue %>% sparklyr::sdf_sample(fraction=0.1, seed=99)
 print(paste0("Seed 1 count: ", rescue_sample_seed_1 %>% sparklyr::sdf_nrow()))
 print(paste0("Seed 2 count: ", rescue_sample_seed_2 %>% sparklyr::sdf_nrow()))
 
+replacement_sample = rescue %>% sparklyr::sdf_sample(fraction=0.1, replacement=TRUE, seed = 20)
+replacement_sample %>% sparklyr::sdf_nrow()
+
+replacement_sample %>%
+    dplyr::group_by(IncidentNumber) %>%
+    dplyr::count(IncidentNumber)
+
 fraction <- 0.1
 row_count <- round(sparklyr::sdf_nrow(rescue) * fraction)
 row_count
