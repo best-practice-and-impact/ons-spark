@@ -20,6 +20,8 @@ skewed_df <- sparklyr::sdf_seq(sc,from = 1, to = 1e6) %>%
           id <= 100000 ~ 'D',
           .default = 'E'))
 
+skewed_df <- skewed_df %>% sparklyr::sdf_repartition(partition_by = 'skew_col')
+
 
 rescue_sample <- rescue %>% sparklyr::sdf_sample(fraction=0.1, replacement=FALSE)
 rescue_sample %>% sparklyr::sdf_nrow()
@@ -35,6 +37,35 @@ rescue_sample_seed_2 <- rescue %>% sparklyr::sdf_sample(fraction=0.1, seed=99)
 
 print(paste0("Seed 1 count: ", rescue_sample_seed_1 %>% sparklyr::sdf_nrow()))
 print(paste0("Seed 2 count: ", rescue_sample_seed_2 %>% sparklyr::sdf_nrow()))
+
+n_rows <- skewed_df %>% sparklyr::sdf_nrow()
+skewed_df %>%
+        dplyr::group_by(skew_col) %>%
+        dplyr::count(skew_col,name = 'row_count') %>%
+        sparklyr::mutate(percentage_of_dataframe = row_count/n_rows*100) %>%
+        sdf_sort('skew_col')
+
+skewed_sample <- skewed_df %>% sparklyr::sdf_sample(fraction= 0.1, replacement= FALSE)
+
+n_rows_sample <- skewed_sample %>% sparklyr::sdf_nrow()
+
+skewed_sample %>%
+        dplyr::group_by(skew_col) %>%
+        dplyr::count(skew_col,name = 'row_count') %>%
+        sparklyr::mutate(percentage_of_dataframe = row_count/n_rows_sample*100) %>%
+        sdf_sort('skew_col')
+
+equal_partitions_df  <- skewed_df %>% sparklyr::sdf_repartition(20)
+
+equal_partitions_sample <- equal_partitions_df %>% sparklyr::sdf_sample(fraction= 0.1, replacement= FALSE)
+
+n_rows_sample_equal <- equal_partitions_sample %>% sparklyr::sdf_nrow()
+
+equal_partitions_sample %>%
+        dplyr::group_by(skew_col) %>%
+        dplyr::count(skew_col,name = 'row_count') %>%
+        sparklyr::mutate(percentage_of_dataframe = row_count/n_rows_sample_equal*100) %>%
+        sdf_sort('skew_col')
 
 replacement_sample = rescue %>% sparklyr::sdf_sample(fraction=0.1, replacement=TRUE, seed = 20)
 replacement_sample %>% sparklyr::sdf_nrow()
@@ -74,3 +105,17 @@ print(paste0("Split count total: ",
              sparklyr::sdf_nrow(splits$split1) +
              sparklyr::sdf_nrow(splits$split2) +
              sparklyr::sdf_nrow(splits$split3)))
+
+rescue_id <- rescue %>% sparklyr::sdf_repartition(20)
+
+rescue_id <- rescue_id %>%
+                  sparklyr::sdf_with_unique_id(id = "id") %>%
+                  sparklyr::mutate(group_number = id%%3)
+
+rescue_subsample_1 <- rescue_id %>% filter(group_number == 0)
+rescue_subsample_2 <- rescue_id %>% filter(group_number == 1)
+rescue_subsample_3 <- rescue_id %>% filter(group_number == 2)
+
+cat(rescue_subsample_1 %>% sparklyr::sdf_nrow(),
+rescue_subsample_2 %>% sparklyr::sdf_nrow(),
+rescue_subsample_3 %>% sparklyr::sdf_nrow())

@@ -73,6 +73,8 @@ skewed_df <- sparklyr::sdf_seq(sc,from = 1, to = 1e6) %>%
           id <= 100000 ~ 'D',
           .default = 'E'))
 
+skewed_df <- skewed_df %>% sparklyr::sdf_repartition(partition_by = 'skew_col')
+
 
 ```
 ````
@@ -124,10 +126,10 @@ Fraction of rows sampled 0.09732112580535775
 ```
 
 ```{code-tab} plaintext R Output
-[1] 617
+[1] 595
 [1] "Total rows in original DF: 5898"
-[1] "Total rows in sampled DF: 617"
-[1] "Fraction of rows sampled: 0.104611732790777"
+[1] "Total rows in sampled DF: 595"
+[1] "Fraction of rows sampled: 0.100881654798237"
 ```
 ````
 You can also set a seed, in a similar way to how random numbers generators work. This enables replication, which is useful in Spark given that the DataFrame will be otherwise be re-sampled every time an action is called.
@@ -165,6 +167,7 @@ Seed 2 count: 593
 ```
 
 ```{code-tab} plaintext R Output
+
 [1] "Seed 1 count: 607"
 [1] "Seed 2 count: 607"
 ```
@@ -186,6 +189,17 @@ First we group the data by `skew_col` and caclulate how much of the dataframe ea
     .sort('skew_col')
     .show())
 ```
+
+```{code-tab} r R
+
+n_rows <- skewed_df %>% sparklyr::sdf_nrow()
+skewed_df %>%
+        dplyr::group_by(skew_col) %>%
+        dplyr::count(skew_col,name = 'row_count') %>%
+        sparklyr::mutate(percentage_of_dataframe = row_count/n_rows*100) %>%
+        sdf_sort('skew_col')
+
+```
 ````
 
 ````{tabs}
@@ -201,6 +215,17 @@ First we group the data by `skew_col` and caclulate how much of the dataframe ea
 |       E|   900000|                   90.0|
 +--------+---------+-----------------------+
 ```
+
+```{code-tab} plaintext R Output
+# Source: spark<?> [?? x 3]
+  skew_col row_count percentage_of_dataframe
+  <chr>        <dbl>                   <dbl>
+1 A              100                    0.01
+2 B              900                    0.09
+3 C             9000                    0.9 
+4 D            90000                    9   
+5 E           900000                   90   
+```
 ````
 As expected group `E` makes up 90% of the dataframe. 
 Now we will sample 10% of the dataframe and assess the distribution of the sampled dataframe.
@@ -213,6 +238,20 @@ skewed_sample = skewed_df.sample(fraction= 0.1, withReplacement= False)
     .withColumn('percentage_of_dataframe',F.col('row_count')/skewed_sample.count()*100)
     .sort('skew_col')
     .show())
+```
+
+```{code-tab} r R
+
+skewed_sample <- skewed_df %>% sparklyr::sdf_sample(fraction= 0.1, replacement= FALSE)
+
+n_rows_sample <- skewed_sample %>% sparklyr::sdf_nrow()
+
+skewed_sample %>%
+        dplyr::group_by(skew_col) %>%
+        dplyr::count(skew_col,name = 'row_count') %>%
+        sparklyr::mutate(percentage_of_dataframe = row_count/n_rows_sample*100) %>%
+        sdf_sort('skew_col')
+
 ```
 ````
 
@@ -229,6 +268,17 @@ skewed_sample = skewed_df.sample(fraction= 0.1, withReplacement= False)
 |       E|    89860|      89.98327708961277|
 +--------+---------+-----------------------+
 ```
+
+```{code-tab} plaintext R Output
+# Source: spark<?> [?? x 3]
+  skew_col row_count percentage_of_dataframe
+  <chr>        <dbl>                   <dbl>
+1 A                9                  0.009 
+2 B               91                  0.0910
+3 C              940                  0.940 
+4 D             9001                  9.00  
+5 E            89922                 90.0   
+```
 ````
 From the above example, it looks like the original distribution is preserved.
 We will now rerun the above sampleing, but we first repartition our skewed dataframe. 
@@ -244,6 +294,22 @@ equal_partitions_sample = equal_partitions_df.sample(fraction=0.1, withReplaceme
     .sort('skew_col')
     .show())
 ```
+
+```{code-tab} r R
+
+equal_partitions_df  <- skewed_df %>% sparklyr::sdf_repartition(20)
+
+equal_partitions_sample <- equal_partitions_df %>% sparklyr::sdf_sample(fraction= 0.1, replacement= FALSE)
+
+n_rows_sample_equal <- equal_partitions_sample %>% sparklyr::sdf_nrow()
+
+equal_partitions_sample %>%
+        dplyr::group_by(skew_col) %>%
+        dplyr::count(skew_col,name = 'row_count') %>%
+        sparklyr::mutate(percentage_of_dataframe = row_count/n_rows_sample_equal*100) %>%
+        sdf_sort('skew_col')
+
+```
 ````
 
 ````{tabs}
@@ -258,6 +324,17 @@ equal_partitions_sample = equal_partitions_df.sample(fraction=0.1, withReplaceme
 |       D|     9019|      9.019090190901908|
 |       E|    89994|      89.99489994899949|
 +--------+---------+-----------------------+
+```
+
+```{code-tab} plaintext R Output
+ Source: spark<?> [?? x 3]
+  skew_col row_count percentage_of_dataframe
+  <chr>        <dbl>                   <dbl>
+1 A                8                  0.008 
+2 B               92                  0.0920
+3 C              904                  0.904 
+4 D             8999                  9.00  
+5 E            89979                 90.0   
 ```
 ````
 From the above examples we can see that we get similar samples regardless of how the data is partitioned, where each row within the dataframe is equally likely to be added to the sample.
@@ -304,22 +381,21 @@ only showing top 5 rows
 ```
 
 ```{code-tab} plaintext R Output
-
 [1] 630
 # Source: spark<?> [?? x 2]
 # Groups: IncidentNumber
    IncidentNumber     n
    <chr>          <dbl>
  1 46614091           1
- 2 100131091          1
- 3 203387091          1
- 4 231397091          1
- 5 58950101           1
- 6 69934101           1
- 7 99084101           1
- 8 105429101          1
- 9 122528101          1
-10 166316101          1
+ 2 203387091          1
+ 3 231397091          1
+ 4 69934101           1
+ 5 99084101           1
+ 6 64398111           2
+ 7 64940121           1
+ 8 26016131           1
+ 9 105214131          1
+10 150426131          1
 # ℹ more rows
 ```
 ````
@@ -482,6 +558,7 @@ row_count
 ```
 
 ```{code-tab} plaintext R Output
+
 [1] 590
 ```
 ````
@@ -512,7 +589,7 @@ rescue %>%
 ```
 
 ```{code-tab} plaintext R Output
-[1] 590
+1] 590
 ```
 ````
 #### Partitioning
@@ -586,9 +663,9 @@ Split3: 624
 ```
 
 ```{code-tab} plaintext R Output
-1] "Split1: 2936"
-[1] "Split2: 2385"
-[1] "Split3: 577"
+[1] "Split1: 3014"
+[1] "Split2: 2313"
+[1] "Split3: 571"
 ```
 ````
 Check that the count of the splits equals the total row count:
@@ -644,6 +721,24 @@ print(rescue_subsample_1.count(),
     rescue_subsample_3.count())
 
 ```
+
+```{code-tab} r R
+
+rescue_id <- rescue %>% sparklyr::sdf_repartition(20)
+
+rescue_id <- rescue_id %>%
+                  sparklyr::sdf_with_unique_id(id = "id") %>%
+                  sparklyr::mutate(group_number = id%%3)
+
+rescue_subsample_1 <- rescue_id %>% filter(group_number == 0)
+rescue_subsample_2 <- rescue_id %>% filter(group_number == 1)
+rescue_subsample_3 <- rescue_id %>% filter(group_number == 2)
+
+cat(rescue_subsample_1 %>% sparklyr::sdf_nrow(),
+rescue_subsample_2 %>% sparklyr::sdf_nrow(),
+rescue_subsample_3 %>% sparklyr::sdf_nrow())
+
+```
 ````
 
 ````{tabs}
@@ -651,6 +746,9 @@ print(rescue_subsample_1.count(),
 ```{code-tab} plaintext Python Output
 1966 1966 1966
 ```
+
+```{code-tab} plaintext R Output
+1966 1966 1966```
 ````
 ### Further Resources
 
