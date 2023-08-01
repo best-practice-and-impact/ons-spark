@@ -72,7 +72,8 @@ replacement_sample %>% sparklyr::sdf_nrow()
 
 replacement_sample %>%
     dplyr::group_by(IncidentNumber) %>%
-    dplyr::count(IncidentNumber)
+    dplyr::count(IncidentNumber)%>%
+    dplyr::arrange(desc(n))
 
 fraction <- 0.1
 row_count <- round(sparklyr::sdf_nrow(rescue) * fraction)

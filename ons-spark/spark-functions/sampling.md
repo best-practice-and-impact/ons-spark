@@ -4,13 +4,11 @@ Sampling is something that you may want to do during development or initial anal
 
 There are many different ways that a dataframe can be sampled, the two main types covered in this page are:
 1) **simple random sampling**: [`.sample()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sample.html) in Pyspark and [`sdf_sample()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_sample.html) in SparklyR and
-2) **stratified sampling**: [`.sampleBy()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sampleBy.html) in Pyspark and XXX in SparklyR (Don't belive the alternate method will work in the current spark version. must have spark > 3.0.0).
+2) **stratified sampling**: [`.sampleBy()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sampleBy.html) in Pyspark. There is currently no way to do stratified sampling in SparklyR when using version 2.4.0 (spark vesion > 3.0.0 is required).
 
 Although, these two methods are the focus of this page there are numerous methods that can be used for sampling that will not be covered here, such as systematic sampling and cluster sampling. 
 
-*insert a diagram to give a simple overview of what these sampling methods are OR do this under the individual headings instead*
-
-Both `.sample()` and `.sampleBy()` in Pyspark use the same base functions for sampling with and without replacement. For sampling without replacement PySpark implements a uniform sampling method using random number generation. A row will be added to the sample if the randomly generated number is smaller than the fraction input and each row has an equal probability of being sampled. Whereas for sampling with replacement numbers are generated from a Poisson sample (check details on this). A link to the alogirithm breakdown can be found [here](https://github.com/apache/spark/blob/master/python/pyspark/rddsampler.py).
+Both `.sample()` and `.sampleBy()` in Pyspark use the same base functions for sampling with and without replacement. For sampling without replacement PySpark implements a uniform sampling method using random number generation. A row will be added to the sample if the randomly generated number is smaller than the fraction input and each row has an equal probability of being sampled. Whereas for sampling with replacement numbers are generated from a Poisson sample. A link to the alogirithm breakdown can be found [here](https://github.com/apache/spark/blob/master/python/pyspark/rddsampler.py).
 
 It is important to note that sampling in Spark returns an approximate fraction of the data, rather than an exact one. The reason for this is explained in the [sample](#sampling-sample-and-sdf_sample) section.
 
@@ -126,10 +124,10 @@ Fraction of rows sampled 0.09732112580535775
 ```
 
 ```{code-tab} plaintext R Output
-[1] 595
+[1] 602
 [1] "Total rows in original DF: 5898"
-[1] "Total rows in sampled DF: 595"
-[1] "Fraction of rows sampled: 0.100881654798237"
+[1] "Total rows in sampled DF: 602"
+[1] "Fraction of rows sampled: 0.102068497795863"
 ```
 ````
 You can also set a seed, in a similar way to how random numbers generators work. This enables replication, which is useful in Spark given that the DataFrame will be otherwise be re-sampled every time an action is called.
@@ -273,11 +271,11 @@ skewed_sample %>%
 # Source: spark<?> [?? x 3]
   skew_col row_count percentage_of_dataframe
   <chr>        <dbl>                   <dbl>
-1 A                9                  0.009 
-2 B               91                  0.0910
-3 C              940                  0.940 
-4 D             9001                  9.00  
-5 E            89922                 90.0   
+1 A               10                  0.0100
+2 B               98                  0.0983
+3 C              922                  0.925 
+4 D             9046                  9.07  
+5 E            89642                 89.9   
 ```
 ````
 From the above example, it looks like the original distribution is preserved.
@@ -327,14 +325,14 @@ equal_partitions_sample %>%
 ```
 
 ```{code-tab} plaintext R Output
- Source: spark<?> [?? x 3]
+Source: spark<?> [?? x 3]
   skew_col row_count percentage_of_dataframe
   <chr>        <dbl>                   <dbl>
-1 A                8                  0.008 
-2 B               92                  0.0920
-3 C              904                  0.904 
-4 D             8999                  9.00  
-5 E            89979                 90.0   
+1 A               10                 0.00991
+2 B               82                 0.0813 
+3 C              876                 0.868  
+4 D             8996                 8.92   
+5 E            90907                90.1    
 ```
 ````
 From the above examples we can see that we get similar samples regardless of how the data is partitioned, where each row within the dataframe is equally likely to be added to the sample.
@@ -360,7 +358,8 @@ replacement_sample %>% sparklyr::sdf_nrow()
 
 replacement_sample %>%
     dplyr::group_by(IncidentNumber) %>%
-    dplyr::count(IncidentNumber)
+    dplyr::count(IncidentNumber)%>%
+    dplyr::arrange(desc(n))
 
 ```
 ````
@@ -381,21 +380,23 @@ only showing top 5 rows
 ```
 
 ```{code-tab} plaintext R Output
+
 [1] 630
-# Source: spark<?> [?? x 2]
-# Groups: IncidentNumber
-   IncidentNumber     n
-   <chr>          <dbl>
- 1 46614091           1
- 2 203387091          1
- 3 231397091          1
- 4 69934101           1
- 5 99084101           1
- 6 64398111           2
- 7 64940121           1
- 8 26016131           1
- 9 105214131          1
-10 150426131          1
+# Source:     spark<?> [?? x 2]
+# Groups:     IncidentNumber
+# Ordered by: desc(n)
+   IncidentNumber      n
+   <chr>           <dbl>
+ 1 173242141           2
+ 2 34221131            2
+ 3 016538-10022016     2
+ 4 133403-01102016     2
+ 5 69362121            2
+ 6 15682091            2
+ 7 145854121           2
+ 8 64398111            2
+ 9 62512121            2
+10 49034121            2
 # ℹ more rows
 ```
 ````
@@ -558,7 +559,6 @@ row_count
 ```
 
 ```{code-tab} plaintext R Output
-
 [1] 590
 ```
 ````
@@ -589,7 +589,8 @@ rescue %>%
 ```
 
 ```{code-tab} plaintext R Output
-1] 590
+
+[1] 590
 ```
 ````
 #### Partitioning
@@ -620,7 +621,7 @@ rescue %>%
 ```
 
 ```{code-tab} plaintext R Output
-[1] 1142
+1] 1142
 ```
 ````
 The disadvantage of this method is that you may have data quality issues in the original DF that will not be encountered, whereas these may be discovered with `.sample()`. Using unit testing and test driven development can mitigate the risk of these issues.
@@ -663,9 +664,9 @@ Split3: 624
 ```
 
 ```{code-tab} plaintext R Output
-[1] "Split1: 3014"
-[1] "Split2: 2313"
-[1] "Split3: 571"
+[1] "Split1: 3032"
+[1] "Split2: 2283"
+[1] "Split3: 583"
 ```
 ````
 Check that the count of the splits equals the total row count:
@@ -699,8 +700,8 @@ Split count total: 5898
 [1] "Split count total: 5898"
 ```
 ````
-#### Splitting via `monotonically_increasing_id()`
-Finally we will cover an alternate method of splitting a dataframe by using the `monotonically_increasing_id()` spark function.
+#### Splitting via `monotonically_increasing_id()` or `sdf_with_unique_id()`
+Finally we will cover an alternate method of splitting a dataframe by using the `monotonically_increasing_id()` Pyspark function or `sdf_with_unique_id()` SparklyR function.
 This will add a unique id number to each row which is larger than the previous id. 
 Within a partition, rows will be numbered sequentially starting at 0 for the first row in the first partition, with large increases in row id occuring between partitions.
 ````{tabs}
@@ -748,7 +749,8 @@ rescue_subsample_3 %>% sparklyr::sdf_nrow())
 ```
 
 ```{code-tab} plaintext R Output
-1966 1966 1966```
+1966 1966 1966
+```
 ````
 ### Further Resources
 
