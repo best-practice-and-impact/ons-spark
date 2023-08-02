@@ -26,6 +26,7 @@ with open("../../../config.yaml") as f:
     config = yaml.safe_load(f)
     
 rescue_path = config["rescue_path_csv"]
+# rescue_path = "../../data/animal_rescue.csv"
 rescue = spark.read.csv(rescue_path, header=True, inferSchema=True)
 rescue = rescue.withColumnRenamed('AnimalGroupParent','animal_type')
 
@@ -48,7 +49,7 @@ rescue <- sparklyr::spark_read_csv(sc, config$rescue_path_csv, header=TRUE, infe
 
 ```
 ````
-To fully test how spark sampling functions are impacted by partitions we will also make use of a skewed dataframe.
+To fully test how Spark sampling functions are impacted by partitions we will also make use of a skewed dataframe.
 ````{tabs}
 ```{code-tab} py
 skewed_df = spark.range(1e6).withColumn("skew_col",F.when(F.col('id') < 100, 'A')
@@ -59,6 +60,8 @@ skewed_df = spark.range(1e6).withColumn("skew_col",F.when(F.col('id') < 100, 'A'
                                         )
 
 skewed_df = skewed_df.repartition('skew_col')
+
+skewed_df.rdd.getNumPartitions()
 ```
 
 ```{code-tab} r R
@@ -76,20 +79,23 @@ skewed_df <- skewed_df %>% sparklyr::sdf_repartition(partition_by = 'skew_col')
 
 ```
 ````
+
+````{tabs}
+
+```{code-tab} plaintext Python Output
+200
+```
+````
 ### Sampling: `.sample()` and `sdf_sample()`
 
+By using `.sample()` in Pyspark and `sdf_sample()` in SparklyR you take a sampled subset of the original dataframe by setting a `seed`, a `fraction` and whether replacement is required. For the latter argument, in PySpark you use `withReplacement =`, if this is not set then the default answer is `False`, on the other hand in SparklyR you use `replacement =` and if not set the default answer = `True`. For both functions, `seed` is an optional argument which defaults to a random seed. The `fraction` however is compulsory and must be a value betwen 0.0 and 1.0; so, if we want to obtain a 20% sample we would use `fraction = 0.2`. 
+
+For these two functions it is advised to specify the arguments explicitly. One reason being that in Pyspark `fraction` must come after `withReplacement` whereas when you use `sdf_sample()` in SparklyR `fraction` must be listed first. If you use both languages it is easy to make this mistake.
+
 From the [PySpark documentation](https://spark.apache.org/docs/3.1.2/api/python/reference/api/pyspark.sql.DataFrame.sample.html), we see that a uniform sampling method is used for `.sample()`. Here each each row is equally likely to be sampled. 
-We should check that this is indeed occuring for an evenly distrubuted dataframe across a number of partitions (`rescue`) and a skewed dataset (`skew_df`).
-To use `.sample()`, we need to specify a `fraction`, which is a value betwen 0 and 1. 
-So if we want to obtain a 20% sample we would use `fraction = 0.2`. 
-As `.sample` and `sdf_sample()` implements uniform sampling, an *approximate* sample is returned, so you will get either slightly more or less than the specified fraction you original input.
+We should check that this is indeed occuring for an evenly distrubuted dataframe across a number of partitions (`rescue`) and a skewed dataset (`skew_df`). As both `.sample` and `sdf_sample()` implement uniform sampling, an *approximate* sample is returned, so you will get either slightly more or less than the specified fraction you originally input.
 
-For `.sample()` and `sdf_sample()` it is advised to specify the arguments explicitly. 
-One reason is that `fraction` is a compulsory argument, but in PySpark is after `withReplacement`. 
-Another reason is that in sparklyr the arguments are in a different order, with fraction listed first; if you use both languages it is easy to make a mistake.
-Finally a key difference is that by default `.sample()` samples without replacement while `sdf_sample()` samples with replacement which could cause confusion when switching between the languages.
-
-#### Sampling without repacement
+#### Sampling without replacement
 
 We will perform checks on the `.sample()` function to determine how this will impact our skewed distribution. We will also check how the partitions impact the end distribution.
 
@@ -119,18 +125,18 @@ print(paste0("Fraction of rows sampled: ", sparklyr::sdf_nrow(rescue_sample)/spa
 
 ```{code-tab} plaintext Python Output
 Total rows in original DF: 5898
-Total rows in sampled DF: 574
-Fraction of rows sampled 0.09732112580535775
+Total rows in sampled DF: 600
+Fraction of rows sampled 0.1017293997965412
 ```
 
 ```{code-tab} plaintext R Output
-[1] 602
+[1] 600
 [1] "Total rows in original DF: 5898"
-[1] "Total rows in sampled DF: 602"
-[1] "Fraction of rows sampled: 0.102068497795863"
+[1] "Total rows in sampled DF: 600"
+[1] "Fraction of rows sampled: 0.101729399796541"
 ```
 ````
-You can also set a seed, in a similar way to how random numbers generators work. This enables replication, which is useful in Spark given that the DataFrame will be otherwise be re-sampled every time an action is called.
+You can also set a seed, in a similar way to how random numbers generators work. This enables replication, which is useful in Spark given that the DataFrame will otherwise be re-sampled every time an action is called.
 ````{tabs}
 ```{code-tab} py
 rescue_sample_seed_1 = rescue.sample(withReplacement=None,
@@ -172,7 +178,7 @@ Seed 2 count: 593
 ````
 We can see that both samples have returned the same number of rows due to the identical seed.
 
-Another way of replicating results is with [persisting](../spark-concepts/persistence). [Caching](../spark-concepts/cache) or [checkpointing](../raw-notebooks/checkpoint-staging/checkpoint-staging) the DataFrame will avoid recalculation of the DF within the same Spark session. Writing out the DF to a Hive table or parquet enables it to be used in subsequent Spark sessions. See the chapter on persisting for more detail.
+Another way of replicating results is with [persisting](https://best-practice-and-impact.github.io/ons-spark/spark-concepts/cache.html#persist). [Caching](https://best-practice-and-impact.github.io/ons-spark/spark-concepts/cache.html) or [checkpointing](https://best-practice-and-impact.github.io/ons-spark/spark-concepts/checkpoint-staging.html#checkpoint) the DataFrame will avoid recalculation of the DF within the same Spark session. Writing out the DF to a Hive table or parquet enables it to be used in subsequent Spark sessions. See the chapter on persisting for more detail.
 
 #### Does `.sample()` preserve the distribution, regardless of partitions?
 
@@ -215,7 +221,7 @@ skewed_df %>%
 ```
 
 ```{code-tab} plaintext R Output
-# Source: spark<?> [?? x 3]
+ Source: spark<?> [?? x 3]
   skew_col row_count percentage_of_dataframe
   <chr>        <dbl>                   <dbl>
 1 A              100                    0.01
@@ -259,27 +265,28 @@ skewed_sample %>%
 +--------+---------+-----------------------+
 |skew_col|row_count|percentage_of_dataframe|
 +--------+---------+-----------------------+
-|       A|        2|   0.002002743758949761|
-|       B|       78|    0.07810700659904068|
-|       C|      902|     0.9032374352863424|
-|       D|     9021|      9.033375724742898|
-|       E|    89860|      89.98327708961277|
+|       A|       10|   0.010004702210038718|
+|       B|       94|    0.09404420077436394|
+|       C|      918|     0.9184316628815543|
+|       D|     9144|      9.148299700859404|
+|       E|    89787|      89.82921973327464|
 +--------+---------+-----------------------+
 ```
 
 ```{code-tab} plaintext R Output
+
 # Source: spark<?> [?? x 3]
   skew_col row_count percentage_of_dataframe
   <chr>        <dbl>                   <dbl>
-1 A               10                  0.0100
-2 B               98                  0.0983
-3 C              922                  0.925 
-4 D             9046                  9.07  
-5 E            89642                 89.9   
+1 A               10                 0.00999
+2 B               89                 0.0889 
+3 C              911                 0.910  
+4 D             8907                 8.90   
+5 E            90168                90.1    
 ```
 ````
 From the above example, it looks like the original distribution is preserved.
-We will now rerun the above sampleing, but we first repartition our skewed dataframe. 
+We will now re-run the above sampling, but we first repartition our skewed dataframe. 
 ````{tabs}
 ```{code-tab} py
 equal_partitions_df = skewed_df.repartition(20)
@@ -316,31 +323,31 @@ equal_partitions_sample %>%
 +--------+---------+-----------------------+
 |skew_col|row_count|percentage_of_dataframe|
 +--------+---------+-----------------------+
-|       A|       11|   0.011000110001100011|
-|       B|       86|    0.08600086000860009|
-|       C|      889|     0.8890088900889008|
-|       D|     9019|      9.019090190901908|
-|       E|    89994|      89.99489994899949|
+|       A|       11|     0.0110026406337521|
+|       B|       98|    0.09802352564615509|
+|       C|      866|     0.8662078898935746|
+|       D|     8941|       8.94314635512523|
+|       E|    90060|      90.08161958870129|
 +--------+---------+-----------------------+
 ```
 
 ```{code-tab} plaintext R Output
-Source: spark<?> [?? x 3]
+# Source: spark<?> [?? x 3]
   skew_col row_count percentage_of_dataframe
   <chr>        <dbl>                   <dbl>
-1 A               10                 0.00991
-2 B               82                 0.0813 
-3 C              876                 0.868  
-4 D             8996                 8.92   
-5 E            90907                90.1    
+1 A               15                  0.0150
+2 B               89                  0.0892
+3 C              888                  0.890 
+4 D             9044                  9.06  
+5 E            89788                 89.9   
 ```
 ````
 From the above examples we can see that we get similar samples regardless of how the data is partitioned, where each row within the dataframe is equally likely to be added to the sample.
 Although one sample has been shown here, this has been tested using multiple random samples and further worked details can be found in a worked notebook [details on worked notebook]()
 
 #### Sampling with Replacement
-We have constructed a small example for sampling with replacement. 
-Here we count the number of times the unique `IncidentNumber` occurs within the sampled dataframe.
+We have constructed a small example for sampling with replacement. Here we count the number of times the unique `IncidentNumber` occurs within the sampled dataframe.
+This will show how many times each `IncidentNumber` occurs within the sample, verifiying we are sampling with replacement as these rows have been sampled multiple times.
 ````{tabs}
 ```{code-tab} py
 replacement_sample = rescue.sample(fraction = 0.1, withReplacement = True, seed = 20)
@@ -380,26 +387,27 @@ only showing top 5 rows
 ```
 
 ```{code-tab} plaintext R Output
-
 [1] 630
 # Source:     spark<?> [?? x 2]
 # Groups:     IncidentNumber
 # Ordered by: desc(n)
    IncidentNumber      n
    <chr>           <dbl>
- 1 173242141           2
- 2 34221131            2
- 3 016538-10022016     2
- 4 133403-01102016     2
- 5 69362121            2
- 6 15682091            2
- 7 145854121           2
- 8 64398111            2
- 9 62512121            2
-10 49034121            2
+ 1 63575131            2
+ 2 62512121            2
+ 3 34221131            2
+ 4 153277141           2
+ 5 70935101            2
+ 6 49034121            2
+ 7 69362121            2
+ 8 31381101            2
+ 9 64398111            2
+10 133403-01102016     2
 # ℹ more rows
 ```
 ````
+The above examples show that a number of rows occur twice within the sample. While we have not presented the details here, sampling with replacement does still preserve the partitions and original distribution of the original dataframe as shown above for sampling without replacement.
+
 ### Stratified samples: `.sampleBy()`
 
 A stratified sample can be taken with [`.sampleBy()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sampleby.html) in PySpark. This takes a column, `col`, to sample by, and a dictionary of weights, `fractions`.
@@ -427,9 +435,9 @@ stratified_sample_count.show()
 +-----------+---------+
 |animal_type|row_count|
 +-----------+---------+
-|        Cat|      138|
-|        Dog|      110|
-|    Hamster|       11|
+|        Cat|      146|
+|        Dog|       90|
+|    Hamster|        8|
 +-----------+---------+
 ```
 ````
@@ -455,37 +463,9 @@ weights_df = spark.createDataFrame(list(weights.items()), schema=["animal_type",
 +-----------+-----+------+-------------+---------+
 |animal_type|count|weight|expected_rows|row_count|
 +-----------+-----+------+-------------+---------+
-|        Cat| 2909|  0.05|        145.0|      138|
-|        Dog| 1008|   0.1|        101.0|      110|
-|    Hamster|   14|   0.5|          7.0|       11|
-+-----------+-----+------+-------------+---------+
-```
-````
-
-````{tabs}
-```{code-tab} py
-weights_df = spark.createDataFrame(list(weights.items()), schema=["animal_type", "weight"])
-
-(rescue
-    .groupBy("animal_type").count()
-    .join(weights_df, on="animal_type", how="inner")
-    .withColumn("expected_rows", F.round(F.col("count") * F.col("weight"), 0))
-    .join(stratified_sample_count, on="animal_type", how="left")
-    .orderBy("animal_type")
-    .show()
-)
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-+-----------+-----+------+-------------+---------+
-|animal_type|count|weight|expected_rows|row_count|
-+-----------+-----+------+-------------+---------+
-|        Cat| 2909|  0.05|        145.0|      138|
-|        Dog| 1008|   0.1|        101.0|      110|
-|    Hamster|   14|   0.5|          7.0|       11|
+|        Cat| 2909|  0.05|        145.0|      146|
+|        Dog| 1008|   0.1|        101.0|       90|
+|    Hamster|   14|   0.5|          7.0|        8|
 +-----------+-----+------+-------------+---------+
 ```
 ````
@@ -513,11 +493,11 @@ stratified_sk_sample = skewed_df.sampleBy("skew_col", fractions=sk_weights)
 +--------+---------+-----------------------+
 |skew_col|row_count|percentage_of_dataframe|
 +--------+---------+-----------------------+
-|       A|       19|   0.006685409270199...|
-|       B|       84|    0.02955654624719829|
-|       C|     4447|     1.5647376328725093|
-|       D|     8945|     3.1474203116808175|
-|       E|   270706|      95.25160009992928|
+|       A|       21|   0.007409602845287492|
+|       B|       84|    0.02963841138114997|
+|       C|     4506|     1.5898890676602593|
+|       D|     9105|       3.21259209077822|
+|       E|   269700|      95.16047082733509|
 +--------+---------+-----------------------+
 ```
 ````
@@ -527,11 +507,11 @@ stratified_sk_sample = skewed_df.sampleBy("skew_col", fractions=sk_weights)
 
 ### More details on sampling
 
-The following section gives more detail on sampling and how it is processed on the Spark cluster. is not compulsory reading, but may be of interest to some Spark users.
+The following section gives more detail on sampling and how it is processed on the Spark cluster. It is not compulsory reading, but may be of interest to some Spark users.
 
 #### Returning an exact sample
 
-We have demonstrated above that `.sample()`/`sdf_sample()` return an approximate fraction, not an exact one. This is because every row is independently assigned a probability equal to `fraction` of being included in the sample, e.g. with `fraction=0.2` every row has a $20\%$ probability of being in the sample. The number of rows returned in the sample therefore follows the binomial distribution.
+We have demonstrated above that `.sample()`/`sdf_sample()` return an approximate fraction, not an exact one. This is because every row is independently assigned a probability equal to the `fraction` of being included in the sample, e.g. with `fraction=0.2` every row has a $20\%$ probability of being in the sample. The number of rows returned in the sample therefore follows the binomial distribution.
 
 The advantage of the sample being calculated in this way is that it is processed as a *narrow transformation*, which is more efficient than a *wide transformation*.
 
@@ -559,7 +539,7 @@ row_count
 ```
 
 ```{code-tab} plaintext R Output
-[1] 590
+] 590
 ```
 ````
 
@@ -595,7 +575,9 @@ rescue %>%
 ````
 #### Partitioning
 
-The number of partitions will remain the same when sampling, even though the DataFrame will be smaller. If you are taking a small fraction of the data then your DataFrame may have too many partitions. You can use [`.coalesce()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.coalesce.html) in PySpark or [`sdf_coalesce()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html) in sparklyr to reduce the number of partitions, e.g. if your original DF had $200$ partitions and you take a $10\%$ sample, you can reduce the number of partitions to $20$ with `df.sample(fraction=0.1).coalesce(20)`.
+Even though your sample DF will be smaller than the original DF the number of partitions will remain the same. For example, by default your original DF will have 200 partitions, but your sample DF may only be a 10 % fraction of the original DF and therefore does not need to be partitioned in 200 parts. Too many partitions can be expensive for Spark as it causes excessive overhead for managing smaller tasks; please see our page on partitions for more information.
+
+To reduce the number of partitions in your sample you can use .coalesce() in PySpark or sdf_coalesce() in SparklyR. An example of reducing partitions to 20 in PySpark is given here: `df.sample(fraction=0.1).coalesce(20)`.
 
 #### Sampling consistently by filtering the data
 
@@ -621,7 +603,8 @@ rescue %>%
 ```
 
 ```{code-tab} plaintext R Output
-1] 1142
+
+[1] 1142
 ```
 ````
 The disadvantage of this method is that you may have data quality issues in the original DF that will not be encountered, whereas these may be discovered with `.sample()`. Using unit testing and test driven development can mitigate the risk of these issues.
@@ -658,15 +641,15 @@ print(paste0("Split3: ", sparklyr::sdf_nrow(splits$split3)))
 ````{tabs}
 
 ```{code-tab} plaintext Python Output
-Split1: 2988
-Split2: 2286
-Split3: 624
+Split1: 2941
+Split2: 2367
+Split3: 590
 ```
 
 ```{code-tab} plaintext R Output
-[1] "Split1: 3032"
-[1] "Split2: 2283"
-[1] "Split3: 583"
+[1] "Split1: 3027"
+[1] "Split2: 2298"
+[1] "Split3: 573"
 ```
 ````
 Check that the count of the splits equals the total row count:
@@ -695,8 +678,7 @@ Split count total: 5898
 ```
 
 ```{code-tab} plaintext R Output
-
-[1] "DF count: 5898"
+1] "DF count: 5898"
 [1] "Split count total: 5898"
 ```
 ````
@@ -749,8 +731,7 @@ rescue_subsample_3 %>% sparklyr::sdf_nrow())
 ```
 
 ```{code-tab} plaintext R Output
-1966 1966 1966
-```
+1966 1966 1966```
 ````
 ### Further Resources
 
@@ -758,6 +739,7 @@ Spark at the ONS Articles:
 - [Persisting in Spark](../spark-concepts/persistence)
 - [Caching](../spark-concepts/cache)
 - [Checkpoint](../raw-notebooks/checkpoint-staging/checkpoint-staging)
+- [Partitions](../spark-concepts/partitions)
 
 PySpark Documentation:
 - [`.sample()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sample.html)
