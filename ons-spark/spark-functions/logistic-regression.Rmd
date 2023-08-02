@@ -8,5 +8,51 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Logistic Regression in SparklyR
+## Logistic Regression in sparklyr 
+
+- Outline of this in sparklyr
+- Spark ML
+- predictive vs inferential
+- Adapt from [Spark ML overview](https://spark.rstudio.com/guides/mlib.html)?
+
+### Predictive analysis
+- General use of `ml_logistic_regression` and `ml_predict` to generate a model
+
+#### Data
+
+```{r}
+sc <- sparklyr::spark_connect(
+  master = "local[2]",
+  app_name = "sparklyr-lab2",
+  config = sparklyr::spark_config())
+
+
+sparklyr::spark_connection_is_open(sc)
+
+rescue_path_parquet = "/training/rescue_clean.parquet"
+rescue <- sparklyr::spark_read_parquet(sc, rescue_path_parquet)
+dplyr::glimpse(rescue)
+
+# Cat or not cat?
+rescue_cat <- rescue %>% 
+  dplyr::mutate(is_cat = ifelse(animal_group == "Cat", 1, 0))
+```
+
+#### Encoding
+
+#### Generating a model
+
+
+
+### Inferential analysis
+**Adapt from Ted's presentation materials**
+
+The `Spark ML` functions available in sparklyr were largely developed with predictive analysis in mind. This means that they have been built primarily to specify a regression model and retrieve the prediction (as we have seen above), with little information in between.
+
+When conducting analysis at ONS, we are often not interested in predicting unknown outcomes, but instead understanding the relationship between the independent variables and the probability of the outcome. This is what is referred to as *inferential analysis* in this section.
+
+The guide below shows how to find regression coefficients, test significance, calculate confidence intervals and rebase categorical variables to produce regression output tables for inferential purposes.
+
+
+
 
