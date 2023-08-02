@@ -130,10 +130,10 @@ Fraction of rows sampled 0.1017293997965412
 ```
 
 ```{code-tab} plaintext R Output
-[1] 600
+[1] 556
 [1] "Total rows in original DF: 5898"
-[1] "Total rows in sampled DF: 600"
-[1] "Fraction of rows sampled: 0.101729399796541"
+[1] "Total rows in sampled DF: 556"
+[1] "Fraction of rows sampled: 0.0942692438114615"
 ```
 ````
 You can also set a seed, in a similar way to how random numbers generators work. This enables replication, which is useful in Spark given that the DataFrame will otherwise be re-sampled every time an action is called.
@@ -171,8 +171,7 @@ Seed 2 count: 593
 ```
 
 ```{code-tab} plaintext R Output
-
-[1] "Seed 1 count: 607"
+1] "Seed 1 count: 607"
 [1] "Seed 2 count: 607"
 ```
 ````
@@ -221,7 +220,8 @@ skewed_df %>%
 ```
 
 ```{code-tab} plaintext R Output
- Source: spark<?> [?? x 3]
+
+# Source: spark<?> [?? x 3]
   skew_col row_count percentage_of_dataframe
   <chr>        <dbl>                   <dbl>
 1 A              100                    0.01
@@ -274,15 +274,14 @@ skewed_sample %>%
 ```
 
 ```{code-tab} plaintext R Output
-
-# Source: spark<?> [?? x 3]
+ Source: spark<?> [?? x 3]
   skew_col row_count percentage_of_dataframe
   <chr>        <dbl>                   <dbl>
-1 A               10                 0.00999
-2 B               89                 0.0889 
-3 C              911                 0.910  
-4 D             8907                 8.90   
-5 E            90168                90.1    
+1 A                9                 0.00897
+2 B               82                 0.0817 
+3 C              914                 0.911  
+4 D             9041                 9.01   
+5 E            90288                90.0    
 ```
 ````
 From the above example, it looks like the original distribution is preserved.
@@ -332,14 +331,15 @@ equal_partitions_sample %>%
 ```
 
 ```{code-tab} plaintext R Output
+
 # Source: spark<?> [?? x 3]
   skew_col row_count percentage_of_dataframe
   <chr>        <dbl>                   <dbl>
-1 A               15                  0.0150
-2 B               89                  0.0892
-3 C              888                  0.890 
-4 D             9044                  9.06  
-5 E            89788                 89.9   
+1 A               10                  0.0100
+2 B               89                  0.0895
+3 C              873                  0.878 
+4 D             8964                  9.01  
+5 E            89544                 90.0   
 ```
 ````
 From the above examples we can see that we get similar samples regardless of how the data is partitioned, where each row within the dataframe is equally likely to be added to the sample.
@@ -387,7 +387,7 @@ only showing top 5 rows
 ```
 
 ```{code-tab} plaintext R Output
-[1] 630
+1] 630
 # Source:     spark<?> [?? x 2]
 # Groups:     IncidentNumber
 # Ordered by: desc(n)
@@ -539,7 +539,7 @@ row_count
 ```
 
 ```{code-tab} plaintext R Output
-] 590
+[1] 590
 ```
 ````
 
@@ -569,13 +569,12 @@ rescue %>%
 ```
 
 ```{code-tab} plaintext R Output
-
 [1] 590
 ```
 ````
 #### Partitioning
 
-Even though your sample DF will be smaller than the original DF the number of partitions will remain the same. For example, by default your original DF will have 200 partitions, but your sample DF may only be a 10 % fraction of the original DF and therefore does not need to be partitioned in 200 parts. Too many partitions can be expensive for Spark as it causes excessive overhead for managing smaller tasks; please see our page on partitions for more information.
+Even though your sample DF will be smaller than the original DF the number of partitions will remain the same. For example, by default your original DF will have 200 partitions, but your sample DF may only be a 10 % fraction of the original DF and therefore does not need to be partitioned in 200 parts. Too many partitions can be expensive for Spark as it causes excessive overhead for managing smaller tasks; please see our page on [partitions](../spark-concepts/partitions) for more information.
 
 To reduce the number of partitions in your sample you can use .coalesce() in PySpark or sdf_coalesce() in SparklyR. An example of reducing partitions to 20 in PySpark is given here: `df.sample(fraction=0.1).coalesce(20)`.
 
@@ -603,7 +602,6 @@ rescue %>%
 ```
 
 ```{code-tab} plaintext R Output
-
 [1] 1142
 ```
 ````
@@ -647,9 +645,9 @@ Split3: 590
 ```
 
 ```{code-tab} plaintext R Output
-[1] "Split1: 3027"
-[1] "Split2: 2298"
-[1] "Split3: 573"
+[1] "Split1: 2876"
+[1] "Split2: 2428"
+[1] "Split3: 594"
 ```
 ````
 Check that the count of the splits equals the total row count:
@@ -678,7 +676,7 @@ Split count total: 5898
 ```
 
 ```{code-tab} plaintext R Output
-1] "DF count: 5898"
+[1] "DF count: 5898"
 [1] "Split count total: 5898"
 ```
 ````
@@ -754,6 +752,7 @@ sparklyr Documentation:
 - [`sdf_coalesce()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html)
 - [`sdf_random_split()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_random_split.html)
 - [`sdf_weighted_sample()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_weighted_sample.html)
+- [`sdf_with_unique_id()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_with_unique_id.html#sdf_with_unique_id)
 
 R Documentation:
 - [`head()`](https://stat.ethz.ch/R-manual/R-devel/library/utils/html/head.html)
