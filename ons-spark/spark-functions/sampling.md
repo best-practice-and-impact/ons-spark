@@ -130,10 +130,10 @@ Fraction of rows sampled 0.1017293997965412
 ```
 
 ```{code-tab} plaintext R Output
-[1] 544
+[1] 619
 [1] "Total rows in original DF: 5898"
-[1] "Total rows in sampled DF: 544"
-[1] "Fraction of rows sampled: 0.0922346558155307"
+[1] "Total rows in sampled DF: 619"
+[1] "Fraction of rows sampled: 0.104950830790098"
 ```
 ````
 You can also set a seed, in a similar way to how random numbers generators work. This enables replication, which is useful in Spark given that the DataFrame will otherwise be re-sampled every time an action is called.
@@ -171,7 +171,8 @@ Seed 2 count: 593
 ```
 
 ```{code-tab} plaintext R Output
-1] "Seed 1 count: 607"
+
+[1] "Seed 1 count: 607"
 [1] "Seed 2 count: 607"
 ```
 ````
@@ -220,7 +221,6 @@ skewed_df %>%
 ```
 
 ```{code-tab} plaintext R Output
-
 # Source: spark<?> [?? x 3]
   skew_col row_count percentage_of_dataframe
   <chr>        <dbl>                   <dbl>
@@ -277,11 +277,11 @@ skewed_sample %>%
  Source: spark<?> [?? x 3]
   skew_col row_count percentage_of_dataframe
   <chr>        <dbl>                   <dbl>
-1 A               12                  0.0120
-2 B               87                  0.0870
-3 C              901                  0.902 
-4 D             8959                  8.96  
-5 E            89979                 90.0   
+1 A               10                 0.00998
+2 B               94                 0.0938 
+3 C              928                 0.926  
+4 D             9171                 9.15   
+5 E            89972                89.8    
 ```
 ````
 From the above example, it looks like the original distribution is preserved.
@@ -331,19 +331,18 @@ equal_partitions_sample %>%
 ```
 
 ```{code-tab} plaintext R Output
-
 # Source: spark<?> [?? x 3]
   skew_col row_count percentage_of_dataframe
   <chr>        <dbl>                   <dbl>
-1 A               14                  0.0140
-2 B               90                  0.0898
-3 C              920                  0.918 
-4 D             8971                  8.95  
-5 E            90229                 90.0   
+1 A               16                  0.0160
+2 B               88                  0.0879
+3 C              895                  0.894 
+4 D             8829                  8.82  
+5 E            90249                 90.2   
 ```
 ````
 From the above examples we can see that we get similar samples regardless of how the data is partitioned, where each row within the dataframe is equally likely to be added to the sample.
-Although one sample has been shown here, this has been tested using multiple random samples and further worked details can be found in a worked notebook [details on worked notebook]()
+Although one sample has been shown here, this has been tested using multiple random samples.
 
 #### Sampling with Replacement
 We have constructed a small example for sampling with replacement. Here we count the number of times the unique `IncidentNumber` occurs within the sampled dataframe.
@@ -387,22 +386,23 @@ only showing top 5 rows
 ```
 
 ```{code-tab} plaintext R Output
-1] 630
+
+[1] 630
 # Source:     spark<?> [?? x 2]
 # Groups:     IncidentNumber
 # Ordered by: desc(n)
    IncidentNumber      n
    <chr>           <dbl>
  1 173242141           2
- 2 34221131            2
+ 2 69362121            2
  3 016538-10022016     2
  4 133403-01102016     2
- 5 69362121            2
+ 5 49034121            2
  6 15682091            2
  7 145854121           2
  8 64398111            2
  9 62512121            2
-10 49034121            2
+10 34221131            2
 # ℹ more rows
 ```
 ````
@@ -539,7 +539,7 @@ row_count
 ```
 
 ```{code-tab} plaintext R Output
-[1] 590
+] 590
 ```
 ````
 
@@ -603,6 +603,7 @@ rescue %>%
 ```
 
 ```{code-tab} plaintext R Output
+
 [1] 1142
 ```
 ````
@@ -646,9 +647,9 @@ Split3: 590
 ```
 
 ```{code-tab} plaintext R Output
-[1] "Split1: 2935"
-[1] "Split2: 2397"
-[1] "Split3: 566"
+[1] "Split1: 2986"
+[1] "Split2: 2293"
+[1] "Split3: 619"
 ```
 ````
 Check that the count of the splits equals the total row count:
@@ -677,7 +678,7 @@ Split count total: 5898
 ```
 
 ```{code-tab} plaintext R Output
-] "DF count: 5898"
+1] "DF count: 5898"
 [1] "Split count total: 5898"
 ```
 ````
@@ -730,7 +731,6 @@ rescue_subsample_3 %>% sparklyr::sdf_nrow())
 ```
 
 ```{code-tab} plaintext R Output
-
 1966 1966 1966```
 ````
 ### Further Resources
