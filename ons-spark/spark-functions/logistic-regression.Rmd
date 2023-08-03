@@ -16,11 +16,13 @@ knitr::opts_chunk$set(echo = TRUE)
 - Adapt from [Spark ML overview](https://spark.rstudio.com/guides/mlib.html)?
 
 ### Predictive analysis
-- General use of `ml_logistic_regression` and `ml_predict` to generate a model
 
-#### Data
+This section shows how to use the `Spark ML` functions `ml_logistic_regression` and `ml_predict` in `sparklyr` to generate a logistic regression model. The syntax used to call these functions is somewhat similar to logistic regression functions in R. However, there are some additional steps to take in preparing the data before the model can be run successfully. 
 
-```{r}
+#### Preparing the data
+We will read the data in as follows:
+
+```{r, eval = FALSE}
 sc <- sparklyr::spark_connect(
   master = "local[2]",
   app_name = "sparklyr-lab2",
@@ -32,11 +34,55 @@ sparklyr::spark_connection_is_open(sc)
 rescue_path_parquet = "/training/rescue_clean.parquet"
 rescue <- sparklyr::spark_read_parquet(sc, rescue_path_parquet)
 dplyr::glimpse(rescue)
-
-# Cat or not cat?
-rescue_cat <- rescue %>% 
-  dplyr::mutate(is_cat = ifelse(animal_group == "Cat", 1, 0))
 ```
+
+Let's see if we can use the `rescue` data to predict whether an animal is a cat or not.
+
+```{r, eval = FALSE}
+# Create is_cat column to contain target variable and select relevant predictors
+rescue_cat <- rescue %>% 
+  dplyr::mutate(is_cat = ifelse(animal_group == "Cat", 1, 0)) %>% 
+  sparklyr::select(typeofincident, 
+                   engine_count, 
+                   job_hours, 
+                   hourly_cost, 
+                   total_cost, 
+                   originofcall, 
+                   propertytype, 
+                   propertycategory,
+                   specialservicetypecategory,
+                   specialservicetype,
+                   incident_duration,
+                   is_cat)
+```
+#### Missing values
+
+You may already be familiar with functions such as `glm` for performing logistic regression in R. Many of these functions are quite user-friendly and will automatically account for issues such as missing values in the data. However, the `Spark ML` functions in `sparklyr`require the user to correct for these issues before running the regression functions.
+
+```{r, eval = FALSE}
+
+# Get the number of NAs in the dataset by column
+rescue_cat %>%
+  dplyr::summarise_all(~sum(as.integer(is.na(.)))) %>% 
+  print(width = Inf)
+
+# There are 38 missing values in the 4 of the columns 
+# We can see that these are all on the same rows:  
+rescue_cat %>%
+  sparklyr::filter(is.na(total_cost)) %>%
+  print(n=38)
+
+# For simplicity, we will just filter out these rows:
+rescue_cat <- rescue_cat %>%
+    sparklyr::filter(!is.na(total_cost)) 
+  
+# Double check we have no NAs left 
+rescue_cat %>%
+  dplyr::summarise_all(~sum(as.integer(is.na(.)))) %>% 
+  print(width = Inf)
+
+```
+*add something about imputation?*
 
 #### Encoding
 
