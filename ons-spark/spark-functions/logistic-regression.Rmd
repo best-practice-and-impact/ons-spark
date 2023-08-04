@@ -17,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### Predictive analysis
 
-This section shows how to use the `Spark ML` functions `ml_logistic_regression` and `ml_predict` in `sparklyr` to generate a logistic regression model. The syntax used to call these functions is somewhat similar to logistic regression functions in R. However, there are some additional steps to take in preparing the data before the model can be run successfully. 
+This section shows how to use the `Spark ML` function `ml_generalised_linear_regression` in `sparklyr` to generate a logistic regression model. The syntax used to call these functions is somewhat similar to logistic regression functions in R. However, there are some additional steps to take in preparing the data before the model can be run successfully. 
 
 #### Preparing the data
 We will read the data in as follows:
@@ -48,13 +48,24 @@ rescue_cat <- rescue %>%
                    hourly_cost, 
                    total_cost, 
                    originofcall, 
-                   propertytype, 
                    propertycategory,
                    specialservicetypecategory,
                    specialservicetype,
                    incident_duration,
                    is_cat)
+
+dplyr::glimpse(rescue_cat)
 ```
+Examining the dataset, there are a few columns we have selected above that are of the type "character" when they should be numeric. We can convert all of these to numeric values by running the following:
+
+```{r, eval = FALSE}
+rescue_cat <- rescue_cat %>% 
+  dplyr::mutate(across(c(engine_count:total_cost, incident_duration), 
+                ~as.numeric(.)))
+
+dplyr::glimpse(rescue_cat)
+```
+
 #### Missing values
 
 You may already be familiar with functions such as `glm` for performing logistic regression in R. Many of these functions are quite user-friendly and will automatically account for issues such as missing values in the data. However, the `Spark ML` functions in `sparklyr`require the user to correct for these issues before running the regression functions.
@@ -84,7 +95,42 @@ rescue_cat %>%
 ```
 *add something about imputation?*
 
-#### Encoding
+#### Possible re-structure?
+
+Show running model, then show how to get coefficients, then show how to choose the reference variables?
+
+Makes more sense this way?
+
+Maybe then don't split by inferential and predictive?
+
+#### Selecting reference categories and encoding categorical variables
+
+When including categorical variables as independent variables in a regression, one of the categories must act as the reference category. The coefficients for all other categories are relative to the reference category. 
+
+By default, the `ml_generalized_linear_regression` function in R will select the least common category as the reference category before running the model, without input from the user. It also implicitly applies one-hot encoding to the categories so that they can be represented as a binary numerical value. 
+
+For example, `specialservicetypecategory` has four unique values: Animal Rescue From Below Ground, Animal Rescue From Height, Animal Rescue From Water, and Other Animal Assistance. 
+
+```{r, eval = FALSE}
+rescue_cat %>% 
+  dplyr::count(specialservicetypecategory) %>% 
+  dplyr::arrange(n)
+```
+
+In this case, `ml_generalized_linear_regression` would select "Animal Rescue From Water" as the reference category, since there are only 343 instances of it in the data. For the purpose of running the model, it would also create a new column in the data for each of the other categories, assigning a 1 or 0 for each row depending on whether that entry belongs to that category or not. Regression coefficients would then be shown for each of these new columns in the final model, relative to the to the "Animal Rescue From Water" reference category. 
+
+If we wanted to specify which category we want to choose as our reference category in R, this could be done quite simply using **factors**. For example, to choose "Animal Rescue From Height" as our reference category instead, we would just need to mutate the `specialservicetypecategory` as a factor and specify the reference category as follows:
+
+```{r, eval = FALSE}
+rescue_cat <- rescue_cat %>% 
+  mutate(specialservicetypecategory_ref = relevel(as.factor(specialservicetypecategory), 
+                  ref = "Animal Rescue From Height"))
+```
+
+However, a factor is not a valid data type in sparklyr. 
+
+
+**Need to add something about dependent variables - use specialservicetype and specialservicetypecategory as an example**
 
 #### Generating a model
 
