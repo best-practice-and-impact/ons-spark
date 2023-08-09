@@ -135,21 +135,49 @@ Instead, we can make use of the one-hot encoding concept and two of `sparklyr`'s
 
 ```{r, eval = FALSE}
 rescue_cat_ohe <- rescue_cat %>%
-  mutate(region = ifelse(specialservicetypecategory == "Animal Rescue From Height",
+  dplyr::mutate(region = ifelse(specialservicetypecategory == "Animal Rescue From Height",
                          "000_Animal Rescue From Height",
                          specialservicetypecategory)) %>%
-  ft_string_indexer(input_col = "specialservicetypecategory", 
+  sparklyr::ft_string_indexer(input_col = "specialservicetypecategory", 
                     output_col = "specialservicetypecategory_idx",
                     string_order_type = "alphabetDesc") %>%
-  ft_one_hot_encoder(input_cols = c("specialservicetypecategory_idx"), 
+  sparklyr::ft_one_hot_encoder(input_cols = c("specialservicetypecategory_idx"), 
                      output_cols = c("specialservicetypecategory_ohe"), 
                      drop_last = TRUE) %>%
-  sdf_separate_column(column = "region_ohe",
-                      into = c("region_Wales", "region_Yorkshire_and_the_Humber", "region_West_Midlands", "region_South_West", "region_South_East", "region_North_West", "region_North_East", "region_East_of_England", "region_East_Midlands"))
+  sparklyr::sdf_separate_column(column = "specialservicetypecategory_ohe",
+                      into = c("specialservicetypecategory_Animal Rescue From Water", 
+                               "specialservicetypecategory_Animal Rescue From Below Ground", 
+                               "specialservicetypecategory_Other Animal Assistance")) %>% 
+  sparklyr::select(-ends_with(c("_ohe", "_idx")))
+```
+Where `sdf_separate_column` has been used to separate encoded variables into individual columns and the intermediate columns with "_ohe" and "_idx" suffixes have been dropped once the process is complete. This can be repeated for every categorical variable as desired. 
+
+```{r, eval = FALSE}
+# originofcall
+rescue_cat_ohe <- rescue_cat_ohe %>%
+  dplyr::mutate(region = ifelse(originofcall == "Animal Rescue From Height",
+                         "000_Animal Rescue From Height",
+                         specialservicetypecategory)) %>%
+  sparklyr::ft_string_indexer(input_col = "specialservicetypecategory", 
+                    output_col = "specialservicetypecategory_idx",
+                    string_order_type = "alphabetDesc") %>%
+  sparklyr::ft_one_hot_encoder(input_cols = c("specialservicetypecategory_idx"), 
+                     output_cols = c("specialservicetypecategory_ohe"), 
+                     drop_last = TRUE) %>%
+  sparklyr::sdf_separate_column(column = "specialservicetypecategory_ohe",
+                      into = c("specialservicetypecategory_Animal Rescue From Water", 
+                               "specialservicetypecategory_Animal Rescue From Below Ground", 
+                               "specialservicetypecategory_Other Animal Assistance")) 
+
 ```
 
+##### Functionalising
 
+Repeating this process for every categorical variable you wish to specify the reference category for could be very time consuming. You may find it helpful to instead use or adapt 
 
+**Unsure how to load package - check details and add to this section later **
+
+#### Singularity and perfect complements
 
 **Need to add something about dependent variables - use specialservicetype and specialservicetypecategory as an example**
 
