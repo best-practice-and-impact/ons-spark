@@ -155,19 +155,82 @@ Where `sdf_separate_column` has been used to separate encoded variables into ind
 ```{r, eval = FALSE}
 # originofcall
 rescue_cat_ohe <- rescue_cat_ohe %>%
-  dplyr::mutate(region = ifelse(originofcall == "Animal Rescue From Height",
-                         "000_Animal Rescue From Height",
-                         specialservicetypecategory)) %>%
-  sparklyr::ft_string_indexer(input_col = "specialservicetypecategory", 
-                    output_col = "specialservicetypecategory_idx",
+  dplyr::mutate(region = ifelse(originofcall == "Person (mobile)",
+                         "000_Person (mobile)",
+                         originofcall )) %>%
+  sparklyr::ft_string_indexer(input_col = "originofcall", 
+                    output_col = "originofcall_idx",
                     string_order_type = "alphabetDesc") %>%
-  sparklyr::ft_one_hot_encoder(input_cols = c("specialservicetypecategory_idx"), 
-                     output_cols = c("specialservicetypecategory_ohe"), 
+  sparklyr::ft_one_hot_encoder(input_cols = c("originofcall_idx"), 
+                     output_cols = c("originofcall_ohe"), 
                      drop_last = TRUE) %>%
-  sparklyr::sdf_separate_column(column = "specialservicetypecategory_ohe",
-                      into = c("specialservicetypecategory_Animal Rescue From Water", 
-                               "specialservicetypecategory_Animal Rescue From Below Ground", 
-                               "specialservicetypecategory_Other Animal Assistance")) 
+  sparklyr::sdf_separate_column(column = "originofcall_ohe",
+                      into = c("originofcall_Ambulance", 
+                               "originofcall_Police", 
+                               "originofcall_Coastguard",
+                               "originofcall_Person (land line)",
+                               "originofcall_Not Known",
+                               "originofcall_Person (running Call)",
+                               "originofcall_Other Frs")) 
+# propertycategory
+rescue_cat_ohe <- rescue_cat_ohe %>%
+  dplyr::mutate(region = ifelse(propertycategory == "Dwelling",
+                         "000_Dwelling",
+                         propertycategory)) %>%
+  sparklyr::ft_string_indexer(input_col = "propertycategory", 
+                    output_col = "propertycategory_idx",
+                    string_order_type = "alphabetDesc") %>%
+  sparklyr::ft_one_hot_encoder(input_cols = c("propertycategory_idx"), 
+                     output_cols = c("propertycategory_ohe"), 
+                     drop_last = TRUE) %>%
+  sparklyr::sdf_separate_column(column = "propertycategory_ohe",
+                      into = c("propertycategory_Outdoor", 
+                               "propertycategory_Road Vehicle", 
+                               "propertycategory_Non Residential",
+                               "propertycategory_Boat",
+                               "propertycategory_Outdoor Structure",
+                               "propertycategory_Other Residential"))
+
+# specialservicetype
+rescue_cat_ohe <- rescue_cat_ohe %>%
+  dplyr::mutate(region = ifelse(specialservicetype == "Animal Rescue From Height - Domestic Pet",
+                         "000_Animal Rescue From Height - Domestic Pet",
+                         specialservicetype)) %>%
+  sparklyr::ft_string_indexer(input_col = "specialservicetype", 
+                    output_col = "specialservicetype_idx",
+                    string_order_type = "alphabetDesc") %>%
+  sparklyr::ft_one_hot_encoder(input_cols = c("specialservicetype_idx"), 
+                     output_cols = c("specialservicetype_ohe"), 
+                     drop_last = TRUE) %>%
+  sparklyr::sdf_separate_column(column = "specialservicetype_ohe",
+                      into = c("specialservicetype_Animal Rescue From Water - Bird", 
+                               "specialservicetype_Animal Assistance - Lift Heavy Domestic Animal", 
+                               "specialservicetype_Animal Rescue From Water - Domestic Pet",
+                               "specialservicetype_Animal Harm Involving Domestic Animal",
+                               "specialservicetype_Animal Harm Involving Livestock",
+                               "specialservicetype_Animal Rescue From Height - Farm Animal",
+                               "specialservicetype_Animal Harm Involving Wild Animal",
+                               "specialservicetype_Animal Assistance Involving Domestic Animal - Other Action",
+                               "specialservicetype_Animal Rescue From Height - Bird",
+                               "specialservicetype_Wild Animal Rescue From Below Ground",
+                               "specialservicetype_Animal Rescue From Below Ground - Bird",
+                               "specialservicetype_Assist Trapped Domestic Animal",
+                               "specialservicetype_Animal Rescue From Below Ground - Domestic Pet",
+                               "specialservicetype_Assist Trapped Wild Animal", 
+                               "specialservicetype_Wild Animal Rescue From Height",
+                               "specialservicetype_Wild Animal Rescue From Water Or Mud",
+                               "specialservicetype_Animal Assistance Involving Wild Animal - Other Action",
+                               "specialservicetype_Animal Rescue From Water - Farm Animal",
+                               "specialservicetype_Animal Assistance Involving Livestock - Other Action",
+                               "specialservicetype_Assist  Trapped Livestock Animal",
+                               "specialservicetype_Animal Assistance - Lift Heavy Wild Animal",
+                               "specialservicetype_Animal Rescue From Below Ground - Farm Animal",
+                               "specialservicetype_Animal Assistance - Lift Heavy Livestock Animal"
+                               ))
+
+# remove _idx and _ohe intermediate columns
+rescue_cat_ohe <- rescue_cat_ohe %>% 
+  sparklyr::select(-ends_with(c("_ohe", "_idx")))
 
 ```
 
@@ -179,7 +242,16 @@ Repeating this process for every categorical variable you wish to specify the re
 
 #### Singularity and perfect complements
 
-**Need to add something about dependent variables - use specialservicetype and specialservicetypecategory as an example**
+Running the regression model will produce an error when a column contains only a single value.
+
+```{r, eval = FALSE}
+glm_out <- ml_generalized_linear_regression(rescue_cat, 
+                                 formula = "is_cat ~ typeofincident + engine_count + job_hours + hourly_cost + total_cost + incident_duration + propertycategory + originofcall + specialservicetype", 
+                                 family = "binomial", 
+                                 link = "logit")
+```
+In this case, running the code above will produce an error since the `typeofincident` column only contains one variable, `Special Service`. 
+
 
 #### Generating a model
 
