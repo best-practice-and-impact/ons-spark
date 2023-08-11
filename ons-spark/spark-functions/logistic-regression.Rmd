@@ -178,22 +178,78 @@ broom::tidy(glm_out) %>%
                 upper_ci = estimate + (1.96 * std.error))
 ```
 
-#### Singularity and perfect complements
+### Things to watch out for
 
-We also need to be careful to check that variables included in the model take more than one value and that they don't combine with other variables to create perfect complements. In R, using functions such as `glm`, these variables would be dropped automatically. However, this in not that case in `sparklyr`. For example, the code below runs a logistic regression model using the `ml_generalized_linear_regression` function
+#### Singularity issues
+
+We also need to be careful to check that variables included in the model take more than one value. In R, using functions such as `glm`, these variables would be dropped automatically. However, this in not that case in `sparklyr`. 
 
 ```{r, eval = FALSE}
-glm_out <- ml_generalized_linear_regression(rescue_cat, 
+glm_singular <- ml_generalized_linear_regression(rescue_cat, 
                                  formula = "is_cat ~ typeofincident + engine_count + job_hours + hourly_cost + originofcall + propertycategory + specialservicetypecategory", 
                                  family = "binomial", 
                                  link = "logit")
 ```
-In this case, running the code above will produce an error since the `typeofincident` column only contains one variable, `Special Service`. 
+In this case, running the code above will produce an error since the `typeofincident` column only contains one variable, `Special Service`. The regression model will not run unless `typeofincident` is dropped from the formula above.  
 
+There are some variables in this dataset which depend on others such that they always take a singular value for a given value of those other variables. For example, if we take a closer look at `total_cost` we can see it always takes a value that is equal to `hourly_cost` multiplied by `job_hours`:
 
+```{r, eval = FALSE}
+rescue_cat %>%
+  sparklyr::select(job_hours,
+                  hourly_cost,
+                  total_cost) %>%
+  dplyr::arrange(desc(job_hours)) %>%
+  print(n = 30)
+```
 
+If we ran a regression model including these variables in R using `glm`, this would not be a problem since the function would automatically exclude one of these variables for the purpose of calculating coefficients. However, the `Spark ML` functions do not do this. Instead, the regression will still run and include coefficients from these 'singular' columns. This is because rather than  `ml_generalized_linear_regression` attempting to solve the regression exactly, failing and removing the ‘singular’ column or returning an error, `ml_generalized_linear_regression` will revert to an optimisation method to approximate regression coefficients.
 
+Because of the method used, standard errors will not be produced, and therefore confidence intervals can’t be calculated. As a result, although the regression will run, attempting to access the coefficients and standard errors using the `tidy` or `ml_summary` methods described above will return an error. These 'singular' variables therefore need to be identified and removed from the analysis prior to using `ml_` functions.
 
+```{r, eval = FALSE}
+# Run regression including singular `total_cost` variable
+glm_singular <- ml_generalized_linear_regression(rescue_cat, 
+                                 formula = "is_cat ~ engine_count + job_hours + total_cost + hourly_cost + originofcall + propertycategory + specialservicetypecategory", 
+                                 family = "binomial", 
+                                 link = "logit")
+
+# The following will return NULL values, as standard errors haven't been produced
+c("coefficient_standard_errors") %>%
+  purrr::map(~ml_summary(glm_singular, .x, allow_null = TRUE)) %>%
+  purrr::map_if(is.function, ~.x())
+
+# The following will cause an error, as 'tidy()' will attempt to retrieve standard errors that haven't been produced
+broom::tidy(glm_singular)
+```
+<!-- Keep this for now because there does seem to be an issue with the ohe variables -->
+<!-- One final point to note on singularity is that as a consequence of `singular` variables not being automatically removed by `ml_` functions, we cannot specify the `formula` argument simply using `is_cat ~ .` as we can with `glm`. Here, `.` is used as a shorthand for all variables in the dataset. Unfortunately, since this includes the target variable `is_cat`, the `ml_` functions will again revert to an optimisation method including all of the variables and fail to produce standard errors: -->
+
+<!-- ```{r, eval = FALSE} -->
+<!-- # Select only the variables we want to use in our regression -->
+<!-- rescue_cat_selection <- rescue_cat %>%  -->
+<!--   sparklyr::select(is_cat,  -->
+<!--                    engine_count, -->
+<!--                    job_hours, -->
+<!--                    hourly_cost, -->
+<!--                    originofcall, -->
+<!--                    propertycategory, -->
+<!--                    specialservicetypecategory) -->
+
+<!-- # Run regression on all of these variables by specifying the formula as "is_cat ~ ." -->
+<!-- glm_singular <- ml_generalized_linear_regression(rescue_cat_selection,  -->
+<!--                                  formula = "is_cat ~ .",  -->
+<!--                                  family = "binomial",  -->
+<!--                                  link = "logit") -->
+
+<!-- # The following will return NULL values, as standard errors haven't been produced -->
+<!-- c("coefficient_standard_errors") %>% -->
+<!--   purrr::map(~ml_summary(glm_singular, .x, allow_null = TRUE)) %>% -->
+<!--   purrr::map_if(is.function, ~.x()) -->
+
+<!-- # The following will cause an error, as 'tidy()' will attempt to retrieve standard errors that haven't been produced -->
+<!-- broom::tidy(glm_singular) -->
+<!-- ``` -->
 
 #### Selecting reference categories and encoding categorical variables
 
