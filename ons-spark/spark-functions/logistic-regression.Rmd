@@ -129,7 +129,54 @@ This does not provide a lot of information. The `ml_logistic_regression` functio
 
 Instead, we must use the function `ml_generalised_linear_regression`. Here, we need to specify the `family` and `link` arguments as "binomial" and "logit" respectively in order to run a logistic regression model that produces standard errors.
 
+```{r, eval = FALSE}
+# Run model with ml_generalized_linear_regression
+glm_out <- ml_generalized_linear_regression(rescue_cat, 
+                                 formula = "is_cat ~ engine_count + job_hours + hourly_cost + originofcall + propertycategory + specialservicetypecategory", 
+                                 family = "binomial", 
+                                 link = "logit")
 
+# View a tibble of coefficients, std. error, p-values
+broom::tidy(glm_out)
+```
+Individual statistics of interest can also be accessed directly using `ml_summary`, for example, to get the standard errors:
+
+```{r, eval = FALSE}
+c("coefficient_standard_errors") %>%
+  purrr::map(~ml_summary(glm_out, .x, allow_null = TRUE)) %>%
+  purrr::map_if(is.function, ~.x())
+```
+Other statistics can also be accessed individually in this way by replacing "coefficient_standard_errors" with the statistic of interest:
+
+```
+ml_summary(glm_out)
+GeneralizedLinearRegressionTrainingSummary 
+ Access the following via `$` or `ml_summary()`. 
+ - aic() 
+ - degrees_of_freedom() 
+ - deviance() 
+ - dispersion() 
+ - null_deviance() 
+ - num_instances() 
+ - prediction_col 
+ - predictions 
+ - rank 
+ - residual_degree_of_freedom() 
+ - residual_degree_of_freedom_null() 
+ - residuals() 
+ - coefficient_standard_errors() 
+ - num_iterations 
+ - solver 
+ - p_values() 
+ - t_values()
+```
+Unfortunately, we have not yet found/built functionality in sparkylr to calculate exact confidence intervals. Instead, we can approximate the 95% confidence intervals by multiplying the standard errors by 1.96 and subract/add this to the estimate. As sparklyr regression functions are only necessary on datasets with a large number of observations, this approximation is sufficient.
+
+```{r, eval = FALSE}
+broom::tidy(glm_out) %>%
+  dplyr::mutate(lower_ci = estimate - (1.96 * std.error),
+                upper_ci = estimate + (1.96 * std.error))
+```
 
 #### Singularity and perfect complements
 
