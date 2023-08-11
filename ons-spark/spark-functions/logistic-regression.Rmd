@@ -15,11 +15,10 @@ knitr::opts_chunk$set(echo = TRUE)
 - predictive vs inferential
 - Adapt from [Spark ML overview](https://spark.rstudio.com/guides/mlib.html)?
 
-### Predictive analysis
 
-This section shows how to use the `Spark ML` function `ml_generalised_linear_regression` in `sparklyr` to generate a logistic regression model. The syntax used to call these functions is somewhat similar to logistic regression functions in R. However, there are some additional steps to take in preparing the data before the model can be run successfully. 
+This section shows how to use the `Spark ML` functions `ml_logistic_regression`, `ml_predict` and `ml_generalised_linear_regression` in `sparklyr` to generate a logistic regression model. The syntax used to call these functions is somewhat similar to logistic regression functions in R. However, there are some additional steps to take in preparing the data before the model can be run successfully. 
 
-#### Preparing the data
+### Preparing the data
 We will read the data in as follows:
 
 ```{r, eval = FALSE}
@@ -50,7 +49,6 @@ rescue_cat <- rescue %>%
                    originofcall, 
                    propertycategory,
                    specialservicetypecategory,
-                   specialservicetype,
                    incident_duration,
                    is_cat)
 
@@ -66,7 +64,7 @@ rescue_cat <- rescue_cat %>%
 dplyr::glimpse(rescue_cat)
 ```
 
-#### Missing values
+### Missing values
 
 You may already be familiar with functions such as `glm` for performing logistic regression in R. Many of these functions are quite user-friendly and will automatically account for issues such as missing values in the data. However, the `Spark ML` functions in `sparklyr`require the user to correct for these issues before running the regression functions.
 
@@ -93,15 +91,62 @@ rescue_cat %>%
   print(width = Inf)
 
 ```
-*add something about imputation?*
 
-#### Possible re-structure?
+#### Running a logistic regression model
 
-Show running model, then show how to get coefficients, then show how to choose the reference variables?
+Running a logistic regression model in `sparklyr` can be done using similar syntax to R by using the `ml_logistic_regression` function:
 
-Makes more sense this way?
+```{r, eval = FALSE}
+# Run the model
+glm_out <- ml_logistic_regression(rescue_cat, 
+                                 formula = "is_cat ~ typeofincident + engine_count + job_hours + hourly_cost + originofcall + propertycategory + specialservicetypecategory")
+```
+Model predictions can be accessed using `ml_predict`:
 
-Maybe then don't split by inferential and predictive?
+```{r, eval = FALSE}
+# Get model predictions
+ml_predict(glm_out) %>% 
+  print(n = 20, width = Inf)
+```
+
+### Inferential analysis
+
+The `Spark ML` functions available in sparklyr were largely developed with predictive analysis in mind. This means that they have been built primarily to specify a regression model and retrieve the prediction (as we have seen above), with little information in between.
+
+When conducting analysis at ONS, we are often not interested in predicting unknown outcomes, but instead understanding the relationship between the independent variables and the probability of the outcome. This is what is referred to as *inferential analysis* in this section.
+
+The regression coefficients from the model above can be displayed by using the `tidy` function from the `broom` package:
+
+```{r, eval = FALSE}
+# Run the model
+glm_out <- ml_logistic_regression(rescue_cat, 
+                                 formula = "is_cat ~ typeofincident + engine_count + job_hours + hourly_cost + originofcall + propertycategory + specialservicetypecategory")
+
+# View coefficients
+broom::tidy(glm_out)
+```
+This does not provide a lot of information. The `ml_logistic_regression` function only produces regression coefficients and does not produce standard errors. This means that confidence intervals cannot be calculated. 
+
+Instead, we must use the function `ml_generalised_linear_regression`. Here, we need to specify the `family` and `link` arguments as "binomial" and "logit" respectively in order to run a logistic regression model that produces standard errors.
+
+
+
+#### Singularity and perfect complements
+
+We also need to be careful to check that variables included in the model take more than one value and that they don't combine with other variables to create perfect complements. In R, using functions such as `glm`, these variables would be dropped automatically. However, this in not that case in `sparklyr`. For example, the code below runs a logistic regression model using the `ml_generalized_linear_regression` function
+
+```{r, eval = FALSE}
+glm_out <- ml_generalized_linear_regression(rescue_cat, 
+                                 formula = "is_cat ~ typeofincident + engine_count + job_hours + hourly_cost + originofcall + propertycategory + specialservicetypecategory", 
+                                 family = "binomial", 
+                                 link = "logit")
+```
+In this case, running the code above will produce an error since the `typeofincident` column only contains one variable, `Special Service`. 
+
+
+
+
+
 
 #### Selecting reference categories and encoding categorical variables
 
@@ -240,29 +285,15 @@ Repeating this process for every categorical variable you wish to specify the re
 
 **Unsure how to load package - check details and add to this section later **
 
-#### Singularity and perfect complements
-
-Running the regression model will produce an error when a column contains only a single value.
-
-```{r, eval = FALSE}
-glm_out <- ml_generalized_linear_regression(rescue_cat, 
-                                 formula = "is_cat ~ typeofincident + engine_count + job_hours + hourly_cost + total_cost + incident_duration + propertycategory + originofcall + specialservicetype", 
-                                 family = "binomial", 
-                                 link = "logit")
-```
-In this case, running the code above will produce an error since the `typeofincident` column only contains one variable, `Special Service`. 
 
 
-#### Generating a model
+
 
 
 
 ### Inferential analysis
 **Adapt from Ted's presentation materials**
 
-The `Spark ML` functions available in sparklyr were largely developed with predictive analysis in mind. This means that they have been built primarily to specify a regression model and retrieve the prediction (as we have seen above), with little information in between.
-
-When conducting analysis at ONS, we are often not interested in predicting unknown outcomes, but instead understanding the relationship between the independent variables and the probability of the outcome. This is what is referred to as *inferential analysis* in this section.
 
 The guide below shows how to find regression coefficients, test significance, calculate confidence intervals and rebase categorical variables to produce regression output tables for inferential purposes.
 
