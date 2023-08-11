@@ -64,7 +64,7 @@ rescue_cat <- rescue_cat %>%
 dplyr::glimpse(rescue_cat)
 ```
 
-### Missing values
+#### Missing values
 
 You may already be familiar with functions such as `glm` for performing logistic regression in R. Many of these functions are quite user-friendly and will automatically account for issues such as missing values in the data. However, the `Spark ML` functions in `sparklyr`require the user to correct for these issues before running the regression functions.
 
@@ -225,31 +225,31 @@ broom::tidy(glm_singular)
 <!-- Keep this for now because there does seem to be an issue with the ohe variables -->
 <!-- One final point to note on singularity is that as a consequence of `singular` variables not being automatically removed by `ml_` functions, we cannot specify the `formula` argument simply using `is_cat ~ .` as we can with `glm`. Here, `.` is used as a shorthand for all variables in the dataset. Unfortunately, since this includes the target variable `is_cat`, the `ml_` functions will again revert to an optimisation method including all of the variables and fail to produce standard errors: -->
 
-<!-- ```{r, eval = FALSE} -->
-<!-- # Select only the variables we want to use in our regression -->
-<!-- rescue_cat_selection <- rescue_cat %>%  -->
-<!--   sparklyr::select(is_cat,  -->
-<!--                    engine_count, -->
-<!--                    job_hours, -->
-<!--                    hourly_cost, -->
-<!--                    originofcall, -->
-<!--                    propertycategory, -->
-<!--                    specialservicetypecategory) -->
+```{r, eval = FALSE}
+# Select only the variables we want to use in our regression, making sure we drop all 'singular' variables
+rescue_cat <- rescue_cat %>%
+  sparklyr::select(is_cat,
+                   engine_count,
+                   job_hours,
+                   hourly_cost,
+                   originofcall,
+                   propertycategory,
+                   specialservicetypecategory)
 
-<!-- # Run regression on all of these variables by specifying the formula as "is_cat ~ ." -->
-<!-- glm_singular <- ml_generalized_linear_regression(rescue_cat_selection,  -->
-<!--                                  formula = "is_cat ~ .",  -->
-<!--                                  family = "binomial",  -->
-<!--                                  link = "logit") -->
+# Run regression on all of these variables by specifying the formula as "is_cat ~ ."
+glm_out <- ml_generalized_linear_regression(rescue_cat,
+                                 formula = "is_cat ~ .",
+                                 family = "binomial",
+                                 link = "logit")
 
-<!-- # The following will return NULL values, as standard errors haven't been produced -->
-<!-- c("coefficient_standard_errors") %>% -->
-<!--   purrr::map(~ml_summary(glm_singular, .x, allow_null = TRUE)) %>% -->
-<!--   purrr::map_if(is.function, ~.x()) -->
+# Get standard errors
+c("coefficient_standard_errors") %>%
+  purrr::map(~ml_summary(glm_out, .x, allow_null = TRUE)) %>%
+  purrr::map_if(is.function, ~.x())
 
-<!-- # The following will cause an error, as 'tidy()' will attempt to retrieve standard errors that haven't been produced -->
-<!-- broom::tidy(glm_singular) -->
-<!-- ``` -->
+# Get summary tibble
+broom::tidy(glm_out)
+```
 
 #### Selecting reference categories and encoding categorical variables
 
@@ -267,9 +267,12 @@ rescue_cat %>%
 
 In this case, `ml_generalized_linear_regression` would select "Animal Rescue From Water" as the reference category, since there are only 343 instances of it in the data. For the purpose of running the model, it would also create a new column in the data for each of the other categories, assigning a 1 or 0 for each row depending on whether that entry belongs to that category or not. Regression coefficients would then be shown for each of these new columns in the final model, relative to the to the "Animal Rescue From Water" reference category. 
 
+Selecting a reference category can be particularly useful for inferential analysis, where there are particularly useful reference points. For example, in the `rescue_cat` dataset, we might want to select "Animal Rescue From Height" as our reference category because it is the largest defined special service type (aside from "Other Animal Assistance") and could serve as a useful reference point. 
+
 If we wanted to specify which category we want to choose as our reference category in R, this could be done quite simply using **factors**. For example, to choose "Animal Rescue From Height" as our reference category instead, we would just need to mutate the `specialservicetypecategory` as a factor and specify the reference category as follows:
 
 ```{r, eval = FALSE}
+# This would work in R but not in sparklyr
 rescue_cat <- rescue_cat %>% 
   mutate(specialservicetypecategory_ref = relevel(as.factor(specialservicetypecategory), 
                   ref = "Animal Rescue From Height"))
@@ -283,7 +286,7 @@ Instead, we can make use of the one-hot encoding concept and two of `sparklyr`'s
 
 ```{r, eval = FALSE}
 rescue_cat_ohe <- rescue_cat %>%
-  dplyr::mutate(region = ifelse(specialservicetypecategory == "Animal Rescue From Height",
+  dplyr::mutate(specialservicetypecategory = ifelse(specialservicetypecategory == "Animal Rescue From Height",
                          "000_Animal Rescue From Height",
                          specialservicetypecategory)) %>%
   sparklyr::ft_string_indexer(input_col = "specialservicetypecategory", 
@@ -296,14 +299,15 @@ rescue_cat_ohe <- rescue_cat %>%
                       into = c("specialservicetypecategory_Animal Rescue From Water", 
                                "specialservicetypecategory_Animal Rescue From Below Ground", 
                                "specialservicetypecategory_Other Animal Assistance")) %>% 
-  sparklyr::select(-ends_with(c("_ohe", "_idx")))
+  sparklyr::select(-ends_with(c("_ohe", "_idx")),
+                   -specialservicetypecategory)
 ```
 Where `sdf_separate_column` has been used to separate encoded variables into individual columns and the intermediate columns with "_ohe" and "_idx" suffixes have been dropped once the process is complete. This can be repeated for every categorical variable as desired. 
 
 ```{r, eval = FALSE}
 # originofcall
 rescue_cat_ohe <- rescue_cat_ohe %>%
-  dplyr::mutate(region = ifelse(originofcall == "Person (mobile)",
+  dplyr::mutate(originofcall = ifelse(originofcall == "Person (mobile)",
                          "000_Person (mobile)",
                          originofcall )) %>%
   sparklyr::ft_string_indexer(input_col = "originofcall", 
@@ -322,7 +326,7 @@ rescue_cat_ohe <- rescue_cat_ohe %>%
                                "originofcall_Other Frs")) 
 # propertycategory
 rescue_cat_ohe <- rescue_cat_ohe %>%
-  dplyr::mutate(region = ifelse(propertycategory == "Dwelling",
+  dplyr::mutate(propertycategory = ifelse(propertycategory == "Dwelling",
                          "000_Dwelling",
                          propertycategory)) %>%
   sparklyr::ft_string_indexer(input_col = "propertycategory", 
@@ -339,47 +343,50 @@ rescue_cat_ohe <- rescue_cat_ohe %>%
                                "propertycategory_Outdoor Structure",
                                "propertycategory_Other Residential"))
 
-# specialservicetype
-rescue_cat_ohe <- rescue_cat_ohe %>%
-  dplyr::mutate(region = ifelse(specialservicetype == "Animal Rescue From Height - Domestic Pet",
-                         "000_Animal Rescue From Height - Domestic Pet",
-                         specialservicetype)) %>%
-  sparklyr::ft_string_indexer(input_col = "specialservicetype", 
-                    output_col = "specialservicetype_idx",
-                    string_order_type = "alphabetDesc") %>%
-  sparklyr::ft_one_hot_encoder(input_cols = c("specialservicetype_idx"), 
-                     output_cols = c("specialservicetype_ohe"), 
-                     drop_last = TRUE) %>%
-  sparklyr::sdf_separate_column(column = "specialservicetype_ohe",
-                      into = c("specialservicetype_Animal Rescue From Water - Bird", 
-                               "specialservicetype_Animal Assistance - Lift Heavy Domestic Animal", 
-                               "specialservicetype_Animal Rescue From Water - Domestic Pet",
-                               "specialservicetype_Animal Harm Involving Domestic Animal",
-                               "specialservicetype_Animal Harm Involving Livestock",
-                               "specialservicetype_Animal Rescue From Height - Farm Animal",
-                               "specialservicetype_Animal Harm Involving Wild Animal",
-                               "specialservicetype_Animal Assistance Involving Domestic Animal - Other Action",
-                               "specialservicetype_Animal Rescue From Height - Bird",
-                               "specialservicetype_Wild Animal Rescue From Below Ground",
-                               "specialservicetype_Animal Rescue From Below Ground - Bird",
-                               "specialservicetype_Assist Trapped Domestic Animal",
-                               "specialservicetype_Animal Rescue From Below Ground - Domestic Pet",
-                               "specialservicetype_Assist Trapped Wild Animal", 
-                               "specialservicetype_Wild Animal Rescue From Height",
-                               "specialservicetype_Wild Animal Rescue From Water Or Mud",
-                               "specialservicetype_Animal Assistance Involving Wild Animal - Other Action",
-                               "specialservicetype_Animal Rescue From Water - Farm Animal",
-                               "specialservicetype_Animal Assistance Involving Livestock - Other Action",
-                               "specialservicetype_Assist  Trapped Livestock Animal",
-                               "specialservicetype_Animal Assistance - Lift Heavy Wild Animal",
-                               "specialservicetype_Animal Rescue From Below Ground - Farm Animal",
-                               "specialservicetype_Animal Assistance - Lift Heavy Livestock Animal"
-                               ))
 
-# remove _idx and _ohe intermediate columns
+# remove _idx and _ohe intermediate columns and original data columns
 rescue_cat_ohe <- rescue_cat_ohe %>% 
-  sparklyr::select(-ends_with(c("_ohe", "_idx")))
+  sparklyr::select(-ends_with(c("_ohe", "_idx")),
+                   -originofcall,
+                   -propertycategory)
 
+```
+
+Once this is done we can run the regression again and get the coefficients relative to the chosen reference categories:
+
+```{r, eval = FALSE}
+glm_ohe <- ml_generalized_linear_regression(rescue_cat_ohe, 
+                                 formula = "is_cat ~ .", 
+                                 family = "binomial", 
+                                 link = "logit")
+
+broom::tidy(glm_ohe)
+```
+
+```
+# A tibble: 20 × 5
+   term                                    estimate std.error statistic  p.value
+   <chr>                                      <dbl>     <dbl>     <dbl>    <dbl>
+ 1 (Intercept)                              1.47e+0   3.84e-1   3.83e+0 1.28e- 4
+ 2 engine_count                            -6.13e-1   2.74e-1  -2.23e+0 2.56e- 2
+ 3 job_hours                               -2.54e-2   6.09e-2  -4.16e-1 6.77e- 1
+ 4 hourly_cost                             -7.00e-4   9.85e-4  -7.11e-1 4.77e- 1
+ 5 specialservicetypecategory_Animal Resc… -4.23e-1   6.14e-2  -6.89e+0 5.76e-12
+ 6 specialservicetypecategory_Animal Resc… -1.42e+0   1.60e-1  -8.84e+0 0       
+ 7 specialservicetypecategory_Other Anima…  2.40e-2   9.80e-2   2.45e-1 8.07e- 1
+ 8 originofcall_Ambulance                  -9.65e-1   2.26e-1  -4.27e+0 1.95e- 5
+ 9 originofcall_Police                      6.69e-1   1.56e+0   4.28e-1 6.68e- 1
+10 originofcall_Coastguard                  1.33e-1   5.73e-2   2.33e+0 1.97e- 2
+11 originofcall_Person (land line)         -6.72e-1   3.66e-1  -1.84e+0 6.63e- 2
+12 originofcall_Not Known                  -2.50e+1   3.56e+5  -7.01e-5 1.00e+ 0
+13 originofcall_Person (running Call)      -2.60e+1   3.56e+5  -7.31e-5 1.00e+ 0
+14 originofcall_Other Frs                  -6.67e-2   1.42e+0  -4.70e-2 9.62e- 1
+15 propertycategory_Outdoor                 2.03e-1   1.47e-1   1.38e+0 1.67e- 1
+16 propertycategory_Road Vehicle           -1.43e+0   1.16e-1  -1.23e+1 0       
+17 propertycategory_Non Residential        -7.45e-1   6.80e-2  -1.10e+1 0       
+18 propertycategory_Boat                   -2.72e-1   4.56e-1  -5.96e-1 5.51e- 1
+19 propertycategory_Outdoor Structure      -9.04e-1   9.22e-2  -9.81e+0 0       
+20 propertycategory_Other Residential       7.50e-1   1.43e+0   5.26e-1 5.99e- 1
 ```
 
 ##### Functionalising
@@ -387,19 +394,4 @@ rescue_cat_ohe <- rescue_cat_ohe %>%
 Repeating this process for every categorical variable you wish to specify the reference category for could be very time consuming. You may find it helpful to instead use or adapt 
 
 **Unsure how to load package - check details and add to this section later **
-
-
-
-
-
-
-
-### Inferential analysis
-**Adapt from Ted's presentation materials**
-
-
-The guide below shows how to find regression coefficients, test significance, calculate confidence intervals and rebase categorical variables to produce regression output tables for inferential purposes.
-
-
-
 
