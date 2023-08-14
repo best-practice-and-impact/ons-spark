@@ -7,24 +7,26 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+Logistic regression is often used in predictive analysis. A logistic regression model is trained on a dataset to learn how certain independent variables relate to the probability of a binary outcome occuring. This model is then applied to cases where the independent variables are known, but the outcome is unknown, and the probability of the outcome occuring can be estimated.
 
-## Logistic Regression in sparklyr 
+This article shows how to use the `Spark ML` functions to generate a logistic regression model in PySpark and sparklyr, including a discussion of the steps necessary to prepare the data and potential issues to consider. We will also show how to access standard errors and confidence intervals for inferential analysis.  
 
-- Outline of this in sparklyr
-- Spark ML
-- predictive vs inferential
-- Adapt from [Spark ML overview](https://spark.rstudio.com/guides/mlib.html)?
+## Preparing the data {.tabset}
+
+In sparklyr, we will be using the `Spark ML` functions `ml_logistic_regression`, `ml_predict` and `ml_generalised_linear_regression`. The syntax used to call these functions is somewhat similar to logistic regression functions in R. However, there are some additional steps to take in preparing the data before the model can be run successfully. 
 
 
-This section shows how to use the `Spark ML` functions `ml_logistic_regression`, `ml_predict` and `ml_generalised_linear_regression` in `sparklyr` to generate a logistic regression model. The syntax used to call these functions is somewhat similar to logistic regression functions in R. However, there are some additional steps to take in preparing the data before the model can be run successfully. 
-
-### Preparing the data
 We will read the data in as follows:
 
+
 ```{r, eval = FALSE}
+library(sparklyr)
+library(dplyr)
+library(broom)
+
 sc <- sparklyr::spark_connect(
   master = "local[2]",
-  app_name = "sparklyr-lab2",
+  app_name = "logistic-regression",
   config = sparklyr::spark_config())
 
 
@@ -35,7 +37,8 @@ rescue <- sparklyr::spark_read_parquet(sc, rescue_path_parquet)
 dplyr::glimpse(rescue)
 ```
 
-Let's see if we can use the `rescue` data to predict whether an animal is a cat or not.
+
+Let's say we want to use the `rescue` data to predict whether an animal is a cat or not.
 
 ```{r, eval = FALSE}
 # Create is_cat column to contain target variable and select relevant predictors
@@ -54,9 +57,11 @@ rescue_cat <- rescue %>%
 
 dplyr::glimpse(rescue_cat)
 ```
-Examining the dataset, there are a few columns we have selected above that are of the type "character" when they should be numeric. We can convert all of these to numeric values by running the following:
+
+Examining the dataset with `glimpse()`, we can see that a few columns (such as `engine_count`) we have selected are of the type "character" when they should be numeric. We can convert all of these to numeric values by running the following:
 
 ```{r, eval = FALSE}
+# Convert engine_count, job_hours, hourly_cost, total_cost and incident_duration columns to numeric
 rescue_cat <- rescue_cat %>% 
   dplyr::mutate(across(c(engine_count:total_cost, incident_duration), 
                 ~as.numeric(.)))
@@ -64,7 +69,11 @@ rescue_cat <- rescue_cat %>%
 dplyr::glimpse(rescue_cat)
 ```
 
-#### Missing values
+## {-}
+
+### Missing values {.tabset}
+
+#### R
 
 You may already be familiar with functions such as `glm` for performing logistic regression in R. Many of these functions are quite user-friendly and will automatically account for issues such as missing values in the data. However, the `Spark ML` functions in `sparklyr`require the user to correct for these issues before running the regression functions.
 
@@ -75,8 +84,8 @@ rescue_cat %>%
   dplyr::summarise_all(~sum(as.integer(is.na(.)))) %>% 
   print(width = Inf)
 
-# There are 38 missing values in the 4 of the columns 
-# We can see that these are all on the same rows:  
+# There are 38 missing values in 4 of the columns 
+# We can see that these are all on the same rows by filtering for NAs in one of the columns:
 rescue_cat %>%
   sparklyr::filter(is.na(total_cost)) %>%
   print(n=38)
@@ -85,22 +94,27 @@ rescue_cat %>%
 rescue_cat <- rescue_cat %>%
     sparklyr::filter(!is.na(total_cost)) 
   
-# Double check we have no NAs left 
+# Double check we have no NAs left: 
 rescue_cat %>%
   dplyr::summarise_all(~sum(as.integer(is.na(.)))) %>% 
   print(width = Inf)
 
 ```
 
-#### Running a logistic regression model
+Now we have dealt with incorrect data types and missing values, we are ready to run our logistic regression.
 
-Running a logistic regression model in `sparklyr` can be done using similar syntax to R by using the `ml_logistic_regression` function:
+## Running a logistic regression model {.tabset}
 
+Running a logistic regression model in `sparklyr` can be performed by using the `ml_logistic_regression` function:
+
+### R
 ```{r, eval = FALSE}
 # Run the model
 glm_out <- ml_logistic_regression(rescue_cat, 
-                                 formula = "is_cat ~ typeofincident + engine_count + job_hours + hourly_cost + originofcall + propertycategory + specialservicetypecategory")
+                                 formula = "is_cat ~ engine_count + job_hours + hourly_cost + originofcall + propertycategory + specialservicetypecategory")
 ```
+Where we have specified the variables to be used in the regression using the formula syntax `target variable ~ predictor1 + predictor2 + predictor3 +...`.
+
 Model predictions can be accessed using `ml_predict`:
 
 ```{r, eval = FALSE}
@@ -109,18 +123,20 @@ ml_predict(glm_out) %>%
   print(n = 20, width = Inf)
 ```
 
-### Inferential analysis
+## Inferential analysis {.tabset}
 
-The `Spark ML` functions available in sparklyr were largely developed with predictive analysis in mind. This means that they have been built primarily to specify a regression model and retrieve the prediction (as we have seen above), with little information in between.
+The `Spark ML` functions available in sparklyr were largely developed with predictive analysis in mind. This means that they have been built primarily to specify a regression model and retrieve the prediction (as we have done above), with little information in between.
 
 When conducting analysis at ONS, we are often not interested in predicting unknown outcomes, but instead understanding the relationship between the independent variables and the probability of the outcome. This is what is referred to as *inferential analysis* in this section.
+
+### R
 
 The regression coefficients from the model above can be displayed by using the `tidy` function from the `broom` package:
 
 ```{r, eval = FALSE}
 # Run the model
 glm_out <- ml_logistic_regression(rescue_cat, 
-                                 formula = "is_cat ~ typeofincident + engine_count + job_hours + hourly_cost + originofcall + propertycategory + specialservicetypecategory")
+                                 formula = "is_cat ~ engine_count + job_hours + hourly_cost + originofcall + propertycategory + specialservicetypecategory")
 
 # View coefficients
 broom::tidy(glm_out)
@@ -139,14 +155,16 @@ glm_out <- ml_generalized_linear_regression(rescue_cat,
 # View a tibble of coefficients, std. error, p-values
 broom::tidy(glm_out)
 ```
-Individual statistics of interest can also be accessed directly using `ml_summary`, for example, to get the standard errors:
+
+Individual statistics of interest can also be accessed directly using `ml_summary`. For example, to get the standard errors:
 
 ```{r, eval = FALSE}
 c("coefficient_standard_errors") %>%
   purrr::map(~ml_summary(glm_out, .x, allow_null = TRUE)) %>%
   purrr::map_if(is.function, ~.x())
 ```
-Other statistics can also be accessed individually in this way by replacing "coefficient_standard_errors" with the statistic of interest:
+
+Other statistics can also be accessed individually in this way by replacing "coefficient_standard_errors" with the statistic of interest from the list below:
 
 ```
 ml_summary(glm_out)
@@ -170,7 +188,8 @@ GeneralizedLinearRegressionTrainingSummary
  - p_values() 
  - t_values()
 ```
-Unfortunately, we have not yet found/built functionality in sparkylr to calculate exact confidence intervals. Instead, we can approximate the 95% confidence intervals by multiplying the standard errors by 1.96 and subract/add this to the estimate. As sparklyr regression functions are only necessary on datasets with a large number of observations, this approximation is sufficient.
+
+Unfortunately, we have not yet found or built functionality in sparkylr to calculate exact confidence intervals. Instead, we can approximate the 95% confidence intervals by multiplying the standard errors by 1.96 and subtract or add this to the estimate. As sparklyr regression functions are only necessary on datasets with a large number of observations, this approximation is sufficient.
 
 ```{r, eval = FALSE}
 broom::tidy(glm_out) %>%
@@ -178,11 +197,14 @@ broom::tidy(glm_out) %>%
                 upper_ci = estimate + (1.96 * std.error))
 ```
 
-### Things to watch out for
+## Things to watch out for
 
-#### Singularity issues
+### Singularity issues {.tabset}
 
-We also need to be careful to check that variables included in the model take more than one value. In R, using functions such as `glm`, these variables would be dropped automatically. However, this in not that case in `sparklyr`. 
+We need to be careful to check that variables included in the model take more than one value in order to avoid errors. 
+
+#### R
+If we were carrying out logistic regression in R using functions such as `glm`, these variables would be dropped automatically. However, this is not the case in `sparklyr`. 
 
 ```{r, eval = FALSE}
 glm_singular <- ml_generalized_linear_regression(rescue_cat, 
@@ -190,9 +212,9 @@ glm_singular <- ml_generalized_linear_regression(rescue_cat,
                                  family = "binomial", 
                                  link = "logit")
 ```
-In this case, running the code above will produce an error since the `typeofincident` column only contains one variable, `Special Service`. The regression model will not run unless `typeofincident` is dropped from the formula above.  
+Running the code above will produce an error since the `typeofincident` column only contains one value, `Special Service`. The regression model will not run unless `typeofincident` is removed from the formula.  
 
-There are some variables in this dataset which depend on others such that they always take a singular value for a given value of those other variables. For example, if we take a closer look at `total_cost` we can see it always takes a value that is equal to `hourly_cost` multiplied by `job_hours`:
+Additionally, there are some variables in this dataset which depend on others such that they always take a singular value for a given value of those other variables. For example, if we take a closer look at `total_cost` we can see it always takes a value that is equal to `hourly_cost` multiplied by `job_hours`.
 
 ```{r, eval = FALSE}
 rescue_cat %>%
@@ -205,7 +227,7 @@ rescue_cat %>%
 
 If we ran a regression model including these variables in R using `glm`, this would not be a problem since the function would automatically exclude one of these variables for the purpose of calculating coefficients. However, the `Spark ML` functions do not do this. Instead, the regression will still run and include coefficients from these 'singular' columns. This is because rather than  `ml_generalized_linear_regression` attempting to solve the regression exactly, failing and removing the ‘singular’ column or returning an error, `ml_generalized_linear_regression` will revert to an optimisation method to approximate regression coefficients.
 
-Because of the method used, standard errors will not be produced, and therefore confidence intervals can’t be calculated. As a result, although the regression will run, attempting to access the coefficients and standard errors using the `tidy` or `ml_summary` methods described above will return an error. These 'singular' variables therefore need to be identified and removed from the analysis prior to using `ml_` functions.
+Because of the method used, standard errors will not be produced, and therefore confidence intervals cannot be calculated. As a result, although the regression will run, attempting to access the coefficients and standard errors using the `tidy` or `ml_summary` methods described above will return an error. 
 
 ```{r, eval = FALSE}
 # Run regression including singular `total_cost` variable
@@ -222,8 +244,8 @@ c("coefficient_standard_errors") %>%
 # The following will cause an error, as 'tidy()' will attempt to retrieve standard errors that haven't been produced
 broom::tidy(glm_singular)
 ```
-<!-- Keep this for now because there does seem to be an issue with the ohe variables -->
-<!-- One final point to note on singularity is that as a consequence of `singular` variables not being automatically removed by `ml_` functions, we cannot specify the `formula` argument simply using `is_cat ~ .` as we can with `glm`. Here, `.` is used as a shorthand for all variables in the dataset. Unfortunately, since this includes the target variable `is_cat`, the `ml_` functions will again revert to an optimisation method including all of the variables and fail to produce standard errors: -->
+
+These 'singular' variables therefore need to be identified and removed from the analysis prior to using `ml_` functions.
 
 ```{r, eval = FALSE}
 # Select only the variables we want to use in our regression, making sure we drop all 'singular' variables
@@ -251,9 +273,11 @@ c("coefficient_standard_errors") %>%
 broom::tidy(glm_out)
 ```
 
-#### Selecting reference categories and encoding categorical variables
+### Selecting reference categories and encoding categorical variables {.tabset}
 
 When including categorical variables as independent variables in a regression, one of the categories must act as the reference category. The coefficients for all other categories are relative to the reference category. 
+
+#### R
 
 By default, the `ml_generalized_linear_regression` function in R will select the least common category as the reference category before running the model, without input from the user. It also implicitly applies one-hot encoding to the categories so that they can be represented as a binary numerical value. 
 
@@ -267,15 +291,15 @@ rescue_cat %>%
 
 In this case, `ml_generalized_linear_regression` would select "Animal Rescue From Water" as the reference category, since there are only 343 instances of it in the data. For the purpose of running the model, it would also create a new column in the data for each of the other categories, assigning a 1 or 0 for each row depending on whether that entry belongs to that category or not. Regression coefficients would then be shown for each of these new columns in the final model, relative to the to the "Animal Rescue From Water" reference category. 
 
-Selecting a reference category can be particularly useful for inferential analysis, where there are particularly useful reference points. For example, in the `rescue_cat` dataset, we might want to select "Animal Rescue From Height" as our reference category because it is the largest defined special service type (aside from "Other Animal Assistance") and could serve as a useful reference point. 
+Selecting a reference category can be particularly useful for inferential analysis, where there are particularly useful reference points. For example, in the `rescue_cat` dataset, we might want to select "Other Animal Assistance" as our reference category instead because it is the largest special service type and could serve as a useful reference point. 
 
-If we wanted to specify which category we want to choose as our reference category in R, this could be done quite simply using **factors**. For example, to choose "Animal Rescue From Height" as our reference category instead, we would just need to mutate the `specialservicetypecategory` as a factor and specify the reference category as follows:
+If we wanted to specify which category we want to choose as our reference category in R, this could be done quite simply using **factors**. For example, to choose "Other Animal Assistance" as our reference category instead, we would just need to mutate the `specialservicetypecategory` as a factor and specify the reference category as follows:
 
 ```{r, eval = FALSE}
 # This would work in R but not in sparklyr
 rescue_cat <- rescue_cat %>% 
   mutate(specialservicetypecategory_ref = relevel(as.factor(specialservicetypecategory), 
-                  ref = "Animal Rescue From Height"))
+                  ref = "Other Animal Assistance"))
 ```
 
 This also makes it very easy to specify reference categories for multiple columns at once by adding in additional mutate terms.
@@ -286,8 +310,8 @@ Instead, we can make use of the one-hot encoding concept and two of `sparklyr`'s
 
 ```{r, eval = FALSE}
 rescue_cat_ohe <- rescue_cat %>%
-  dplyr::mutate(specialservicetypecategory = ifelse(specialservicetypecategory == "Animal Rescue From Height",
-                         "000_Animal Rescue From Height",
+  dplyr::mutate(specialservicetypecategory = ifelse(specialservicetypecategory == "Other Animal Assistance",
+                         "000_Other Animal Assistance",
                          specialservicetypecategory)) %>%
   sparklyr::ft_string_indexer(input_col = "specialservicetypecategory", 
                     output_col = "specialservicetypecategory_idx",
@@ -298,11 +322,12 @@ rescue_cat_ohe <- rescue_cat %>%
   sparklyr::sdf_separate_column(column = "specialservicetypecategory_ohe",
                       into = c("specialservicetypecategory_Animal Rescue From Water", 
                                "specialservicetypecategory_Animal Rescue From Below Ground", 
-                               "specialservicetypecategory_Other Animal Assistance")) %>% 
+                               "specialservicetypecategory_Animal Rescue From Height")) %>% 
   sparklyr::select(-ends_with(c("_ohe", "_idx")),
                    -specialservicetypecategory)
 ```
-Where `sdf_separate_column` has been used to separate encoded variables into individual columns and the intermediate columns with "_ohe" and "_idx" suffixes have been dropped once the process is complete. This can be repeated for every categorical variable as desired. 
+
+`sdf_separate_column` has been used to separate encoded variables into individual columns and the intermediate columns with "_ohe" and "_idx" suffixes have been dropped once the process is complete. This can be repeated for every categorical variable as desired. 
 
 ```{r, eval = FALSE}
 # originofcall
@@ -367,13 +392,13 @@ broom::tidy(glm_ohe)
 # A tibble: 20 × 5
    term                                    estimate std.error statistic  p.value
    <chr>                                      <dbl>     <dbl>     <dbl>    <dbl>
- 1 (Intercept)                              1.47e+0   3.84e-1   3.83e+0 1.28e- 4
+ 1 (Intercept)                              1.05e+0   3.85e-1   2.71e+0 6.63e- 3
  2 engine_count                            -6.13e-1   2.74e-1  -2.23e+0 2.56e- 2
  3 job_hours                               -2.54e-2   6.09e-2  -4.16e-1 6.77e- 1
  4 hourly_cost                             -7.00e-4   9.85e-4  -7.11e-1 4.77e- 1
- 5 specialservicetypecategory_Animal Resc… -4.23e-1   6.14e-2  -6.89e+0 5.76e-12
- 6 specialservicetypecategory_Animal Resc… -1.42e+0   1.60e-1  -8.84e+0 0       
- 7 specialservicetypecategory_Other Anima…  2.40e-2   9.80e-2   2.45e-1 8.07e- 1
+ 5 specialservicetypecategory_Animal Resc… -9.95e-1   1.60e-1  -6.22e+0 5.12e-10
+ 6 specialservicetypecategory_Animal Resc…  4.23e-1   6.14e-2   6.89e+0 5.76e-12
+ 7 specialservicetypecategory_Animal Resc…  4.47e-1   9.59e-2   4.66e+0 3.19e- 6
  8 originofcall_Ambulance                  -9.65e-1   2.26e-1  -4.27e+0 1.95e- 5
  9 originofcall_Police                      6.69e-1   1.56e+0   4.28e-1 6.68e- 1
 10 originofcall_Coastguard                  1.33e-1   5.73e-2   2.33e+0 1.97e- 2
@@ -389,9 +414,18 @@ broom::tidy(glm_ohe)
 20 propertycategory_Other Residential       7.50e-1   1.43e+0   5.26e-1 5.99e- 1
 ```
 
-##### Functionalising
+## Further resources
 
-Repeating this process for every categorical variable you wish to specify the reference category for could be very time consuming. You may find it helpful to instead use or adapt 
+Sparklyr and tidyverse documentation:
 
-**Unsure how to load package - check details and add to this section later **
+- [Spark Machine Learning Library](https://spark.rstudio.com/guides/mlib.html)
+- [Reference - Spark Machine Learning](https://spark.rstudio.com/packages/sparklyr/latest/reference/#spark-machine-learning)
+- [`broom` documentation](https://broom.tidymodels.org/) 
+- [`ml_generalized_linear_regression()`](https://www.rdocumentation.org/packages/sparklyr/versions/1.8.2/topics/ml_generalized_linear_regression)
+- [`ml_logistic_regression`](https://www.rdocumentation.org/packages/sparklyr/versions/0.4/topics/ml_logistic_regression)
+
+### Acknowledgements
+
+Thanks to Ted Dolby for providing guidance on logistic regression in sparklyr which was adapted to produce this page.
+
 
