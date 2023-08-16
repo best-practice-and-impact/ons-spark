@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Sampling: .sample() and sdf_sample() &#8212; Spark at the ONS</title>
+    <title>Sampling: an overview &#8212; Spark at the ONS</title>
   
   
   
@@ -194,7 +194,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../../spark-functions/union-dataframes-with-different-columns.html">Union two DataFrames with different columns</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../spark-functions/padding.html">Add leading zeros with <code class="docutils literal notranslate"><span class="pre">lpad()</span></code></a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/sampling.html">Sampling: <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/sampling.html">Sampling: an overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../spark-functions/pivot-tables.html">Pivot tables in Spark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../spark-functions/rounding.html">Rounding differences in Python, R and Spark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../spark-functions/window-functions.html">Window Functions in Spark</a></li>
@@ -412,7 +412,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Sampling: .sample() and sdf_sample()</h1>
+    <h1>Sampling: an overview</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -422,16 +422,24 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-sample-and-sdf-sample">Example: <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-spark-session-and-loading-data">Creating spark session and loading data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sampling-sample-and-sdf-sample">Sampling: <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sampling-without-replacement">Sampling without replacement</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#does-sample-preserve-the-distribution-regardless-of-partitions">Does <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> preserve the distribution, regardless of partitions?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sampling-with-replacement">Sampling with Replacement</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stratified-samples-sampleby">Stratified samples: <code class="docutils literal notranslate"><span class="pre">.sampleBy()</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#an-example-using-the-skewed-dataset">An example using the skewed dataset:</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#information-on-alternate-sampling-methods">Information on alternate sampling methods</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#more-details-on-sampling">More details on sampling</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#returning-an-exact-sample">Returning an exact sample</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#partitioning">Partitioning</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sampling-consistently-by-filtering-the-data">Sampling consistently by filtering the data</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other-sampling-functions">Other sampling functions</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#splitting-a-df-randomsplit-and-sdf-random-split">Splitting a DF: <code class="docutils literal notranslate"><span class="pre">.randomSplit()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_random_split()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stratified-samples-sampleby">Stratified samples: <code class="docutils literal notranslate"><span class="pre">.sampleBy()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#splitting-via-monotonically-increasing-id-or-sdf-with-unique-id">Splitting via <code class="docutils literal notranslate"><span class="pre">monotonically_increasing_id()</span></code> or <code class="docutils literal notranslate"><span class="pre">sdf_with_unique_id()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further Resources</a></li>
@@ -446,13 +454,20 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section id="sampling-sample-and-sdf-sample">
-<h1>Sampling: <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code><a class="headerlink" href="#sampling-sample-and-sdf-sample" title="Permalink to this heading">#</a></h1>
-<p>You can take a sample of a DataFrame with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sample.html"><code class="docutils literal notranslate"><span class="pre">.sample()</span></code></a> in PySpark or <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_sample.html"><code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code></a> in sparklyr. This is something that you may want to do during development or initial analysis of data, as with a smaller amount of data your code will run faster and requires less memory to process.</p>
-<p>It is important to note that sampling in Spark returns an approximate fraction of the data, rather than an exact one. The reason for this is explained in the <span class="xref myst">Returning an exact sample</span> section.</p>
-<section id="example-sample-and-sdf-sample">
-<h2>Example: <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code><a class="headerlink" href="#example-sample-and-sdf-sample" title="Permalink to this heading">#</a></h2>
-<p>First, set up the Spark session, read the Animal Rescue data, and then get the row count:</p>
+  <section id="sampling-an-overview">
+<h1>Sampling: an overview<a class="headerlink" href="#sampling-an-overview" title="Permalink to this heading">#</a></h1>
+<p>Sampling is something that you may want to do during development or initial analysis of data, as with a smaller amount of data your code will run faster and requires less memory to process.</p>
+<p>There are many different ways that a dataframe can be sampled, the two main types covered in this page are:</p>
+<ol class="arabic simple">
+<li><p><strong>simple random sampling</strong>: <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sample.html"><code class="docutils literal notranslate"><span class="pre">.sample()</span></code></a> in Pyspark and <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_sample.html"><code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code></a> in SparklyR and</p></li>
+<li><p><strong>stratified sampling</strong>: <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sampleBy.html"><code class="docutils literal notranslate"><span class="pre">.sampleBy()</span></code></a> in Pyspark. There is currently no way to do stratified sampling in SparklyR when using version 2.4.0 (spark vesion &gt; 3.0.0 is required).</p></li>
+</ol>
+<p>Although, these two methods are the focus of this page there are numerous methods that can be used for sampling that will not be covered here, such as systematic sampling and cluster sampling.</p>
+<p>Both <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> and <code class="docutils literal notranslate"><span class="pre">.sampleBy()</span></code> in Pyspark use the same base functions for sampling with and without replacement. For sampling without replacement PySpark implements a uniform sampling method using random number generation. A row will be added to the sample if the randomly generated number is smaller than the fraction input and each row has an equal probability of being sampled. Whereas for sampling with replacement numbers are generated from a Poisson sample. A link to the alogirithm breakdown can be found <a class="reference external" href="https://github.com/apache/spark/blob/master/python/pyspark/rddsampler.py">here</a>.</p>
+<p>It is important to note that sampling in Spark returns an approximate fraction of the data, rather than an exact one. The reason for this is explained in the <span class="xref myst">sample</span> section.</p>
+<section id="creating-spark-session-and-loading-data">
+<h2>Creating spark session and loading data<a class="headerlink" href="#creating-spark-session-and-loading-data" title="Permalink to this heading">#</a></h2>
+<p>First, set up the Spark session, read the Animal Rescue data:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
@@ -464,15 +479,10 @@ document.write(`
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
     
-<span class="n">rescue_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path&quot;</span><span class="p">]</span>
-<span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">)</span>
-
-<span class="n">rescue</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5898
+<span class="n">rescue_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path_csv&quot;</span><span class="p">]</span>
+<span class="c1"># rescue_path = &quot;../../data/animal_rescue.csv&quot;</span>
+<span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s1">&#39;AnimalGroupParent&#39;</span><span class="p">,</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -488,32 +498,79 @@ document.write(`
 
 <span class="n">config</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">yaml</span><span class="o">::</span><span class="nf">yaml.load_file</span><span class="p">(</span><span class="s">&quot;ons-spark/config.yaml&quot;</span><span class="p">)</span>
 
-<span class="n">rescue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_parquet</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">rescue_path</span><span class="p">)</span>
-
-<span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">()</span>
+<span class="n">rescue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_csv</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">rescue_path_csv</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">infer_schema</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>To use <code class="docutils literal notranslate"><span class="pre">.sample()</span></code>, set the <code class="docutils literal notranslate"><span class="pre">fraction</span></code>, which is between 0 and 1. So if we want a <span class="math notranslate nohighlight">\(20\%\)</span> sample, use <code class="docutils literal notranslate"><span class="pre">fraction=0.2</span></code>. Note that this will give an <em>approximate</em> sample and so you will likely get slightly more or fewer rows than you expect.</p>
-<p>You can select to sample with replacement by setting <code class="docutils literal notranslate"><span class="pre">withReplacement=True</span></code> in PySpark or <code class="docutils literal notranslate"><span class="pre">replacement=TRUE</span></code> in sparklyr, which is set to <code class="docutils literal notranslate"><span class="pre">False</span></code> by default.</p>
-<p>For these functions it is advised to specify the arguments explicitly. One reason is that <code class="docutils literal notranslate"><span class="pre">fraction</span></code> is a compulsory argument, but in PySpark is <em>after</em> <code class="docutils literal notranslate"><span class="pre">withReplacement</span></code>. Another reason is that in sparklyr the arguments are in a different order, with <code class="docutils literal notranslate"><span class="pre">fraction</span></code> listed first; if you use both languages it is easy to make a mistake.</p>
+<p>To fully test how Spark sampling functions are impacted by partitions we will also make use of a skewed dataframe.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_sample</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">withReplacement</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
-<span class="n">rescue_sample</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">skewed_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mf">1e6</span><span class="p">)</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;skew_col&quot;</span><span class="p">,</span><span class="n">F</span><span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">)</span>
+                                        <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">)</span>
+                                        <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10000</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span>
+                                        <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100000</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">)</span>
+                                        <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="s1">&#39;E&#39;</span><span class="p">)</span>
+                                        <span class="p">)</span>
+
+<span class="n">skewed_df</span> <span class="o">=</span> <span class="n">skewed_df</span><span class="o">.</span><span class="n">repartition</span><span class="p">(</span><span class="s1">&#39;skew_col&#39;</span><span class="p">)</span>
+
+<span class="n">skewed_df</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>588
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>200
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">skewed_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_seq</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="n">from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1e6</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">          </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">skew_col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">case_when</span><span class="p">(</span>
+<span class="w">          </span><span class="n">id</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="m">100</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s">&#39;A&#39;</span><span class="p">,</span>
+<span class="w">          </span><span class="n">id</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="m">1000</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s">&#39;B&#39;</span><span class="p">,</span>
+<span class="w">          </span><span class="n">id</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="m">10000</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s">&#39;C&#39;</span><span class="p">,</span>
+<span class="w">          </span><span class="n">id</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="m">100000</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s">&#39;D&#39;</span><span class="p">,</span>
+<span class="w">          </span><span class="n">.default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;E&#39;</span><span class="p">))</span>
+
+<span class="n">skewed_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">skewed_df</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_repartition</span><span class="p">(</span><span class="n">partition_by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;skew_col&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="sampling-sample-and-sdf-sample">
+<h2>Sampling: <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code><a class="headerlink" href="#sampling-sample-and-sdf-sample" title="Permalink to this heading">#</a></h2>
+<p>By using <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> in Pyspark and <code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code> in SparklyR you take a sampled subset of the original dataframe by setting a <code class="docutils literal notranslate"><span class="pre">seed</span></code>, a <code class="docutils literal notranslate"><span class="pre">fraction</span></code> and whether replacement is required. For the latter argument, in PySpark you use <code class="docutils literal notranslate"><span class="pre">withReplacement</span> <span class="pre">=</span></code>, if this is not set then the default answer is <code class="docutils literal notranslate"><span class="pre">False</span></code>, on the other hand in SparklyR you use <code class="docutils literal notranslate"><span class="pre">replacement</span> <span class="pre">=</span></code> and if not set the default answer = <code class="docutils literal notranslate"><span class="pre">True</span></code>. For both functions, <code class="docutils literal notranslate"><span class="pre">seed</span></code> is an optional argument which defaults to a random seed. The <code class="docutils literal notranslate"><span class="pre">fraction</span></code> however is compulsory and must be a value betwen 0.0 and 1.0; so, if we want to obtain a 20% sample we would use <code class="docutils literal notranslate"><span class="pre">fraction</span> <span class="pre">=</span> <span class="pre">0.2</span></code>.</p>
+<p>For these two functions it is advised to specify the arguments explicitly. One reason being that in Pyspark <code class="docutils literal notranslate"><span class="pre">fraction</span></code> must come after <code class="docutils literal notranslate"><span class="pre">withReplacement</span></code> whereas when you use <code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code> in SparklyR <code class="docutils literal notranslate"><span class="pre">fraction</span></code> must be listed first. If you use both languages it is easy to make this mistake.</p>
+<p>From the <a class="reference external" href="https://spark.apache.org/docs/3.1.2/api/python/reference/api/pyspark.sql.DataFrame.sample.html">PySpark documentation</a>, we see that a uniform sampling method is used for <code class="docutils literal notranslate"><span class="pre">.sample()</span></code>. Here each each row is equally likely to be sampled.
+We should check that this is indeed occuring for an evenly distrubuted dataframe across a number of partitions (<code class="docutils literal notranslate"><span class="pre">rescue</span></code>) and a skewed dataset (<code class="docutils literal notranslate"><span class="pre">skew_df</span></code>). As both <code class="docutils literal notranslate"><span class="pre">.sample</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code> implement uniform sampling, an <em>approximate</em> sample is returned, so you will get either slightly more or less than the specified fraction you originally input.</p>
+<section id="sampling-without-replacement">
+<h3>Sampling without replacement<a class="headerlink" href="#sampling-without-replacement" title="Permalink to this heading">#</a></h3>
+<p>We will perform checks on the <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> function to determine how this will impact our skewed distribution. We will also check how the partitions impact the end distribution.</p>
+<p>First we will compare the distrubution of our skewed dataset before our sampling.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_sample</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">withReplacement</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Total rows in original DF:&#39;</span><span class="p">,</span><span class="n">rescue</span><span class="o">.</span><span class="n">count</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Total rows in sampled DF:&#39;</span><span class="p">,</span><span class="n">rescue_sample</span><span class="o">.</span><span class="n">count</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Fraction of rows sampled&#39;</span><span class="p">,</span><span class="n">rescue_sample</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">/</span><span class="n">rescue</span><span class="o">.</span><span class="n">count</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Total rows in original DF: 5898
+Total rows in sampled DF: 600
+Fraction of rows sampled 0.1017293997965412
 </pre></div>
 </div>
 </div>
 </div>
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_sample</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_sample</span><span class="p">(</span><span class="n">fraction</span><span class="o">=</span><span class="m">0.1</span><span class="p">,</span><span class="w"> </span><span class="n">replacement</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span>
 <span class="n">rescue_sample</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">()</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;Total rows in original DF: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">(</span><span class="n">rescue</span><span class="p">)))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;Total rows in sampled DF: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">(</span><span class="n">rescue_sample</span><span class="p">)))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;Fraction of rows sampled: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">(</span><span class="n">rescue_sample</span><span class="p">)</span><span class="o">/</span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">(</span><span class="n">rescue</span><span class="p">)))</span>
 </pre></div>
 </div>
-<p>You can also set a seed, in a similar way to how random numbers generators work. This enables replication, which is useful in Spark given that the DataFrame will be otherwise be re-sampled every time an action is called.</p>
+<p>You can also set a seed, in a similar way to how random numbers generators work. This enables replication, which is useful in Spark given that the DataFrame will otherwise be re-sampled every time an action is called.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_sample_seed_1</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">withReplacement</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -525,13 +582,13 @@ document.write(`
                       <span class="n">seed</span><span class="o">=</span><span class="mi">99</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Seed 1 count: </span><span class="si">{</span><span class="n">rescue_sample_seed_1</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Seed 2 count: </span><span class="si">{</span><span class="n">rescue_sample_seed_1</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Seed 2 count: </span><span class="si">{</span><span class="n">rescue_sample_seed_2</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Seed 1 count: 589
-Seed 2 count: 589
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Seed 1 count: 593
+Seed 2 count: 593
 </pre></div>
 </div>
 </div>
@@ -544,14 +601,274 @@ Seed 2 count: 589
 </pre></div>
 </div>
 <p>We can see that both samples have returned the same number of rows due to the identical seed.</p>
-<p>Another way of replicating results is with <span class="xref myst">persisting</span>. <span class="xref myst">Caching</span> or <span class="xref myst">checkpointing</span> the DataFrame will avoid recalculation of the DF within the same Spark session. Writing out the DF to a Hive table or parquet enables it to be used in subsequent Spark sessions. See the chapter on persisting for more detail.</p>
+<p>Another way of replicating results is with <a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-concepts/cache.html#persist">persisting</a>. <a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-concepts/cache.html">Caching</a> or <a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-concepts/checkpoint-staging.html#checkpoint">checkpointing</a> the DataFrame will avoid recalculation of the DF within the same Spark session. Writing out the DF to a Hive table or parquet enables it to be used in subsequent Spark sessions. See the chapter on persisting for more detail.</p>
+</section>
+<section id="does-sample-preserve-the-distribution-regardless-of-partitions">
+<h3>Does <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> preserve the distribution, regardless of partitions?<a class="headerlink" href="#does-sample-preserve-the-distribution-regardless-of-partitions" title="Permalink to this heading">#</a></h3>
+<p>We also wish to perform checks on the <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> function to determine how this will be impacted when the original dataframe has a large skew across partitions.
+Additionally we will verify that the original distribution is preserved when sampling without replacement.
+First we group the data by <code class="docutils literal notranslate"><span class="pre">skew_col</span></code> and caclulate how much of the dataframe each column represents.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">skewed_df</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s1">&#39;skew_col&#39;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;skew_col&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;row_count&#39;</span><span class="p">))</span>
+    <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;percentage_of_dataframe&#39;</span><span class="p">,</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;row_count&#39;</span><span class="p">)</span><span class="o">/</span><span class="n">skewed_df</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;skew_col&#39;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">show</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+--------+---------+-----------------------+
+|skew_col|row_count|percentage_of_dataframe|
++--------+---------+-----------------------+
+|       A|      100|                   0.01|
+|       B|      900|                   0.09|
+|       C|     9000|     0.8999999999999999|
+|       D|    90000|                    9.0|
+|       E|   900000|                   90.0|
++--------+---------+-----------------------+
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">n_rows</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">skewed_df</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">()</span>
+<span class="n">skewed_df</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">        </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">skew_col</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">        </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">count</span><span class="p">(</span><span class="n">skew_col</span><span class="p">,</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;row_count&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">        </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">percentage_of_dataframe</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">row_count</span><span class="o">/</span><span class="n">n_rows</span><span class="o">*</span><span class="m">100</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">        </span><span class="nf">sdf_sort</span><span class="p">(</span><span class="s">&#39;skew_col&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>As expected group <code class="docutils literal notranslate"><span class="pre">E</span></code> makes up 90% of the dataframe.
+Now we will sample 10% of the dataframe and assess the distribution of the sampled dataframe.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">skewed_sample</span> <span class="o">=</span> <span class="n">skewed_df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">fraction</span><span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">withReplacement</span><span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+
+<span class="p">(</span><span class="n">skewed_sample</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s1">&#39;skew_col&#39;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;skew_col&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;row_count&#39;</span><span class="p">))</span>
+    <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;percentage_of_dataframe&#39;</span><span class="p">,</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;row_count&#39;</span><span class="p">)</span><span class="o">/</span><span class="n">skewed_sample</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;skew_col&#39;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">show</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+--------+---------+-----------------------+
+|skew_col|row_count|percentage_of_dataframe|
++--------+---------+-----------------------+
+|       A|       10|   0.010004702210038718|
+|       B|       94|    0.09404420077436394|
+|       C|      918|     0.9184316628815543|
+|       D|     9144|      9.148299700859404|
+|       E|    89787|      89.82921973327464|
++--------+---------+-----------------------+
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">skewed_sample</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">skewed_df</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_sample</span><span class="p">(</span><span class="n">fraction</span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span><span class="p">,</span><span class="w"> </span><span class="n">replacement</span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span>
+
+<span class="n">n_rows_sample</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">skewed_sample</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">()</span>
+
+<span class="n">skewed_sample</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">        </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">skew_col</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">        </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">count</span><span class="p">(</span><span class="n">skew_col</span><span class="p">,</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;row_count&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">        </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">percentage_of_dataframe</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">row_count</span><span class="o">/</span><span class="n">n_rows_sample</span><span class="o">*</span><span class="m">100</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">        </span><span class="nf">sdf_sort</span><span class="p">(</span><span class="s">&#39;skew_col&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>From the above example, it looks like the original distribution is preserved.
+We will now re-run the above sampling, but we first repartition our skewed dataframe.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">equal_partitions_df</span> <span class="o">=</span> <span class="n">skewed_df</span><span class="o">.</span><span class="n">repartition</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+
+<span class="n">equal_partitions_sample</span> <span class="o">=</span> <span class="n">equal_partitions_df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">fraction</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">withReplacement</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="p">(</span><span class="n">equal_partitions_sample</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s1">&#39;skew_col&#39;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;skew_col&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;row_count&#39;</span><span class="p">))</span>
+    <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;percentage_of_dataframe&#39;</span><span class="p">,</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;row_count&#39;</span><span class="p">)</span><span class="o">/</span><span class="n">equal_partitions_sample</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;skew_col&#39;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">show</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+--------+---------+-----------------------+
+|skew_col|row_count|percentage_of_dataframe|
++--------+---------+-----------------------+
+|       A|       11|     0.0110026406337521|
+|       B|       98|    0.09802352564615509|
+|       C|      866|     0.8662078898935746|
+|       D|     8941|       8.94314635512523|
+|       E|    90060|      90.08161958870129|
++--------+---------+-----------------------+
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">equal_partitions_df</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">skewed_df</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_repartition</span><span class="p">(</span><span class="m">20</span><span class="p">)</span>
+
+<span class="n">equal_partitions_sample</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">equal_partitions_df</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_sample</span><span class="p">(</span><span class="n">fraction</span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span><span class="p">,</span><span class="w"> </span><span class="n">replacement</span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span>
+
+<span class="n">n_rows_sample_equal</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">equal_partitions_sample</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">()</span>
+
+<span class="n">equal_partitions_sample</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">        </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">skew_col</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">        </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">count</span><span class="p">(</span><span class="n">skew_col</span><span class="p">,</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;row_count&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">        </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">percentage_of_dataframe</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">row_count</span><span class="o">/</span><span class="n">n_rows_sample_equal</span><span class="o">*</span><span class="m">100</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">        </span><span class="nf">sdf_sort</span><span class="p">(</span><span class="s">&#39;skew_col&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>From the above examples we can see that we get similar samples regardless of how the data is partitioned, where each row within the dataframe is equally likely to be added to the sample.
+Although one sample has been shown here, this has been tested using multiple random samples.</p>
+</section>
+<section id="sampling-with-replacement">
+<h3>Sampling with Replacement<a class="headerlink" href="#sampling-with-replacement" title="Permalink to this heading">#</a></h3>
+<p>We have constructed a small example for sampling with replacement. Here we count the number of times the unique <code class="docutils literal notranslate"><span class="pre">IncidentNumber</span></code> occurs within the sampled dataframe.
+This will show how many times each <code class="docutils literal notranslate"><span class="pre">IncidentNumber</span></code> occurs within the sample, verifiying we are sampling with replacement as these rows have been sampled multiple times.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">replacement_sample</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">fraction</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">withReplacement</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">seed</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="p">(</span><span class="n">replacement_sample</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s1">&#39;IncidentNumber&#39;</span><span class="p">)</span>
+                     <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;IncidentNumber&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">))</span>
+                     <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span><span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+                     <span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+---------------+-----+
+| IncidentNumber|count|
++---------------+-----+
+|       70935101|    2|
+|       15682091|    2|
+|133403-01102016|    2|
+|       40271121|    2|
+|       63575131|    2|
++---------------+-----+
+only showing top 5 rows
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">replacement_sample</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_sample</span><span class="p">(</span><span class="n">fraction</span><span class="o">=</span><span class="m">0.1</span><span class="p">,</span><span class="w"> </span><span class="n">replacement</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">seed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">20</span><span class="p">)</span>
+<span class="n">replacement_sample</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">()</span>
+
+<span class="n">replacement_sample</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">IncidentNumber</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">count</span><span class="p">(</span><span class="n">IncidentNumber</span><span class="p">)</span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">arrange</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The above examples show that a number of rows occur twice within the sample. While we have not presented the details here, sampling with replacement does still preserve the partitions and original distribution of the original dataframe as shown above for sampling without replacement.</p>
+</section>
+</section>
+<section id="stratified-samples-sampleby">
+<h2>Stratified samples: <code class="docutils literal notranslate"><span class="pre">.sampleBy()</span></code><a class="headerlink" href="#stratified-samples-sampleby" title="Permalink to this heading">#</a></h2>
+<p>A stratified sample can be taken with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sampleby.html"><code class="docutils literal notranslate"><span class="pre">.sampleBy()</span></code></a> in PySpark. This takes a column, <code class="docutils literal notranslate"><span class="pre">col</span></code>, to sample by, and a dictionary of weights, <code class="docutils literal notranslate"><span class="pre">fractions</span></code>.</p>
+<p>In common with other sampling methods this does not return an exact proportion and you can also optionally set a seed.</p>
+<p>Note that there is no native sparklyr implementation for stratified sampling, although there is a method for weighted sampling, <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_weighted_sample.html"><code class="docutils literal notranslate"><span class="pre">sdf_weighted_sample()</span></code></a>.</p>
+<p>In PySpark, to return <span class="math notranslate nohighlight">\(5\%\)</span> of cats, <span class="math notranslate nohighlight">\(10\%\)</span> of dogs and <span class="math notranslate nohighlight">\(50\%\)</span> of hamsters:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">weights</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Cat&quot;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="s2">&quot;Dog&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s2">&quot;Hamster&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">}</span>
+<span class="n">stratified_sample</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">sampleBy</span><span class="p">(</span><span class="s2">&quot;animal_type&quot;</span><span class="p">,</span> <span class="n">fractions</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
+<span class="n">stratified_sample_count</span> <span class="o">=</span> <span class="p">(</span><span class="n">stratified_sample</span>
+                           <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;animal_type&quot;</span><span class="p">)</span>
+                           <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;animal_type&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;row_count&quot;</span><span class="p">))</span>
+                           <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;animal_type&quot;</span><span class="p">))</span>
+<span class="n">stratified_sample_count</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+-----------+---------+
+|animal_type|row_count|
++-----------+---------+
+|        Cat|      146|
+|        Dog|       90|
+|    Hamster|        8|
++-----------+---------+
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can quickly compare the number of rows for each animal to the expected to confirm that they are approximately equal:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">weights_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">weights</span><span class="o">.</span><span class="n">items</span><span class="p">()),</span> <span class="n">schema</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;animal_type&quot;</span><span class="p">,</span> <span class="s2">&quot;weight&quot;</span><span class="p">])</span>
+
+<span class="p">(</span><span class="n">rescue</span>
+    <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;animal_type&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">weights_df</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;animal_type&quot;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;expected_rows&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;count&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;weight&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stratified_sample_count</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;animal_type&quot;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;animal_type&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+-----------+-----+------+-------------+---------+
+|animal_type|count|weight|expected_rows|row_count|
++-----------+-----+------+-------------+---------+
+|        Cat| 2909|  0.05|        145.0|      146|
+|        Dog| 1008|   0.1|        101.0|       90|
+|    Hamster|   14|   0.5|          7.0|        8|
++-----------+-----+------+-------------+---------+
+</pre></div>
+</div>
+</div>
+</div>
+<section id="an-example-using-the-skewed-dataset">
+<h3>An example using the skewed dataset:<a class="headerlink" href="#an-example-using-the-skewed-dataset" title="Permalink to this heading">#</a></h3>
+<p>Using <code class="docutils literal notranslate"><span class="pre">.sampleBy()</span></code> to sample a skewed dataset is perhaps better than using <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> as you can specify the fractions of each strata within your sample to ensure that the strata in the sample are representative of the overall population.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sk_weights</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;A&quot;</span><span class="p">:</span><span class="mf">0.2</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">:</span><span class="mf">0.1</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">:</span><span class="mf">0.3</span><span class="p">}</span>
+<span class="n">stratified_sk_sample</span> <span class="o">=</span> <span class="n">skewed_df</span><span class="o">.</span><span class="n">sampleBy</span><span class="p">(</span><span class="s2">&quot;skew_col&quot;</span><span class="p">,</span> <span class="n">fractions</span><span class="o">=</span><span class="n">sk_weights</span><span class="p">)</span>
+
+<span class="p">(</span><span class="n">stratified_sk_sample</span>
+    <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s1">&#39;skew_col&#39;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;skew_col&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;row_count&#39;</span><span class="p">))</span>
+    <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;percentage_of_dataframe&#39;</span><span class="p">,</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;row_count&#39;</span><span class="p">)</span><span class="o">/</span><span class="n">stratified_sk_sample</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;skew_col&#39;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+--------+---------+-----------------------+
+|skew_col|row_count|percentage_of_dataframe|
++--------+---------+-----------------------+
+|       A|       21|   0.007409602845287492|
+|       B|       84|    0.02963841138114997|
+|       C|     4506|     1.5898890676602593|
+|       D|     9105|       3.21259209077822|
+|       E|   269700|      95.16047082733509|
++--------+---------+-----------------------+
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Conclusion</strong>: the .sampleBy() function will produce similar results independant of partitions!</p>
+</section>
+</section>
+<section id="information-on-alternate-sampling-methods">
+<h2>Information on alternate sampling methods<a class="headerlink" href="#information-on-alternate-sampling-methods" title="Permalink to this heading">#</a></h2>
 </section>
 <section id="more-details-on-sampling">
 <h2>More details on sampling<a class="headerlink" href="#more-details-on-sampling" title="Permalink to this heading">#</a></h2>
-<p>The following section gives more detail on sampling and how it is processed on the Spark cluster. is not compulsory reading, but may be of interest to some Spark users.</p>
+<p>The following section gives more detail on sampling and how it is processed on the Spark cluster. It is not compulsory reading, but may be of interest to some Spark users.</p>
 <section id="returning-an-exact-sample">
 <h3>Returning an exact sample<a class="headerlink" href="#returning-an-exact-sample" title="Permalink to this heading">#</a></h3>
-<p>We have demonstrated above that <code class="docutils literal notranslate"><span class="pre">.sample()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code> return an approximate fraction, not an exact one. This is because every row is independently assigned a probability equal to <code class="docutils literal notranslate"><span class="pre">fraction</span></code> of being included in the sample, e.g. with <code class="docutils literal notranslate"><span class="pre">fraction=0.2</span></code> every row has a <span class="math notranslate nohighlight">\(20\%\)</span> probability of being in the sample. The number of rows returned in the sample therefore follows the binomial distribution.</p>
+<p>We have demonstrated above that <code class="docutils literal notranslate"><span class="pre">.sample()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code> return an approximate fraction, not an exact one. This is because every row is independently assigned a probability equal to the <code class="docutils literal notranslate"><span class="pre">fraction</span></code> of being included in the sample, e.g. with <code class="docutils literal notranslate"><span class="pre">fraction=0.2</span></code> every row has a <span class="math notranslate nohighlight">\(20\%\)</span> probability of being in the sample. The number of rows returned in the sample therefore follows the binomial distribution.</p>
 <p>The advantage of the sample being calculated in this way is that it is processed as a <em>narrow transformation</em>, which is more efficient than a <em>wide transformation</em>.</p>
 <p>To return an exact sample, one method is to calculate how many rows are required in the sample, create a new column of random numbers and sort by it, and use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.limit.html"><code class="docutils literal notranslate"><span class="pre">.limit()</span></code></a> in PySpark or <a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/utils/html/head.html"><code class="docutils literal notranslate"><span class="pre">head()</span></code></a> in sparklyr. This requires an action and a wide transformation, and so will take longer to process than using <code class="docutils literal notranslate"><span class="pre">.sample()</span></code>.</p>
 <div class="cell docutils container">
@@ -589,21 +906,22 @@ Seed 2 count: 589
 <span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">rand_no</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">rand</span><span class="p">())</span><span class="w"> </span><span class="o">%&gt;%</span>
 <span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">arrange</span><span class="p">(</span><span class="n">rand_no</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
 <span class="w">    </span><span class="nf">head</span><span class="p">(</span><span class="n">row_count</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
-<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="o">-</span><span class="n">rand_no</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">rand_no</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
 <span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>
 <section id="partitioning">
 <h3>Partitioning<a class="headerlink" href="#partitioning" title="Permalink to this heading">#</a></h3>
-<p>The number of partitions will remain the same when sampling, even though the DataFrame will be smaller. If you are taking a small fraction of the data then your DataFrame may have too many partitions. You can use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.coalesce.html"><code class="docutils literal notranslate"><span class="pre">.coalesce()</span></code></a> in PySpark or <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html"><code class="docutils literal notranslate"><span class="pre">sdf_coalesce()</span></code></a> in sparklyr to reduce the number of partitions, e.g. if your original DF had <span class="math notranslate nohighlight">\(200\)</span> partitions and you take a <span class="math notranslate nohighlight">\(10\%\)</span> sample, you can reduce the number of partitions to <span class="math notranslate nohighlight">\(20\)</span> with <code class="docutils literal notranslate"><span class="pre">df.sample(fraction=0.1).coalesce(20)</span></code>.</p>
+<p>Even though your sample DF will be smaller than the original DF the number of partitions will remain the same. For example, by default your original DF will have 200 partitions, but your sample DF may only be a 10 % fraction of the original DF and therefore does not need to be partitioned in 200 parts. Too many partitions can be expensive for Spark as it causes excessive overhead for managing smaller tasks; please see our page on <a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-concepts/partitions.html">partitions</a> for more information.</p>
+<p>To reduce the number of partitions in your sample you can use .coalesce() in PySpark or sdf_coalesce() in SparklyR. An example of reducing partitions to 20 in PySpark is given here: <code class="docutils literal notranslate"><span class="pre">df.sample(fraction=0.1).coalesce(20)</span></code>.</p>
 </section>
 <section id="sampling-consistently-by-filtering-the-data">
 <h3>Sampling consistently by filtering the data<a class="headerlink" href="#sampling-consistently-by-filtering-the-data" title="Permalink to this heading">#</a></h3>
 <p>If the primary reason for using sampling is to process less data during development then an alternative is to filter the data and specify a condition which gives approximately the desired number of rows. This will give consistent results, which may or may not be desirable. For instance, in the Animal Rescue data we could use two years data:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span> <span class="mi">2017</span><span class="p">))</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;CalYear&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span> <span class="mi">2017</span><span class="p">))</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -614,16 +932,12 @@ Seed 2 count: 589
 </div>
 </div>
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span>
-<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">cal_year</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">2012</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">cal_year</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">2017</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">CalYear</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">2012</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">CalYear</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">2017</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
 <span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>The disadvantage of this method is that you may have data quality issues in the original DF that will not be encountered, whereas these may be discovered with <code class="docutils literal notranslate"><span class="pre">.sample()</span></code>. Using unit testing and test driven development can mitigate the risk of these issues.</p>
 </section>
-</section>
-<section id="other-sampling-functions">
-<h2>Other sampling functions<a class="headerlink" href="#other-sampling-functions" title="Permalink to this heading">#</a></h2>
-<p>This section briefly discusses similar functions to <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code>.</p>
 <section id="splitting-a-df-randomsplit-and-sdf-random-split">
 <h3>Splitting a DF: <code class="docutils literal notranslate"><span class="pre">.randomSplit()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_random_split()</span></code><a class="headerlink" href="#splitting-a-df-randomsplit-and-sdf-random-split" title="Permalink to this heading">#</a></h3>
 <p>Every row in the DF will be allocated to one of the split DFs. In common with the other sampling methods the exact size of each split may vary. An optional seed can also be set.</p>
@@ -639,9 +953,9 @@ Seed 2 count: 589
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Split1: 2970
-Split2: 2328
-Split3: 600
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Split1: 2941
+Split2: 2367
+Split3: 590
 </pre></div>
 </div>
 </div>
@@ -679,63 +993,50 @@ Split count total: 5898
 </pre></div>
 </div>
 </section>
-<section id="stratified-samples-sampleby">
-<h3>Stratified samples: <code class="docutils literal notranslate"><span class="pre">.sampleBy()</span></code><a class="headerlink" href="#stratified-samples-sampleby" title="Permalink to this heading">#</a></h3>
-<p>A stratified sample can be taken with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sampleby.html"><code class="docutils literal notranslate"><span class="pre">.sampleBy()</span></code></a> in PySpark. This takes a column, <code class="docutils literal notranslate"><span class="pre">col</span></code>, to sample by, and a dictionary of weights, <code class="docutils literal notranslate"><span class="pre">fractions</span></code>.</p>
-<p>In common with other sampling methods this does not return an exact proportion and you can also optionally set a seed.</p>
-<p>Note that there is no native sparklyr implementation for stratified sampling, although there is a method for weighted sampling, <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_weighted_sample.html"><code class="docutils literal notranslate"><span class="pre">sdf_weighted_sample()</span></code></a>.</p>
-<p>In PySpark, to return <span class="math notranslate nohighlight">\(5\%\)</span> of cats, <span class="math notranslate nohighlight">\(10\%\)</span> of dogs and <span class="math notranslate nohighlight">\(50\%\)</span> of hamsters:</p>
+<section id="splitting-via-monotonically-increasing-id-or-sdf-with-unique-id">
+<h3>Splitting via <code class="docutils literal notranslate"><span class="pre">monotonically_increasing_id()</span></code> or <code class="docutils literal notranslate"><span class="pre">sdf_with_unique_id()</span></code><a class="headerlink" href="#splitting-via-monotonically-increasing-id-or-sdf-with-unique-id" title="Permalink to this heading">#</a></h3>
+<p>Finally we will cover an alternate method of splitting a dataframe by using the <code class="docutils literal notranslate"><span class="pre">monotonically_increasing_id()</span></code> Pyspark function or <code class="docutils literal notranslate"><span class="pre">sdf_with_unique_id()</span></code> SparklyR function.
+This will add a unique id number to each row which is larger than the previous id.
+Within a partition, rows will be numbered sequentially starting at 0 for the first row in the first partition, with large increases in row id occuring between partitions.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">weights</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Cat&quot;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="s2">&quot;Dog&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s2">&quot;Hamster&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">}</span>
-<span class="n">stratified_sample</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">sampleBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="n">fractions</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
-<span class="n">stratified_sample_count</span> <span class="o">=</span> <span class="p">(</span><span class="n">stratified_sample</span>
-                           <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span>
-                           <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;row_count&quot;</span><span class="p">))</span>
-                           <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">))</span>
-<span class="n">stratified_sample_count</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+------------+---------+
-|animal_group|row_count|
-+------------+---------+
-|         Cat|      129|
-|         Dog|       86|
-|     Hamster|        9|
-+------------+---------+
-</pre></div>
-</div>
-</div>
-</div>
-<p>We can quickly compare the number of rows for each animal to the expected to confirm that they are approximately equal:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">weights_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">weights</span><span class="o">.</span><span class="n">items</span><span class="p">()),</span> <span class="n">schema</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;weight&quot;</span><span class="p">])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_id</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">repartition</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
 
-<span class="p">(</span><span class="n">rescue</span>
-    <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
-    <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">weights_df</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;expected_rows&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;count&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;weight&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">))</span>
-    <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stratified_sample_count</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">rescue_id</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue_id</span>
+             <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;row_id&#39;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">monotonically_increasing_id</span><span class="p">())</span>
+             <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;group_number&#39;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;row_id&#39;</span><span class="p">)</span><span class="o">%</span><span class="k">3</span>)
 <span class="p">)</span>
+
+<span class="n">rescue_subsample_1</span> <span class="o">=</span> <span class="n">rescue_id</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;group_number&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">rescue_subsample_2</span> <span class="o">=</span> <span class="n">rescue_id</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;group_number&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">rescue_subsample_3</span> <span class="o">=</span> <span class="n">rescue_id</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;group_number&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">rescue_subsample_1</span><span class="o">.</span><span class="n">count</span><span class="p">(),</span>
+    <span class="n">rescue_subsample_2</span><span class="o">.</span><span class="n">count</span><span class="p">(),</span>
+    <span class="n">rescue_subsample_3</span><span class="o">.</span><span class="n">count</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+------------+-----+------+-------------+---------+
-|animal_group|count|weight|expected_rows|row_count|
-+------------+-----+------+-------------+---------+
-|         Cat| 2909|  0.05|        145.0|      129|
-|         Dog| 1008|   0.1|        101.0|       86|
-|     Hamster|   14|   0.5|          7.0|        9|
-+------------+-----+------+-------------+---------+
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1966 1966 1966
 </pre></div>
 </div>
 </div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_id</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_repartition</span><span class="p">(</span><span class="m">20</span><span class="p">)</span>
+
+<span class="n">rescue_id</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue_id</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">                  </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_with_unique_id</span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;id&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">                  </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">group_number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">id</span><span class="o">%%</span><span class="m">3</span><span class="p">)</span>
+
+<span class="n">rescue_subsample_1</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue_id</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="nf">filter</span><span class="p">(</span><span class="n">group_number</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">)</span>
+<span class="n">rescue_subsample_2</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue_id</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="nf">filter</span><span class="p">(</span><span class="n">group_number</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+<span class="n">rescue_subsample_3</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue_id</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="nf">filter</span><span class="p">(</span><span class="n">group_number</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">2</span><span class="p">)</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="n">rescue_subsample_1</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">(),</span>
+<span class="n">rescue_subsample_2</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">(),</span>
+<span class="n">rescue_subsample_3</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">())</span>
+</pre></div>
 </div>
 </section>
 </section>
@@ -743,9 +1044,10 @@ Split count total: 5898
 <h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this heading">#</a></h2>
 <p>Spark at the ONS Articles:</p>
 <ul class="simple">
-<li><p><span class="xref myst">Persisting in Spark</span></p></li>
-<li><p><span class="xref myst">Caching</span></p></li>
-<li><p><span class="xref myst">Checkpoint</span></p></li>
+<li><p><a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-concepts/persistence.html">Persisting in Spark</a></p></li>
+<li><p><a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-concepts/cache.html">Caching</a></p></li>
+<li><p><a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-concepts/checkpoint-staging.html#checkpoint">Checkpoint</a></p></li>
+<li><p><a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-concepts/partitions.html">Partitions</a></p></li>
 </ul>
 <p>PySpark Documentation:</p>
 <ul class="simple">
@@ -754,6 +1056,7 @@ Split count total: 5898
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.coalesce.html"><code class="docutils literal notranslate"><span class="pre">.coalesce()</span></code></a></p></li>
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.randomSplit.html"><code class="docutils literal notranslate"><span class="pre">.randomSplit()</span></code></a></p></li>
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sampleBy.html"><code class="docutils literal notranslate"><span class="pre">.sampleBy()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.monotonically_increasing_id.html"><code class="docutils literal notranslate"><span class="pre">.monotonically_increasing_id()</span></code></a></p></li>
 </ul>
 <p>sparklyr Documentation:</p>
 <ul class="simple">
@@ -761,6 +1064,7 @@ Split count total: 5898
 <li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html"><code class="docutils literal notranslate"><span class="pre">sdf_coalesce()</span></code></a></p></li>
 <li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_random_split.html"><code class="docutils literal notranslate"><span class="pre">sdf_random_split()</span></code></a></p></li>
 <li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_weighted_sample.html"><code class="docutils literal notranslate"><span class="pre">sdf_weighted_sample()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_with_unique_id.html#sdf_with_unique_id"><code class="docutils literal notranslate"><span class="pre">sdf_with_unique_id()</span></code></a></p></li>
 </ul>
 <p>R Documentation:</p>
 <ul class="simple">
@@ -818,16 +1122,24 @@ Split count total: 5898
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-sample-and-sdf-sample">Example: <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-spark-session-and-loading-data">Creating spark session and loading data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sampling-sample-and-sdf-sample">Sampling: <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sampling-without-replacement">Sampling without replacement</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#does-sample-preserve-the-distribution-regardless-of-partitions">Does <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> preserve the distribution, regardless of partitions?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sampling-with-replacement">Sampling with Replacement</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stratified-samples-sampleby">Stratified samples: <code class="docutils literal notranslate"><span class="pre">.sampleBy()</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#an-example-using-the-skewed-dataset">An example using the skewed dataset:</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#information-on-alternate-sampling-methods">Information on alternate sampling methods</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#more-details-on-sampling">More details on sampling</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#returning-an-exact-sample">Returning an exact sample</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#partitioning">Partitioning</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sampling-consistently-by-filtering-the-data">Sampling consistently by filtering the data</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other-sampling-functions">Other sampling functions</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#splitting-a-df-randomsplit-and-sdf-random-split">Splitting a DF: <code class="docutils literal notranslate"><span class="pre">.randomSplit()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_random_split()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stratified-samples-sampleby">Stratified samples: <code class="docutils literal notranslate"><span class="pre">.sampleBy()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#splitting-via-monotonically-increasing-id-or-sdf-with-unique-id">Splitting via <code class="docutils literal notranslate"><span class="pre">monotonically_increasing_id()</span></code> or <code class="docutils literal notranslate"><span class="pre">sdf_with_unique_id()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further Resources</a></li>
