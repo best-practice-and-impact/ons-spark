@@ -1,4 +1,4 @@
-# Logistic Regression
+# Logistic Regression in sparklyr
 
 Logistic regression is often used in predictive analysis. A logistic
 regression model is trained on a dataset to learn how certain
