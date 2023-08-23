@@ -498,7 +498,7 @@ document.write(`
 </pre></div>
 </div>
 <p>In our demo we are using a local Spark session and will be working with the animal rescue dataset used throughout in this book. We have used examples of Pandas UDFs applied to the rescue dataset only for the purpose of demonstration as there are Spark functions which in a real-life scenario would be used instead. For other simple examples of Pandas UDFs please see <a class="reference external" href="https://www.databricks.com/blog/2017/10/30/introducing-vectorized-udfs-for-pyspark.html">Databricks Introduction to Pandas UDFs</a>.</p>
-<p>Firstly, we need to import packages and set up a Spark session for PyArrow optimisation and compatibility with Spark 2.4. Then read the data, select and rename the relevant columns and remove nulls:</p>
+<p>Firstly, we need to import packages and set up a Spark session for PyArrow optimisation and compatibility with Spark 2.4. Then read the data, rename and add columns and if necessary remove nulls:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -506,6 +506,7 @@ document.write(`
 <span class="kn">import</span> <span class="nn">pyspark.sql.functions</span> <span class="k">as</span> <span class="nn">F</span>
 <span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">pandas_udf</span>
 <span class="kn">import</span> <span class="nn">pyspark.sql.types</span> <span class="k">as</span> <span class="nn">T</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">lit</span>
 
 <span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
          <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;pandas_udfs&quot;</span><span class="p">)</span>
@@ -522,17 +523,13 @@ document.write(`
 <span class="n">rescue_path_csv</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path_csv&quot;</span><span class="p">]</span>
 <span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">rescue_path_csv</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span>
-    <span class="s2">&quot;IncidentDuration&quot;</span><span class="p">,</span> 
-    <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;PumpHoursTotal&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;PumpCount&quot;</span><span class="p">)</span>
-<span class="p">)</span>
-
 <span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;IncidentNumber&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;incident_number&#39;</span><span class="p">),</span>
                        <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;AnimalGroupParent&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;animal_group&#39;</span><span class="p">),</span> 
-                       <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;IncidentDuration&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;incident_duration&#39;</span><span class="p">),</span> 
-                       <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;IncidentNotionalCost(£)&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;incident_cost&#39;</span><span class="p">))</span>
+                       <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;Easting_rounded&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;easting_rounded&#39;</span><span class="p">),</span> 
+                       <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;Northing_rounded&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;northing_rounded&#39;</span><span class="p">))</span>
 
-<span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;incident_duration&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">isNotNull</span><span class="p">())</span>
+<span class="n">rescue</span><span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;lfb_easting&#39;</span><span class="p">,</span> <span class="n">lit</span><span class="p">(</span><span class="mi">532066</span><span class="p">))</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;lfb_northing&#39;</span><span class="p">,</span> <span class="n">lit</span><span class="p">(</span><span class="mi">180010</span><span class="p">))</span>
+
 
 <span class="n">rescue</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
 </pre></div>
@@ -563,8 +560,10 @@ document.write(`
       <th></th>
       <th>incident_number</th>
       <th>animal_group</th>
-      <th>incident_duration</th>
-      <th>incident_cost</th>
+      <th>easting_rounded</th>
+      <th>northing_rounded</th>
+      <th>lfb_easting</th>
+      <th>lfb_northing</th>
     </tr>
   </thead>
   <tbody>
@@ -572,71 +571,91 @@ document.write(`
       <th>0</th>
       <td>139091</td>
       <td>Dog</td>
-      <td>2.0</td>
-      <td>510.0</td>
+      <td>532350</td>
+      <td>170050</td>
+      <td>532066</td>
+      <td>180010</td>
     </tr>
     <tr>
       <th>1</th>
       <td>275091</td>
       <td>Fox</td>
-      <td>1.0</td>
-      <td>255.0</td>
+      <td>534750</td>
+      <td>167550</td>
+      <td>532066</td>
+      <td>180010</td>
     </tr>
     <tr>
       <th>2</th>
       <td>2075091</td>
       <td>Dog</td>
-      <td>1.0</td>
-      <td>255.0</td>
+      <td>528050</td>
+      <td>164950</td>
+      <td>532066</td>
+      <td>180010</td>
     </tr>
     <tr>
       <th>3</th>
       <td>2872091</td>
       <td>Horse</td>
-      <td>1.0</td>
-      <td>255.0</td>
+      <td>504650</td>
+      <td>190650</td>
+      <td>532066</td>
+      <td>180010</td>
     </tr>
     <tr>
       <th>4</th>
       <td>3553091</td>
       <td>Rabbit</td>
-      <td>1.0</td>
-      <td>255.0</td>
+      <td>554650</td>
+      <td>192350</td>
+      <td>532066</td>
+      <td>180010</td>
     </tr>
     <tr>
       <th>5</th>
       <td>3742091</td>
       <td>Unknown - Heavy Livestock Animal</td>
-      <td>1.0</td>
-      <td>255.0</td>
+      <td>549350</td>
+      <td>184950</td>
+      <td>532066</td>
+      <td>180010</td>
     </tr>
     <tr>
       <th>6</th>
       <td>4011091</td>
       <td>Dog</td>
-      <td>1.0</td>
-      <td>255.0</td>
+      <td>539050</td>
+      <td>186150</td>
+      <td>532066</td>
+      <td>180010</td>
     </tr>
     <tr>
       <th>7</th>
       <td>4211091</td>
       <td>Dog</td>
-      <td>1.0</td>
-      <td>255.0</td>
+      <td>541350</td>
+      <td>186650</td>
+      <td>532066</td>
+      <td>180010</td>
     </tr>
     <tr>
       <th>8</th>
       <td>4306091</td>
       <td>Squirrel</td>
-      <td>1.0</td>
-      <td>255.0</td>
+      <td>538750</td>
+      <td>163350</td>
+      <td>532066</td>
+      <td>180010</td>
     </tr>
     <tr>
       <th>9</th>
       <td>4715091</td>
       <td>Dog</td>
-      <td>1.0</td>
-      <td>255.0</td>
+      <td>535450</td>
+      <td>186750</td>
+      <td>532066</td>
+      <td>180010</td>
     </tr>
   </tbody>
 </table>
@@ -648,17 +667,18 @@ document.write(`
 <p>Scalar Pandas UDFs take in a <code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code> and output a <code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code>.</p>
 <p>Spark executes scalar Pandas UDFs by serialising each partition column into a <code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code> object (basically splitting the data into batches). The UDF is then called on each of of these Series objects as a subset of the data and then results are concactenated together and returned as a <code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code>.</p>
 <p>Be aware that scalar UDFs may cause incorrect results (if your dataframe is over multiple partitions) when calculating means and standard deviations. For more info on this and how to overcome this issue see <a class="reference external" href="https://towardsdatascience.com/pyspark-or-pandas-why-not-both-95523946ec7c">this towards data science post</a>.</p>
-<p>In the decorator of a scalar Pandas UDF the first arguement is the data type of the output dataframe and the second argument is the UDF type. Here is a simple Pandas scalar UDF to find out how much each minute cost per incident.</p>
+<p>In the decorator of a scalar Pandas UDF the first argument is the data type of the output dataframe and the second argument is the UDF type. Here is a simple Pandas scalar UDF to find out the <code class="docutils literal notranslate"><span class="pre">distance</span></code> between the London Fire Brigade (lfb) and the location of an animal-related incident. The inputs to the function are Eastings and Northings which are types of coordinates that tell you how far East or North a point is; therefore, there are two points inputted for the lfb location and two points inputted for the animal-related incident. The function works to find the distance between these two points and converts the answer into ‘km’.</p>
+<p>Please note that the following example has been used here to illustrate how to use a Pandas UDF, this is not necessarily the most efficient way to write this function as it can also be written in PySpark.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@pandas_udf</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">DoubleType</span><span class="p">(),</span> <span class="n">F</span><span class="o">.</span><span class="n">PandasUDFType</span><span class="o">.</span><span class="n">SCALAR</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">minute_cost</span><span class="p">(</span><span class="n">duration</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">incidentcost</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
-    <span class="n">duration_minutes</span> <span class="o">=</span> <span class="n">duration</span><span class="o">*</span><span class="mi">60</span>
-    <span class="k">return</span> <span class="n">incidentcost</span><span class="o">/</span><span class="n">duration_minutes</span>
+<span class="k">def</span> <span class="nf">distance_to_incident</span><span class="p">(</span><span class="n">easting_rounded</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">lfb_easting</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">northing_rounded</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">lfb_northing</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+    <span class="n">distance</span> <span class="o">=</span> <span class="p">((</span><span class="n">easting_rounded</span> <span class="o">-</span> <span class="n">lfb_easting</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">northing_rounded</span> <span class="o">-</span> <span class="n">lfb_northing</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="n">distance_km</span> <span class="o">=</span> <span class="n">distance</span><span class="o">/</span><span class="mi">1000</span>
+    <span class="k">return</span> <span class="n">distance_km</span>
 
-<span class="n">incident_minute_cost</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;incident_number&#39;</span><span class="p">,</span> <span class="n">minute_cost</span><span class="p">(</span><span class="s1">&#39;incident_duration&#39;</span><span class="p">,</span> <span class="s1">&#39;incident_cost&#39;</span><span class="p">))</span>
-
-<span class="n">incident_minute_cost</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+<span class="n">lfb_distance</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;distance&quot;</span><span class="p">,</span> <span class="n">distance_to_incident</span><span class="p">(</span><span class="s1">&#39;easting_rounded&#39;</span><span class="p">,</span> <span class="s1">&#39;lfb_easting&#39;</span><span class="p">,</span> <span class="s1">&#39;northing_rounded&#39;</span><span class="p">,</span> <span class="s1">&#39;lfb_northing&#39;</span><span class="p">))</span>
+<span class="n">lfb_distance</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -686,59 +706,64 @@ document.write(`
     <tr style="text-align: right;">
       <th></th>
       <th>incident_number</th>
-      <th>minute_cost(incident_duration, incident_cost)</th>
+      <th>animal_group</th>
+      <th>easting_rounded</th>
+      <th>northing_rounded</th>
+      <th>lfb_easting</th>
+      <th>lfb_northing</th>
+      <th>distance</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
       <td>139091</td>
-      <td>4.25</td>
+      <td>Dog</td>
+      <td>532350</td>
+      <td>170050</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>9.964048</td>
     </tr>
     <tr>
       <th>1</th>
       <td>275091</td>
-      <td>4.25</td>
+      <td>Fox</td>
+      <td>534750</td>
+      <td>167550</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>12.745802</td>
     </tr>
     <tr>
       <th>2</th>
       <td>2075091</td>
-      <td>4.25</td>
+      <td>Dog</td>
+      <td>528050</td>
+      <td>164950</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>15.586271</td>
     </tr>
     <tr>
       <th>3</th>
       <td>2872091</td>
-      <td>4.25</td>
+      <td>Horse</td>
+      <td>504650</td>
+      <td>190650</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>29.408275</td>
     </tr>
     <tr>
       <th>4</th>
       <td>3553091</td>
-      <td>4.25</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>3742091</td>
-      <td>4.25</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>4011091</td>
-      <td>4.25</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>4211091</td>
-      <td>4.25</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>4306091</td>
-      <td>4.25</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>4715091</td>
-      <td>4.25</td>
+      <td>Rabbit</td>
+      <td>554650</td>
+      <td>192350</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>25.735436</td>
     </tr>
   </tbody>
 </table>
@@ -749,17 +774,16 @@ document.write(`
 <h2>Grouped Map Pandas UDFs<a class="headerlink" href="#grouped-map-pandas-udfs" title="Permalink to this heading">#</a></h2>
 <p>Grouped map UDFs take in a pandas.DataFrame and output a pandas.DataFrame.</p>
 <p>Grouped Map UDFs use the split-apply-combine format. This is where data is first split into groups based on the <code class="docutils literal notranslate"><span class="pre">.groupby()</span></code> function. The UDF is then mapped over each group to return multiple Pandas dataframes. The results of the Pandas dataframes are then  combined and a new Spark dataframe is returned.</p>
-<p>In the decorator of a grouped map Pandas UDF the first arguement is the schema of the output dataframe and the second argument is the UDF type. Here is a grouped map UDF to find the percentage mean difference in <code class="docutils literal notranslate"><span class="pre">incident_cost</span></code></p>
+<p>In the decorator of a grouped map Pandas UDF the first argument is the schema of the output dataframe and the second argument is the UDF type. Here is a grouped map UDF to find the <code class="docutils literal notranslate"><span class="pre">distance</span></code> travelled by the London Fire Brigade compared to the overall mean <code class="docutils literal notranslate"><span class="pre">distance</span></code> they travel to an incident, grouped by <code class="docutils literal notranslate"><span class="pre">animal_group</span></code>. This example uses the outputted dataframe: <code class="docutils literal notranslate"><span class="pre">lfb_distance</span></code> from the scalar UDF example above. The output is in ‘km’.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@pandas_udf</span><span class="p">(</span><span class="n">rescue</span><span class="o">.</span><span class="n">schema</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">PandasUDFType</span><span class="o">.</span><span class="n">GROUPED_MAP</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">percentage_difference</span><span class="p">(</span><span class="n">pdf</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-    <span class="n">incident_cost</span> <span class="o">=</span> <span class="n">pdf</span><span class="o">.</span><span class="n">incident_cost</span>
-    
-    <span class="k">return</span> <span class="n">pdf</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">incident_cost</span><span class="o">=</span><span class="p">((</span><span class="n">incident_cost</span> <span class="o">-</span> <span class="n">incident_cost</span><span class="o">.</span><span class="n">mean</span><span class="p">()))</span><span class="o">/</span> <span class="n">incident_cost</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@pandas_udf</span><span class="p">(</span><span class="n">lfb_distance</span><span class="o">.</span><span class="n">schema</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">PandasUDFType</span><span class="o">.</span><span class="n">GROUPED_MAP</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">dist_animal</span><span class="p">(</span><span class="n">pdf</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="n">distance</span> <span class="o">=</span> <span class="n">pdf</span><span class="o">.</span><span class="n">distance</span>
+    <span class="k">return</span> <span class="n">pdf</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">distance</span><span class="o">=</span><span class="p">((</span><span class="n">distance</span> <span class="o">-</span> <span class="n">distance</span><span class="o">.</span><span class="n">mean</span><span class="p">()))</span><span class="o">/</span> <span class="n">distance</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
 
-<span class="n">cost_by_group</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s1">&#39;animal_group&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">percentage_difference</span><span class="p">)</span>
-<span class="n">cost_by_group</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+<span class="n">dist_by_animal</span> <span class="o">=</span> <span class="n">lfb_distance</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s1">&#39;animal_group&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">dist_animal</span><span class="p">)</span>
+<span class="n">dist_by_animal</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -788,8 +812,11 @@ document.write(`
       <th></th>
       <th>incident_number</th>
       <th>animal_group</th>
-      <th>incident_duration</th>
-      <th>incident_cost</th>
+      <th>easting_rounded</th>
+      <th>northing_rounded</th>
+      <th>lfb_easting</th>
+      <th>lfb_northing</th>
+      <th>distance</th>
     </tr>
   </thead>
   <tbody>
@@ -797,71 +824,101 @@ document.write(`
       <th>0</th>
       <td>59442121</td>
       <td>Unknown - Animal rescue from water - Farm animal</td>
-      <td>1.0</td>
-      <td>-63.363081</td>
+      <td>558450</td>
+      <td>189150</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>-5.407423</td>
     </tr>
     <tr>
       <th>1</th>
       <td>4149</td>
       <td>Unknown - Animal rescue from water - Farm animal</td>
-      <td>3.0</td>
-      <td>22.592767</td>
+      <td>552850</td>
+      <td>175450</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>-27.915184</td>
     </tr>
     <tr>
       <th>2</th>
       <td>012249-30012019</td>
       <td>Unknown - Animal rescue from water - Farm animal</td>
-      <td>1.5</td>
-      <td>40.770315</td>
+      <td>571350</td>
+      <td>177650</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>33.322606</td>
     </tr>
     <tr>
       <th>3</th>
       <td>188198101</td>
       <td>Cow</td>
-      <td>2.0</td>
-      <td>-16.688919</td>
+      <td>528350</td>
+      <td>185350</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>-66.012881</td>
     </tr>
     <tr>
       <th>4</th>
       <td>207392101</td>
       <td>Cow</td>
-      <td>2.0</td>
-      <td>149.933244</td>
+      <td>559650</td>
+      <td>187050</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>48.723553</td>
     </tr>
     <tr>
       <th>5</th>
       <td>100125121</td>
       <td>Cow</td>
-      <td>1.0</td>
-      <td>-58.344459</td>
+      <td>504050</td>
+      <td>191350</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>57.896324</td>
     </tr>
     <tr>
       <th>6</th>
       <td>113544121</td>
       <td>Cow</td>
-      <td>1.0</td>
-      <td>-58.344459</td>
+      <td>551350</td>
+      <td>180850</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>0.838977</td>
     </tr>
     <tr>
       <th>7</th>
       <td>122937121</td>
       <td>Cow</td>
-      <td>1.0</td>
-      <td>-58.344459</td>
+      <td>536350</td>
+      <td>195950</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>-13.771242</td>
     </tr>
     <tr>
       <th>8</th>
       <td>112376141</td>
       <td>Cow</td>
-      <td>3.0</td>
-      <td>41.789052</td>
+      <td>535950</td>
+      <td>196450</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>-11.749838</td>
     </tr>
     <tr>
       <th>9</th>
-      <td>2872091</td>
-      <td>Horse</td>
-      <td>1.0</td>
-      <td>-65.883324</td>
+      <td>120222-06092016</td>
+      <td>Cow</td>
+      <td>536250</td>
+      <td>195550</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>-15.924893</td>
     </tr>
   </tbody>
 </table>
@@ -872,18 +929,18 @@ document.write(`
 <h2>Grouped Aggregate Pandas UDFs<a class="headerlink" href="#grouped-aggregate-pandas-udfs" title="Permalink to this heading">#</a></h2>
 <p>Grouped aggregate Pandas UDFs take in one or more pandas.Series and output a scalar.</p>
 <p>Grouped aggregate Pandas UDFs are used alongisde the <code class="docutils literal notranslate"><span class="pre">.groupby()</span></code> and <code class="docutils literal notranslate"><span class="pre">.agg()</span></code> functions and are similiar to the Spark <code class="docutils literal notranslate"><span class="pre">.agg()</span></code> function.</p>
-<p>In the decorator of a grouped aggregate Pandas UDF the first argument is the data type of the output dataframe and the second argument is the UDF type. Below is an example of a grouped aggregate Pandas UDF to find the mean incident cost of each animal group.</p>
+<p>In the decorator of a grouped aggregate Pandas UDF the first argument is the data type of the output dataframe and the second argument is the UDF type. Below is an example of a grouped aggregate Pandas UDF to find the mean distance travelled by the London Fire Brigade based on the <code class="docutils literal notranslate"><span class="pre">animal_group</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@pandas_udf</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">DoubleType</span><span class="p">(),</span> <span class="n">F</span><span class="o">.</span><span class="n">PandasUDFType</span><span class="o">.</span><span class="n">GROUPED_AGG</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">mean_incident_cost</span><span class="p">(</span><span class="n">incidentcost</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="o">.</span><span class="n">DoubleType</span><span class="p">():</span>
-    <span class="k">return</span> <span class="n">incidentcost</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">mean_distance</span><span class="p">(</span><span class="n">distance</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="o">.</span><span class="n">DoubleType</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">distance</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 
-<span class="n">mean_cost_of_incident</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s1">&#39;animal_group&#39;</span><span class="p">)</span>
-      <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">mean_incident_cost</span><span class="p">(</span><span class="n">rescue</span><span class="p">[</span><span class="s1">&#39;incident_cost&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;mean_incident_cost&#39;</span><span class="p">))</span>
-      <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s1">&#39;mean_incident_cost&#39;</span><span class="p">,</span> <span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">))</span>
+<span class="n">mean_distance_travelled</span> <span class="o">=</span> <span class="p">(</span><span class="n">lfb_distance</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s1">&#39;animal_group&#39;</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">mean_distance</span><span class="p">(</span><span class="n">lfb_distance</span><span class="p">[</span><span class="s1">&#39;distance&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;mean_distance&#39;</span><span class="p">))</span>
+      <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s1">&#39;mean_distance&#39;</span><span class="p">,</span> <span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">))</span>
 
-<span class="n">mean_cost_of_incident</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+<span class="n">mean_distance_travelled</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -911,65 +968,65 @@ document.write(`
     <tr style="text-align: right;">
       <th></th>
       <th>animal_group</th>
-      <th>mean_incident_cost</th>
+      <th>mean_distance</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
-      <td>Goat</td>
-      <td>1180.000000</td>
+      <td>Unknown - Animal rescue from water - Farm animal</td>
+      <td>29.518494</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>Bull</td>
-      <td>780.000000</td>
+      <td>Hedgehog</td>
+      <td>21.457480</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>Fish</td>
-      <td>780.000000</td>
+      <td>Bull</td>
+      <td>21.059503</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>Horse</td>
-      <td>747.435065</td>
+      <td>Deer</td>
+      <td>19.603281</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>Unknown - Animal rescue from water - Farm animal</td>
-      <td>709.666667</td>
+      <td>Cow</td>
+      <td>19.141692</td>
     </tr>
     <tr>
       <th>5</th>
-      <td>Cow</td>
-      <td>624.166667</td>
+      <td>Horse</td>
+      <td>19.112879</td>
     </tr>
     <tr>
       <th>6</th>
-      <td>Hedgehog</td>
-      <td>520.000000</td>
+      <td>Budgie</td>
+      <td>18.338150</td>
     </tr>
     <tr>
       <th>7</th>
-      <td>Lamb</td>
-      <td>520.000000</td>
+      <td>Fish</td>
+      <td>17.896080</td>
     </tr>
     <tr>
       <th>8</th>
-      <td>Deer</td>
-      <td>423.882979</td>
+      <td>Lizard</td>
+      <td>17.358752</td>
     </tr>
     <tr>
       <th>9</th>
-      <td>Unknown - Wild Animal</td>
-      <td>390.036364</td>
+      <td>Sheep</td>
+      <td>16.884412</td>
     </tr>
   </tbody>
 </table>
 </div></div></div>
 </div>
-<p>The grouped aggregate Pandas UDF can also be used with the PySpark window functions. Each <code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code> in the input represents a group or window. In Spark 2.4, the grouped aggregate UDF does not support partial aggregations with only an unbounded window supported. Here is an example</p>
+<p>The grouped aggregate Pandas UDF can also be used with the PySpark window functions. Each <code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code> in the input represents a group or window. In Spark 2.4, the grouped aggregate UDF does not support partial aggregations with only an unbounded window supported. Here is an example:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.window</span> <span class="kn">import</span> <span class="n">Window</span>
@@ -977,8 +1034,8 @@ document.write(`
 <span class="n">w</span> <span class="o">=</span> <span class="p">(</span><span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s1">&#39;animal_group&#39;</span><span class="p">)</span>
            <span class="o">.</span><span class="n">rowsBetween</span><span class="p">(</span><span class="n">Window</span><span class="o">.</span><span class="n">unboundedPreceding</span><span class="p">,</span> <span class="n">Window</span><span class="o">.</span><span class="n">unboundedFollowing</span><span class="p">))</span>
 
-<span class="n">rescue</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;mean_incident_cost&#39;</span><span class="p">,</span> <span class="n">mean_incident_cost</span><span class="p">(</span><span class="n">rescue</span><span class="p">[</span><span class="s1">&#39;incident_cost&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">over</span><span class="p">(</span><span class="n">w</span><span class="p">))</span>
-                <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s1">&#39;mean_incident_cost&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="n">rescue</span> <span class="o">=</span> <span class="p">(</span><span class="n">lfb_distance</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;mean_distance&#39;</span><span class="p">,</span> <span class="n">mean_distance</span><span class="p">(</span><span class="n">lfb_distance</span><span class="p">[</span><span class="s1">&#39;distance&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">over</span><span class="p">(</span><span class="n">w</span><span class="p">))</span>
+                <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s1">&#39;mean_distance&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 
 
 <span class="n">rescue</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
@@ -1010,91 +1067,124 @@ document.write(`
       <th></th>
       <th>incident_number</th>
       <th>animal_group</th>
-      <th>incident_duration</th>
-      <th>incident_cost</th>
-      <th>mean_incident_cost</th>
+      <th>easting_rounded</th>
+      <th>northing_rounded</th>
+      <th>lfb_easting</th>
+      <th>lfb_northing</th>
+      <th>distance</th>
+      <th>mean_distance</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
-      <td>72214141</td>
-      <td>Goat</td>
-      <td>2.0</td>
-      <td>1180.0</td>
-      <td>1180.000000</td>
+      <td>59442121</td>
+      <td>Unknown - Animal rescue from water - Farm animal</td>
+      <td>558450</td>
+      <td>189150</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>27.922304</td>
+      <td>29.518494</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>165500101</td>
-      <td>Bull</td>
-      <td>3.0</td>
-      <td>780.0</td>
-      <td>780.000000</td>
+      <td>4149</td>
+      <td>Unknown - Animal rescue from water - Farm animal</td>
+      <td>552850</td>
+      <td>175450</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>21.278352</td>
+      <td>29.518494</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>129048101</td>
-      <td>Fish</td>
-      <td>1.0</td>
-      <td>260.0</td>
-      <td>780.000000</td>
+      <td>012249-30012019</td>
+      <td>Unknown - Animal rescue from water - Farm animal</td>
+      <td>571350</td>
+      <td>177650</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>39.354825</td>
+      <td>29.518494</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>129261101</td>
-      <td>Fish</td>
-      <td>2.5</td>
-      <td>1300.0</td>
-      <td>780.000000</td>
+      <td>144140091</td>
+      <td>Hedgehog</td>
+      <td>510750</td>
+      <td>177550</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>21.457480</td>
+      <td>21.457480</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>102278091</td>
-      <td>Horse</td>
-      <td>1.5</td>
-      <td>780.0</td>
-      <td>747.435065</td>
+      <td>165500101</td>
+      <td>Bull</td>
+      <td>514650</td>
+      <td>191850</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>21.059503</td>
+      <td>21.059503</td>
     </tr>
     <tr>
       <th>5</th>
-      <td>151984091</td>
-      <td>Horse</td>
-      <td>1.0</td>
-      <td>260.0</td>
-      <td>747.435065</td>
+      <td>151097091</td>
+      <td>Deer</td>
+      <td>529850</td>
+      <td>192450</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>12.635832</td>
+      <td>19.603281</td>
     </tr>
     <tr>
       <th>6</th>
-      <td>123495091</td>
-      <td>Horse</td>
-      <td>1.0</td>
-      <td>260.0</td>
-      <td>747.435065</td>
+      <td>181559091</td>
+      <td>Deer</td>
+      <td>555150</td>
+      <td>192650</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>26.318067</td>
+      <td>19.603281</td>
     </tr>
     <tr>
       <th>7</th>
-      <td>2872091</td>
-      <td>Horse</td>
-      <td>1.0</td>
-      <td>255.0</td>
-      <td>747.435065</td>
+      <td>153698091</td>
+      <td>Deer</td>
+      <td>535150</td>
+      <td>198750</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>18.992068</td>
+      <td>19.603281</td>
     </tr>
     <tr>
       <th>8</th>
-      <td>137525091</td>
-      <td>Horse</td>
-      <td>5.0</td>
-      <td>1300.0</td>
-      <td>747.435065</td>
+      <td>206935091</td>
+      <td>Deer</td>
+      <td>536150</td>
+      <td>162250</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>18.223519</td>
+      <td>19.603281</td>
     </tr>
     <tr>
       <th>9</th>
-      <td>87402091</td>
-      <td>Horse</td>
-      <td>2.0</td>
-      <td>520.0</td>
-      <td>747.435065</td>
+      <td>167858091</td>
+      <td>Deer</td>
+      <td>522650</td>
+      <td>192450</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>15.601752</td>
+      <td>19.603281</td>
     </tr>
   </tbody>
 </table>
