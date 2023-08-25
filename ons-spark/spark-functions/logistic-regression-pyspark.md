@@ -140,6 +140,7 @@ Now we have dealt with incorrect data types and missing values, we are
 ready to set up and run our logistic regression.
 
 ## Running a logistic regression model
+
 - Encode any categorical variables
   - **One hot encoding explanation from R version can be copied to here**
   - Use `StringIndexer` and `OneHotEncoder` from `pyspark.ml.feature` to deal with each categorical variable individually.
@@ -151,47 +152,193 @@ ready to set up and run our logistic regression.
 # Importing the required libraries
 from pyspark.ml.feature import VectorAssembler, StringIndexer, OneHotEncoder
 
-## First need to encode all our categorical variables
+## First we call the StringIndexer separately for each categorical variable
 
-# Converting the specialservicetypecategory column
+# Indexing the specialservicetypecategory column
 serviceIdx = StringIndexer(inputCol='specialservicetypecategory',
                                outputCol='serviceIndex')
-serviceEncode = OneHotEncoder(inputCol='serviceIndex',
-                               outputCol='serviceVec')
 
-
-# Converting the originofcallcolumn
+# Indexing the originofcallcolumn
 callIdx = StringIndexer(inputCol='originofcall',
                                outputCol='callIndex')
-callEncode = OneHotEncoder(inputCol='callIndex',
-                               outputCol='callVec')
 
-# Converting the propertycategory column
+# Indexing the propertycategory column
 propertyIdx = StringIndexer(inputCol='propertycategory',
                                outputCol='propertyIndex')
-propertyEncode = OneHotEncoder(inputCol='propertyIndex',
-                               outputCol='propertyVec')
+                               
+# Apply indexing to each column one by one
 
+rescue_cat_indexed = serviceIdx.fit(rescue_cat).transform(rescue_cat)
+rescue_cat_indexed = callIdx.fit(rescue_cat_indexed).transform(rescue_cat_indexed)
+rescue_cat_indexed = propertyIdx.fit(rescue_cat_indexed).transform(rescue_cat_indexed)
 
-## Next, need to vectorize all our predictors into a new column called "features" which will be our input/features class
-
-assembler = VectorAssembler(inputCols=['engine_count', 'job_hours', 'hourly_cost',
-                                       'callVec', 'propertyVec', 'serviceVec'])
-
-
+# Check that this has worked correctly
+rescue_cat_indexed.select('is_cat', 'specialservicetypecategory', 'originofcall',
+                          'propertycategory', 'serviceIndex', 'callIndex', 
+                          'propertyIndex').show(10)
 ```
 ````
 
-We will use the `LogisticRegression` `pyspark.ml` function to carry out our regression. The model can be imported and set up like so:
+````{tabs}
+``` plaintext Python output
++------+-------------------------------+------------------+-----------------+------------+---------+-------------+
+|is_cat|specialservicetypecategory     |originofcall      |propertycategory |serviceIndex|callIndex|propertyIndex|
++------+-------------------------------+------------------+-----------------+------------+---------+-------------+
+|0     |Other Animal Assistance        |Person (land Line)|Dwelling         |0.0         |1.0      |0.0          |
+|0     |Other Animal Assistance        |Person (land Line)|Outdoor Structure|0.0         |1.0      |3.0          |
+|0     |Animal Rescue From Below Ground|Person (mobile)   |Outdoor Structure|2.0         |0.0      |3.0          |
+|0     |Animal Rescue From Water       |Person (mobile)   |Non Residential  |3.0         |0.0      |2.0          |
+|0     |Other Animal Assistance        |Person (mobile)   |Dwelling         |0.0         |0.0      |0.0          |
+|0     |Other Animal Assistance        |Person (land Line)|Dwelling         |0.0         |1.0      |0.0          |
+|0     |Other Animal Assistance        |Person (land Line)|Outdoor          |0.0         |1.0      |1.0          |
+|0     |Animal Rescue From Water       |Person (mobile)   |Outdoor          |3.0         |0.0      |1.0          |
+|0     |Animal Rescue From Height      |Person (land Line)|Dwelling         |1.0         |1.0      |0.0          |
+|0     |Animal Rescue From Water       |Person (mobile)   |Outdoor          |3.0         |0.0      |1.0          |
++------+-------------------------------+------------------+-----------------+------------+---------+-------------+
+```
+````
+Next we use `OneHotEncoderEstimator` to perform one-hot encoding. **add explanation from R version in here**. 
 
 ````{tabs}
 ```{code-tab} py
-from pyspark.ml.classification import LogisticRegression
-  
-log_reg = LogisticRegression(featuresCol='features',
-                             labelCol='is_cat')
+# Apply OneHotEncoderEstimator to each categorical column simultaneously
+encoder = OneHotEncoderEstimator(inputCols = ['serviceIndex', 'callIndex', 'propertyIndex'], 
+                                 outputCols = ['serviceVec', 'callVec', 'propertyVec'])
+
+rescue_cat_ohe = encoder.fit(rescue_cat_indexed).transform(rescue_cat_indexed)
+
+# Check that this has worked correctly 
+rescue_cat_ohe.select('is_cat', 'specialservicetypecategory', 'originofcall',
+                          'propertycategory', 'serviceVec', 'callVec', 
+                          'propertyVec').show(10)
+
 ```
 ````
+
+````{tabs}
+``` plaintext Python output
++------+-------------------------------+------------------+-----------------+-------------+-------------+-------------+
+|is_cat|specialservicetypecategory     |originofcall      |propertycategory |serviceVec   |callVec      |propertyVec  |
++------+-------------------------------+------------------+-----------------+-------------+-------------+-------------+
+|0     |Other Animal Assistance        |Person (land Line)|Dwelling         |(3,[0],[1.0])|(7,[1],[1.0])|(6,[0],[1.0])|
+|0     |Other Animal Assistance        |Person (land Line)|Outdoor Structure|(3,[0],[1.0])|(7,[1],[1.0])|(6,[3],[1.0])|
+|0     |Animal Rescue From Below Ground|Person (mobile)   |Outdoor Structure|(3,[2],[1.0])|(7,[0],[1.0])|(6,[3],[1.0])|
+|0     |Animal Rescue From Water       |Person (mobile)   |Non Residential  |(3,[],[])    |(7,[0],[1.0])|(6,[2],[1.0])|
+|0     |Other Animal Assistance        |Person (mobile)   |Dwelling         |(3,[0],[1.0])|(7,[0],[1.0])|(6,[0],[1.0])|
+|0     |Other Animal Assistance        |Person (land Line)|Dwelling         |(3,[0],[1.0])|(7,[1],[1.0])|(6,[0],[1.0])|
+|0     |Other Animal Assistance        |Person (land Line)|Outdoor          |(3,[0],[1.0])|(7,[1],[1.0])|(6,[1],[1.0])|
+|0     |Animal Rescue From Water       |Person (mobile)   |Outdoor          |(3,[],[])    |(7,[0],[1.0])|(6,[1],[1.0])|
+|0     |Animal Rescue From Height      |Person (land Line)|Dwelling         |(3,[1],[1.0])|(7,[1],[1.0])|(6,[0],[1.0])|
+|0     |Animal Rescue From Water       |Person (mobile)   |Outdoor          |(3,[],[])    |(7,[0],[1.0])|(6,[1],[1.0])|
++------+-------------------------------+------------------+-----------------+-------------+-------------+-------------+
+```
+````
+
+Then, we need to vectorise all our predictors into a new column called "features" which will be our input/features class. We must also rename our target variable column, "is_cat" to "label":
+
+````{tabs}
+```{code-tab} py
+
+# Call 'VectorAssembler' to vectorise all predictor columns in dataset
+assembler = VectorAssembler(inputCols=['engine_count', 'job_hours', 'hourly_cost',
+                                       'callVec', 'propertyVec', 'serviceVec'])
+ 
+# Apply vectorisation                                      
+rescue_cat_vectorised = assembler.transform(rescue_cat_ohe)
+
+# Rename "is_cat" target variable column to "label" ready to pass to the regression model
+rescue_cat_final = rescue_cat_vectorised.withColumnRenamed("is_cat", "label").select("label", "features")
+
+```
+````
+
+We will use the `GeneralizedLinearRegression` `pyspark.ml` function to carry out our regression. The model can be imported and set up like so: **argument setting **
+
+````{tabs}
+```{code-tab} py
+# Import GeneralizedLinearRegression
+from pyspark.ml.regression import GeneralizedLinearRegression
+
+# Define model
+glr = GeneralizedLinearRegression(family="binomial", link="logit")
+```
+````
+Once this has been done we can run the model like so:
+
+````{tabs}
+```{code-tab} py
+# Run model
+model = glr.fit(rescue_cat_final)
+
+# Get model results
+model_output = model.transform(rescue_cat_final)
+model_output.show(10)
+```
+````
+
+````{tabs}
+```plaintext Python output
++-----+--------------------+-------------------+
+|label|            features|         prediction|
++-----+--------------------+-------------------+
+|    0|(19,[0,1,2,5],[1....|  0.583734005921554|
+|    0|(19,[0,1,2,5,11],...|0.25588401926913557|
+|    0|(19,[0,1,2,11,18]...| 0.3199019536753837|
+|    0|(19,[0,1,2,14,16]...| 0.1586171547926693|
+|    0|(19,[0,1,2],[1.0,...|   0.55724909555173|
+|    0|(19,[0,1,2,5],[1....| 0.5898814716386075|
+|    0|(19,[0,1,2,5,12],...| 0.4056895632592243|
+|    0|(19,[0,1,2,12,16]...|0.18097012233391097|
+|    0|(19,[0,1,2,5,17],...| 0.6870145858037447|
+|    0|(19,[0,1,2,12,16]...|0.18097012233391097|
++-----+--------------------+-------------------+
+```
+````
+
+## Things to watch out for
+
+### Singularity issue
+**Investigate this for PySpark**
+
+### Selecting reference categories
+When including categorical variables as independent variables in a
+regression, one of the categories must act as the reference category.
+The coefficients for all other categories are relative to the reference
+category.
+
+By default, the `OneHotEncoderEstimator` function will
+select the least common category as the reference category. For example, `specialservicetypecategory` has four unique values: Animal
+Rescue From Below Ground, Animal Rescue From Height, Animal Rescue From
+Water, and Other Animal Assistance.
+
+````{tabs}
+```{code-tab} py
+rescue_cat.groupBy("specialservicetypecategory").count().orderBy("count").show(truncate = False)
+```
+````
+
+````{tabs}
+``` plaintext Python output
++-------------------------------+-----+
+|specialservicetypecategory     |count|
++-------------------------------+-----+
+|Animal Rescue From Water       |343  |
+|Animal Rescue From Below Ground|593  |
+|Animal Rescue From Height      |2123 |
+|Other Animal Assistance        |2801 |
++-------------------------------+-----+
+```
+````
+Since there are only 343 instances of “Animal Rescue From Water” in the data, this has been automatically selected as the reference category in the example above. Regression coefficients in the previous section are therefore shown relative
+to the to the “Animal Rescue From Water” reference category.
+
+Selecting a reference category can be particularly useful for
+inferential analysis. For example, in the `rescue_cat` dataset, we might want to
+select “Other Animal Assistance” as our reference category instead
+because it is the largest special service type and could serve as a
+useful reference point.
+
+
 
 Note that these tasks haven't actually been carried out yet, we have simply defined what they are so we can call them all in succession later. This can be done by setting up a "pipeline" to call all the tasks we need to carry out the regression one by one:
 

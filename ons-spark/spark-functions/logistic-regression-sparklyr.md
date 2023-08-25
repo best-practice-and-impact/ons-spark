@@ -357,7 +357,7 @@ broom::tidy(glm_out)
 ```
 ````
 
-### Selecting reference categories and encoding categorical variables
+### Selecting reference categories 
 
 When including categorical variables as independent variables in a
 regression, one of the categories must act as the reference category.
