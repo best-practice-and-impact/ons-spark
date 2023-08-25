@@ -538,7 +538,7 @@ model.summary
 ```
 ````
 ### Pipelines
-
+**Add in this section to explain how to use pipelines for logistic regression**
 Note that these tasks haven't actually been carried out yet, we have simply defined what they are so we can call them all in succession later. This can be done by setting up a "pipeline" to call all the tasks we need to carry out the regression one by one:
 
 ````{tabs}
