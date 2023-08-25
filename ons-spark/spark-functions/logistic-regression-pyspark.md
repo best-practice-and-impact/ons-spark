@@ -140,12 +140,12 @@ Now we have dealt with incorrect data types and missing values, we are
 ready to set up and run our logistic regression.
 
 ## Running a logistic regression model
-
+Steps:
 - Encode any categorical variables
-  - **One hot encoding explanation from R version can be copied to here**
   - Use `StringIndexer` and `OneHotEncoder` from `pyspark.ml.feature` to deal with each categorical variable individually.
   - **Explanation of what we are doing step by step.**
   - Then use `VectorAssembler` to assemble all the predictor variables into a single new column that we will call "features"
+  - Run model
   
 ````{tabs}
 ```{code-tab} py
