@@ -294,6 +294,7 @@ model_output.show(10)
 +-----+--------------------+-------------------+
 ```
 ````
+## Inferential Analysis 
 
 ## Things to watch out for
 
@@ -338,7 +339,82 @@ select “Other Animal Assistance” as our reference category instead
 because it is the largest special service type and could serve as a
 useful reference point.
 
+To do this, we can make use of the additional `stringOrderType` argument for the `StringIndexer` function we used previously to index our categorical variables. This allows us to specify the indexing order. By default, this argument is set to `frequencyDesc`, so "Animal Rescue From Water" would be ordered last and is subsequently dropped by the `OneHotEncoderEstimator` function and set as the reference category. If we want "Other Animal Assistance" to be dropped instead, we need to ensure it is placed last in the indexing order. In this case, specifying `stringOrderType = frequencyAsc` would be sufficient to achieve this. However, to keep this example as general as possible, a convenient way of ensuring any chosen reference category is ordered last is add an appropriate prefix to it, such as "000_", and order the categories in descending alphabetical order (`alphabetDesc`):
 
+````{tabs}
+```{code-tab} py
+# Add "000_" prefix to selected reference categories
+
+rescue_cat_reindex = (rescue_cat
+                      .withColumn('specialservicetypecategory', 
+                                       F.when(F.col('specialservicetypecategory')=="Other Animal Assistance", "000_Other Animal Assistance")
+                                       .otherwise(F.col('specialservicetypecategory')))
+                      .withColumn('originofcall', 
+                                       F.when(F.col('originofcall') == "Person (mobile)", "000_Person (mobile)")
+                                       .otherwise(F.col('originofcall')))
+                      .withColumn('propertycategory', 
+                                       F.when(F.col('propertycategory') == "Dwelling", "000_Dwelling")
+                                       .otherwise(F.col('propertycategory'))))
+
+# Check prefix additions 
+rescue_cat_reindex.select('specialservicetypecategory', 'originofcall', 'propertycategory').show(20)
+
+# Use stringOrderType arg of StringIndexer
+
+# Re-ndexing the specialservicetypecategory column
+serviceIdx = StringIndexer(inputCol='specialservicetypecategory',
+                               outputCol='serviceIndex', 
+                               stringOrderType = "alphabetDesc")
+
+# Indexing the originofcallcolumn
+callIdx = StringIndexer(inputCol='originofcall',
+                               outputCol='callIndex',
+                               stringOrderType = "alphabetDesc")
+
+# Indexing the propertycategory column
+propertyIdx = StringIndexer(inputCol='propertycategory',
+                               outputCol='propertyIndex', 
+                               stringOrderType = "alphabetDesc")
+
+# Call indexing for each column one by one
+
+rescue_cat_indexed = serviceIdx.fit(rescue_cat_reindex).transform(rescue_cat_reindex)
+rescue_cat_indexed = callIdx.fit(rescue_cat_indexed).transform(rescue_cat_indexed)
+rescue_cat_indexed = propertyIdx.fit(rescue_cat_indexed).transform(rescue_cat_indexed)
+```
+````
+
+Once this is done we can run the regression again and get the
+coefficients relative to the chosen reference categories:
+
+````{tabs}
+```{code-tab} py
+encoder = OneHotEncoderEstimator(inputCols = ['serviceIndex', 'callIndex', 'propertyIndex'], 
+                                 outputCols = ['serviceVec', 'callVec', 'propertyVec'])
+
+rescue_cat_ohe = encoder.fit(rescue_cat_indexed).transform(rescue_cat_indexed)
+
+
+## Next, need to vectorize all our predictors into a new column called "features" which will be our input/features class
+
+assembler = VectorAssembler(inputCols=['engine_count', 'job_hours', 'hourly_cost', 
+                                       'callVec', 'propertyVec', 'serviceVec'], 
+                           outputCol = "features")
+
+rescue_cat_vectorised = assembler.transform(rescue_cat_ohe)
+
+
+rescue_cat_final = rescue_cat_vectorised.withColumnRenamed("is_cat", "label").select("label", "features")
+
+# Run the model again
+model = glr.fit(rescue_cat_final)
+
+# Show summary
+model.summary
+
+```
+````
+### Pipelines
 
 Note that these tasks haven't actually been carried out yet, we have simply defined what they are so we can call them all in succession later. This can be done by setting up a "pipeline" to call all the tasks we need to carry out the regression one by one:
 
