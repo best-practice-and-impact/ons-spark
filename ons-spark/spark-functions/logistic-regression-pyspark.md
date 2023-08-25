@@ -295,6 +295,129 @@ model_output.show(10)
 ```
 ````
 ## Inferential Analysis 
+The `Spark ML` functions available in PySpark were largely developed
+with predictive analysis in mind. This means that they have been built
+primarily to specify a regression model and retrieve the prediction (as we have done above), with little information in between.
+
+When conducting analysis at ONS, we are often not interested in
+predicting unknown outcomes, but instead understanding the relationship
+between the independent variables and the probability of the outcome.
+This is what is referred to as *inferential analysis* in this section.
+
+The regression coefficients from the model above can be accessed by applying the `summary` method:
+
+````{tabs}
+```{code-tab} py
+model.summary
+```
+````
+
+````{tabs}
+``` plaintext Python output
+Coefficients:
+             Feature Estimate   Std Error T Value P Value
+         (Intercept) -20.7632  32614.1522 -0.0006  0.9995
+        engine_count  -0.6127      0.2744 -2.2328  0.0256
+           job_hours  -0.0254      0.0609 -0.4160  0.6774
+         hourly_cost  -0.0007      0.0010 -0.7110  0.4771
+callVec_Person (m...  21.5650  32614.1521  0.0007  0.9995
+callVec_Person (l...  21.6985  32614.1521  0.0007  0.9995
+      callVec_Police  20.6004  32614.1521  0.0006  0.9995
+   callVec_Other Frs  20.8927  32614.1521  0.0006  0.9995
+callVec_Person (r...  22.2337  32614.1522  0.0007  0.9995
+   callVec_Ambulance  21.4983  32614.1522  0.0007  0.9995
+   callVec_Not Known  -3.4161 357614.2975  0.0000  1.0000
+propertyVec_Dwelling  -0.7497      1.4258 -0.5258  0.5990
+ propertyVec_Outdoor  -1.4950      1.4245 -1.0495  0.2939
+propertyVec_Non R...  -1.6538      1.4277 -1.1584  0.2467
+propertyVec_Outdo...  -2.1807      1.4295 -1.5255  0.1271
+propertyVec_Road ...  -0.5467      1.4325 -0.3817  0.7027
+propertyVec_Other...  -1.0217      1.4957 -0.6831  0.4945
+serviceVec_Other ...   0.9945      0.1600  6.2153  0.0000
+serviceVec_Animal...   1.4172      0.1602  8.8450  0.0000
+serviceVec_Animal...   1.4412      0.1765  8.1644  0.0000
+
+(Dispersion parameter for binomial family taken to be 1.0000)
+    Null deviance: 8123.3546 on 5840 degrees of freedom
+Residual deviance: 7534.9047 on 5840 degrees of freedom
+AIC: 7574.9047
+```
+````
+
+Unfortunately, this format is not particular user friendly. Additionally, we have not yet found or built functionality in PySpark to calculate exact confidence intervals. Instead, we can approximate the 95% confidence intervals by multiplying the standard errors by 1.96 and
+subtract or add this to the estimate. As PySpark regression functions
+are only necessary on datasets with a large number of observations, this
+approximation is sufficient. To do this we will also need to convert the summary above to a more useful format, such as a Pandas dataframe:
+
+````{tabs}
+```{code-tab} py
+# Get model output
+model_output = model.transform(rescue_cat_final)
+
+# Get feature names from the model output metadata
+# Numeric and binary (categorical) metadata are accessed separately
+numeric_metadata = model_output.select("features").schema[0].metadata.get('ml_attr').get('attrs').get('numeric')
+binary_metadata = model_output.select("features").schema[0].metadata.get('ml_attr').get('attrs').get('binary')
+
+# Merge the numeric and binary metadata lists to get all the feature names
+merge_list = numeric_metadata + binary_metadata
+
+# Convert the feature name list to a Pandas dataframe
+full_summary = pd.DataFrame(merge_list)
+
+# Get the regression coefficients from the model
+full_summary['coefficients'] = model.coefficients
+
+# The intercept coefficient needs to be added in separately since it is not part of the features metadata
+# Define a new row for the intercept coefficient and get value from model
+intercept = pd.DataFrame({'name':'intercept', 'coefficients':model.intercept}, index = [0])
+
+# Add new row to the top of the full_summary dataframe
+full_summary = pd.concat([intercept,full_summary.loc[:]]).reset_index(drop=True)
+
+# Add standard errors, t-values and p-values from summary into the full_summary dataframe:
+full_summary['std_error'] = summary.coefficientStandardErrors
+full_summary['tvalues'] = summary.tValues
+full_summary['pvalues'] = summary.pValues
+
+# Manually calculate upper and lower confidence bounds and add into dataframe
+full_summary['upper_ci'] = full_summary['coefficients'] + (1.96*full_summary['std_error'])
+full_summary['lower_ci'] = full_summary['coefficients'] - (1.96*full_summary['std_error'])
+
+# View final model summary
+full_summary
+```
+````
+````{tabs}
+``` plaintext Python output
++--------------------+--------------------+--------------------+--------------------+--------------------+
+|        coefficients|                name|           std_error|            upper_ci|            lower_ci|
++--------------------+--------------------+--------------------+--------------------+--------------------+
+|  -20.76315794220359|           intercept| 0.27439316549994924| -20.225347337823692|  -21.30096854658349|
+| -0.6126597088756062|        engine_count| 0.06094715323603125| -0.4932032885329849| -0.7321161292182274|
+|-0.02535446471650...|           job_hours|9.849412286060397E-4|-0.02342397990843...|-0.02728494952457...|
+|-7.00320718006152...|         hourly_cost|  32614.152138273617|   63923.73749069557|  -63923.73889133701|
+|  21.564985360322606|callVec_Person (m...|  32614.152138267178|  63945.303176363996|  -63902.17320564335|
+|  21.698455740278735|callVec_Person (l...|  32614.152138983158|   63945.43664814726|  -63902.03973666671|
+|  20.600364205759604|      callVec_Police|  32614.152140241928|   63944.33855907994|  -63903.13783066841|
+|  20.892709637911356|   callVec_Other Frs|  32614.152175598574|  63944.630973811116|  -63902.84555453529|
+|  22.233733221849175|callVec_Person (r...|  32614.152169036308|   63945.97198453301|  -63901.50451808931|
+|  21.498270939707652|   callVec_Ambulance|  357614.29750958865|   700945.5213897334|   -700902.524847854|
+| -3.4160743924617485|   callVec_Not Known|  1.4258405211911767| -0.6214269709270424|  -6.210721813996455|
+| -0.7497311089148078|propertyVec_Dwelling|  1.4244757580406757|   2.042241376844917|  -3.541703594674532|
+| -1.4950200776261042| propertyVec_Outdoor|   1.427681376841273|   1.303235420982791|     -4.293275576235|
+| -1.6537847767513523|propertyVec_Non R...|   1.429491891458024|  1.1480193305063746|  -4.455588884009079|
+|  -2.180679137292761|propertyVec_Outdo...|  1.4324909069707645|  0.6270030403699374|   -4.98836131495546|
+| -0.5467487331523708|propertyVec_Road ...|  1.4957287012548774|  2.3848795213071887| -3.4783769876119304|
+|  -1.021736081307061|propertyVec_Other...| 0.16000819858088014|  -0.708120012088536|  -1.335352150525586|
+|  0.9945046772301863|serviceVec_Other ...| 0.16022944175306697|  1.3085543830661976|   0.680454971394175|
+|   1.417228201233249|serviceVec_Animal...| 0.17652526948223632|  1.7632177294184324|  1.0712386730480659|
+|  1.4412252563902246|serviceVec_Animal...|   32614.15217162583|   63925.17948164301|  -63922.29703113023|
++--------------------+--------------------+--------------------+--------------------+--------------------+
+
+```
+````
+
 
 ## Things to watch out for
 
