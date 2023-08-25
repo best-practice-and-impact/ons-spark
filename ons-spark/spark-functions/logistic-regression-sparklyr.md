@@ -409,29 +409,7 @@ select “Other Animal Assistance” as our reference category instead
 because it is the largest special service type and could serve as a
 useful reference point.
 
-If we wanted to specify which category we want to choose as our
-reference category in R, this could be done quite simply using factors. For example, to choose “Other Animal Assistance” as our
-reference category instead, we would just need to mutate the
-`specialservicetypecategory` as a factor and specify the reference
-category as follows:
-  
-````{tabs}
-```{code-tab} r R 
-# This would work in R but not in sparklyr
-rescue_cat <- rescue_cat %>% 
-  mutate(specialservicetypecategory_ref = relevel(as.factor(specialservicetypecategory), 
-                                                  ref = "Other Animal Assistance"))
-```
-````
-
-This also makes it very easy to specify reference categories for
-multiple columns at once by adding in additional mutate terms.
-
-Unfortunately, factors do not exist in Spark and therefore are not a
-valid data type in sparklyr. So we need to find an alternative way of
-specifying reference categories.
-
-Instead, we can make use of the one-hot encoding concept and two of
+We can make use of the one-hot encoding concept and two of
 `sparklyr`’s **Feature Transformers** (`ft_string_indexer` and `ft_one_hot_encoder`) to achieve this. These functions have limited functionality, so we must first manipulate it such that the reference category will be ordered last when using `ft_string_indexer`, and then
 we can drop the last category using `ft_one_hot_encoder`. A convenient way of doing this is to order the categories in *descending alphabetical* order and ensuring that our chosen category will be ordered last by adding an appropriate prefix to it. For example, adding
 `000_`:
