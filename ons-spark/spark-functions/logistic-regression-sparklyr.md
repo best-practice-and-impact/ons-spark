@@ -274,89 +274,7 @@ Running the code above will produce an error since the `typeofincident`
 column only contains one value, `Special Service`. The regression model
 will not run unless `typeofincident` is removed from the formula.
 
-Additionally, there are some variables in this dataset which depend on
-others such that they always take a singular value for a given value of
-those other variables. For example, if we take a closer look at
-`total_cost` we can see it always takes a value that is equal to
-`hourly_cost` multiplied by `job_hours`.
-
-````{tabs}
-```{code-tab} r R 
-rescue_cat %>%
-  sparklyr::select(job_hours,
-                   hourly_cost,
-                   total_cost) %>%
-  dplyr::arrange(desc(job_hours)) %>%
-  print(n = 30)
-```
-````
-
-If we ran a regression model including these variables in R using `glm`,
-this would not be a problem since the function would automatically
-exclude one of these variables for the purpose of calculating
-coefficients. However, the `Spark ML` functions do not do this. Instead,
-the regression will still run and include coefficients from these
-‘singular’ columns. This is because rather than
-`ml_generalized_linear_regression` attempting to solve the regression
-exactly, failing and removing the ‘singular’ column or returning an
-error, `ml_generalized_linear_regression` will revert to an optimisation
-method to approximate regression coefficients.
-
-Because of the method used, standard errors will not be produced, and
-therefore confidence intervals cannot be calculated. As a result,
-although the regression will run, attempting to access the coefficients
-and standard errors using the `tidy` or `ml_summary` methods described
-above will return an error.
-
-````{tabs}
-```{code-tab} r R 
-# Run regression including singular `total_cost` variable
-glm_singular <- ml_generalized_linear_regression(rescue_cat, 
-                                                 formula = "is_cat ~ engine_count + job_hours + total_cost + hourly_cost + originofcall + propertycategory + specialservicetypecategory", 
-                                                 family = "binomial", 
-                                                 link = "logit")
-
-# The following will return NULL values, as standard errors haven't been produced
-c("coefficient_standard_errors") %>%
-  purrr::map(~ml_summary(glm_singular, .x, allow_null = TRUE)) %>%
-  purrr::map_if(is.function, ~.x())
-
-# The following will cause an error, as 'tidy()' will attempt to retrieve standard errors that haven't been produced
-broom::tidy(glm_singular)
-```
-````
-
-These ‘singular’ variables therefore need to be identified and removed
-from the analysis prior to using `ml_` functions.
-
-````{tabs}
-```{code-tab} r R 
-# Select only the variables we want to use in our regression, making sure we drop all 'singular' variables
-rescue_cat <- rescue_cat %>%
-  sparklyr::select(is_cat,
-                   engine_count,
-                   job_hours,
-                   hourly_cost,
-                   originofcall,
-                   propertycategory,
-                   specialservicetypecategory)
-
-# Run regression on all of these variables by specifying the formula as "is_cat ~ ."
-glm_out <- ml_generalized_linear_regression(rescue_cat,
-                                            formula = "is_cat ~ .",
-                                            family = "binomial",
-                                            link = "logit")
-
-# Get standard errors
-c("coefficient_standard_errors") %>%
-  purrr::map(~ml_summary(glm_out, .x, allow_null = TRUE)) %>%
-  purrr::map_if(is.function, ~.x())
-
-# Get summary tibble
-broom::tidy(glm_out)
-```
-````
-
+## Model optimisation
 ### Selecting reference categories 
 
 When including categorical variables as independent variables in a
@@ -532,6 +450,67 @@ term                  estimate std.error statistic  p.value lower_ci upper_ci
 18 propertycategory_Boat -2.72e-1   4.56e-1  -5.96e-1 5.51e- 1 -1.17e+0  6.22e-1
 19 propertycategory_Out… -9.04e-1   9.22e-2  -9.81e+0 0        -1.08e+0 -7.23e-1
 20 propertycategory_Oth…  7.50e-1   1.43e+0   5.26e-1 5.99e- 1 -2.04e+0  3.54e+0
+```
+````
+
+### Multicollinearity
+
+A key assumption of linear and logistic regression models is that the feature columns are independent of one another. Including features that correlate with each other in the model is a clear violation of this assumption, so we need to identify these and remove them to get a valid result.
+
+A useful way of identifying these variables is to generate a correlation matrix of all the the features in the model. This can be done using the `ml_corr` function: 
+
+````{tabs}
+```{code-tab} r R
+# Get feature column names
+features <- rescue_cat_ohe %>%
+  select(-is_cat) %>%
+  colnames()
+
+# Generate correlation matrix  
+ml_corr(rescue_cat_ohe, columns = features, method = "pearson") %>%
+  print()
+```
+````
+
+Looking closely at the `total_cost` column, we can see that there is very strong correlation between that column and `job_hours`, with a correlation coefficient very close to 1. Additionally, there is quite strong correlation between the `total_cost` column and the `engine_count` column, as well as a moderate correlation with both `hourly_cost` and the "Animal Rescue From Water" category in the `specialservicetypecategory` column. This is to be expected, since if we take a closer look at `total_cost` we can see it always takes a value that is equal to
+`hourly_cost` multiplied by `job_hours`.
+
+````{tabs}
+```{code-tab} r R
+rescue_cat %>%
+  sparklyr::select(job_hours,
+                   hourly_cost,
+                   total_cost) %>%
+  dplyr::arrange(desc(job_hours)) %>%
+  print(n = 30)
+```
+````
+Therefore, we need to remove this feature from our model since it is not independent of other variables. You may also want to remove other variables from the model based on the correlation matrix. For example, there is also quite high correlation between the `job_hours` column and several other features. Deciding on which features to remove from your model may require some experimentation, but in general, a correlation coefficient of >0.7 among two or more predictors indicates multicollinearity and some of these should be removed from the model to ensure validity.
+
+````{tabs}
+```plaintext R output
+# A tibble: 19 × 7
+   term                  estimate std.error statistic  p.value lower_ci upper_ci
+   <chr>                    <dbl>     <dbl>     <dbl>    <dbl>    <dbl>    <dbl>
+ 1 (Intercept)            1.09e+0   3.72e-1   2.92e+0 3.45e- 3  3.59e-1  1.82e+0
+ 2 engine_count          -6.80e-1   2.21e-1  -3.07e+0 2.12e- 3 -1.11e+0 -2.46e-1
+ 3 hourly_cost           -7.07e-4   9.85e-4  -7.18e-1 4.73e- 1 -2.64e-3  1.22e-3
+ 4 specialservicetypeca… -9.95e-1   1.60e-1  -6.22e+0 5.08e-10 -1.31e+0 -6.81e-1
+ 5 specialservicetypeca…  4.23e-1   6.14e-2   6.90e+0 5.18e-12  3.03e-1  5.44e-1
+ 6 specialservicetypeca…  4.46e-1   9.59e-2   4.65e+0 3.32e- 6  2.58e-1  6.34e-1
+ 7 originofcall_Ambulan… -9.67e-1   2.26e-1  -4.28e+0 1.85e- 5 -1.41e+0 -5.24e-1
+ 8 originofcall_Police    6.47e-1   1.55e+0   4.17e-1 6.77e- 1 -2.40e+0  3.69e+0
+ 9 originofcall_Coastgu…  1.34e-1   5.72e-2   2.34e+0 1.94e- 2  2.16e-2  2.46e-1
+10 originofcall_Person … -6.79e-1   3.66e-1  -1.86e+0 6.34e- 2 -1.40e+0  3.79e-2
+11 originofcall_Not Kno… -2.50e+1   3.56e+5  -7.03e-5 1.00e+ 0 -6.98e+5  6.98e+5
+12 originofcall_Person … -2.60e+1   3.56e+5  -7.31e-5 1.00e+ 0 -6.98e+5  6.98e+5
+13 originofcall_Other F… -6.26e-2   1.42e+0  -4.41e-2 9.65e- 1 -2.84e+0  2.72e+0
+14 propertycategory_Out…  2.02e-1   1.47e-1   1.37e+0 1.70e- 1 -8.64e-2  4.90e-1
+15 propertycategory_Roa… -1.43e+0   1.16e-1  -1.24e+1 0        -1.66e+0 -1.20e+0
+16 propertycategory_Non… -7.48e-1   6.77e-2  -1.11e+1 0        -8.81e-1 -6.16e-1
+17 propertycategory_Boat -2.77e-1   4.56e-1  -6.06e-1 5.44e- 1 -1.17e+0  6.17e-1
+18 propertycategory_Out… -9.05e-1   9.21e-2  -9.83e+0 0        -1.09e+0 -7.25e-1
+19 propertycategory_Oth…  7.27e-1   1.42e+0   5.10e-1 6.10e- 1 -2.07e+0  3.52e+0
 ```
 ````
 

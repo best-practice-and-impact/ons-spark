@@ -109,7 +109,7 @@ rescue_cat.printSchema
 
 ### Missing values
 
-**Check: logistic regression in python - does it do any of this automatically like glm does?
+**Check: logistic regression in python - does it do any of this automatically like glm does?**
 
 ````{tabs}
 ```{code-tab} py
