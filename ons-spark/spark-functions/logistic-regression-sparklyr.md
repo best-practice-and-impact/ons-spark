@@ -274,7 +274,6 @@ Running the code above will produce an error since the `typeofincident`
 column only contains one value, `Special Service`. The regression model
 will not run unless `typeofincident` is removed from the formula.
 
-## Model optimisation
 ### Selecting reference categories 
 
 When including categorical variables as independent variables in a
