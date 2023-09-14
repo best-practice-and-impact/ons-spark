@@ -201,9 +201,7 @@ Individual statistics of interest can also be accessed directly using
 
 ````{tabs}
 ```{code-tab} r R 
-c("coefficient_standard_errors") %>%
-  purrr::map(~ml_summary(glm_out, .x, allow_null = TRUE)) %>%
-  purrr::map_if(is.function, ~.x())
+glm_out$summary$coefficient_standard_errors()
 ```
 ````
 
