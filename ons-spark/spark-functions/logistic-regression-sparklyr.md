@@ -676,6 +676,38 @@ summary
 19     0.446         0.0959   3.32e- 6       0.258        0.634  
 ```
 ````
+You can save a pipeline or pipeline model using the `ml_save` command:
+
+````{tabs}
+```{code-tabs} r R
+# Save pipeline
+ml_save(
+  rescue_pipeline,
+  "rescue_pipeline",
+  overwrite = TRUE
+)
+
+# Save pipeline model
+ml_save(
+  fitted_pipeline,
+  "rescue_model",
+  overwrite = TRUE
+)
+```
+````
+
+They can then be re-loaded using the `ml_load()` command and the re-loaded model can be used to re-fit new data with the same model by supplying the name of the new spark dataframe you wish to fit.
+
+````{tabs}
+```{code-tabs} r R
+# Reload our saved pipeline
+reloaded_pipeline <- ml_load(sc, "rescue_pipeline")
+
+# Re-fit to a subset of rescue data as an example of how pipelines can be re-used
+new_model <- ml_fit(reloaded_pipeline, sample_frac(rescue, 0.1))
+
+```
+````
 
 ## Further resources
 
