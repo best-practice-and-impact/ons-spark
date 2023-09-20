@@ -25,7 +25,7 @@ library(dplyr)
 sc <- sparklyr::spark_connect(
   master = "local[2]",
   app_name = "ons-spark",
-  config = list(default = list(spark.submit.deployMode = "cluster")),
+  config = sparklyr::spark_config(),
   )
 
 config <- yaml::yaml.load_file("ons-spark/config.yaml")
