@@ -500,126 +500,6 @@ full_summary
 ```
 ````
 
-
-## Things to watch out for
-
-### Singularity issue
-**Investigate this for PySpark**
-
-### Selecting reference categories
-When including categorical variables as independent variables in a
-regression, one of the categories must act as the reference category.
-The coefficients for all other categories are relative to the reference
-category.
-
-By default, the `OneHotEncoderEstimator` function will
-select the least common category as the reference category. For example, `specialservicetypecategory` has four unique values: Animal
-Rescue From Below Ground, Animal Rescue From Height, Animal Rescue From
-Water, and Other Animal Assistance.
-
-````{tabs}
-```{code-tab} py
-rescue_cat.groupBy("specialservicetypecategory").count().orderBy("count").show(truncate = False)
-```
-````
-
-````{tabs}
-``` plaintext Python output
-+-------------------------------+-----+
-|specialservicetypecategory     |count|
-+-------------------------------+-----+
-|Animal Rescue From Water       |343  |
-|Animal Rescue From Below Ground|593  |
-|Animal Rescue From Height      |2123 |
-|Other Animal Assistance        |2801 |
-+-------------------------------+-----+
-```
-````
-Since there are only 343 instances of “Animal Rescue From Water” in the data, this has been automatically selected as the reference category in the example above. Regression coefficients in the previous section are therefore shown relative
-to the to the “Animal Rescue From Water” reference category.
-
-Selecting a reference category can be particularly useful for
-inferential analysis. For example, in the `rescue_cat` dataset, we might want to
-select “Other Animal Assistance” as our reference category instead
-because it is the largest special service type and could serve as a
-useful reference point.
-
-To do this, we can make use of the additional `stringOrderType` argument for the `StringIndexer` function we used previously to index our categorical variables. This allows us to specify the indexing order. By default, this argument is set to `frequencyDesc`, so "Animal Rescue From Water" would be ordered last and is subsequently dropped by the `OneHotEncoderEstimator` function and set as the reference category. If we want "Other Animal Assistance" to be dropped instead, we need to ensure it is placed last in the indexing order. In this case, specifying `stringOrderType = frequencyAsc` would be sufficient to achieve this. However, to keep this example as general as possible, a convenient way of ensuring any chosen reference category is ordered last is add an appropriate prefix to it, such as "000_", and order the categories in descending alphabetical order (`alphabetDesc`):
-
-````{tabs}
-```{code-tab} py
-# Add "000_" prefix to selected reference categories
-
-rescue_cat_reindex = (rescue_cat
-                      .withColumn('specialservicetypecategory', 
-                                       F.when(F.col('specialservicetypecategory')=="Other Animal Assistance", "000_Other Animal Assistance")
-                                       .otherwise(F.col('specialservicetypecategory')))
-                      .withColumn('originofcall', 
-                                       F.when(F.col('originofcall') == "Person (mobile)", "000_Person (mobile)")
-                                       .otherwise(F.col('originofcall')))
-                      .withColumn('propertycategory', 
-                                       F.when(F.col('propertycategory') == "Dwelling", "000_Dwelling")
-                                       .otherwise(F.col('propertycategory'))))
-
-# Check prefix additions 
-rescue_cat_reindex.select('specialservicetypecategory', 'originofcall', 'propertycategory').show(20)
-
-# Use stringOrderType arg of StringIndexer
-
-# Re-ndexing the specialservicetypecategory column
-serviceIdx = StringIndexer(inputCol='specialservicetypecategory',
-                               outputCol='serviceIndex', 
-                               stringOrderType = "alphabetDesc")
-
-# Indexing the originofcallcolumn
-callIdx = StringIndexer(inputCol='originofcall',
-                               outputCol='callIndex',
-                               stringOrderType = "alphabetDesc")
-
-# Indexing the propertycategory column
-propertyIdx = StringIndexer(inputCol='propertycategory',
-                               outputCol='propertyIndex', 
-                               stringOrderType = "alphabetDesc")
-
-# Call indexing for each column one by one
-
-rescue_cat_indexed = serviceIdx.fit(rescue_cat_reindex).transform(rescue_cat_reindex)
-rescue_cat_indexed = callIdx.fit(rescue_cat_indexed).transform(rescue_cat_indexed)
-rescue_cat_indexed = propertyIdx.fit(rescue_cat_indexed).transform(rescue_cat_indexed)
-```
-````
-
-Once this is done we can run the regression again and get the
-coefficients relative to the chosen reference categories:
-
-````{tabs}
-```{code-tab} py
-encoder = OneHotEncoderEstimator(inputCols = ['serviceIndex', 'callIndex', 'propertyIndex'], 
-                                 outputCols = ['serviceVec', 'callVec', 'propertyVec'])
-
-rescue_cat_ohe = encoder.fit(rescue_cat_indexed).transform(rescue_cat_indexed)
-
-
-## Next, need to vectorize all our predictors into a new column called "features" which will be our input/features class
-
-assembler = VectorAssembler(inputCols=['engine_count', 'job_hours', 'hourly_cost', 
-                                       'callVec', 'propertyVec', 'serviceVec'], 
-                           outputCol = "features")
-
-rescue_cat_vectorised = assembler.transform(rescue_cat_ohe)
-
-
-rescue_cat_final = rescue_cat_vectorised.withColumnRenamed("is_cat", "label").select("label", "features")
-
-# Run the model again
-model = glr.fit(rescue_cat_final)
-
-# Show summary
-model.summary
-
-```
-````
-
 </details>
 
 <details>
@@ -752,3 +632,297 @@ broom::tidy(glm_out) %>%
 ```
 ````
 </details>
+
+
+
+
+## Things to watch out for
+
+### Singularity issue
+We need to be careful to check that variables included in the model take
+more than one value in order to avoid errors.
+
+If we were carrying out logistic regression in R using functions such as
+`glm`, these variables would be dropped automatically. However, this is
+not the case in `sparklyr`.
+
+**Investigate this for PySpark**
+
+````{tabs}
+```{code-tab} r R 
+glm_singular <- sparklyr::ml_generalized_linear_regression(rescue_cat, 
+                                                 formula = "is_cat ~ typeofincident + engine_count + job_hours + hourly_cost + originofcall + propertycategory + specialservicetypecategory", 
+                                                 family = "binomial", 
+                                                 link = "logit")
+```
+````
+
+Running the code above will produce an error since the `typeofincident`
+column only contains one value, `Special Service`. The regression model
+will not run unless `typeofincident` is removed from the formula.
+
+
+### Selecting reference categories
+
+When including categorical variables as independent variables in a
+regression, one of the categories must act as the reference category.
+The coefficients for all other categories are relative to the reference
+category.
+
+By default, the `OneHotEncoderEstimator`/`ml_generalized_linear_regression` functions will select the least common category as the reference category before applying one-hot encoding to the categories so that they can be
+represented as a binary numerical value. For example, `specialservicetypecategory` has four unique values: Animal
+Rescue From Below Ground, Animal Rescue From Height, Animal Rescue From
+Water, and Other Animal Assistance.
+
+````{tabs}
+```{code-tab} py
+rescue_cat.groupBy("specialservicetypecategory").count().orderBy("count").show(truncate = False)
+```
+```{code-tab} r R 
+rescue_cat %>% 
+  dplyr::count(specialservicetypecategory) %>% 
+  dplyr::arrange(n)
+```
+````
+
+````{tabs}
+``` plaintext Python output
++-------------------------------+-----+
+|specialservicetypecategory     |count|
++-------------------------------+-----+
+|Animal Rescue From Water       |343  |
+|Animal Rescue From Below Ground|593  |
+|Animal Rescue From Height      |2123 |
+|Other Animal Assistance        |2801 |
++-------------------------------+-----+
+```
+``` plaintext R output
+# Source:     spark<?> [?? x 2]
+# Ordered by: n
+  specialservicetypecategory          n
+  <chr>                           <dbl>
+1 Animal Rescue From Water          343
+2 Animal Rescue From Below Ground   593
+3 Animal Rescue From Height        2123
+4 Other Animal Assistance          2801
+```
+````
+Since there are only 343 instances of “Animal Rescue From Water” in the data, this has been automatically selected as the reference category in the example above. Regression coefficients in the previous section are therefore shown relative
+to the to the “Animal Rescue From Water” reference category.
+
+Selecting a reference category can be particularly useful for
+inferential analysis. For example, in the `rescue_cat` dataset, we might want to
+select “Other Animal Assistance” as our reference category instead
+because it is the largest special service type and could serve as a
+useful reference point.
+
+<details>
+<summary><b>Python Example</b></summary>
+
+To do this, we can make use of the additional `stringOrderType` argument for the `StringIndexer` function we used previously to index our categorical variables. This allows us to specify the indexing order. By default, this argument is set to `frequencyDesc`, so "Animal Rescue From Water" would be ordered last and is subsequently dropped by the `OneHotEncoderEstimator` function and set as the reference category. If we want "Other Animal Assistance" to be dropped instead, we need to ensure it is placed last in the indexing order. In this case, specifying `stringOrderType = frequencyAsc` would be sufficient to achieve this. However, to keep this example as general as possible, a convenient way of ensuring any chosen reference category is ordered last is add an appropriate prefix to it, such as "000_", and order the categories in descending alphabetical order (`alphabetDesc`):
+
+````{tabs}
+```{code-tab} py
+# Add "000_" prefix to selected reference categories
+
+rescue_cat_reindex = (rescue_cat
+                      .withColumn('specialservicetypecategory', 
+                                       F.when(F.col('specialservicetypecategory')=="Other Animal Assistance", "000_Other Animal Assistance")
+                                       .otherwise(F.col('specialservicetypecategory')))
+                      .withColumn('originofcall', 
+                                       F.when(F.col('originofcall') == "Person (mobile)", "000_Person (mobile)")
+                                       .otherwise(F.col('originofcall')))
+                      .withColumn('propertycategory', 
+                                       F.when(F.col('propertycategory') == "Dwelling", "000_Dwelling")
+                                       .otherwise(F.col('propertycategory'))))
+
+# Check prefix additions 
+rescue_cat_reindex.select('specialservicetypecategory', 'originofcall', 'propertycategory').show(20)
+
+# Use stringOrderType arg of StringIndexer
+
+# Re-ndexing the specialservicetypecategory column
+serviceIdx = StringIndexer(inputCol='specialservicetypecategory',
+                               outputCol='serviceIndex', 
+                               stringOrderType = "alphabetDesc")
+
+# Indexing the originofcallcolumn
+callIdx = StringIndexer(inputCol='originofcall',
+                               outputCol='callIndex',
+                               stringOrderType = "alphabetDesc")
+
+# Indexing the propertycategory column
+propertyIdx = StringIndexer(inputCol='propertycategory',
+                               outputCol='propertyIndex', 
+                               stringOrderType = "alphabetDesc")
+
+# Call indexing for each column one by one
+
+rescue_cat_indexed = serviceIdx.fit(rescue_cat_reindex).transform(rescue_cat_reindex)
+rescue_cat_indexed = callIdx.fit(rescue_cat_indexed).transform(rescue_cat_indexed)
+rescue_cat_indexed = propertyIdx.fit(rescue_cat_indexed).transform(rescue_cat_indexed)
+```
+````
+
+Once this is done we can run the regression again and get the
+coefficients relative to the chosen reference categories:
+
+````{tabs}
+```{code-tab} py
+encoder = OneHotEncoderEstimator(inputCols = ['serviceIndex', 'callIndex', 'propertyIndex'], 
+                                 outputCols = ['serviceVec', 'callVec', 'propertyVec'])
+
+rescue_cat_ohe = encoder.fit(rescue_cat_indexed).transform(rescue_cat_indexed)
+
+
+## Next, need to vectorize all our predictors into a new column called "features" which will be our input/features class
+
+assembler = VectorAssembler(inputCols=['engine_count', 'job_hours', 'hourly_cost', 
+                                       'callVec', 'propertyVec', 'serviceVec'], 
+                           outputCol = "features")
+
+rescue_cat_vectorised = assembler.transform(rescue_cat_ohe)
+
+
+rescue_cat_final = rescue_cat_vectorised.withColumnRenamed("is_cat", "label").select("label", "features")
+
+# Run the model again
+model = glr.fit(rescue_cat_final)
+
+# Show summary
+model.summary
+
+```
+````
+</details>
+<details>
+<summary><b>R Example</b></summary>
+
+To do this, we can make use of the one-hot encoding concept and two of
+`sparklyr`’s **Feature Transformers** (`ft_string_indexer` and `ft_one_hot_encoder`) to achieve this. These functions have limited functionality, so we must first manipulate it such that the reference category will be ordered last when using `ft_string_indexer`, and then
+we can drop the last category using `ft_one_hot_encoder`. A convenient way of doing this is to order the categories in *descending alphabetical* order and ensuring that our chosen category will be ordered last by adding an appropriate prefix to it. For example, adding
+`000_`:
+
+````{tabs}
+```{code-tab} r R 
+rescue_cat_ohe <- rescue_cat %>%
+  dplyr::mutate(specialservicetypecategory = ifelse(specialservicetypecategory == "Other Animal Assistance",
+                                                    "000_Other Animal Assistance",
+                                                    specialservicetypecategory)) %>%
+  sparklyr::ft_string_indexer(input_col = "specialservicetypecategory", 
+                              output_col = "specialservicetypecategory_idx",
+                              string_order_type = "alphabetDesc") %>%
+  sparklyr::ft_one_hot_encoder(input_cols = c("specialservicetypecategory_idx"), 
+                               output_cols = c("specialservicetypecategory_ohe"), 
+                               drop_last = TRUE) %>%
+  sparklyr::sdf_separate_column(column = "specialservicetypecategory_ohe",
+                                into = c("specialservicetypecategory_Animal Rescue From Water", 
+                                         "specialservicetypecategory_Animal Rescue From Below Ground", 
+                                         "specialservicetypecategory_Animal Rescue From Height")) %>% 
+  sparklyr::select(-ends_with(c("_ohe", "_idx")),
+                   -specialservicetypecategory)
+```
+````
+
+`sdf_separate_column` has been used to separate encoded variables into
+individual columns and the intermediate columns with “\_ohe” and “\_idx”
+suffixes have been dropped once the process is complete. This can be
+repeated for every categorical variable as desired.
+
+````{tabs}
+```{code-tab} r R 
+# originofcall
+rescue_cat_ohe <- rescue_cat_ohe %>%
+  dplyr::mutate(originofcall = ifelse(originofcall == "Person (mobile)",
+                                      "000_Person (mobile)",
+                                      originofcall )) %>%
+  sparklyr::ft_string_indexer(input_col = "originofcall", 
+                              output_col = "originofcall_idx",
+                              string_order_type = "alphabetDesc") %>%
+  sparklyr::ft_one_hot_encoder(input_cols = c("originofcall_idx"), 
+                               output_cols = c("originofcall_ohe"), 
+                               drop_last = TRUE) %>%
+  sparklyr::sdf_separate_column(column = "originofcall_ohe",
+                                into = c("originofcall_Ambulance", 
+                                         "originofcall_Police", 
+                                         "originofcall_Coastguard",
+                                         "originofcall_Person (land line)",
+                                         "originofcall_Not Known",
+                                         "originofcall_Person (running Call)",
+                                         "originofcall_Other Frs")) 
+# propertycategory
+rescue_cat_ohe <- rescue_cat_ohe %>%
+  dplyr::mutate(propertycategory = ifelse(propertycategory == "Dwelling",
+                                          "000_Dwelling",
+                                          propertycategory)) %>%
+  sparklyr::ft_string_indexer(input_col = "propertycategory", 
+                              output_col = "propertycategory_idx",
+                              string_order_type = "alphabetDesc") %>%
+  sparklyr::ft_one_hot_encoder(input_cols = c("propertycategory_idx"), 
+                               output_cols = c("propertycategory_ohe"), 
+                               drop_last = TRUE) %>%
+  sparklyr::sdf_separate_column(column = "propertycategory_ohe",
+                                into = c("propertycategory_Outdoor", 
+                                         "propertycategory_Road Vehicle", 
+                                         "propertycategory_Non Residential",
+                                         "propertycategory_Boat",
+                                         "propertycategory_Outdoor Structure",
+                                         "propertycategory_Other Residential"))
+
+
+# remove _idx and _ohe intermediate columns and original data columns
+rescue_cat_ohe <- rescue_cat_ohe %>% 
+  sparklyr::select(-ends_with(c("_ohe", "_idx")),
+                   -originofcall,
+                   -propertycategory)
+```
+````
+
+Once this is done we can run the regression again and get the
+coefficients relative to the chosen reference categories:
+
+````{tabs}
+```{code-tab} r R 
+# Run regression with one-hot encoded variables with chosen reference categories
+glm_ohe <- dparklyr::ml_generalized_linear_regression(rescue_cat_ohe, 
+                                                      formula = "is_cat ~ .", 
+                                                      family = "binomial", 
+                                                      link = "logit")
+
+# Get coefficients and confidence intervals
+broom::tidy(glm_ohe) %>%
+  dplyr::mutate(lower_ci = estimate - (1.96 * std.error),
+                upper_ci = estimate + (1.96 * std.error))
+```
+````
+
+````{tabs}
+``` plaintext R output
+# A tibble: 20 × 7
+term                  estimate std.error statistic  p.value lower_ci upper_ci
+<chr>                    <dbl>     <dbl>     <dbl>    <dbl>    <dbl>    <dbl>
+  1 (Intercept)            1.05e+0   3.85e-1   2.71e+0 6.63e- 3  2.91e-1  1.80e+0
+2 engine_count          -6.13e-1   2.74e-1  -2.23e+0 2.56e- 2 -1.15e+0 -7.48e-2
+3 job_hours             -2.54e-2   6.09e-2  -4.16e-1 6.77e- 1 -1.45e-1  9.41e-2
+4 hourly_cost           -7.00e-4   9.85e-4  -7.11e-1 4.77e- 1 -2.63e-3  1.23e-3
+5 specialservicetypeca… -9.95e-1   1.60e-1  -6.22e+0 5.12e-10 -1.31e+0 -6.81e-1
+6 specialservicetypeca…  4.23e-1   6.14e-2   6.89e+0 5.76e-12  3.02e-1  5.43e-1
+7 specialservicetypeca…  4.47e-1   9.59e-2   4.66e+0 3.19e- 6  2.59e-1  6.35e-1
+8 originofcall_Ambulan… -9.65e-1   2.26e-1  -4.27e+0 1.95e- 5 -1.41e+0 -5.22e-1
+9 originofcall_Police    6.69e-1   1.56e+0   4.28e-1 6.68e- 1 -2.39e+0  3.73e+0
+10 originofcall_Coastgu…  1.33e-1   5.73e-2   2.33e+0 1.97e- 2  2.12e-2  2.46e-1
+11 originofcall_Person … -6.72e-1   3.66e-1  -1.84e+0 6.63e- 2 -1.39e+0  4.52e-2
+12 originofcall_Not Kno… -2.50e+1   3.56e+5  -7.01e-5 1.00e+ 0 -6.98e+5  6.98e+5
+13 originofcall_Person … -2.60e+1   3.56e+5  -7.31e-5 1.00e+ 0 -6.98e+5  6.98e+5
+14 originofcall_Other F… -6.67e-2   1.42e+0  -4.70e-2 9.62e- 1 -2.85e+0  2.71e+0
+15 propertycategory_Out…  2.03e-1   1.47e-1   1.38e+0 1.67e- 1 -8.52e-2  4.91e-1
+16 propertycategory_Roa… -1.43e+0   1.16e-1  -1.23e+1 0        -1.66e+0 -1.20e+0
+17 propertycategory_Non… -7.45e-1   6.80e-2  -1.10e+1 0        -8.79e-1 -6.12e-1
+18 propertycategory_Boat -2.72e-1   4.56e-1  -5.96e-1 5.51e- 1 -1.17e+0  6.22e-1
+19 propertycategory_Out… -9.04e-1   9.22e-2  -9.81e+0 0        -1.08e+0 -7.23e-1
+20 propertycategory_Oth…  7.50e-1   1.43e+0   5.26e-1 5.99e- 1 -2.04e+0  3.54e+0
+```
+````
+</details>
+
+
