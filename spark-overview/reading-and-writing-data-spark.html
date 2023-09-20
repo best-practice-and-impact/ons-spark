@@ -1,0 +1,1178 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Reading and Writing Data in Spark &#8212; Spark at the ONS</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/accessibility.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/tabs.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-95MGHSRD0S');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'spark-overview/reading-and-writing-data-spark';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Data Storage" href="data-storage.html" />
+    <link rel="prev" title="Creating DataFrames Manually" href="creating-dataframes.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Introduction
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark overview</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="spark-start.html">Getting Started with Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="when-to-use-spark.html">When To Use Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spark-session-guidance.html">Guidance on Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example-spark-sessions.html">Example Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spark-defaults.html">Configuration Hierarchy and <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-types.html">Data Types in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="creating-dataframes.html">Creating DataFrames Manually</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Reading and Writing Data in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-storage.html">Data Storage</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to PySpark</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/pyspark-intro.html">Introduction to PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/returning-data.html">Returning Data from Cluster to Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/f-col.html">Reference columns by name: <code class="docutils literal notranslate"><span class="pre">F.col()</span></code></a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to sparklyr</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/sparklyr-intro.html">Introduction to sparklyr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">Using Spark functions in sparklyr</a></li>
+
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark functions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/union-dataframes-with-different-columns.html">Union two DataFrames with different columns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/padding.html">Add leading zeros with <code class="docutils literal notranslate"><span class="pre">lpad()</span></code></a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/sampling.html">Sampling: an overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/pivot-tables.html">Pivot tables in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/rounding.html">Rounding differences in Python, R and Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/window-functions.html">Window Functions in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/cross-joins.html">Cross Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/arrays.html">Arrays Functions in PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/writing-data.html">Writing Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/job-description.html">Set Spark Job Description</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Understanding and Optimising Spark</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/optimisation-tips.html">Ideas for optimising Spark code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/spark-application-and-ui.html">Spark Application and UI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/shuffling.html">Shuffling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/join-concepts.html">Optimising Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/salted-joins.html">Salted Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/partitions.html">Managing Partitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/persistence.html">Persisting in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/cache.html">Caching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/checkpoint-staging.html">Checkpoints and Staging Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/garbage-collection.html">Garbage Collection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/df-order.html">Spark DataFrames Are Not Ordered</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/exercises.html">Exercises</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Testing and Debugging</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../testing-debugging/spark-errors.html">Understanding and Handling Spark Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing-debugging/unit-testing.html">Unit Testing in Spark</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Ancillary Topics</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/visualisation.html">Spark and Visualisation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/module-imports.html">Naming Conflicts in Module Imports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/pydoop.html">Pydoop: HDFS to pandas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/pandas-udfs.html">Pandas UDFs</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fspark-overview/reading-and-writing-data-spark.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/spark-overview/reading-and-writing-data-spark.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Reading and Writing Data in Spark</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#csv-files">CSV files</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reading-in-a-csv-file">Reading in a CSV file</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#writing-out-csv-files">Writing out CSV files</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parquet-files">Parquet files</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reading-in-a-parquet-file">Reading in a parquet file</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#writing-out-parquet-files">Writing out parquet files</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimised-row-columnar-orc-files">Optimised Row Columnar (ORC) files</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reading-in-orc-files">Reading in ORC files</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#writing-out-orc-files">Writing out ORC files</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#avro-files">Avro files</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reading-in-avro-files">Reading in Avro files</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#writing-out-avro-files">Writing out Avro files</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hive-tables">Hive tables</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reading-in-hive-tables">Reading in Hive tables</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#writing-out-a-hive-table">Writing out a Hive table</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#so-which-file-format-should-i-use">So, which file format should I use?</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#do-i-need-my-data-to-be-human-readable">Do I need my data to be human-readable?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#row-based-vs-columnar-based-formats">Row-based vs columnar-based formats</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#do-you-work-primarily-with-databases-sql">Do you work primarily with databases/SQL?</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further resources</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="reading-and-writing-data-in-spark">
+<h1>Reading and Writing Data in Spark<a class="headerlink" href="#reading-and-writing-data-in-spark" title="Permalink to this heading">#</a></h1>
+<p>This chapter will go into more detail about the various file formats available to use with Spark, and how Spark interacts with these file formats. <a class="reference internal" href="../pyspark-intro/pyspark-intro.html"><span class="doc std std-doc">Introduction to PySpark</span></a> and <span class="xref myst">Introduction to SparklyR</span> briefly covered CSV files and Parquet files and some basic differences between them.</p>
+<p>This chapter will provide more detail on parquet files, CSV files, ORC files and Avro files, the differences between them and how to read and write data using these formats.</p>
+<p>Let’s start by setting up a Spark session and reading in the config file.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-0-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-0-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;reading-data&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+
+<span class="n">sc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
+<span class="w">  </span><span class="n">master</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;local[2]&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">app_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;ons-spark&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">(),</span>
+<span class="w">  </span><span class="p">)</span>
+
+<span class="n">config</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">yaml</span><span class="o">::</span><span class="nf">yaml.load_file</span><span class="p">(</span><span class="s">&quot;ons-spark/config.yaml&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<section id="csv-files">
+<h2>CSV files<a class="headerlink" href="#csv-files" title="Permalink to this heading">#</a></h2>
+<section id="reading-in-a-csv-file">
+<h3>Reading in a CSV file<a class="headerlink" href="#reading-in-a-csv-file" title="Permalink to this heading">#</a></h3>
+<p>To read in a CSV file, you can use <a class="reference external" href="https://spark.apache.org/docs/latest/sql-data-sources-csv.html"><code class="docutils literal notranslate"><span class="pre">spark.read.csv()</span></code></a> with PySpark or <a class="reference external" href="https://rdrr.io/cran/sparklyr/man/spark_read_csv.html"><code class="docutils literal notranslate"><span class="pre">spark_read_csv()</span></code></a> with SparklyR as demonstrated below.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-1-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-1-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">animal_rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path_csv&quot;</span><span class="p">],</span> <span class="n">header</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_csv</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span>
+<span class="w">                                     </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">rescue_path_csv</span><span class="p">,</span>
+<span class="w">                                     </span><span class="n">header</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">                                     </span><span class="n">infer_schema</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<p>It’s important to note the two arguments we have provided to the <a class="reference external" href="https://spark.apache.org/docs/latest/sql-data-sources-csv.html"><code class="docutils literal notranslate"><span class="pre">spark.read.csv()</span></code></a> function, <code class="docutils literal notranslate"><span class="pre">header</span></code> and <code class="docutils literal notranslate"><span class="pre">inferSchema</span></code>.</p>
+<p>By setting <code class="docutils literal notranslate"><span class="pre">header</span></code> to True, we’re saying that we want the top row to be used as the column names. If we did not set this argument to True, then the top rows will be treated as the first row of data, and columns will be given a default name of <code class="docutils literal notranslate"><span class="pre">_c1</span></code>, <code class="docutils literal notranslate"><span class="pre">_c2</span></code>, <code class="docutils literal notranslate"><span class="pre">_c3</span></code> and so on.</p>
+<p><code class="docutils literal notranslate"><span class="pre">inferSchema</span></code> is very important - a disadvantage of using a CSV file is that they are not associated with a schema in the same way parquet files are. By setting <code class="docutils literal notranslate"><span class="pre">inferSchema</span></code> to True, we’re allowing the PySpark API to attempt to work out the schemas based on the contents of each column. If this were set to False, then each column would be set to a string datatype by default.</p>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">inferSchema</span></code> may not always give the result you’re expecting - we can see this in the DateTimeOfCall column in the below code. We may want this as a timestamp type, but it has been read in as a string.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-2-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-2-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">animal_rescue</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_schema</span><span class="p">(</span><span class="n">rescue_df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-3-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-3-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>root
+ |-- IncidentNumber: string (nullable = true)
+ |-- DateTimeOfCall: string (nullable = true)
+ |-- CalYear: integer (nullable = true)
+ |-- FinYear: string (nullable = true)
+ |-- TypeOfIncident: string (nullable = true)
+ |-- PumpCount: double (nullable = true)
+ |-- PumpHoursTotal: double (nullable = true)
+ |-- HourlyNotionalCost(£): integer (nullable = true)
+ |-- IncidentNotionalCost(£): double (nullable = true)
+ |-- FinalDescription: string (nullable = true)
+ |-- AnimalGroupParent: string (nullable = true)
+ |-- OriginofCall: string (nullable = true)
+ |-- PropertyType: string (nullable = true)
+ |-- PropertyCategory: string (nullable = true)
+ |-- SpecialServiceTypeCategory: string (nullable = true)
+ |-- SpecialServiceType: string (nullable = true)
+ |-- WardCode: string (nullable = true)
+ |-- Ward: string (nullable = true)
+ |-- BoroughCode: string (nullable = true)
+ |-- Borough: string (nullable = true)
+ |-- StnGroundName: string (nullable = true)
+ |-- PostcodeDistrict: string (nullable = true)
+ |-- Easting_m: double (nullable = true)
+ |-- Northing_m: double (nullable = true)
+ |-- Easting_rounded: integer (nullable = true)
+ |-- Northing_rounded: integer (nullable = true)
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>$IncidentNumber
+$IncidentNumber$name
+[1] &quot;IncidentNumber&quot;
+
+$IncidentNumber$type
+[1] &quot;StringType&quot;
+
+
+$DateTimeOfCall
+$DateTimeOfCall$name
+[1] &quot;DateTimeOfCall&quot;
+
+$DateTimeOfCall$type
+[1] &quot;StringType&quot;
+
+
+$CalYear
+$CalYear$name
+[1] &quot;CalYear&quot;
+
+$CalYear$type
+[1] &quot;IntegerType&quot;
+
+
+$FinYear
+$FinYear$name
+[1] &quot;FinYear&quot;
+
+$FinYear$type
+[1] &quot;StringType&quot;
+
+
+$TypeOfIncident
+$TypeOfIncident$name
+[1] &quot;TypeOfIncident&quot;
+
+$TypeOfIncident$type
+[1] &quot;StringType&quot;
+
+
+$PumpCount
+$PumpCount$name
+[1] &quot;PumpCount&quot;
+
+$PumpCount$type
+[1] &quot;DoubleType&quot;
+
+
+$PumpHoursTotal
+$PumpHoursTotal$name
+[1] &quot;PumpHoursTotal&quot;
+
+$PumpHoursTotal$type
+[1] &quot;DoubleType&quot;
+
+
+$HourlyNotionalCostGBP
+$HourlyNotionalCostGBP$name
+[1] &quot;HourlyNotionalCostGBP&quot;
+
+$HourlyNotionalCostGBP$type
+[1] &quot;IntegerType&quot;
+
+
+$IncidentNotionalCostGBP
+$IncidentNotionalCostGBP$name
+[1] &quot;IncidentNotionalCostGBP&quot;
+
+$IncidentNotionalCostGBP$type
+[1] &quot;DoubleType&quot;
+
+
+$FinalDescription
+$FinalDescription$name
+[1] &quot;FinalDescription&quot;
+
+$FinalDescription$type
+[1] &quot;StringType&quot;
+
+
+$AnimalGroupParent
+$AnimalGroupParent$name
+[1] &quot;AnimalGroupParent&quot;
+
+$AnimalGroupParent$type
+[1] &quot;StringType&quot;
+
+
+$OriginofCall
+$OriginofCall$name
+[1] &quot;OriginofCall&quot;
+
+$OriginofCall$type
+[1] &quot;StringType&quot;
+
+
+$PropertyType
+$PropertyType$name
+[1] &quot;PropertyType&quot;
+
+$PropertyType$type
+[1] &quot;StringType&quot;
+
+
+$PropertyCategory
+$PropertyCategory$name
+[1] &quot;PropertyCategory&quot;
+
+$PropertyCategory$type
+[1] &quot;StringType&quot;
+
+
+$SpecialServiceTypeCategory
+$SpecialServiceTypeCategory$name
+[1] &quot;SpecialServiceTypeCategory&quot;
+
+$SpecialServiceTypeCategory$type
+[1] &quot;StringType&quot;
+
+
+$SpecialServiceType
+$SpecialServiceType$name
+[1] &quot;SpecialServiceType&quot;
+
+$SpecialServiceType$type
+[1] &quot;StringType&quot;
+
+
+$WardCode
+$WardCode$name
+[1] &quot;WardCode&quot;
+
+$WardCode$type
+[1] &quot;StringType&quot;
+
+
+$Ward
+$Ward$name
+[1] &quot;Ward&quot;
+
+$Ward$type
+[1] &quot;StringType&quot;
+
+
+$BoroughCode
+$BoroughCode$name
+[1] &quot;BoroughCode&quot;
+
+$BoroughCode$type
+[1] &quot;StringType&quot;
+
+
+$Borough
+$Borough$name
+[1] &quot;Borough&quot;
+
+$Borough$type
+[1] &quot;StringType&quot;
+
+
+$StnGroundName
+$StnGroundName$name
+[1] &quot;StnGroundName&quot;
+
+$StnGroundName$type
+[1] &quot;StringType&quot;
+
+
+$PostcodeDistrict
+$PostcodeDistrict$name
+[1] &quot;PostcodeDistrict&quot;
+
+$PostcodeDistrict$type
+[1] &quot;StringType&quot;
+
+
+$Easting_m
+$Easting_m$name
+[1] &quot;Easting_m&quot;
+
+$Easting_m$type
+[1] &quot;DoubleType&quot;
+
+
+$Northing_m
+$Northing_m$name
+[1] &quot;Northing_m&quot;
+
+$Northing_m$type
+[1] &quot;DoubleType&quot;
+
+
+$Easting_rounded
+$Easting_rounded$name
+[1] &quot;Easting_rounded&quot;
+
+$Easting_rounded$type
+[1] &quot;IntegerType&quot;
+
+
+$Northing_rounded
+$Northing_rounded$name
+[1] &quot;Northing_rounded&quot;
+
+$Northing_rounded$type
+[1] &quot;IntegerType&quot;
+
+</pre></div>
+</div>
+</div></div>
+<p>To correct this, we can either cast the column as a date type or we can provide a schema when reading it in.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-4-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-4-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-4-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.types</span> <span class="kn">import</span> <span class="n">StructType</span><span class="p">,</span> <span class="n">StructField</span><span class="p">,</span> <span class="n">StringType</span><span class="p">,</span> <span class="n">IntegerType</span><span class="p">,</span> <span class="n">DoubleType</span><span class="p">,</span> <span class="n">TimestampType</span>
+
+<span class="n">custom_schema</span> <span class="o">=</span> <span class="n">StructType</span><span class="p">([</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s2">&quot;IncidentNumber&quot;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s2">&quot;DateTimeOfCall&quot;</span><span class="p">,</span> <span class="n">TimestampType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s2">&quot;CalYear&quot;</span><span class="p">,</span> <span class="n">IntegerType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s2">&quot;TypeOfIncident&quot;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),])</span>
+
+<span class="n">animal_rescue_with_schema</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path_csv&quot;</span><span class="p">],</span> <span class="n">header</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">schema</span> <span class="o">=</span> <span class="n">custom_schema</span><span class="p">)</span>
+<span class="n">animal_rescue_with_schema</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">custom_schema</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">IncidentNumber</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;character&quot;</span><span class="p">,</span>
+<span class="w">                     </span><span class="n">DateTimeOfCall</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;date&quot;</span><span class="p">,</span>
+<span class="w">                     </span><span class="n">CalYear</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;integer&quot;</span><span class="p">,</span>
+<span class="w">                     </span><span class="n">TypeOfIncident</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;character&quot;</span><span class="p">)</span>
+
+<span class="n">rescue_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_csv</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span>
+<span class="w">                                     </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">rescue_path_csv</span><span class="p">,</span>
+<span class="w">                                     </span><span class="n">header</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">                                     </span><span class="n">infer_schema</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">,</span>
+<span class="w">                                     </span><span class="n">columns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">custom_schema</span><span class="p">)</span>
+
+<span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_schema</span><span class="p">(</span><span class="n">rescue_df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-5-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-5-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-5-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>root
+ |-- IncidentNumber: string (nullable = true)
+ |-- DateTimeOfCall: timestamp (nullable = true)
+ |-- CalYear: integer (nullable = true)
+ |-- TypeOfIncident: string (nullable = true)
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>$IncidentNumber
+$IncidentNumber$name
+[1] &quot;IncidentNumber&quot;
+
+$IncidentNumber$type
+[1] &quot;StringType&quot;
+
+
+$DateTimeOfCall
+$DateTimeOfCall$name
+[1] &quot;DateTimeOfCall&quot;
+
+$DateTimeOfCall$type
+[1] &quot;DateType&quot;
+
+
+$CalYear
+$CalYear$name
+[1] &quot;CalYear&quot;
+
+$CalYear$type
+[1] &quot;IntegerType&quot;
+
+
+$TypeOfIncident
+$TypeOfIncident$name
+[1] &quot;TypeOfIncident&quot;
+
+$TypeOfIncident$type
+[1] &quot;StringType&quot;
+
+</pre></div>
+</div>
+</div></div>
+<p>We can see that DateTimeOfCall has now been read in correctly as a timestamp type. Also, providing a schema will improve the efficiency of the operation. This is because, in order to infer a schema, Spark needs to scan the dataset. A column could contain, for example, an integer for the first 1000 rows and a string for the 1001th row - in which case it would be inferred as a string, but this wouldn’t be obvious from the first 1000 rows. Needing to sample the data in each column can be quite memory intensive. Providing a schema means that Spark no longer has to sample the data before reading it in.</p>
+<p>Generally, if you’re using a small dataset it is fine to use infer schema - however if you’re reading in a large dataset, it may take considerably longer to read in and this will be repeated after every action (see <a class="reference internal" href="../spark-concepts/persistence.html"><span class="doc std std-doc">Persisting in Spark</span></a> to understand why this is the case), potentially increasing your execution time even further.</p>
+</section>
+<section id="writing-out-csv-files">
+<h3>Writing out CSV files<a class="headerlink" href="#writing-out-csv-files" title="Permalink to this heading">#</a></h3>
+<p>To write a Spark dataframe to a CSV file, you can use the <a class="reference external" href="https://sparkbyexamples.com/pyspark/pyspark-write-dataframe-to-csv-file/"><code class="docutils literal notranslate"><span class="pre">.write.csv()</span></code></a> method in PySpark, or <a class="reference external" href="https://rdrr.io/cran/sparklyr/man/spark_write_csv.html"><code class="docutils literal notranslate"><span class="pre">spark_write_csv()</span></code></a> in SparklyR, as demonstrated below:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-6-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-6-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-6-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">animal_rescue</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;temp_outputs&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;animal_rescue.csv&quot;</span><span class="p">,</span> <span class="n">header</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;overwrite&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-6-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_write_csv</span><span class="p">(</span><span class="n">rescue_df</span><span class="p">,</span>
+<span class="w">                         </span><span class="nf">paste0</span><span class="p">(</span><span class="n">config</span><span class="o">$</span><span class="n">temp_outputs</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;animal_rescue_r.csv&quot;</span><span class="p">),</span>
+<span class="w">                         </span><span class="n">header</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">                         </span><span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;overwrite&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<p>Note that as mentioned above, we need to specify <code class="docutils literal notranslate"><span class="pre">header</span> <span class="pre">=</span> <span class="pre">True</span></code> for Spark to treat the top row as column names.</p>
+<p>To overwrite an existing file, you can specify <code class="docutils literal notranslate"><span class="pre">mode</span> <span class="pre">=</span> <span class="pre">overwrite</span></code>. Other writing modes include <code class="docutils literal notranslate"><span class="pre">append</span></code> which appends the data to the pre-existing file file, <code class="docutils literal notranslate"><span class="pre">ignore</span></code> which ignores the write operation if the file already exists or <code class="docutils literal notranslate"><span class="pre">error</span></code> - this is the default and will error if the file already exists.</p>
+</section>
+</section>
+<section id="parquet-files">
+<h2>Parquet files<a class="headerlink" href="#parquet-files" title="Permalink to this heading">#</a></h2>
+<section id="reading-in-a-parquet-file">
+<h3>Reading in a parquet file<a class="headerlink" href="#reading-in-a-parquet-file" title="Permalink to this heading">#</a></h3>
+<p>To read in a parquet file in PySpark, you can use <a class="reference external" href="https://spark.apache.org/docs/latest/sql-data-sources-parquet.html"><code class="docutils literal notranslate"><span class="pre">spark.read.parquet()</span></code></a> as demonstrated below. For SparklyR, you would use the <a class="reference external" href="https://www.rdocumentation.org/packages/sparklyr/versions/1.8.3/topics/spark_read_parquet"><code class="docutils literal notranslate"><span class="pre">spark_read_parquet()</span></code></a> method.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-7-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-7-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-7-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-7-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">animal_rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-7-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-7-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_parquet</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">rescue_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<p>As you can see, we didn’t have to provide a schema or use the inferSchema argument - this is because parquet files already have a schema associated with them, which is stored in the metadata.</p>
+</section>
+<section id="writing-out-parquet-files">
+<h3>Writing out parquet files<a class="headerlink" href="#writing-out-parquet-files" title="Permalink to this heading">#</a></h3>
+<p>To write out a Spark dataframe as a parquet file, you can use <a class="reference external" href="https://sparkbyexamples.com/pyspark/pyspark-read-and-write-parquet-file/"><code class="docutils literal notranslate"><span class="pre">.write.parquet()</span></code></a> in PySpark or <a class="reference external" href="https://rdrr.io/cran/sparklyr/man/spark_write_parquet.html"><code class="docutils literal notranslate"><span class="pre">spark_write_parquet()</span></code></a> in SparklyR.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-8-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-8-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-8-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-8-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">animal_rescue</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;temp_outputs&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;animal_rescue.parquet&quot;</span><span class="p">,</span> <span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;overwrite&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-8-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-8-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_write_parquet</span><span class="p">(</span><span class="n">rescue_df</span><span class="p">,</span><span class="w"> </span><span class="nf">paste0</span><span class="p">(</span><span class="n">config</span><span class="o">$</span><span class="n">temp_outputs</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;animal_rescue_r.parquet&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;overwrite&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<p>There is no need to specify the <code class="docutils literal notranslate"><span class="pre">header</span></code> argument as with CSV files when saving out or reading in a parquet file - because of the metadata associated with parquet files, Spark knows whether something is a column header or not. As with CSV files, you can specify alternative modes for saving out the data including <code class="docutils literal notranslate"><span class="pre">append</span></code> and <code class="docutils literal notranslate"><span class="pre">ignore</span></code>.</p>
+<p>As well as having a schema associated with them, there are other benefits of working with parquet files instead of CSV files. These include:</p>
+<ul class="simple">
+<li><p>Column-based format - parquet files are organised by columns, rather than by row. This allows for better compression and more efficient use of storage space, as columns typically contain similar data types and repeating values. Additionally, when accessing only specific columns, Spark can skip reading in unnecessary data and only read in the columns of interest.</p></li>
+<li><p>Predicate pushdown - parquet supports predicate pushdowns, this means if you read in the full dataset and then filter, the filter clause will be “pushed down” to where the data is stored, meaning it can be filtered before it is read in, reducing the amount of memory used to process the data.</p></li>
+<li><p>Compression - parquet has built-in compression methods to reduce the required storage space.</p></li>
+<li><p>Complex data types - parquet files support complex data types such as nested data.</p></li>
+</ul>
+</section>
+</section>
+<section id="optimised-row-columnar-orc-files">
+<h2>Optimised Row Columnar (ORC) files<a class="headerlink" href="#optimised-row-columnar-orc-files" title="Permalink to this heading">#</a></h2>
+<section id="reading-in-orc-files">
+<h3>Reading in ORC files<a class="headerlink" href="#reading-in-orc-files" title="Permalink to this heading">#</a></h3>
+<p>To read in an ORC file, using PySpark, you can use <a class="reference external" href="https://sparkbyexamples.com/spark/spark-read-orc-file-into-dataframe/"><code class="docutils literal notranslate"><span class="pre">spark.read.orc()</span></code></a>. Using SparklyR, you would use <a class="reference external" href="https://rdrr.io/cran/sparklyr/man/spark_read_orc.html"><code class="docutils literal notranslate"><span class="pre">spark_read_orc()</span></code></a></p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-9-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-9-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-9-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-9-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">animal_rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">orc</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path_orc&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-9-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-9-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_orc</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">rescue_path_orc</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="writing-out-orc-files">
+<h3>Writing out ORC files<a class="headerlink" href="#writing-out-orc-files" title="Permalink to this heading">#</a></h3>
+<p>To write out an ORC file, you can use <a class="reference external" href="https://sparkbyexamples.com/spark/spark-read-orc-file-into-dataframe/"><code class="docutils literal notranslate"><span class="pre">dataframe.write.orc()</span></code></a> in PySpark or <a class="reference external" href="https://rdrr.io/cran/sparklyr/man/spark_write_orc.html"><code class="docutils literal notranslate"><span class="pre">spark_write_orc()</span></code></a> in SparklyR.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-10-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-10-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-10-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-10-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">animal_rescue</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">orc</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;temp_outputs&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;animal_rescue.orc&quot;</span><span class="p">,</span> <span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;overwrite&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-10-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-10-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_write_orc</span><span class="p">(</span><span class="n">rescue_df</span><span class="p">,</span><span class="w"> </span><span class="nf">paste0</span><span class="p">(</span><span class="n">config</span><span class="o">$</span><span class="n">temp_outputs</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;animal_rescue_r.orc&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;overwrite&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<p>Again, there is no need to use <code class="docutils literal notranslate"><span class="pre">inferSchema</span></code> or specify a <code class="docutils literal notranslate"><span class="pre">header</span></code> argument, as with a CSV file.</p>
+<p>An ORC file shares a lot of the same benefits that a parquet file has over a CSV, including:</p>
+<ul class="simple">
+<li><p>The schema is stored with the file, meaning we don’t have to specify a schema</p></li>
+<li><p>Column-based formatting</p></li>
+<li><p>Predicate pushdown support</p></li>
+<li><p>Built-in compression</p></li>
+<li><p>Support of complex data types</p></li>
+</ul>
+</section>
+</section>
+<section id="avro-files">
+<h2>Avro files<a class="headerlink" href="#avro-files" title="Permalink to this heading">#</a></h2>
+<section id="reading-in-avro-files">
+<h3>Reading in Avro files<a class="headerlink" href="#reading-in-avro-files" title="Permalink to this heading">#</a></h3>
+<p>To read in an Avro file using PySpark, you can use <a class="reference external" href="https://sparkbyexamples.com/spark/read-write-avro-file-spark-dataframe/"><code class="docutils literal notranslate"><span class="pre">spark.read.format(&quot;avro&quot;)</span></code></a>.</p>
+<p>Please note: the Avro section for SparklyR is still under construction.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-11-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button></div><div aria-labelledby="tab-11-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-11-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">animal_rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;avro&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path_avro&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div></div>
+<p>Note that unlike other methods, Spark doesn’t have a built in <code class="docutils literal notranslate"><span class="pre">spark.read.avro()</span></code> method so we need to use a slightly different method to read this in, by first specifying the format as “avro” and then using <code class="docutils literal notranslate"><span class="pre">.load()</span></code> to read in the file. Note that this method would also work for other formats, such as <code class="docutils literal notranslate"><span class="pre">spark.read.format(&quot;parquet&quot;).load(...)</span></code> but is slightly more verbose than the other methods demonstrated.</p>
+</section>
+<section id="writing-out-avro-files">
+<h3>Writing out Avro files<a class="headerlink" href="#writing-out-avro-files" title="Permalink to this heading">#</a></h3>
+<p>To write out an Avro file, you can use <a class="reference external" href="https://sparkbyexamples.com/spark/read-write-avro-file-spark-dataframe/"><code class="docutils literal notranslate"><span class="pre">dataframe.write.format(&quot;avro&quot;).save()</span></code></a>. Note that like the method to read in Avro files, we need to specify the format and then use <code class="docutils literal notranslate"><span class="pre">save</span></code> to specify that we want to save this out.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-12-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button></div><div aria-labelledby="tab-12-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-12-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">animal_rescue</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="s2">&quot;overwrite&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;avro&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;temp_outputs&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;animal_rescue.avro&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<p>Also note that for this method, we pass in the mode as <code class="docutils literal notranslate"><span class="pre">write.mode(&quot;overwrite&quot;)</span></code>.</p>
+<p>While an Avro file has many of the benefits associated with parquet and ORC files, such as being associated with a schema and having built-in compression methods, there is one key difference:
+An Avro file is row-based, not column-based.</p>
+<p>See the section on “Which file type should you use?” for a discussion on row-based formats vs column-based formats.</p>
+</section>
+</section>
+<section id="hive-tables">
+<h2>Hive tables<a class="headerlink" href="#hive-tables" title="Permalink to this heading">#</a></h2>
+<section id="reading-in-hive-tables">
+<h3>Reading in Hive tables<a class="headerlink" href="#reading-in-hive-tables" title="Permalink to this heading">#</a></h3>
+<p>To read in a Hive table, we can use one of the following approaches:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-13-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-13-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-13-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-13-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="c1">#using spark.sql</span>
+<span class="n">animal_rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM train_tmp.animal_rescue&quot;</span><span class="p">)</span>
+
+<span class="c1">#using spark.read.table</span>
+<span class="n">animal_rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="s2">&quot;train_tmp.animal_rescue&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-13-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-13-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_sql</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;SELECT * FROM train_tmp.animal_rescue&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<p>Both of the PySpark methods achieve the same thing - you can use the SQL approach if you want to combine it with additional queries or if you’re more familiar with SQL syntax but the spark.read.table approach will achieve the same end result.</p>
+<p>One thing to note is that we first specify the database name and then the name of the table. This is because Hive tables are stored within databases. This isn’t necessary if you’re already in the correct database - you can specify which database you’re working in by using <a class="reference external" href="https://spark.apache.org/docs/3.0.0-preview/sql-ref-syntax-qry-select-usedb.html"><code class="docutils literal notranslate"><span class="pre">spark.sql(&quot;USE</span> <span class="pre">database_name&quot;)</span></code></a>, so we could also read in the dataset using this code:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-14-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-14-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button></div><div aria-labelledby="tab-14-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-14-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;USE train_tmp&quot;</span><span class="p">)</span>
+<span class="n">animal_rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="s2">&quot;animal_rescue&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="writing-out-a-hive-table">
+<h3>Writing out a Hive table<a class="headerlink" href="#writing-out-a-hive-table" title="Permalink to this heading">#</a></h3>
+<p>To write out a Hive table, we can use <a class="reference external" href="https://sparkbyexamples.com/python/pyspark-save-dataframe-to-hive-table/"><code class="docutils literal notranslate"><span class="pre">dataframe.write.mode('overwrite').saveAsTable()</span></code></a> or <a class="reference external" href="https://rdrr.io/cran/sparklyr/man/spark_write_table.html"><code class="docutils literal notranslate"><span class="pre">spark_write_table</span></code></a> in SparklyR.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-15-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-15-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-15-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-15-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-15-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-15-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">animal_rescue</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="s1">&#39;overwrite&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">saveAsTable</span><span class="p">(</span><span class="s2">&quot;train_tmp.animal_rescue_temp&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-15-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-15-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_write_table</span><span class="p">(</span><span class="n">rescue_df</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;train_tmp.animal_rescue_temp&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;overwrite&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<p>Again, notice that the output format is database.table_name, although, as mentioned above, we don’t need to include the database name if we have ensured we’re working in the correct database using <code class="docutils literal notranslate"><span class="pre">spark.sql(&quot;USE</span> <span class="pre">database_name)</span></code> first.</p>
+<p>In many ways, Hive tables have a lot of the same benefits that a parquet file has, such as the storing of schemas and supporting predicate pushdowns. In fact, a Hive table may consist of parquet files - a parquet file is often the default underlying file structure Spark uses when saving out a Hive table. A Hive table can consist of any of the underlying data formats we’ve discussed in this chapter. The key difference with a Hive table compared to the other data formats is that a Hive table tends to store more detailed metadata.</p>
+</section>
+</section>
+<section id="so-which-file-format-should-i-use">
+<h2>So, which file format should I use?<a class="headerlink" href="#so-which-file-format-should-i-use" title="Permalink to this heading">#</a></h2>
+<p>There are a number of factors to consider when deciding which file format to use.</p>
+<section id="do-i-need-my-data-to-be-human-readable">
+<h3>Do I need my data to be human-readable?<a class="headerlink" href="#do-i-need-my-data-to-be-human-readable" title="Permalink to this heading">#</a></h3>
+<p>Of the file formats discussed in this chapter, only CSV files are human-readable. This means that if you need to look at the data yourself, i.e. for quality assurance purposes, you would need to ensure that your data is in a CSV file. However, CSV files are generally less efficient to read in than other file formats such as parquet or ORC files, particularly if you only require a subset of the available columns.</p>
+<p>It’s also important to note that Spark is a big data solution, so if you’re only working with only a small amount of data that needs to be manually examined by a human, it may be worth reconsidering whether Spark is needed at all - it could be a good idea to read <a class="reference internal" href="when-to-use-spark.html"><span class="doc std std-doc">when to use Spark</span></a>.</p>
+</section>
+<section id="row-based-vs-columnar-based-formats">
+<h3>Row-based vs columnar-based formats<a class="headerlink" href="#row-based-vs-columnar-based-formats" title="Permalink to this heading">#</a></h3>
+<p>Generally, both row-based and columnar-based formats are fine to use with Spark. The benefits of choosing one or the other are highly dependent on downstream processing and would likely result in relatively small improvements in processing speed. For a more in-depth discussion on which types of downstream processing would be more suited to a row-based or a columnar-based file format, <a class="reference external" href="https://www.snowflake.com/trending/avro-vs-parquet">this article</a> may be useful.</p>
+</section>
+<section id="do-you-work-primarily-with-databases-sql">
+<h3>Do you work primarily with databases/SQL?<a class="headerlink" href="#do-you-work-primarily-with-databases-sql" title="Permalink to this heading">#</a></h3>
+<p>If you’re primarily working with databases/tables within databases and SQL, it may be a good idea to use a Hive table. You can use any format as the underlying data format within a Hive table - so it may be worthwhile reviewing the data formats presented in this chapter to decide which format would be most appropriate for your use case.</p>
+</section>
+</section>
+<section id="further-resources">
+<h2>Further resources<a class="headerlink" href="#further-resources" title="Permalink to this heading">#</a></h2>
+<p><a class="reference external" href="https://spark.apache.org/docs/3.2.0/sql-data-sources-load-save-functions.html">Generic Load/Save Functions - Spark 3.4.1 Documentation</a></p>
+<p><a class="reference external" href="https://spark.apache.org/docs/latest/sql-data-sources-csv.html">CSV Files - Spark 3.4.1 Documentation</a></p>
+<p><a class="reference external" href="https://spark.apache.org/docs/latest/sql-data-sources-parquet.html">Parquet Files - Spark 3.4.1 Documentation</a></p>
+<p><a class="reference external" href="https://spark.apache.org/docs/latest/sql-data-sources-orc.html">ORC Files - Spark 3.4.1 Documentation</a></p>
+<p><a class="reference external" href="https://spark.apache.org/docs/latest/sql-data-sources-hive-tables.html">Hive Tables - Spark 3.4.1 Documentation</a></p>
+<p><a class="reference external" href="https://spark.apache.org/docs/latest/sql-data-sources-avro.html">Avro Files - Spark 3.4.1 Documentation</a></p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./spark-overview"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="creating-dataframes.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Creating DataFrames Manually</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="data-storage.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Data Storage</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#csv-files">CSV files</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reading-in-a-csv-file">Reading in a CSV file</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#writing-out-csv-files">Writing out CSV files</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parquet-files">Parquet files</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reading-in-a-parquet-file">Reading in a parquet file</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#writing-out-parquet-files">Writing out parquet files</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimised-row-columnar-orc-files">Optimised Row Columnar (ORC) files</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reading-in-orc-files">Reading in ORC files</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#writing-out-orc-files">Writing out ORC files</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#avro-files">Avro files</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reading-in-avro-files">Reading in Avro files</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#writing-out-avro-files">Writing out Avro files</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hive-tables">Hive tables</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reading-in-hive-tables">Reading in Hive tables</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#writing-out-a-hive-table">Writing out a Hive table</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#so-which-file-format-should-i-use">So, which file format should I use?</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#do-i-need-my-data-to-be-human-readable">Do I need my data to be human-readable?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#row-based-vs-columnar-based-formats">Row-based vs columnar-based formats</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#do-you-work-primarily-with-databases-sql">Do you work primarily with databases/SQL?</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further resources</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Wil Roberts & Adrian Prince
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
