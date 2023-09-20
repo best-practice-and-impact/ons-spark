@@ -13,11 +13,8 @@ discussion of the steps necessary to prepare the data and potential
 issues to consider. We will also show how to access standard errors and
 confidence intervals for inferential analysis and how to assemble these steps into a pipeline.
 
-**Comment about different ordering/process in PySpark vs sparklyr**
-
 ## Preparing the data
 
-**ADD what we we use in PySpark**
 In sparklyr, we will be using the `Spark ML` functions
 `ml_logistic_regression`, `ml_predict` and
 `ml_generalised_linear_regression`. The syntax used to call these
@@ -259,9 +256,7 @@ rescue_cat_indexed.select('is_cat', 'specialservicetypecategory', 'originofcall'
                           'propertycategory', 'serviceIndex', 'callIndex', 
                           'propertyIndex').show(10)
 ```
-````
 
-````{tabs}
 ``` plaintext Python output
 +------+-------------------------------+------------------+-----------------+------------+---------+-------------+
 |is_cat|specialservicetypecategory     |originofcall      |propertycategory |serviceIndex|callIndex|propertyIndex|
@@ -295,9 +290,7 @@ rescue_cat_ohe.select('is_cat', 'specialservicetypecategory', 'originofcall',
                           'propertyVec').show(10)
 
 ```
-````
 
-````{tabs}
 ``` plaintext Python output
 +------+-------------------------------+------------------+-----------------+-------------+-------------+-------------+
 |is_cat|specialservicetypecategory     |originofcall      |propertycategory |serviceVec   |callVec      |propertyVec  |
@@ -356,9 +349,7 @@ model = glr.fit(rescue_cat_final)
 model_output = model.transform(rescue_cat_final)
 model_output.show(10)
 ```
-````
 
-````{tabs}
 ```plaintext Python output
 +-----+--------------------+-------------------+
 |label|            features|         prediction|
@@ -376,8 +367,44 @@ model_output.show(10)
 +-----+--------------------+-------------------+
 ```
 ````
+
+</details>
+
+<details>
+<summary><b>R Explanation</b></summary>
+We can run a logistic regression model in `sparklyr` by using the `ml_logistic_regression` function:
+  
+
+````{tabs}
+```{code-tab} r R 
+  
+# Run the model
+glm_out <- sparklyr::ml_logistic_regression(rescue_cat, 
+                                            formula = "is_cat ~ engine_count + job_hours + hourly_cost + originofcall + propertycategory + specialservicetypecategory")
+```
+````
+
+Where we have specified the variables to be used in the regression using
+the formula syntax
+`target variable ~ predictor1 + predictor2 + predictor3 +...`.
+
+Model predictions can be accessed using `ml_predict`:
+
+````{tabs}
+```{code-tab} r R 
+# Get model predictions
+sparklyr::ml_predict(glm_out) %>% 
+  print(n = 20, width = Inf)
+```
+````
+</details>
+
+
+
+</details>
+
 ## Inferential Analysis 
-The `Spark ML` functions available in PySpark were largely developed
+The `Spark ML` functions available in PySpark and sparklyr were largely developed
 with predictive analysis in mind. This means that they have been built
 primarily to specify a regression model and retrieve the prediction (as we have done above), with little information in between.
 
@@ -386,15 +413,15 @@ predicting unknown outcomes, but instead understanding the relationship
 between the independent variables and the probability of the outcome.
 This is what is referred to as *inferential analysis* in this section.
 
+<details>
+<summary><b>Python Example</b></summary>
 The regression coefficients from the model above can be accessed by applying the `summary` method:
 
 ````{tabs}
 ```{code-tab} py
 model.summary
 ```
-````
 
-````{tabs}
 ``` plaintext Python output
 Coefficients:
              Feature Estimate   Std Error T Value P Value
@@ -469,8 +496,7 @@ full_summary['lower_ci'] = full_summary['coefficients'] - (1.96*full_summary['st
 # View final model summary
 full_summary
 ```
-````
-````{tabs}
+
 ``` plaintext Python output
 +--------------------+--------------------+--------------------+--------------------+--------------------+
 |        coefficients|                name|           std_error|            upper_ci|            lower_ci|
@@ -499,50 +525,10 @@ full_summary
 
 ```
 ````
-
 </details>
 
 <details>
-<summary><b>R Explanation</b></summary>
-We can run a logistic regression model in `sparklyr` by using the `ml_logistic_regression` function:
-  
-
-````{tabs}
-```{code-tab} r R 
-  
-# Run the model
-glm_out <- sparklyr::ml_logistic_regression(rescue_cat, 
-                                            formula = "is_cat ~ engine_count + job_hours + hourly_cost + originofcall + propertycategory + specialservicetypecategory")
-```
-````
-
-Where we have specified the variables to be used in the regression using
-the formula syntax
-`target variable ~ predictor1 + predictor2 + predictor3 +...`.
-
-Model predictions can be accessed using `ml_predict`:
-
-````{tabs}
-```{code-tab} r R 
-# Get model predictions
-sparklyr::ml_predict(glm_out) %>% 
-  print(n = 20, width = Inf)
-```
-````
-
-## Inferential analysis
-
-The `Spark ML` functions available in sparklyr were largely developed
-with predictive analysis in mind. This means that they have been built
-primarily to specify a regression model and retrieve the prediction (as
-                                                                     we have done above), with little information in between.
-
-When conducting analysis at ONS, we are often not interested in
-predicting unknown outcomes, but instead understanding the relationship
-between the independent variables and the probability of the outcome.
-This is what is referred to as *inferential analysis* in this section.
-
-
+<summary><b>R Example</b></summary>
 The regression coefficients from the model above can be displayed by
 using the `tidy` function from the `broom` package:
 
@@ -631,9 +617,8 @@ broom::tidy(glm_out) %>%
                 upper_ci = estimate + (1.96 * std.error))
 ```
 ````
+
 </details>
-
-
 
 
 ## Things to watch out for
@@ -646,7 +631,7 @@ If we were carrying out logistic regression in R using functions such as
 `glm`, these variables would be dropped automatically. However, this is
 not the case in `sparklyr`.
 
-**Investigate this for PySpark**
+**PySpark to be added**
 
 ````{tabs}
 ```{code-tab} r R 
@@ -926,7 +911,8 @@ term                  estimate std.error statistic  p.value lower_ci upper_ci
 </details>
 
 ### Multicollinearity
-**Needs python equivalent adding**
+**Needs pyspark equivalent adding**  
+
 A key assumption of linear and logistic regression models is that the feature columns are independent of one another. Including features that correlate with each other in the model is a clear violation of this assumption, so we need to identify these and remove them to get a valid result.
 
 A useful way of identifying these variables is to generate a correlation matrix of all the the features in the model. This can be done using the `ml_corr` function: 
@@ -1011,7 +997,6 @@ pipe = Pipeline(stages=[serviceIdx, callIdx, propertyIdx,
 
 <details>
 <summary><b>R Example</b></summary>
-### ft_dplyr_transformer
 
 As above, we still need to generate the `is_cat` column from the original data, select our predictors and remove missing values. In order to select our reference categories we can also add the "000_" prefix to these categories at this stage. This step can later be called in the pipeline using the `ft_dplyr_transformer` feature transformer. This function converts `dplyr` code into a SQL feature transformer that can then be used in a pipeline. We will set up the transformation as follows:
 
@@ -1174,7 +1159,7 @@ summary
 You can save a pipeline or pipeline model using the `ml_save` command:
 
 ````{tabs}
-```{code-tabs} r R
+```{code-tab} r R
 # Save pipeline
 ml_save(
   rescue_pipeline,
@@ -1194,7 +1179,7 @@ ml_save(
 They can then be re-loaded using the `ml_load()` command and the re-loaded model can be used to re-fit new data with the same model by supplying the name of the new spark dataframe you wish to fit.
 
 ````{tabs}
-```{code-tabs} r R
+```{code-tab} r R
 # Reload our saved pipeline
 reloaded_pipeline <- ml_load(sc, "rescue_pipeline")
 
