@@ -16,13 +16,6 @@ spark = (SparkSession.builder.master("local[2]")
 with open("../../../config.yaml") as f:
     config = yaml.safe_load(f)
 ```
-````
-
-````{tabs}
-```{code-tab} py
-import os
-os.getcwd()
-```
 
 ```{code-tab} r R
 
@@ -37,13 +30,6 @@ sc <- sparklyr::spark_connect(
 
 config <- yaml::yaml.load_file("ons-spark/config.yaml")
 
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-'/home/cdsw/ons-spark/ons-spark'
 ```
 ````
 ## CSV files
@@ -83,6 +69,36 @@ sparklyr::sdf_schema(rescue_df)
 ````
 
 ````{tabs}
+
+```{code-tab} plaintext Python Output
+root
+ |-- IncidentNumber: string (nullable = true)
+ |-- DateTimeOfCall: string (nullable = true)
+ |-- CalYear: integer (nullable = true)
+ |-- FinYear: string (nullable = true)
+ |-- TypeOfIncident: string (nullable = true)
+ |-- PumpCount: double (nullable = true)
+ |-- PumpHoursTotal: double (nullable = true)
+ |-- HourlyNotionalCost(£): integer (nullable = true)
+ |-- IncidentNotionalCost(£): double (nullable = true)
+ |-- FinalDescription: string (nullable = true)
+ |-- AnimalGroupParent: string (nullable = true)
+ |-- OriginofCall: string (nullable = true)
+ |-- PropertyType: string (nullable = true)
+ |-- PropertyCategory: string (nullable = true)
+ |-- SpecialServiceTypeCategory: string (nullable = true)
+ |-- SpecialServiceType: string (nullable = true)
+ |-- WardCode: string (nullable = true)
+ |-- Ward: string (nullable = true)
+ |-- BoroughCode: string (nullable = true)
+ |-- Borough: string (nullable = true)
+ |-- StnGroundName: string (nullable = true)
+ |-- PostcodeDistrict: string (nullable = true)
+ |-- Easting_m: double (nullable = true)
+ |-- Northing_m: double (nullable = true)
+ |-- Easting_rounded: integer (nullable = true)
+ |-- Northing_rounded: integer (nullable = true)
+```
 
 ```{code-tab} plaintext R Output
 $IncidentNumber
@@ -329,6 +345,14 @@ sparklyr::sdf_schema(rescue_df)
 ````
 
 ````{tabs}
+
+```{code-tab} plaintext Python Output
+root
+ |-- IncidentNumber: string (nullable = true)
+ |-- DateTimeOfCall: timestamp (nullable = true)
+ |-- CalYear: integer (nullable = true)
+ |-- TypeOfIncident: string (nullable = true)
+```
 
 ```{code-tab} plaintext R Output
 $IncidentNumber
