@@ -541,6 +541,8 @@ glm_out <- sparklyr::ml_logistic_regression(rescue_cat,
 # View coefficients
 broom::tidy(glm_out)
 ```
+
+
 ````
 
 This does not provide a lot of information. The `ml_logistic_regression`
@@ -1032,7 +1034,7 @@ rescue_cat <- rescue %>%
 The resulting pipeline stage is produced from the `dplyr` code:
 
 ````{tabs}
-```{code-tabs} r R
+```{code-tab} r R
 ft_dplyr_transformer(sc, rescue_cat)
 ```
 
@@ -1062,7 +1064,7 @@ Unfortunately, in Spark 2.x there is no way of combining multiple string indexer
 The pipeline can be constructed as follows:
 
 ````{tabs}
-```{code-tabs} r R
+```{code-tab} r R
 rescue_pipeline <- ml_pipeline(sc) %>%
   sparklyr::ft_dplyr_transformer(rescue_cat) %>%
   sparklyr::ft_string_indexer(input_col = "specialservicetypecategory", 
