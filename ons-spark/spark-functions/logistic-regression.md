@@ -925,4 +925,298 @@ term                  estimate std.error statistic  p.value lower_ci upper_ci
 ````
 </details>
 
+### Multicollinearity
+**Needs python equivalent adding**
+A key assumption of linear and logistic regression models is that the feature columns are independent of one another. Including features that correlate with each other in the model is a clear violation of this assumption, so we need to identify these and remove them to get a valid result.
 
+A useful way of identifying these variables is to generate a correlation matrix of all the the features in the model. This can be done using the `ml_corr` function: 
+
+````{tabs}
+```{code-tab} r R
+# Get feature column names
+features <- rescue_cat_ohe %>%
+  select(-is_cat) %>%
+  colnames()
+
+# Generate correlation matrix  
+ml_corr(rescue_cat_ohe, columns = features, method = "pearson") %>%
+  print()
+```
+````
+
+Looking closely at the `total_cost` column, we can see that there is very strong correlation between that column and `job_hours`, with a correlation coefficient very close to 1. Additionally, there is quite strong correlation between the `total_cost` column and the `engine_count` column, as well as a moderate correlation with both `hourly_cost` and the "Animal Rescue From Water" category in the `specialservicetypecategory` column. This is to be expected, since if we take a closer look at `total_cost` we can see it always takes a value that is equal to
+`hourly_cost` multiplied by `job_hours`.
+
+````{tabs}
+```{code-tab} r R
+rescue_cat %>%
+  sparklyr::select(job_hours,
+                   hourly_cost,
+                   total_cost) %>%
+  dplyr::arrange(desc(job_hours)) %>%
+  print(n = 30)
+```
+````
+Therefore, we need to remove this feature from our model since it is not independent of other variables. You may also want to remove other variables from the model based on the correlation matrix. For example, there is also quite high correlation between the `job_hours` column and several other features. Deciding on which features to remove from your model may require some experimentation, but in general, a correlation coefficient of >0.7 among two or more predictors indicates multicollinearity and some of these should be removed from the model to ensure validity.
+
+````{tabs}
+```plaintext R output
+# A tibble: 19 × 7
+   term                  estimate std.error statistic  p.value lower_ci upper_ci
+   <chr>                    <dbl>     <dbl>     <dbl>    <dbl>    <dbl>    <dbl>
+ 1 (Intercept)            1.09e+0   3.72e-1   2.92e+0 3.45e- 3  3.59e-1  1.82e+0
+ 2 engine_count          -6.80e-1   2.21e-1  -3.07e+0 2.12e- 3 -1.11e+0 -2.46e-1
+ 3 hourly_cost           -7.07e-4   9.85e-4  -7.18e-1 4.73e- 1 -2.64e-3  1.22e-3
+ 4 specialservicetypeca… -9.95e-1   1.60e-1  -6.22e+0 5.08e-10 -1.31e+0 -6.81e-1
+ 5 specialservicetypeca…  4.23e-1   6.14e-2   6.90e+0 5.18e-12  3.03e-1  5.44e-1
+ 6 specialservicetypeca…  4.46e-1   9.59e-2   4.65e+0 3.32e- 6  2.58e-1  6.34e-1
+ 7 originofcall_Ambulan… -9.67e-1   2.26e-1  -4.28e+0 1.85e- 5 -1.41e+0 -5.24e-1
+ 8 originofcall_Police    6.47e-1   1.55e+0   4.17e-1 6.77e- 1 -2.40e+0  3.69e+0
+ 9 originofcall_Coastgu…  1.34e-1   5.72e-2   2.34e+0 1.94e- 2  2.16e-2  2.46e-1
+10 originofcall_Person … -6.79e-1   3.66e-1  -1.86e+0 6.34e- 2 -1.40e+0  3.79e-2
+11 originofcall_Not Kno… -2.50e+1   3.56e+5  -7.03e-5 1.00e+ 0 -6.98e+5  6.98e+5
+12 originofcall_Person … -2.60e+1   3.56e+5  -7.31e-5 1.00e+ 0 -6.98e+5  6.98e+5
+13 originofcall_Other F… -6.26e-2   1.42e+0  -4.41e-2 9.65e- 1 -2.84e+0  2.72e+0
+14 propertycategory_Out…  2.02e-1   1.47e-1   1.37e+0 1.70e- 1 -8.64e-2  4.90e-1
+15 propertycategory_Roa… -1.43e+0   1.16e-1  -1.24e+1 0        -1.66e+0 -1.20e+0
+16 propertycategory_Non… -7.48e-1   6.77e-2  -1.11e+1 0        -8.81e-1 -6.16e-1
+17 propertycategory_Boat -2.77e-1   4.56e-1  -6.06e-1 5.44e- 1 -1.17e+0  6.17e-1
+18 propertycategory_Out… -9.05e-1   9.21e-2  -9.83e+0 0        -1.09e+0 -7.25e-1
+19 propertycategory_Oth…  7.27e-1   1.42e+0   5.10e-1 6.10e- 1 -2.07e+0  3.52e+0
+```
+````
+
+## Spark ML Pipelines
+
+We can also combine all of the analysis steps outlined above into a single workflow using Spark's ML Pipelines. Data manipulation, feature transformation and modelling can be rewritten into a `pipeline`/`ml_pipeline()` object and saved. The output of this in sparklyr is in Scala code, meaning that it can be added to scheduled Spark ML jobs without any dependencies in R.
+
+Note that in sparklyr, we have not yet found a simple way of generating a summary coefficient table as shown in the sections above when using a pipeline for analysis. Although coefficients, p-values etc. can be obtained it is difficult to map these to the corresponding features for inferential analysis. As a result, pipelines for logistic regression in sparklyr are currently best used for predictive analysis only.
+
+<details>
+<summary><b>Python Example</b></summary>
+
+Note that these tasks haven't actually been carried out yet, we have simply defined what they are so we can call them all in succession later. This can be done by setting up a "pipeline" to call all the tasks we need to carry out the regression one by one:
+
+````{tabs}
+```{code-tab} py
+# Creating the pipeline
+pipe = Pipeline(stages=[serviceIdx, callIdx, propertyIdx,
+                        serviceEncode, callEncode, propertyEncode,
+                        assembler, log_reg])
+```
+````
+
+</details>
+
+
+<details>
+<summary><b>R Example</b></summary>
+### ft_dplyr_transformer
+
+As above, we still need to generate the `is_cat` column from the original data, select our predictors and remove missing values. In order to select our reference categories we can also add the "000_" prefix to these categories at this stage. This step can later be called in the pipeline using the `ft_dplyr_transformer` feature transformer. This function converts `dplyr` code into a SQL feature transformer that can then be used in a pipeline. We will set up the transformation as follows:
+
+````{tabs}
+```{code-tab} r R
+rescue_cat <- rescue %>% 
+# generate is_cat column
+  dplyr::mutate(is_cat = ifelse(animal_group == "Cat", 1, 0)) %>% 
+  sparklyr::select(engine_count, 
+                   hourly_cost, 
+                   originofcall, 
+                   propertycategory,
+                   specialservicetypecategory,
+                   is_cat) %>%
+# ensure numeric columns have the correct type
+  dplyr::mutate(across(c(engine_count, hourly_cost), 
+                   ~as.numeric(.))) %>
+# remove missing values
+  sparklyr::filter(!is.na(engine_count)) %>%
+# select reference categories and ensure they will be ordered last by the indexer
+  dplyr::mutate(specialservicetypecategory = ifelse(specialservicetypecategory == "Other Animal Assistance",
+                         "000_Other Animal Assistance",
+                         specialservicetypecategory)) %>%
+  dplyr::mutate(originofcall = ifelse(originofcall == "Person (mobile)",
+                         "000_Person (mobile)",
+                          originofcall )) %>%
+  dplyr::mutate(propertycategory = ifelse(propertycategory == "Dwelling",
+                         "000_Dwelling",
+                         propertycategory))
+
+```
+````
+The resulting pipeline stage is produced from the `dplyr` code:
+
+````{tabs}
+```{code-tabs} r R
+ft_dplyr_transformer(sc, rescue_cat)
+```
+
+``` plaintext R output
+SQLTransformer (Transformer)
+<dplyr_transformer__694d2090_c856_4d4a_a9f5_e5320b158e38> 
+ (Parameters -- Column Names)
+```
+````
+
+### Creating the Pipeline
+
+Our pipeline will have a total of 9 steps:
+
+1. SQL transformer - resulting from the `ft_dplyr_transformer()` transformation
+2. String indexer for `specialservicetypecategory`
+3. String indexer for `originofcall`
+4. String indexer for `propertycategory`
+5. One hot encoder for `specialservicetypecategory`
+6. One hot encoder for `originofcall` 
+7. One hot encoder for `propertycategory`
+8. Vector assembler - to generate a single `features` column that contains a vector of feature values (`ft_vector_assembler()`)
+9. Logistic regression model
+
+Unfortunately, in Spark 2.x there is no way of combining multiple string indexers or one hot encoders for different columns, so we need a pipeline step for each column we need to index and encode. For Spark 3.x the `ft_one_hot_encoder_estimator()` function can be used in the place of `ft_one_hot_encoder()` which allows the selection of multiple columns. See [here](https://search.r-project.org/CRAN/refmans/sparklyr/html/ft_one_hot_encoder_estimator.html) for further details.
+
+The pipeline can be constructed as follows:
+
+````{tabs}
+```{code-tabs} r R
+rescue_pipeline <- ml_pipeline(sc) %>%
+  sparklyr::ft_dplyr_transformer(rescue_cat) %>%
+  sparklyr::ft_string_indexer(input_col = "specialservicetypecategory", 
+                    output_col = "specialservicetypecategory_idx",
+                    string_order_type = "alphabetDesc") %>% 
+  sparklyr::ft_string_indexer(input_col = "originofcall", 
+                    output_col = "originofcall_idx",
+                    string_order_type = "alphabetDesc") %>%
+  sparklyr::ft_string_indexer(input_col = "propertycategory", 
+                    output_col = "propertycategory_idx",
+                    string_order_type = "alphabetDesc") %>%
+  sparklyr::ft_one_hot_encoder(input_cols = c("specialservicetypecategory_idx"), 
+                     output_cols = c("specialservicetypecategory_ohe"), 
+                     drop_last = TRUE) %>%
+  sparklyr::ft_one_hot_encoder(input_cols = c("originofcall_idx"), 
+                     output_cols = c("originofcall_ohe"), 
+                     drop_last = TRUE) %>%
+  sparklyr::ft_one_hot_encoder(input_cols = c("propertycategory_idx"), 
+                     output_cols = c("propertycategory_ohe"), 
+                     drop_last = TRUE)  %>%
+  sparklyr::ft_vector_assembler(input_cols = c("engine_count", "hourly_cost", "originofcall_ohe", "propertycategory_ohe",
+                                              "specialservicetypecategory_ohe"), 
+                                output_col = "features") %>%
+  ml_generalized_linear_regression(features_col = "features",
+                                   label_col = "is_cat",
+                                   family = "binomial", 
+                                   link = "logit") 
+                                   
+# View the pipeline
+rescue_pipeline
+
+```
+````
+The pipeline can be fitted to the `rescue` dataset by applying `ml_fit()` and predictions can be accessed using `ml_transform()`.
+
+````{tabs}
+```{code-tab} r R
+# Fit the pipeline 
+fitted_pipeline <- ml_fit(rescue_pipeline, rescue)
+
+# View the fitted pipeline - notice output now shows model coeffiecients
+fitted_pipeline
+
+# Get predictions
+predictions <- ml_transform(fitted_pipeline, rescue) 
+```
+````
+It is possible to generate a list of model coefficents, p-values etc. using the `ml_stage` function to access the logistic regression stage of the model, combined with `ml_summary` as we did before. However, it is not easy to map the coefficients to the feature that they correspond to. 
+
+````{tabs}
+```{code-tab} r R
+# Access the logistic regression stage of the pipeline
+model_details <- ml_stage(fitted_pipeline, 'generalized_linear_regression')
+
+# Get coefficients and summary statistics from model
+summary <- tibble(coefficients = c(model_details$intercept, model_details$coefficients), 
+                  std_errors = model_details$summary$coefficient_standard_errors(), 
+                  p_values = model_details$summary$p_values()) %>%
+  dplyr::mutate(lower_ci = coefficients - (1.96 * std_errors),
+                upper_ci = coefficients + (1.96 * std_errors))
+                
+# View the summary
+summary
+
+```
+````
+
+````{tabs}
+``` plaintext R output
+# A tibble: 19 × 5
+   coefficients    std_errors p_values      lower_ci     upper_ci
+          <dbl>         <dbl>    <dbl>         <dbl>        <dbl>
+ 1     1.09          0.372    3.45e- 3       0.359        1.82   
+ 2    -0.680         0.221    2.12e- 3      -1.11        -0.246  
+ 3    -0.000707      0.000985 4.73e- 1      -0.00264      0.00122
+ 4    -0.967         0.226    1.85e- 5      -1.41        -0.524  
+ 5     0.647         1.55     6.77e- 1      -2.40         3.69   
+ 6     0.134         0.0572   1.94e- 2       0.0216       0.246  
+ 7    -0.679         0.366    6.34e- 2      -1.40         0.0379 
+ 8   -25.0      356124.       1.00e+ 0 -698028.      697978.     
+ 9   -26.0      356124.       1.00e+ 0 -698029.      697977.     
+10    -0.0626        1.42     9.65e- 1      -2.84         2.72   
+11     0.202         0.147    1.70e- 1      -0.0864       0.490  
+12    -1.43          0.116    0             -1.66        -1.20   
+13    -0.748         0.0677   0             -0.881       -0.616  
+14    -0.277         0.456    5.44e- 1      -1.17         0.617  
+15    -0.905         0.0921   0             -1.09        -0.725  
+16     0.727         1.42     6.10e- 1      -2.07         3.52   
+17    -0.995         0.160    5.08e-10      -1.31        -0.681  
+18     0.423         0.0614   5.18e-12       0.303        0.544  
+19     0.446         0.0959   3.32e- 6       0.258        0.634  
+```
+````
+You can save a pipeline or pipeline model using the `ml_save` command:
+
+````{tabs}
+```{code-tabs} r R
+# Save pipeline
+ml_save(
+  rescue_pipeline,
+  "rescue_pipeline",
+  overwrite = TRUE
+)
+
+# Save pipeline model
+ml_save(
+  fitted_pipeline,
+  "rescue_model",
+  overwrite = TRUE
+)
+```
+````
+
+They can then be re-loaded using the `ml_load()` command and the re-loaded model can be used to re-fit new data with the same model by supplying the name of the new spark dataframe you wish to fit.
+
+````{tabs}
+```{code-tabs} r R
+# Reload our saved pipeline
+reloaded_pipeline <- ml_load(sc, "rescue_pipeline")
+
+# Re-fit to a subset of rescue data as an example of how pipelines can be re-used
+new_model <- ml_fit(reloaded_pipeline, sample_frac(rescue, 0.1))
+
+```
+````
+</details>
+
+
+## Further resources
+
+Sparklyr and tidyverse documentation:
+  
+- [Spark Machine Learning Library](https://spark.rstudio.com/guides/mlib.html)
+- [Reference - Spark Machine Learning](https://spark.rstudio.com/packages/sparklyr/latest/reference/#spark-machine-learning)
+- [Spark ML Pipelines](https://spark.rstudio.com/guides/pipelines.html)
+- [`broom` documentation](https://broom.tidymodels.org/)
+- [`ml_generalized_linear_regression()`](https://www.rdocumentation.org/packages/sparklyr/versions/1.8.2/topics/ml_generalized_linear_regression)
+- [`ml_logistic_regression`](https://www.rdocumentation.org/packages/sparklyr/versions/0.4/topics/ml_logistic_regression)
+               
+### Acknowledgements
+              
+Thanks to Ted Dolby for providing guidance on logistic regression in sparklyr which was adapted to produce this page.
