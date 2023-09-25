@@ -15,11 +15,9 @@ confidence intervals for inferential analysis and how to assemble these steps in
 
 ## Preparing the data
 
-In sparklyr, we will be using the `Spark ML` functions
-`ml_logistic_regression`, `ml_predict` and
-`ml_generalised_linear_regression`. The syntax used to call these
-functions is somewhat similar to logistic regression functions in R.
-However, there are some additional steps to take in preparing the data
+We will be using the `Spark ML` functions `GeneralizedLinearRegression`/`ml_generalised_linear_regression`. The syntax used to call these
+functions is somewhat similar to logistic regression functions in python or R.
+However, there may be some additional steps to take in preparing the data
 before the model can be run successfully.
 
 We will read the data in as follows:
@@ -153,14 +151,13 @@ dplyr::glimpse(rescue_cat)
 ````
 ### Missing values
 
-You may already be familiar with functions such as `glm` for performing
-logistic regression in R. Many of these functions are quite
+You may already be familiar with functions such as `LogisticRegression` or `glm` for performing
+logistic regression in python and R. Some of these functions are quite
 user-friendly and will automatically account for issues such as missing
 values in the data. However, the `Spark ML` functions in
-`sparklyr`require the user to correct for these issues before running
+PySpark and sparklyr require the user to correct for these issues before running
 the regression functions.
 
-**Check: logistic regression in python - does it do any of this automatically like glm does?**
 
 ````{tabs}
 ```{code-tab} py
@@ -215,10 +212,23 @@ ready to run our logistic regression.
 
 ## Running a logistic regression model
 
+When running a logistic regression model in sparklyr using `ml_generalised_linear_regression`, it is sufficient to prepare the data and deal with missing values as shown above before running the model. The function will automatically encode categorical variables without user input.
+
+However, using the `Spark ML` functions for logistic regression in PySpark requires the user to encode any categorical variables in the dataset so they can be represented numerically before running the regression model. Typically this is done using a method called **one-hot encoding**. One category is selected as the reference category and new columns are created in the data for each of the other
+categories, assigning a 1 or 0 for each row depending on whether that
+entry belongs to that category or not. 
+
+For example, `specialservicetypecategory` has four unique values: Animal
+Rescue From Below Ground, Animal Rescue From Height, Animal Rescue From
+Water, and Other Animal Assistance. If "Animal Rescue From Water" was our reference category, we could create new columns for the other three categories and assign a 0 or 1 for each row depending on which category the individual record belonged to. If an entry was categorised as "Animal Rescue From Water", a 0 would be assigned to all three newly created columns.
+
+This is done implicitly by the `ml_generalised_linear_regression` function in sparklyr, but in PySpark we will need to make use of the `StringIndexer` and `OneHotEncoderEstimator` feature transformers to prepare the data first. Additionally, running the regression model in PySpark requires us to assemble all of the predictor variables into a single `features` column using the `VectorAssembler` feature transformer. 
+
+
 <details>
 <summary><b>Python Explanation</b></summary>
 
-
+First, we will need to encode the categorical variables. This can be done in two stages. The first uses the `StringIndexer` feature trasnformer to 
 Steps:
 - Encode any categorical variables
   - Use `StringIndexer` and `OneHotEncoder` from `pyspark.ml.feature` to deal with each categorical variable individually.
