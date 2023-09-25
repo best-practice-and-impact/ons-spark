@@ -218,23 +218,15 @@ However, using the `Spark ML` functions for logistic regression in PySpark requi
 categories, assigning a 1 or 0 for each row depending on whether that
 entry belongs to that category or not. 
 
-For example, `specialservicetypecategory` has four unique values: Animal
-Rescue From Below Ground, Animal Rescue From Height, Animal Rescue From
-Water, and Other Animal Assistance. If "Animal Rescue From Water" was our reference category, we could create new columns for the other three categories and assign a 0 or 1 for each row depending on which category the individual record belonged to. If an entry was categorised as "Animal Rescue From Water", a 0 would be assigned to all three newly created columns.
-
 This is done implicitly by the `ml_generalised_linear_regression` function in sparklyr, but in PySpark we will need to make use of the `StringIndexer` and `OneHotEncoderEstimator` feature transformers to prepare the data first. Additionally, running the regression model in PySpark requires us to assemble all of the predictor variables into a single `features` column using the `VectorAssembler` feature transformer. 
 
 
 <details>
 <summary><b>Python Explanation</b></summary>
 
-First, we will need to encode the categorical variables. This can be done in two stages. The first uses the `StringIndexer` feature trasnformer to 
-Steps:
-- Encode any categorical variables
-  - Use `StringIndexer` and `OneHotEncoder` from `pyspark.ml.feature` to deal with each categorical variable individually.
-  - **Explanation of what we are doing step by step.**
-  - Then use `VectorAssembler` to assemble all the predictor variables into a single new column that we will call "features"
-  - Run model
+First, we will need to encode the categorical variables. This can be done in two stages. The first uses the `StringIndexer` feature transformer to convert each categorical column into numeric data. It assigns a numerical index to each unique category. By default, it will choose the most frequent category in the data to label first (starting from 0). The next most frequent category will be assigned 1, then 2, and so on. 
+
+Note that the `StringIndexer` does not support multiple input columns so we will have to apply it to each category individually.
   
 ````{tabs}
 ```{code-tab} py
@@ -284,7 +276,7 @@ rescue_cat_indexed.select('is_cat', 'specialservicetypecategory', 'originofcall'
 +------+-------------------------------+------------------+-----------------+------------+---------+-------------+
 ```
 ````
-Next we use `OneHotEncoderEstimator` to perform one-hot encoding. **add explanation from R version in here**. 
+Next we use `OneHotEncoderEstimator` to perform one-hot encoding. This converts each of the categories we have applied the `StringIndexer` to into a vector that indicates which category the record belongs to. 
 
 ````{tabs}
 ```{code-tab} py
@@ -337,14 +329,14 @@ rescue_cat_final = rescue_cat_vectorised.withColumnRenamed("is_cat", "label").se
 ```
 ````
 
-We will use the `GeneralizedLinearRegression` `pyspark.ml` function to carry out our regression. The model can be imported and set up like so: **argument setting **
+We will use the `GeneralizedLinearRegression` `pyspark.ml` function to carry out our regression. The model can be imported and set up like so: 
 
 ````{tabs}
 ```{code-tab} py
 # Import GeneralizedLinearRegression
 from pyspark.ml.regression import GeneralizedLinearRegression
 
-# Define model
+# Define model - specify family and link as shown for logistic regression
 glr = GeneralizedLinearRegression(family="binomial", link="logit")
 ```
 ````
@@ -432,7 +424,7 @@ The regression coefficients from the model above can be accessed by applying the
 model.summary
 ```
 
-``` plaintext Python output
+``` {plaintext} Python output
 Coefficients:
              Feature Estimate   Std Error T Value P Value
          (Intercept) -20.7632  32614.1522 -0.0006  0.9995
@@ -463,10 +455,10 @@ AIC: 7574.9047
 ```
 ````
 
-Unfortunately, this format is not particular user friendly. Additionally, we have not yet found or built functionality in PySpark to calculate exact confidence intervals. Instead, we can approximate the 95% confidence intervals by multiplying the standard errors by 1.96 and
+Unfortunately, we have not yet found or built functionality in PySpark to calculate exact confidence intervals. Instead, we can approximate the 95% confidence intervals by multiplying the standard errors by 1.96 and
 subtract or add this to the estimate. As PySpark regression functions
 are only necessary on datasets with a large number of observations, this
-approximation is sufficient. To do this we will also need to convert the summary above to a more useful format, such as a Pandas dataframe:
+approximation is sufficient. To make it clear which confidence intervals correspond to which features, the example below also shows how to construct a Pandas dataframe from the summary above:
 
 ````{tabs}
 ```{code-tab} py
@@ -507,7 +499,7 @@ full_summary['lower_ci'] = full_summary['coefficients'] - (1.96*full_summary['st
 full_summary
 ```
 
-``` plaintext Python output
+``` {plaintext} Python output
 +--------------------+--------------------+--------------------+--------------------+--------------------+
 |        coefficients|                name|           std_error|            upper_ci|            lower_ci|
 +--------------------+--------------------+--------------------+--------------------+--------------------+
@@ -636,16 +628,28 @@ broom::tidy(glm_out) %>%
 ## Things to watch out for
 
 ### Singularity issue
-We need to be careful to check that variables included in the model take
+Some functions for carrying out logistic regression, such as `glm` when using R, are able to detect when a predictor in the model only takes a singular value and drop these columns from the analysis. However, the equivalent functions in PySpark and sparklyr do not have this functionality, so we need to be careful to check that variables included in the model take
 more than one value in order to avoid errors.
 
-If we were carrying out logistic regression in R using functions such as
-`glm`, these variables would be dropped automatically. However, this is
-not the case in `sparklyr`.
-
-**PySpark to be added**
-
 ````{tabs}
+```{code-tab} py 
+# Add the `typeofincident` categorical column into analysis 
+# Setup column indexing
+incidentIdx = StringIndexer(inputCol='typeofincident',
+                               outputCol='incidentIndex')
+
+# Call the string indexer 
+rescue_cat_singular_indexed = incidentIdx.fit(rescue_cat_indexed).transform(rescue_cat_indexed)
+
+# Setup one-hot encoding
+encoder_singular = OneHotEncoderEstimator(inputCols = ['incidentIndex'], 
+                                 outputCols = ['incidentVec'])
+                      
+# The following returns an error "The input column incidentIndex should have at least two distinct values":
+rescue_cat_singular_ohe = encoder_singular.fit(rescue_cat_singular_indexed).transform(rescue_cat_singular_indexed)
+
+```
+
 ```{code-tab} r R 
 glm_singular <- sparklyr::ml_generalized_linear_regression(rescue_cat, 
                                                  formula = "is_cat ~ typeofincident + engine_count + job_hours + hourly_cost + originofcall + propertycategory + specialservicetypecategory", 
@@ -658,6 +662,7 @@ Running the code above will produce an error since the `typeofincident`
 column only contains one value, `Special Service`. The regression model
 will not run unless `typeofincident` is removed from the formula.
 
+**Check what happens when it is a singular numeric value in PySpark - currently fails at encoding stage**
 
 ### Selecting reference categories
 
