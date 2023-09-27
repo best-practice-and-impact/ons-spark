@@ -1076,14 +1076,141 @@ Note that in sparklyr, we have not yet found a simple way of generating a summar
 <details>
 <summary><b>Python Example</b></summary>
 
-Note that these tasks haven't actually been carried out yet, we have simply defined what they are so we can call them all in succession later. This can be done by setting up a "pipeline" to call all the tasks we need to carry out the regression one by one:
+Note that these tasks haven't actually been carried out yet, we have simply defined what they are so we can call them all in succession later. This can be done by setting up a "pipeline" to call all the tasks we need to carry out the regression one by one. 
+
+As shown above we still need to prepare the data, index categorical variables, encode them, assemble features into a single vector column and run the regression. The data preparation step can be done before setting up the pipeline (in this case we will re-use the `rescue_cat_reindex` dataframe from the Selecting reference categories section of this guide), so our pipeline steps will be as follows:
+
+1. String indexer for `specialservicetypecategory`
+2. String indexer for `originofcall`
+3. String indexer for `propertycategory`
+4. One hot encoder for `specialservicetypecategory`, `originofcall`and `propertycategory`
+5. Vector assembler to generate a single `features` column that contains a vector of features 
+6. Logistic regression model
 
 ````{tabs}
 ```{code-tab} py
+from pyspark.ml import Pipeline
+
+# Rename "is_cat" to "label" before setting up pipeline stages
+rescue_cat_reindex = rescue_cat_reindex.withColumnRenamed("is_cat", "label")
+
+# 1. Indexing the specialservicetypecategory column
+serviceIdx = StringIndexer(inputCol='specialservicetypecategory',
+                               outputCol='serviceIndex', 
+                               stringOrderType = "alphabetDesc")
+
+# 2. Indexing the originofcall column
+callIdx = StringIndexer(inputCol='originofcall',
+                               outputCol='callIndex',
+                               stringOrderType = "alphabetDesc")
+
+# 3. Indexing the propertycategory column
+propertyIdx = StringIndexer(inputCol='propertycategory',
+                               outputCol='propertyIndex', 
+                               stringOrderType = "alphabetDesc")
+
+# 4. One-hot encoding
+encoder = OneHotEncoderEstimator(inputCols = ['serviceIndex', 'callIndex', 'propertyIndex'], 
+                                 outputCols = ['serviceVec', 'callVec', 'propertyVec'])
+
+# 5. Vector assembler
+assembler = VectorAssembler(inputCols=['engine_count', 'hourly_cost', 
+                                       'callVec', 'propertyVec', 'serviceVec'], 
+                           outputCol = "features")
+
+# 6. Regression model
+glr = GeneralizedLinearRegression(family="binomial", link="logit")
+
 # Creating the pipeline
 pipe = Pipeline(stages=[serviceIdx, callIdx, propertyIdx,
-                        serviceEncode, callEncode, propertyEncode,
-                        assembler, log_reg])
+                        encoder, assembler, glr])
+                        
+# View the pipeline stages
+pipe.getStages()
+```
+````
+The pipeline can be fitted to the `rescue_cat_reindex` dataset by fitting the model and predictions can be accessed using `transform`:
+
+````{tabs}
+```{code-tab} py
+fit_model = pipe.fit(rescue_cat_reindex)
+
+# Save model results
+results = fit_model.transform(rescue_cat_reindex)
+  
+# Showing the results
+results.show()
+```
+````
+
+To get the summary table with regression coefficients, we will need to access the regression model stage of the pipeline directly using `stages`:
+
+````{tabs}
+```{code-tab} py
+# Get coefficients summary table
+summary = fit_model.stages[-1].summary
+
+summary
+```
+```{plaintext} Python output
+Coefficients:
+             Feature Estimate   Std Error  T Value P Value
+         (Intercept)   1.0885      0.3722   2.9246  0.0034
+        engine_count  -0.6804      0.2214  -3.0729  0.0021
+         hourly_cost  -0.0007      0.0010  -0.7175  0.4730
+      callVec_Police  -0.9668      0.2257  -4.2829  0.0000
+callVec_Person (r...   0.6470      1.5530   0.4166  0.6770
+callVec_Person (l...   0.1338      0.0572   2.3375  0.0194
+   callVec_Other Frs  -0.6789      0.3657  -1.8565  0.0634
+   callVec_Not Known -25.0264 356123.9993  -0.0001  0.9999
+  callVec_Coastguard -26.0423 356123.9993  -0.0001  0.9999
+   callVec_Ambulance  -0.0626      1.4188  -0.0441  0.9648
+propertyVec_Road ...   0.2017      0.1470   1.3720  0.1701
+propertyVec_Outdo...  -1.4310      0.1159 -12.3504  0.0000
+ propertyVec_Outdoor  -0.7482      0.0677 -11.0556  0.0000
+propertyVec_Other...  -0.2765      0.4561  -0.6062  0.5444
+propertyVec_Non R...  -0.9055      0.0921  -9.8298  0.0000
+    propertyVec_Boat   0.7267      1.4248   0.5100  0.6100
+serviceVec_Animal...  -0.9946      0.1600  -6.2167  0.0000
+serviceVec_Animal...   0.4235      0.0614   6.9004  0.0000
+serviceVec_Animal...   0.4458      0.0959   4.6498  0.0000
+
+(Dispersion parameter for binomial family taken to be 1.0000)
+    Null deviance: 8123.3546 on 5841 degrees of freedom
+Residual deviance: 7535.0784 on 5841 degrees of freedom
+AIC: 7573.0784
+```
+````
+
+The confidence intervals can then be calculated and the summary can be converted into a pandas dataframe as shown in the "Inferential Analysis" section if desired.
+
+You can save a pipeline or pipeline model using the `.write().overwrite().save` command:
+
+````{tabs}
+```{code-tab} py
+# Save pipeline
+
+pipe.write().overwrite().save("rescue_pipeline")
+
+# Save the pipeline model
+
+fit_model.write().overwrite().save("rescue_model")
+
+```
+````
+They can then be re-loaded using the `load()` command and the re-loaded model can be used to re-fit new data with the same model by supplying the name of the new spark dataframe you wish to fit.
+
+````{tabs}
+```{code-tab} py
+# Load saved pipeline
+reloaded_pipeline = Pipeline.load("rescue_pipeline")
+
+# Re-fit to a subset of rescue data as an example of how pipelines can be re-used
+new_model = reloaded_pipeline.fit(rescue_cat_reindex.sample(withReplacement=None,
+                      fraction=0.1, seed = 99))
+                      
+# View new model summary
+new_model.stages[-1].summary
 ```
 ````
 
