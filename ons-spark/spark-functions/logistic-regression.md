@@ -742,7 +742,7 @@ rescue_cat %>%
 ````
 
 ````{tabs}
-``` plaintext Python output
+```{plaintext} Python output
 +-------------------------------+-----+
 |specialservicetypecategory     |count|
 +-------------------------------+-----+
@@ -752,7 +752,7 @@ rescue_cat %>%
 |Other Animal Assistance        |2801 |
 +-------------------------------+-----+
 ```
-``` plaintext R output
+```{plaintext} R output
 # Source:     spark<?> [?? x 2]
 # Ordered by: n
   specialservicetypecategory          n
@@ -986,9 +986,33 @@ term                  estimate std.error statistic  p.value lower_ci upper_ci
 
 A key assumption of linear and logistic regression models is that the feature columns are independent of one another. Including features that correlate with each other in the model is a clear violation of this assumption, so we need to identify these and remove them to get a valid result.
 
-A useful way of identifying these variables is to generate a correlation matrix of all the the features in the model. This can be done using the `ml_corr` function: 
+A useful way of identifying these variables is to generate a correlation matrix of all the the features in the model. This can be done using the `corr` function from the ml subpackage `pyspark.ml.stat` in PySpark, or the `ml_corr` function in sparklyr.
+
+In PySpark, note that the correlation function is only applicable to a vector and not to a dataframe. We will therefore have to apply it to the "features" column of the `rescue_cat_final` dataset produced after the indexing, encoding and vector assembly stages of the model setup.
 
 ````{tabs}
+```{code-tab} py
+from pyspark.ml.stat import Correlation
+
+# Select feature column vector
+features_vector = rescue_cat_final.select("features")
+
+# Generate correlation matrix
+matrix = Correlation.corr(features_vector, "features").collect()[0][0]
+
+# Convert matrix into a useful format
+corr_matrix = matrix.toArray().tolist() 
+
+# Get list of features to assign to matrix columns and indices
+features = pd.DataFrame(merge_list)['name'].values.tolist()
+
+# Final correlation matrix
+corr_matrix_df = pd.DataFrame(data=corr_matrix, columns = features, index = features) 
+
+corr_matrix_df
+
+```
+
 ```{code-tab} r R
 # Get feature column names
 features <- rescue_cat_ohe %>%
