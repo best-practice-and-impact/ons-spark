@@ -982,7 +982,6 @@ term                  estimate std.error statistic  p.value lower_ci upper_ci
 </details>
 
 ### Multicollinearity
-**Needs pyspark equivalent adding**  
 
 A key assumption of linear and logistic regression models is that the feature columns are independent of one another. Including features that correlate with each other in the model is a clear violation of this assumption, so we need to identify these and remove them to get a valid result.
 
@@ -1029,6 +1028,9 @@ Looking closely at the `total_cost` column, we can see that there is very strong
 `hourly_cost` multiplied by `job_hours`.
 
 ````{tabs}
+```{code-tab}py
+rescue_cat.select("job_hours", "hourly_cost", "total_cost").orderBy("job_hours", ascending=False).limit(30).toPandas()
+```
 ```{code-tab} r R
 rescue_cat %>%
   sparklyr::select(job_hours,
@@ -1038,10 +1040,110 @@ rescue_cat %>%
   print(n = 30)
 ```
 ````
-Therefore, we need to remove this feature from our model since it is not independent of other variables. You may also want to remove other variables from the model based on the correlation matrix. For example, there is also quite high correlation between the `job_hours` column and several other features. Deciding on which features to remove from your model may require some experimentation, but in general, a correlation coefficient of >0.7 among two or more predictors indicates multicollinearity and some of these should be removed from the model to ensure validity.
 
 ````{tabs}
-```plaintext R output
+```{plaintext} Python output
+	job_hours	hourly_cost	total_cost
+0	12.0	326.0	3912.0
+1	12.0	290.0	3480.0
+2	10.0	298.0	2980.0
+3	9.0	260.0	2340.0
+4	9.0	260.0	2340.0
+5	9.0	260.0	2340.0
+6	9.0	295.0	2655.0
+7	8.0	260.0	2080.0
+8	8.0	333.0	2664.0
+9	7.0	328.0	2296.0
+10	7.0	260.0	1820.0
+11	7.0	290.0	2030.0
+12	7.0	260.0	1820.0
+13	7.0	290.0	2030.0
+14	7.0	295.0	2065.0
+15	7.0	326.0	2282.0
+16	6.0	298.0	1788.0
+17	6.0	260.0	1560.0
+18	6.0	333.0	1998.0
+19	6.0	260.0	1560.0
+20	6.0	298.0	1788.0
+21	5.0	260.0	1300.0
+22	5.0	260.0	1300.0
+23	5.0	260.0	1300.0
+24	5.0	260.0	1300.0
+25	5.0	260.0	1300.0
+26	5.0	255.0	1275.0
+27	5.0	260.0	1300.0
+28	5.0	260.0	1300.0
+29	5.0	260.0	1300.0
+```
+```{plaintext} R output
+# Source:     spark<?> [?? x 3]
+# Ordered by: desc(job_hours)
+   job_hours hourly_cost total_cost
+       <dbl>       <dbl>      <dbl>
+ 1        12         326       3912
+ 2        12         290       3480
+ 3        10         298       2980
+ 4         9         260       2340
+ 5         9         260       2340
+ 6         9         260       2340
+ 7         9         295       2655
+ 8         8         260       2080
+ 9         8         333       2664
+10         7         328       2296
+11         7         260       1820
+12         7         290       2030
+13         7         260       1820
+14         7         290       2030
+15         7         295       2065
+16         7         326       2282
+17         6         298       1788
+18         6         260       1560
+19         6         333       1998
+20         6         260       1560
+21         6         298       1788
+22         5         260       1300
+23         5         295       1475
+24         5         260       1300
+25         5         255       1275
+26         5         260       1300
+27         5         260       1300
+28         5         260       1300
+29         5         260       1300
+30         5         260       1300
+```
+````
+
+Therefore, we need to drop this feature from our model since it is not independent of other variables. You may also want to remove other variables from the model based on the correlation matrix. For example, there is also quite high correlation between the `job_hours` column and several other features. Deciding on which features to remove from your model may require some experimentation, but in general, a correlation coefficient of >0.7 among two or more predictors indicates multicollinearity and some of these should be removed from the model to ensure validity.
+
+````{tabs}
+```{plaintext} Python output
+Coefficients:
+             Feature Estimate   Std Error  T Value P Value
+         (Intercept)   1.0885      0.3722   2.9246  0.0034
+        engine_count  -0.6804      0.2214  -3.0729  0.0021
+         hourly_cost  -0.0007      0.0010  -0.7175  0.4730
+      callVec_Police  -0.9668      0.2257  -4.2829  0.0000
+callVec_Person (r...   0.6470      1.5530   0.4166  0.6770
+callVec_Person (l...   0.1338      0.0572   2.3375  0.0194
+   callVec_Other Frs  -0.6789      0.3657  -1.8565  0.0634
+   callVec_Not Known -25.0264 356123.9993  -0.0001  0.9999
+  callVec_Coastguard -26.0423 356123.9993  -0.0001  0.9999
+   callVec_Ambulance  -0.0626      1.4188  -0.0441  0.9648
+propertyVec_Road ...   0.2017      0.1470   1.3720  0.1701
+propertyVec_Outdo...  -1.4310      0.1159 -12.3504  0.0000
+ propertyVec_Outdoor  -0.7482      0.0677 -11.0556  0.0000
+propertyVec_Other...  -0.2765      0.4561  -0.6062  0.5444
+propertyVec_Non R...  -0.9055      0.0921  -9.8298  0.0000
+    propertyVec_Boat   0.7267      1.4248   0.5100  0.6100
+serviceVec_Animal...  -0.9946      0.1600  -6.2167  0.0000
+serviceVec_Animal...   0.4235      0.0614   6.9004  0.0000
+serviceVec_Animal...   0.4458      0.0959   4.6498  0.0000
+
+(Dispersion parameter for binomial family taken to be 1.0000)
+    Null deviance: 8123.3546 on 5841 degrees of freedom
+Residual deviance: 7535.0784 on 5841 degrees of freedom
+```
+```{plaintext} R output
 # A tibble: 19 × 7
    term                  estimate std.error statistic  p.value lower_ci upper_ci
    <chr>                    <dbl>     <dbl>     <dbl>    <dbl>    <dbl>    <dbl>
@@ -1414,8 +1516,17 @@ new_model <- ml_fit(reloaded_pipeline, sample_frac(rescue, 0.1))
 
 
 ## Further resources
+**PySpark references and documentation:**
+- [`pyspark.ml` package](https://spark.apache.org/docs/2.3.0/api/python/pyspark.ml.html)
+- [`GeneralizedLinearRegression`](https://spark.apache.org/docs/2.3.0/api/python/pyspark.ml.html#pyspark.ml.regression.GeneralizedLinearRegression)
+- [`Correlation`](https://spark.apache.org/docs/2.3.0/api/python/pyspark.ml.html#pyspark.ml.stat.Correlation)
+- [`Pipeline`](https://spark.apache.org/docs/2.3.0/api/python/pyspark.ml.html#pyspark.ml.Pipeline)
+- [`StringIndexer](https://spark.apache.org/docs/2.3.0/api/python/pyspark.ml.html#pyspark.ml.feature.StringIndexer)
+- [`OneHotEncoder`](https://spark.apache.org/docs/2.3.0/api/python/pyspark.ml.html#pyspark.ml.feature.OneHotEncoder)
+- [`VectorAssembler`](https://spark.apache.org/docs/2.3.0/api/python/pyspark.ml.html#pyspark.ml.feature.VectorAssembler)
 
-Sparklyr and tidyverse documentation:
+
+**Sparklyr references and documentation:**
   
 - [Spark Machine Learning Library](https://spark.rstudio.com/guides/mlib.html)
 - [Reference - Spark Machine Learning](https://spark.rstudio.com/packages/sparklyr/latest/reference/#spark-machine-learning)
@@ -1423,7 +1534,9 @@ Sparklyr and tidyverse documentation:
 - [`broom` documentation](https://broom.tidymodels.org/)
 - [`ml_generalized_linear_regression()`](https://www.rdocumentation.org/packages/sparklyr/versions/1.8.2/topics/ml_generalized_linear_regression)
 - [`ml_logistic_regression`](https://www.rdocumentation.org/packages/sparklyr/versions/0.4/topics/ml_logistic_regression)
-               
+
+
+
 ### Acknowledgements
               
 Thanks to Ted Dolby for providing guidance on logistic regression in sparklyr which was adapted to produce this page.
