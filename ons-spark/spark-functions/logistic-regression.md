@@ -662,6 +662,49 @@ Running the code above will produce an error since the `typeofincident`
 column only contains one value, `Special Service`. The regression model
 will not run unless `typeofincident` is removed from the formula.
 
+Similarly, a column with a singular numeric value will also fail. Although instead of returning an error at the encoding stage, the model will run but be unable to return a summary:
+````{tabs}
+```{code-tab} py
+# Convert typeofincident column into numeric value
+rescue_cat_singular = rescue_cat_ohe.withColumn('typeofincident', F.when(F.col('typeofincident')=="Special Service", 1)
+                               .otherwise(0))
+
+# Setup the vectorassembler to include this variable in the features column
+assembler = VectorAssembler(inputCols=['typeofincident', 'engine_count', 'job_hours', 'hourly_cost', 
+                                       'callVec', 'propertyVec', 'serviceVec'], 
+                           outputCol = "features")
+
+rescue_cat_vectorised_sing = assembler.transform(rescue_cat_singular)
+
+
+rescue_cat_final_sing = rescue_cat_vectorised_sing.withColumnRenamed("is_cat", "label").select("label", "features")
+
+# Run the model
+model_sing = glr.fit(rescue_cat_final_sing)
+
+# Return model summary (will give an error)
+summary_sing = model_sing.summary
+
+```
+```{plaintext} Python output
+Py4JJavaError: An error occurred while calling o1777.toString.
+: java.lang.UnsupportedOperationException: No summary available for this GeneralizedLinearRegressionModel
+	at org.apache.spark.ml.regression.GeneralizedLinearRegressionTrainingSummary.toString(GeneralizedLinearRegression.scala:1571)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:244)
+	at py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:357)
+	at py4j.Gateway.invoke(Gateway.java:282)
+	at py4j.commands.AbstractCommand.invokeMethod(AbstractCommand.java:132)
+	at py4j.commands.CallCommand.execute(CallCommand.java:79)
+	at py4j.GatewayConnection.run(GatewayConnection.java:238)
+	at java.lang.Thread.run(Thread.java:745)
+```
+````
+
+
 **Check what happens when it is a singular numeric value in PySpark - currently fails at encoding stage**
 
 ### Selecting reference categories
