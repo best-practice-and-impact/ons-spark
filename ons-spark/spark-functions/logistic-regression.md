@@ -584,7 +584,7 @@ replacing “coefficient\_standard\_errors” with the statistic of interest
 from the list below:
 
 ````{tabs}
-``` plaintext options
+``` {plaintext} ml_summary options
 GeneralizedLinearRegressionTrainingSummary 
 Access the following via `$` or `ml_summary()`. 
 - aic() 
@@ -631,6 +631,9 @@ broom::tidy(glm_out) %>%
 Some functions for carrying out logistic regression, such as `glm` when using R, are able to detect when a predictor in the model only takes a singular value and drop these columns from the analysis. However, the equivalent functions in PySpark and sparklyr do not have this functionality, so we need to be careful to check that variables included in the model take
 more than one value in order to avoid errors.
 
+<details>
+<summary><b>Python Example</b></summary>
+
 ````{tabs}
 ```{code-tab} py 
 # Add the `typeofincident` categorical column into analysis 
@@ -650,12 +653,7 @@ rescue_cat_singular_ohe = encoder_singular.fit(rescue_cat_singular_indexed).tran
 
 ```
 
-```{code-tab} r R 
-glm_singular <- sparklyr::ml_generalized_linear_regression(rescue_cat, 
-                                                 formula = "is_cat ~ typeofincident + engine_count + job_hours + hourly_cost + originofcall + propertycategory + specialservicetypecategory", 
-                                                 family = "binomial", 
-                                                 link = "logit")
-```
+
 ````
 
 Running the code above will produce an error since the `typeofincident`
@@ -703,9 +701,22 @@ Py4JJavaError: An error occurred while calling o1777.toString.
 	at java.lang.Thread.run(Thread.java:745)
 ```
 ````
+</details>
 
-
-**Check what happens when it is a singular numeric value in PySpark - currently fails at encoding stage**
+<details>
+<summary><b>R Example</b></summary>
+````{tabs}
+```{code-tab} r R 
+glm_singular <- sparklyr::ml_generalized_linear_regression(rescue_cat, 
+                                                 formula = "is_cat ~ typeofincident + engine_count + job_hours + hourly_cost + originofcall + propertycategory + specialservicetypecategory", 
+                                                 family = "binomial", 
+                                                 link = "logit")
+```
+````
+Running the code above will produce an error since the `typeofincident`
+column only contains one value, `Special Service`. The regression model
+will not run unless `typeofincident` is removed from the formula.
+</details>
 
 ### Selecting reference categories
 
