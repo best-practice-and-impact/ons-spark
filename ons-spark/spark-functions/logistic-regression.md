@@ -402,6 +402,7 @@ Model predictions can be accessed using `ml_predict`:
 sparklyr::ml_predict(glm_out) %>% 
   print(n = 20, width = Inf)
 ```
+
 ````
 </details>
 
@@ -678,6 +679,33 @@ broom::tidy(glm_out) %>%
   dplyr::mutate(lower_ci = estimate - (1.96 * std.error),
                 upper_ci = estimate + (1.96 * std.error))
 ```
+```{code-tab} plaintext R output
+# A tibble: 20 × 7
+   term                  estimate std.error statistic  p.value lower_ci upper_ci
+   <chr>                    <dbl>     <dbl>     <dbl>    <dbl>    <dbl>    <dbl>
+ 1 (Intercept)           -2.08e+1   3.26e+4  -6.37e-4 9.99e- 1 -6.39e+4  6.39e+4
+ 2 engine_count          -6.13e-1   2.74e-1  -2.23e+0 2.56e- 2 -1.15e+0 -7.48e-2
+ 3 job_hours             -2.54e-2   6.09e-2  -4.16e-1 6.77e- 1 -1.45e-1  9.41e-2
+ 4 hourly_cost           -7.00e-4   9.85e-4  -7.11e-1 4.77e- 1 -2.63e-3  1.23e-3
+ 5 originofcall_Person …  2.16e+1   3.26e+4   6.61e-4 9.99e- 1 -6.39e+4  6.39e+4
+ 6 originofcall_Person …  2.17e+1   3.26e+4   6.65e-4 9.99e- 1 -6.39e+4  6.39e+4
+ 7 originofcall_Police    2.06e+1   3.26e+4   6.32e-4 9.99e- 1 -6.39e+4  6.39e+4
+ 8 originofcall_Other F…  2.09e+1   3.26e+4   6.41e-4 9.99e- 1 -6.39e+4  6.39e+4
+ 9 originofcall_Person …  2.22e+1   3.26e+4   6.82e-4 9.99e- 1 -6.39e+4  6.39e+4
+10 originofcall_Ambulan…  2.15e+1   3.26e+4   6.59e-4 9.99e- 1 -6.39e+4  6.39e+4
+11 originofcall_Not Kno… -3.42e+0   3.58e+5  -9.55e-6 1.00e+ 0 -7.01e+5  7.01e+5
+12 propertycategory_Dwe… -7.50e-1   1.43e+0  -5.26e-1 5.99e- 1 -3.54e+0  2.04e+0
+13 propertycategory_Out… -1.50e+0   1.42e+0  -1.05e+0 2.94e- 1 -4.29e+0  1.30e+0
+14 propertycategory_Non… -1.65e+0   1.43e+0  -1.16e+0 2.47e- 1 -4.45e+0  1.14e+0
+15 propertycategory_Out… -2.18e+0   1.43e+0  -1.53e+0 1.27e- 1 -4.98e+0  6.21e-1
+16 propertycategory_Roa… -5.47e-1   1.43e+0  -3.82e-1 7.03e- 1 -3.35e+0  2.26e+0
+17 propertycategory_Oth… -1.02e+0   1.50e+0  -6.83e-1 4.95e- 1 -3.95e+0  1.91e+0
+18 specialservicetypeca…  9.95e-1   1.60e-1   6.22e+0 5.12e-10  6.81e-1  1.31e+0
+19 specialservicetypeca…  1.42e+0   1.60e-1   8.84e+0 0         1.10e+0  1.73e+0
+20 specialservicetypeca…  1.44e+0   1.77e-1   8.16e+0 4.44e-16  1.10e+0  1.79e+0
+
+```
+
 ````
 
 </details>
