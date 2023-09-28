@@ -1,11 +1,11 @@
 # Logistic Regression
 
-Logistic regression is often used in predictive analysis. A logistic
+Logistic regression is often used in both predictive and inferential analysis. A logistic
 regression model is trained on a dataset to learn how certain
 independent variables relate to the probability of a binary outcome
-occuring. This model is then applied to cases where the independent
-variables are known, but the outcome is unknown, and the probability of
-the outcome occuring can be estimated.
+occurring. The model is then applied to cases where the independent
+variables are known but the outcome is unknown, and the probability of
+the outcome occurring can be estimated.
 
 This article shows how to use the `Spark ML` functions to generate a
 logistic regression model in PySpark and sparklyr, including a
@@ -20,7 +20,7 @@ functions is somewhat similar to logistic regression functions in python or R.
 However, there may be some additional steps to take in preparing the data
 before the model can be run successfully.
 
-We will read the data in as follows:
+We can read the data in as follows:
 
 ````{tabs}
 ```{code-tab} py 
@@ -66,21 +66,24 @@ library(sparklyr)
 library(dplyr)
 library(broom)
 
+# set up spark session
 sc <- sparklyr::spark_connect(
   master = "local[2]",
   app_name = "logistic-regression",
   config = sparklyr::spark_config())
 
-
+# check connection is open
 sparklyr::spark_connection_is_open(sc)
 
+# read in data
 rescue_path_parquet = "/training/rescue_clean.parquet"
 rescue <- sparklyr::spark_read_parquet(sc, rescue_path_parquet)
+
+# preview data
 dplyr::glimpse(rescue)
 ```
 ````
-Let’s say we want to use the `rescue` data to predict whether an animal
-is a cat or not.
+Let’s say we want to use the `rescue` data to build a logistic regression model that predicts whether an animal is a cat or not. We need to create a new column for our target variable, `is_cat` which takes the value "1" if an animal is a cat, or "0" if it is not a cat. 
 
 ````{tabs}
 ```{code-tab} py
@@ -123,7 +126,7 @@ rescue_cat <- rescue %>%
 dplyr::glimpse(rescue_cat)
 ```
 ````
-Examining the dataset with `printSchema`/`glimpse()`, we can see that a few columns we have selected (such as `engine_count`) are of the type “character” when they should be numeric. We can convert all of these to numeric values by running the following:
+Examining the dataset with `printSchema`/`glimpse()`, we can see that some of the columns we have selected (such as `engine_count`) are of the type “character” when they should be numeric. We can convert all of these to numeric values by running the following:
 
 ````{tabs}
 ```{code-tab} py
@@ -142,17 +145,18 @@ rescue_cat.printSchema
 ```
 ```{code-tab} r R 
 # Convert engine_count, job_hours, hourly_cost, total_cost and incident_duration columns to numeric
-  rescue_cat <- rescue_cat %>% 
-  dplyr::mutate(across(c(engine_count:total_cost, incident_duration), 
-                       ~as.numeric(.)))
+rescue_cat <- rescue_cat %>% 
+dplyr::mutate(across(c(engine_count:total_cost, incident_duration), 
+                    ~as.numeric(.)))
 
+# Check data types are now correct
 dplyr::glimpse(rescue_cat)
 ```
 ````
 ### Missing values
 
 You may already be familiar with functions such as `LogisticRegression` or `glm` for performing
-logistic regression in python and R. Some of these functions are quite
+logistic regression in python and R. Some of these commonly used functions are quite
 user-friendly and will automatically account for issues such as missing
 values in the data. However, the `Spark ML` functions in
 PySpark and sparklyr require the user to correct for these issues before running
@@ -177,7 +181,6 @@ rescue_cat.filter(rescue_cat.total_cost.isNull()).limit(38).toPandas()
 rescue_cat = rescue_cat.na.drop()
 
 # Double check we have no nulls left:
-
 missing_summary = (
     rescue_cat
     .select([F.sum(F.col(c).isNull().cast("int")).alias(c) for c in rescue_cat.columns])
@@ -222,7 +225,8 @@ This is done implicitly by the `ml_generalised_linear_regression` function in sp
 
 
 <details>
-<summary><b>Python Explanation</b></summary>
+<summary><b>Python Example</b></summary>
+
 
 First, we will need to encode the categorical variables. This can be done in two stages. The first uses the `StringIndexer` feature transformer to convert each categorical column into numeric data. It assigns a numerical index to each unique category. By default, it will choose the most frequent category in the data to label first (starting from 0). The next most frequent category will be assigned 1, then 2, and so on. 
 
@@ -259,7 +263,7 @@ rescue_cat_indexed.select('is_cat', 'specialservicetypecategory', 'originofcall'
                           'propertyIndex').show(10)
 ```
 
-``` plaintext Python output
+```{code-tab} plaintext Python output
 +------+-------------------------------+------------------+-----------------+------------+---------+-------------+
 |is_cat|specialservicetypecategory     |originofcall      |propertycategory |serviceIndex|callIndex|propertyIndex|
 +------+-------------------------------+------------------+-----------------+------------+---------+-------------+
@@ -293,7 +297,7 @@ rescue_cat_ohe.select('is_cat', 'specialservicetypecategory', 'originofcall',
 
 ```
 
-``` plaintext Python output
+```{code-tab} plaintext Python output
 +------+-------------------------------+------------------+-----------------+-------------+-------------+-------------+
 |is_cat|specialservicetypecategory     |originofcall      |propertycategory |serviceVec   |callVec      |propertyVec  |
 +------+-------------------------------+------------------+-----------------+-------------+-------------+-------------+
@@ -352,7 +356,7 @@ model_output = model.transform(rescue_cat_final)
 model_output.show(10)
 ```
 
-```plaintext Python output
+```{code-tab} plaintext Python output
 +-----+--------------------+-------------------+
 |label|            features|         prediction|
 +-----+--------------------+-------------------+
@@ -373,7 +377,7 @@ model_output.show(10)
 </details>
 
 <details>
-<summary><b>R Explanation</b></summary>
+<summary><b>R Example</b></summary>
 We can run a logistic regression model in `sparklyr` by using the `ml_logistic_regression` function:
   
 
@@ -424,7 +428,7 @@ The regression coefficients from the model above can be accessed by applying the
 model.summary
 ```
 
-``` {plaintext} Python output
+```{code-tab} plaintext Python output
 Coefficients:
              Feature Estimate   Std Error T Value P Value
          (Intercept) -20.7632  32614.1522 -0.0006  0.9995
@@ -455,10 +459,10 @@ AIC: 7574.9047
 ```
 ````
 
-Unfortunately, we have not yet found or built functionality in PySpark to calculate exact confidence intervals. Instead, we can approximate the 95% confidence intervals by multiplying the standard errors by 1.96 and
+This provides the regression coefficents, standard errors, t-values and p-values for each feature variable. Unfortunately, we have not yet found or built functionality in PySpark to calculate exact confidence intervals. Instead, we can approximate the 95% confidence intervals by multiplying the standard errors by 1.96 and
 subtract or add this to the estimate. As PySpark regression functions
 are only necessary on datasets with a large number of observations, this
-approximation is sufficient. To make it clear which confidence intervals correspond to which features, the example below also shows how to construct a Pandas dataframe from the summary above:
+approximation is sufficient. To make it clear which confidence intervals correspond to which features, the example below also shows how to reconstruct the summary above into a Pandas dataframe that also contains the confidence intervals:
 
 ````{tabs}
 ```{code-tab} py
@@ -499,7 +503,7 @@ full_summary['lower_ci'] = full_summary['coefficients'] - (1.96*full_summary['st
 full_summary
 ```
 
-``` {plaintext} Python output
+```{code-tab} plaintext Python output
 +--------------------+--------------------+--------------------+--------------------+--------------------+
 |        coefficients|                name|           std_error|            upper_ci|            lower_ci|
 +--------------------+--------------------+--------------------+--------------------+--------------------+
@@ -543,8 +547,31 @@ glm_out <- sparklyr::ml_logistic_regression(rescue_cat,
 # View coefficients
 broom::tidy(glm_out)
 ```
-
-
+```{code-tab} plaintext R output
+# A tibble: 20 × 2
+   features                                                   coefficients
+   <chr>                                                             <dbl>
+ 1 (Intercept)                                                   -0.124   
+ 2 engine_count                                                  -0.619   
+ 3 job_hours                                                     -0.0250  
+ 4 hourly_cost                                                   -0.000731
+ 5 originofcall_Person (mobile)                                   1.25    
+ 6 originofcall_Person (land Line)                                1.38    
+ 7 originofcall_Police                                            0.280   
+ 8 originofcall_Other Frs                                         0.573   
+ 9 originofcall_Person (running Call)                             1.91    
+10 originofcall_Ambulance                                         1.18    
+11 originofcall_Not Known                                       -11.3     
+12 propertycategory_Dwelling                                     -1.05    
+13 propertycategory_Outdoor                                      -1.80    
+14 propertycategory_Non Residential                              -1.96    
+15 propertycategory_Outdoor Structure                            -2.49    
+16 propertycategory_Road Vehicle                                 -0.851   
+17 propertycategory_Other Residential                            -1.33    
+18 specialservicetypecategory_Other Animal Assistance             0.995   
+19 specialservicetypecategory_Animal Rescue From Height           1.42    
+20 specialservicetypecategory_Animal Rescue From Below Ground     1.44    
+```
 ````
 
 This does not provide a lot of information. The `ml_logistic_regression`
@@ -568,6 +595,31 @@ glm_out <- sparklyr::ml_generalized_linear_regression(rescue_cat,
 # View a tibble of coefficients, std. error, p-values
 broom::tidy(glm_out)
 ```
+```{code-tab} plaintext R output
+# A tibble: 20 × 5
+   term                                    estimate std.error statistic  p.value
+   <chr>                                      <dbl>     <dbl>     <dbl>    <dbl>
+ 1 (Intercept)                             -2.08e+1   3.26e+4  -6.37e-4 9.99e- 1
+ 2 engine_count                            -6.13e-1   2.74e-1  -2.23e+0 2.56e- 2
+ 3 job_hours                               -2.54e-2   6.09e-2  -4.16e-1 6.77e- 1
+ 4 hourly_cost                             -7.00e-4   9.85e-4  -7.11e-1 4.77e- 1
+ 5 originofcall_Person (mobile)             2.16e+1   3.26e+4   6.61e-4 9.99e- 1
+ 6 originofcall_Person (land Line)          2.17e+1   3.26e+4   6.65e-4 9.99e- 1
+ 7 originofcall_Police                      2.06e+1   3.26e+4   6.32e-4 9.99e- 1
+ 8 originofcall_Other Frs                   2.09e+1   3.26e+4   6.41e-4 9.99e- 1
+ 9 originofcall_Person (running Call)       2.22e+1   3.26e+4   6.82e-4 9.99e- 1
+10 originofcall_Ambulance                   2.15e+1   3.26e+4   6.59e-4 9.99e- 1
+11 originofcall_Not Known                  -3.42e+0   3.58e+5  -9.55e-6 1.00e+ 0
+12 propertycategory_Dwelling               -7.50e-1   1.43e+0  -5.26e-1 5.99e- 1
+13 propertycategory_Outdoor                -1.50e+0   1.42e+0  -1.05e+0 2.94e- 1
+14 propertycategory_Non Residential        -1.65e+0   1.43e+0  -1.16e+0 2.47e- 1
+15 propertycategory_Outdoor Structure      -2.18e+0   1.43e+0  -1.53e+0 1.27e- 1
+16 propertycategory_Road Vehicle           -5.47e-1   1.43e+0  -3.82e-1 7.03e- 1
+17 propertycategory_Other Residential      -1.02e+0   1.50e+0  -6.83e-1 4.95e- 1
+18 specialservicetypecategory_Other Anima…  9.95e-1   1.60e-1   6.22e+0 5.12e-10
+19 specialservicetypecategory_Animal Resc…  1.42e+0   1.60e-1   8.84e+0 0       
+20 specialservicetypecategory_Animal Resc…  1.44e+0   1.77e-1   8.16e+0 4.44e-16
+```
 ````
 
 Individual statistics of interest can also be accessed directly using
@@ -577,6 +629,12 @@ Individual statistics of interest can also be accessed directly using
 ```{code-tab} r R 
 glm_out$summary$coefficient_standard_errors()
 ```
+```{code-tab} plaintext R output
+ [1] 3.261415e+04 2.743932e-01 6.094715e-02 9.849412e-04 3.261415e+04
+ [6] 3.261415e+04 3.261415e+04 3.261415e+04 3.261415e+04 3.261415e+04
+[11] 3.576143e+05 1.425841e+00 1.424476e+00 1.427681e+00 1.429492e+00
+[16] 1.432491e+00 1.495729e+00 1.600082e-01 1.602294e-01 1.765253e-01
+```
 ````
 
 Other statistics can also be accessed individually in this way by
@@ -584,7 +642,7 @@ replacing “coefficient\_standard\_errors” with the statistic of interest
 from the list below:
 
 ````{tabs}
-``` {plaintext} ml_summary options
+```{code-tab} plaintext ml_summary options
 GeneralizedLinearRegressionTrainingSummary 
 Access the following via `$` or `ml_summary()`. 
 - aic() 
@@ -684,7 +742,7 @@ model_sing = glr.fit(rescue_cat_final_sing)
 summary_sing = model_sing.summary
 
 ```
-```{plaintext} Python output
+```{code-tab} plaintext Python output
 Py4JJavaError: An error occurred while calling o1777.toString.
 : java.lang.UnsupportedOperationException: No summary available for this GeneralizedLinearRegressionModel
 	at org.apache.spark.ml.regression.GeneralizedLinearRegressionTrainingSummary.toString(GeneralizedLinearRegression.scala:1571)
@@ -705,6 +763,8 @@ Py4JJavaError: An error occurred while calling o1777.toString.
 
 <details>
 <summary><b>R Example</b></summary>
+
+
 ````{tabs}
 ```{code-tab} r R 
 glm_singular <- sparklyr::ml_generalized_linear_regression(rescue_cat, 
@@ -713,9 +773,13 @@ glm_singular <- sparklyr::ml_generalized_linear_regression(rescue_cat,
                                                  link = "logit")
 ```
 ````
+
+
 Running the code above will produce an error since the `typeofincident`
 column only contains one value, `Special Service`. The regression model
 will not run unless `typeofincident` is removed from the formula.
+
+
 </details>
 
 ### Selecting reference categories
@@ -742,7 +806,7 @@ rescue_cat %>%
 ````
 
 ````{tabs}
-```{plaintext} Python output
+```{code-tab} plaintext Python output
 +-------------------------------+-----+
 |specialservicetypecategory     |count|
 +-------------------------------+-----+
@@ -752,7 +816,7 @@ rescue_cat %>%
 |Other Animal Assistance        |2801 |
 +-------------------------------+-----+
 ```
-```{plaintext} R output
+```{code-tab} plaintext R output
 # Source:     spark<?> [?? x 2]
 # Ordered by: n
   specialservicetypecategory          n
@@ -775,7 +839,7 @@ useful reference point.
 <details>
 <summary><b>Python Example</b></summary>
 
-To do this, we can make use of the additional `stringOrderType` argument for the `StringIndexer` function we used previously to index our categorical variables. This allows us to specify the indexing order. By default, this argument is set to `frequencyDesc`, so "Animal Rescue From Water" would be ordered last and is subsequently dropped by the `OneHotEncoderEstimator` function and set as the reference category. If we want "Other Animal Assistance" to be dropped instead, we need to ensure it is placed last in the indexing order. In this case, specifying `stringOrderType = frequencyAsc` would be sufficient to achieve this. However, to keep this example as general as possible, a convenient way of ensuring any chosen reference category is ordered last is add an appropriate prefix to it, such as "000_", and order the categories in descending alphabetical order (`alphabetDesc`):
+To do this, we can make use of the additional `stringOrderType` argument for the `StringIndexer` function we used previously to index our categorical variables. This allows us to specify the indexing order. By default, this argument is set to `frequencyDesc`, so "Animal Rescue From Water" would be ordered last and is subsequently dropped by the `OneHotEncoderEstimator` function and set as the reference category. If we want "Other Animal Assistance" to be dropped instead, we need to ensure it is placed last in the indexing order. In this case, specifying `stringOrderType = frequencyAsc` would be sufficient to achieve this. However, to keep this example as general as possible, a convenient way of ensuring any chosen reference category is ordered last is to add an appropriate prefix to it, such as "000_", and order the categories in descending alphabetical order (`alphabetDesc`):
 
 ````{tabs}
 ```{code-tab} py
@@ -795,9 +859,9 @@ rescue_cat_reindex = (rescue_cat
 # Check prefix additions 
 rescue_cat_reindex.select('specialservicetypecategory', 'originofcall', 'propertycategory').show(20)
 
-# Use stringOrderType arg of StringIndexer
+# Use stringOrderType argument of StringIndexer
 
-# Re-ndexing the specialservicetypecategory column
+# Re-indexing the specialservicetypecategory column
 serviceIdx = StringIndexer(inputCol='specialservicetypecategory',
                                outputCol='serviceIndex', 
                                stringOrderType = "alphabetDesc")
@@ -825,13 +889,14 @@ coefficients relative to the chosen reference categories:
 
 ````{tabs}
 ```{code-tab} py
+# Encode re-indexed columns
 encoder = OneHotEncoderEstimator(inputCols = ['serviceIndex', 'callIndex', 'propertyIndex'], 
                                  outputCols = ['serviceVec', 'callVec', 'propertyVec'])
 
 rescue_cat_ohe = encoder.fit(rescue_cat_indexed).transform(rescue_cat_indexed)
 
 
-## Next, need to vectorize all our predictors into a new column called "features" which will be our input/features class
+# Vectorize all our predictors into a new column called "features" 
 
 assembler = VectorAssembler(inputCols=['engine_count', 'job_hours', 'hourly_cost', 
                                        'callVec', 'propertyVec', 'serviceVec'], 
@@ -839,7 +904,7 @@ assembler = VectorAssembler(inputCols=['engine_count', 'job_hours', 'hourly_cost
 
 rescue_cat_vectorised = assembler.transform(rescue_cat_ohe)
 
-
+# Rename target variable "is_cat" to "label" ready to run regression model
 rescue_cat_final = rescue_cat_vectorised.withColumnRenamed("is_cat", "label").select("label", "features")
 
 # Run the model again
@@ -849,14 +914,43 @@ model = glr.fit(rescue_cat_final)
 model.summary
 
 ```
+
+```{code-tab} plaintext Python output
+Coefficients:
+             Feature Estimate   Std Error  T Value P Value
+         (Intercept)   1.0466      0.3855   2.7150  0.0066
+        engine_count  -0.6127      0.2744  -2.2328  0.0256
+           job_hours  -0.0254      0.0609  -0.4160  0.6774
+         hourly_cost  -0.0007      0.0010  -0.7110  0.4771
+      callVec_Police  -0.9646      0.2259  -4.2704  0.0000
+callVec_Person (r...   0.6687      1.5616   0.4282  0.6685
+callVec_Person (l...   0.1335      0.0573   2.3311  0.0197
+   callVec_Other Frs  -0.6723      0.3661  -1.8365  0.0663
+   callVec_Not Known -24.9811 356123.9993  -0.0001  0.9999
+  callVec_Coastguard -26.0473 356123.9993  -0.0001  0.9999
+   callVec_Ambulance  -0.0667      1.4188  -0.0470  0.9625
+propertyVec_Road ...   0.2030      0.1470   1.3807  0.1674
+propertyVec_Outdo...  -1.4309      0.1159 -12.3498  0.0000
+ propertyVec_Outdoor  -0.7453      0.0680 -10.9546  0.0000
+propertyVec_Other...  -0.2720      0.4562  -0.5962  0.5511
+propertyVec_Non R...  -0.9041      0.0922  -9.8075  0.0000
+    propertyVec_Boat   0.7497      1.4258   0.5258  0.5990
+serviceVec_Animal...  -0.9945      0.1600  -6.2153  0.0000
+serviceVec_Animal...   0.4227      0.0614   6.8856  0.0000
+serviceVec_Animal...   0.4467      0.0959   4.6581  0.0000
+
+(Dispersion parameter for binomial family taken to be 1.0000)
+    Null deviance: 8123.3546 on 5840 degrees of freedom
+Residual deviance: 7534.9047 on 5840 degrees of freedom
+AIC: 7574.9047
+```
 ````
 </details>
 <details>
 <summary><b>R Example</b></summary>
 
 To do this, we can make use of the one-hot encoding concept and two of
-`sparklyr`’s **Feature Transformers** (`ft_string_indexer` and `ft_one_hot_encoder`) to achieve this. These functions have limited functionality, so we must first manipulate it such that the reference category will be ordered last when using `ft_string_indexer`, and then
-we can drop the last category using `ft_one_hot_encoder`. A convenient way of doing this is to order the categories in *descending alphabetical* order and ensuring that our chosen category will be ordered last by adding an appropriate prefix to it. For example, adding
+`sparklyr`’s **Feature Transformers**; `ft_string_indexer` and `ft_one_hot_encoder`. These have limited functionality, so we must first manipulate it such that the reference category will be ordered last when using `ft_string_indexer`, to ensure that the category ordered last is dropped when applying `ft_one_hot_encoder`. A convenient way of doing this is to order the categories in *descending alphabetical* order and ensuring that our chosen category will be ordered last by adding an appropriate prefix to it. For example, adding
 `000_`:
 
 ````{tabs}
@@ -950,10 +1044,7 @@ broom::tidy(glm_ohe) %>%
   dplyr::mutate(lower_ci = estimate - (1.96 * std.error),
                 upper_ci = estimate + (1.96 * std.error))
 ```
-````
-
-````{tabs}
-``` plaintext R output
+```{code-tab} plaintext R output
 # A tibble: 20 × 7
 term                  estimate std.error statistic  p.value lower_ci upper_ci
 <chr>                    <dbl>     <dbl>     <dbl>    <dbl>    <dbl>    <dbl>
@@ -1028,7 +1119,7 @@ Looking closely at the `total_cost` column, we can see that there is very strong
 `hourly_cost` multiplied by `job_hours`.
 
 ````{tabs}
-```{code-tab}py
+```{code-tab} py
 rescue_cat.select("job_hours", "hourly_cost", "total_cost").orderBy("job_hours", ascending=False).limit(30).toPandas()
 ```
 ```{code-tab} r R
@@ -1042,7 +1133,7 @@ rescue_cat %>%
 ````
 
 ````{tabs}
-```{plaintext} Python output
+```{code-tab} plaintext Python output
 	job_hours	hourly_cost	total_cost
 0	12.0	326.0	3912.0
 1	12.0	290.0	3480.0
@@ -1075,7 +1166,7 @@ rescue_cat %>%
 28	5.0	260.0	1300.0
 29	5.0	260.0	1300.0
 ```
-```{plaintext} R output
+```{code-tab} plaintext R output
 # Source:     spark<?> [?? x 3]
 # Ordered by: desc(job_hours)
    job_hours hourly_cost total_cost
@@ -1116,7 +1207,7 @@ rescue_cat %>%
 Therefore, we need to drop this feature from our model since it is not independent of other variables. You may also want to remove other variables from the model based on the correlation matrix. For example, there is also quite high correlation between the `job_hours` column and several other features. Deciding on which features to remove from your model may require some experimentation, but in general, a correlation coefficient of >0.7 among two or more predictors indicates multicollinearity and some of these should be removed from the model to ensure validity.
 
 ````{tabs}
-```{plaintext} Python output
+```{code-tab} plaintext Python output
 Coefficients:
              Feature Estimate   Std Error  T Value P Value
          (Intercept)   1.0885      0.3722   2.9246  0.0034
@@ -1143,7 +1234,7 @@ serviceVec_Animal...   0.4458      0.0959   4.6498  0.0000
     Null deviance: 8123.3546 on 5841 degrees of freedom
 Residual deviance: 7535.0784 on 5841 degrees of freedom
 ```
-```{plaintext} R output
+```{code-tab} plaintext R output
 # A tibble: 19 × 7
    term                  estimate std.error statistic  p.value lower_ci upper_ci
    <chr>                    <dbl>     <dbl>     <dbl>    <dbl>    <dbl>    <dbl>
@@ -1171,16 +1262,16 @@ Residual deviance: 7535.0784 on 5841 degrees of freedom
 
 ## Spark ML Pipelines
 
-We can also combine all of the analysis steps outlined above into a single workflow using Spark's ML Pipelines. Data manipulation, feature transformation and modelling can be rewritten into a `pipeline`/`ml_pipeline()` object and saved. The output of this in sparklyr is in Scala code, meaning that it can be added to scheduled Spark ML jobs without any dependencies in R.
+We can also combine all of the analysis steps outlined above into a single workflow using Spark's ML Pipelines. Data manipulation, feature transformation and modelling can be rewritten into a `pipeline`/`ml_pipeline()` object and saved. 
 
-Note that in sparklyr, we have not yet found a simple way of generating a summary coefficient table as shown in the sections above when using a pipeline for analysis. Although coefficients, p-values etc. can be obtained it is difficult to map these to the corresponding features for inferential analysis. As a result, pipelines for logistic regression in sparklyr are currently best used for predictive analysis only.
+The output of this in sparklyr is in Scala code, meaning that it can be added to scheduled Spark ML jobs without any dependencies in R. However, it should be noted that we have not yet found a simple way of generating a summary coefficient table as shown in the sections above when using a pipeline for analysis. Although coefficients, p-values etc. can be obtained it is difficult to map these to the corresponding features for inferential analysis. As a result, pipelines for logistic regression in sparklyr are currently best used for predictive analysis only.
+
+PySpark pipelines do not have this problem and we can access the coefficients in a similar way to that shown above even when using a pipeline for analysis.
 
 <details>
 <summary><b>Python Example</b></summary>
 
-Note that these tasks haven't actually been carried out yet, we have simply defined what they are so we can call them all in succession later. This can be done by setting up a "pipeline" to call all the tasks we need to carry out the regression one by one. 
-
-As shown above we still need to prepare the data, index categorical variables, encode them, assemble features into a single vector column and run the regression. The data preparation step can be done before setting up the pipeline (in this case we will re-use the `rescue_cat_reindex` dataframe from the Selecting reference categories section of this guide), so our pipeline steps will be as follows:
+As shown above, we need to prepare the data, index categorical variables, encode them, assemble features into a single vector column and run the regression to perform our analysis. The data preparation step can be done before setting up the pipeline (in this case we will re-use the `rescue_cat_reindex` dataframe from the Selecting reference categories section of this guide as a shortcut), so our pipeline steps will be as follows:
 
 1. String indexer for `specialservicetypecategory`
 2. String indexer for `originofcall`
@@ -1188,6 +1279,8 @@ As shown above we still need to prepare the data, index categorical variables, e
 4. One hot encoder for `specialservicetypecategory`, `originofcall`and `propertycategory`
 5. Vector assembler to generate a single `features` column that contains a vector of features 
 6. Logistic regression model
+
+We will define each of these steps first to assemble the pipeline:
 
 ````{tabs}
 ```{code-tab} py
@@ -1231,7 +1324,7 @@ pipe = Pipeline(stages=[serviceIdx, callIdx, propertyIdx,
 pipe.getStages()
 ```
 ````
-The pipeline can be fitted to the `rescue_cat_reindex` dataset by fitting the model and predictions can be accessed using `transform`:
+The pipeline can be fitted to the `rescue_cat_reindex` dataset by fitting the model (`fit`) and predictions can be accessed using `transform`:
 
 ````{tabs}
 ```{code-tab} py
@@ -1254,7 +1347,7 @@ summary = fit_model.stages[-1].summary
 
 summary
 ```
-```{plaintext} Python output
+```{code-tab} plaintext Python output
 Coefficients:
              Feature Estimate   Std Error  T Value P Value
          (Intercept)   1.0885      0.3722   2.9246  0.0034
@@ -1322,7 +1415,7 @@ new_model.stages[-1].summary
 <details>
 <summary><b>R Example</b></summary>
 
-As above, we still need to generate the `is_cat` column from the original data, select our predictors and remove missing values. In order to select our reference categories we can also add the "000_" prefix to these categories at this stage. This step can later be called in the pipeline using the `ft_dplyr_transformer` feature transformer. This function converts `dplyr` code into a SQL feature transformer that can then be used in a pipeline. We will set up the transformation as follows:
+As above, we still need to generate the `is_cat` column from the original data, select our predictors and remove missing values. In order to select our reference categories we can also add the "000_" prefix to these categories at this stage. All of this data preparation can later be called in the pipeline in a single step using the `ft_dplyr_transformer` feature transformer. This function converts `dplyr` code into a SQL feature transformer that can then be used in a pipeline. We will set up the transformation as follows:
 
 ````{tabs}
 ```{code-tab} r R
@@ -1360,7 +1453,7 @@ The resulting pipeline stage is produced from the `dplyr` code:
 ft_dplyr_transformer(sc, rescue_cat)
 ```
 
-``` plaintext R output
+```{code-tab} plaintext R output
 SQLTransformer (Transformer)
 <dplyr_transformer__694d2090_c856_4d4a_a9f5_e5320b158e38> 
  (Parameters -- Column Names)
@@ -1369,7 +1462,7 @@ SQLTransformer (Transformer)
 
 ### Creating the Pipeline
 
-Our pipeline will have a total of 9 steps:
+Our sparklyr pipeline will have a total of 9 steps:
 
 1. SQL transformer - resulting from the `ft_dplyr_transformer()` transformation
 2. String indexer for `specialservicetypecategory`
@@ -1434,7 +1527,7 @@ fitted_pipeline
 predictions <- ml_transform(fitted_pipeline, rescue) 
 ```
 ````
-It is possible to generate a list of model coefficents, p-values etc. using the `ml_stage` function to access the logistic regression stage of the model, combined with `ml_summary` as we did before. However, it is not easy to map the coefficients to the feature that they correspond to. 
+It is possible to generate a list of model coefficents, p-values etc. using the `ml_stage` function to access the logistic regression stage of the model, combined with `ml_summary` as we did before. However, it is not easy to map the coefficients back to the feature that they correspond to. 
 
 ````{tabs}
 ```{code-tab} r R
@@ -1452,10 +1545,7 @@ summary <- tibble(coefficients = c(model_details$intercept, model_details$coeffi
 summary
 
 ```
-````
-
-````{tabs}
-``` plaintext R output
+```{code-tab} plaintext R output
 # A tibble: 19 × 5
    coefficients    std_errors p_values      lower_ci     upper_ci
           <dbl>         <dbl>    <dbl>         <dbl>        <dbl>
@@ -1521,7 +1611,7 @@ new_model <- ml_fit(reloaded_pipeline, sample_frac(rescue, 0.1))
 - [`GeneralizedLinearRegression`](https://spark.apache.org/docs/2.3.0/api/python/pyspark.ml.html#pyspark.ml.regression.GeneralizedLinearRegression)
 - [`Correlation`](https://spark.apache.org/docs/2.3.0/api/python/pyspark.ml.html#pyspark.ml.stat.Correlation)
 - [`Pipeline`](https://spark.apache.org/docs/2.3.0/api/python/pyspark.ml.html#pyspark.ml.Pipeline)
-- [`StringIndexer](https://spark.apache.org/docs/2.3.0/api/python/pyspark.ml.html#pyspark.ml.feature.StringIndexer)
+- [`StringIndexer`](https://spark.apache.org/docs/2.3.0/api/python/pyspark.ml.html#pyspark.ml.feature.StringIndexer)
 - [`OneHotEncoder`](https://spark.apache.org/docs/2.3.0/api/python/pyspark.ml.html#pyspark.ml.feature.OneHotEncoder)
 - [`VectorAssembler`](https://spark.apache.org/docs/2.3.0/api/python/pyspark.ml.html#pyspark.ml.feature.VectorAssembler)
 
