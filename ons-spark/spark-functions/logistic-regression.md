@@ -31,26 +31,8 @@ import pyspark.sql.functions as F
 
 import pandas as pd
 
-
-#set up small Spark session
-
-""" spark = (
-    SparkSession.builder.appName("pyspark_lab_2")
-    .config("spark.executor.memory", "1g")
-    .config("spark.executor.cores", 1)
-    .config("spark.dynamicAllocation.enabled", "true")
-    .config("spark.dynamicAllocation.maxExecutors", 3)
-    .config("spark.sql.shuffle.partitions", 12)
-    .config("spark.shuffle.service.enabled", "true")
-    .config("spark.ui.showConsoleProgress", "false")
-    .enableHiveSupport()
-    .getOrCreate()
-)
- """
-
 #local session 
-spark = (SparkSession.builder.master("local[2]")
-         .appName("logistic-regression")
+spark = (SparkSession.builder.master("local[2]").appName("logistic-regression").getOrCreate())
 
 # Set the data path
 rescue_path_parquet = '/training/rescue_clean.parquet'
