@@ -87,7 +87,7 @@ rescue_cat = rescue.withColumn('is_cat',
 rescue_cat.limit(20).toPandas()
 
 # Check data types
-rescue_cat.printSchema
+rescue_cat.printSchema()
 ```
 
 ```{code-tab} r R
@@ -122,7 +122,7 @@ rescue_cat = (
 
 
 # Check data types are now correct
-rescue_cat.printSchema
+rescue_cat.printSchema()
 
 ```
 ```{code-tab} r R 
@@ -166,6 +166,7 @@ rescue_cat = rescue_cat.na.drop()
 missing_summary = (
     rescue_cat
     .select([F.sum(F.col(c).isNull().cast("int")).alias(c) for c in rescue_cat.columns])
+    .show(vertical = True)
 )
 ```
 
@@ -205,6 +206,8 @@ entry belongs to that category or not.
 
 This is done implicitly by the `ml_generalised_linear_regression` function in sparklyr, but in PySpark we will need to make use of the `StringIndexer` and `OneHotEncoderEstimator` feature transformers to prepare the data first. Additionally, running the regression model in PySpark requires us to assemble all of the predictor variables into a single `features` column using the `VectorAssembler` feature transformer. 
 
+Note that in Spark 3.X, the `OneHotEncoderEstimator` feature transformer in PySpark has been renamed `OneHotEncoder`, so the PySpark code below will need to be amended accordingly.
+
 
 <details>
 <summary><b>Python Example</b></summary>
@@ -216,8 +219,8 @@ Note that the `StringIndexer` does not support multiple input columns so we will
   
 ````{tabs}
 ```{code-tab} py
-# Importing the required libraries
-from pyspark.ml.feature import VectorAssembler, StringIndexer, OneHotEncoder
+# Importing the required libraries - replace OneHotEncoderEstimator with OneHotEncoder if using Spark >= 3.0
+from pyspark.ml.feature import VectorAssembler, StringIndexer, OneHotEncoderEstimator
 
 ## First we call the StringIndexer separately for each categorical variable
 
@@ -242,7 +245,7 @@ rescue_cat_indexed = propertyIdx.fit(rescue_cat_indexed).transform(rescue_cat_in
 # Check that this has worked correctly
 rescue_cat_indexed.select('is_cat', 'specialservicetypecategory', 'originofcall',
                           'propertycategory', 'serviceIndex', 'callIndex', 
-                          'propertyIndex').show(10)
+                          'propertyIndex').show(10, truncate = False)
 ```
 
 ```{code-tab} plaintext Python output
@@ -267,6 +270,7 @@ Next we use `OneHotEncoderEstimator` to perform one-hot encoding. This converts 
 ````{tabs}
 ```{code-tab} py
 # Apply OneHotEncoderEstimator to each categorical column simultaneously
+# Replace OneHotEncoderEstimator with OneHotEncoder if using Spark >= 3.0
 encoder = OneHotEncoderEstimator(inputCols = ['serviceIndex', 'callIndex', 'propertyIndex'], 
                                  outputCols = ['serviceVec', 'callVec', 'propertyVec'])
 
@@ -275,7 +279,7 @@ rescue_cat_ohe = encoder.fit(rescue_cat_indexed).transform(rescue_cat_indexed)
 # Check that this has worked correctly 
 rescue_cat_ohe.select('is_cat', 'specialservicetypecategory', 'originofcall',
                           'propertycategory', 'serviceVec', 'callVec', 
-                          'propertyVec').show(10)
+                          'propertyVec').show(10, truncate = False)
 
 ```
 
@@ -296,6 +300,7 @@ rescue_cat_ohe.select('is_cat', 'specialservicetypecategory', 'originofcall',
 +------+-------------------------------+------------------+-----------------+-------------+-------------+-------------+
 ```
 ````
+**Note here on what the one hot encoder is doing**
 
 Then, we need to vectorise all our predictors into a new column called "features" which will be our input/features class. We must also rename our target variable column, "is_cat" to "label":
 
@@ -304,7 +309,8 @@ Then, we need to vectorise all our predictors into a new column called "features
 
 # Call 'VectorAssembler' to vectorise all predictor columns in dataset
 assembler = VectorAssembler(inputCols=['engine_count', 'job_hours', 'hourly_cost',
-                                       'callVec', 'propertyVec', 'serviceVec'])
+                                       'callVec', 'propertyVec', 'serviceVec'],
+                            outputCol = "features")
  
 # Apply vectorisation                                      
 rescue_cat_vectorised = assembler.transform(rescue_cat_ohe)
@@ -408,7 +414,11 @@ The regression coefficients from the model above can be accessed by applying the
 
 ````{tabs}
 ```{code-tab} py
-model.summary
+# Get model summary
+summary = model.summary
+
+# Show summary
+summary
 ```
 
 ```{code-tab} plaintext Python output
