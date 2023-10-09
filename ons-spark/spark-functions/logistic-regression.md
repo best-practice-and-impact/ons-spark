@@ -761,6 +761,8 @@ model_sing = glr.fit(rescue_cat_final_sing)
 # Return model summary (will give an error)
 summary_sing = model_sing.summary
 
+summary_sing
+
 ```
 ```{code-tab} plaintext Python output
 Py4JJavaError: An error occurred while calling o1777.toString.
