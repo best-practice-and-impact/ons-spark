@@ -173,7 +173,13 @@ rescue_cat_ohe <- rescue_cat_ohe %>%
 
 
 # remove _idx and _ohe intermediate columns and original data columns
-# also remove 
+# also remove `typeofincident` to avoid singularity error
+rescue_cat_ohe <- rescue_cat_ohe %>% 
+  sparklyr::select(-ends_with(c("_ohe", "_idx")),
+                   -originofcall,
+                   -propertycategory,
+                   -typeofincident)
+
  
 # Run regression with one-hot encoded variables with chosen reference categories
 glm_ohe <- sparklyr::ml_generalized_linear_regression(rescue_cat_ohe, 

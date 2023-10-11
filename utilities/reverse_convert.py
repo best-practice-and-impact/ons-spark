@@ -7,6 +7,9 @@ import nbformat
 # Python code block pattern:  ```{code-tab} py* ```
 # R code block pattern: ```{code-tab} r R * ```
 
+# Base path
+base_path = "/home/cdsw/ons-spark/ons-spark/"
+
 # Book page name
 bpname = "logistic-regression"
 
@@ -14,10 +17,10 @@ bpname = "logistic-regression"
 fname = "spark-functions"
 
 # Path for markdown file
-path_md = "ons-spark\\" + fname + "\\" + bpname + ".md"
+path_md = base_path + fname + "/" + bpname + ".md"
 
 # Output paths
-path_o = "ons-spark\\raw-notebooks\\" + bpname + "\\"
+path_o = base_path + "raw-notebooks/" + bpname + "/"
 
 if(os.path.exists(path_o) == False):
    os.mkdir(path_o)
@@ -27,15 +30,12 @@ path_o_r = path_o + "r_input.R"
 
 # Read in markdown document
 
-if(os.path.exists(path_md)):
-    with open(path_md, encoding="utf8") as f:
-        md_doc = f.read()
-else: 
-    raise ValueError("No path exists")
+with open(path_md, encoding="utf8") as f:
+  md_doc = f.read()
 
 #### Extract Python code blocks and write to notebook
 
-py_regex = r"(?<=\```{code-tab} py)[^\```]+"
+py_regex = r"(?<=```{code-tab} py)[\s\S]+?(?=```)"
 
 py_blocks = re.findall(py_regex, md_doc)
 
@@ -53,7 +53,7 @@ nbformat.write(notebook, path_o_py)
 
 #### Extract R code blocks and write to R file
 
-r_regex = r"(?<=\```{code-tab} r R)[^\```]+"
+r_regex = r"(?<=```{code-tab} r R)[\s\S]+?(?=```)"
 
 r_blocks = re.findall(r_regex, md_doc)
 
