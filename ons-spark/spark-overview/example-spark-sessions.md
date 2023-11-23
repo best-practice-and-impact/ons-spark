@@ -1,20 +1,60 @@
 ## Example Spark Sessions
 
-This document gives some example Spark sessions. For more information on Spark sessions and why you need to be careful with memory usage, please consult the [Guidance on Spark Sessions](../spark-overview/spark-session-guidance) and [Configuration Hierarchy and `spark-defaults.conf`](../spark-overview/spark-defaults).
+This article gives some example Spark sessions, or Spark applications. For more information on Spark sessions and why you need to be careful with memory usage, please consult the [Guidance on Spark Sessions](../spark-overview/spark-session-guidance) and [Configuration Hierarchy and `spark-defaults.conf`](../spark-overview/spark-defaults).
 
 
-Remember to only use a Spark session for as long as you need. It's good etiquette to use [`spark.stop()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.stop.html) (for PySpark) or [`spark_disconnect(sc)`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html) (for sparklyr) in your scripts. Stopping the CDSW or Jupyter Notebook session will also close the Spark session if one is running.
+Remember to only use a Spark session for as long as you need. It's good etiquette to use [`spark.stop()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.stop.html) (for PySpark) or [`spark_disconnect(sc)`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html) (for sparklyr) in your scripts. Stopping the contrainer or Jupyter Notebook session will also close the Spark session if one is running.
 
-### Default/Blank Session
+### Local mode
 
-As a starting point you can create a Spark session with all the default options. This is the bare minimum you need to create a Spark session and will work fine for many DAP users.
+As mentioned at the top of the article on [Guidance on Spark Sessions](../spark-overview/spark-session-guidance) there are two modes to running a Spark application, one is local mode (this example) and the other is cluster mode (all other examples below). Local mode can be used when running a Spark application on a single computer or node.
+
+Details:
+- Utilises resource of a single node or machine
+- This example uses 2 cores
+- Amount of memory used depends on the node or machine
+
+Use case:
+- Developing code using dummy or synthetic data or a small sample of data
+- Writing unit tests
+
+Example of actual usage:
+- Pipeline development using dummy data
+- Throughout this book
+
+````{tabs}
+```{code-tab} py
+from pyspark.sql import SparkSession
+
+spark = (
+    SparkSession.builder.master("local[2]")
+    .appName("local_session")
+    .getOrCreate()
+)
+```
+```{code-tab} r R
+library(sparklyr)
+
+default_config <- sparklyr::spark_config()
+
+sc <- sparklyr::spark_connect(
+  master = "local[2]",
+  app_name = "local-session",
+  config = sparklyr::spark_config())
+```
+````
+
+Note that all dependencies must also be in place to run a Spark application on your laptop, see [Setting up resources section in the Getting Started with Spark](../spark-overview/spark-start.html#setting-up-resources) article for further information.
+
+### Default Session
+
+As a starting point you can create a Spark session with all the default options. This is the bare minimum you need to create a Spark session and will work fine in most cases.
 
 Please use this session by default or if unsure in any way about your resource requirements.
 
-Note that for PySpark, `.config("spark.ui.showConsoleProgress", "false")` is still recommended for use with this session; this will stop the console progress in Spark, which sometimes obscures results from displaying properly.
-
 Details:
 - Will give you the default config options
+- Amount of resource depends on your specific platform
     
 Use case:
 - When unsure of your requirements
