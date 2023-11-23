@@ -1,14 +1,16 @@
 # Checkpoints and Staging Tables
 
-## Checkpoint
-
-### Persisting to disk
+## Persisting to disk
 
 Spark uses lazy evaluation. As we build up many transformations Spark creates an execution plan for the DataFrame and the plan is executed when an action is called. This execution plan represents the DataFrame's lineage.
 
 Sometimes the DataFrame's lineage can grow long and complex, which will slow down the processing and maybe even return an error. However, we can get around this by breaking the lineage.
 
-There is more than one way of breaking the lineage, this is discussed in more detail in the [Persisting](../spark-concepts/persistence) article. In this article we cover a simple method of persisting to disk called checkpointing, which is essentially an out of the box shortcut to a write/read operation.
+There is more than one way of breaking the lineage of a DataFrame, which is discussed in more detail in the [Persisting](../spark-concepts/persistence) section.
+
+## Checkpoint
+
+In this article, we cover a simple method of persisting to disk called checkpointing, which is essentially an out of the box shortcut to a write/read operation.
 
 ### Experiment
 
@@ -836,3 +838,7 @@ Other material:
 
 ```
 ````
+
+```python
+
+```
