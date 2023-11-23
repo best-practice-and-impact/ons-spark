@@ -1,4 +1,4 @@
-
+options(warn = -1)
 library(sparklyr)
 
 default_config <- sparklyr::spark_config()
@@ -10,12 +10,26 @@ sc <- sparklyr::spark_connect(
 
 config <- yaml::yaml.load_file("ons-spark/config.yaml")
 
-rescue <- sparklyr::spark_read_parquet(sc, config$rescue_path)
+rescue <- sparklyr::spark_read_csv(sc, config$rescue_path_csv, header=TRUE, infer_schema=TRUE)
 
-rescue %>% sparklyr::sdf_nrow()
+skewed_df <- sparklyr::sdf_seq(sc,from = 1, to = 1e6) %>%
+          sparklyr::mutate(skew_col = case_when(
+          id <= 100 ~ 'A',
+          id <= 1000 ~ 'B',
+          id <= 10000 ~ 'C',
+          id <= 100000 ~ 'D',
+          .default = 'E'))
+
+skewed_df <- skewed_df %>% sparklyr::sdf_repartition(partition_by = 'skew_col')
+
 
 rescue_sample <- rescue %>% sparklyr::sdf_sample(fraction=0.1, replacement=FALSE)
 rescue_sample %>% sparklyr::sdf_nrow()
+
+print(paste0("Total rows in original DF: ", sparklyr::sdf_nrow(rescue)))
+print(paste0("Total rows in sampled DF: ", sparklyr::sdf_nrow(rescue_sample)))
+print(paste0("Fraction of rows sampled: ", sparklyr::sdf_nrow(rescue_sample)/sparklyr::sdf_nrow(rescue)))
+
 
 
 rescue_sample_seed_1 <- rescue %>% sparklyr::sdf_sample(fraction=0.1, seed=99)
@@ -24,19 +38,58 @@ rescue_sample_seed_2 <- rescue %>% sparklyr::sdf_sample(fraction=0.1, seed=99)
 print(paste0("Seed 1 count: ", rescue_sample_seed_1 %>% sparklyr::sdf_nrow()))
 print(paste0("Seed 2 count: ", rescue_sample_seed_2 %>% sparklyr::sdf_nrow()))
 
+n_rows <- skewed_df %>% sparklyr::sdf_nrow()
+skewed_df %>%
+        dplyr::group_by(skew_col) %>%
+        dplyr::count(skew_col,name = 'row_count') %>%
+        sparklyr::mutate(percentage_of_dataframe = row_count/n_rows*100) %>%
+        sdf_sort('skew_col')
+
+skewed_sample <- skewed_df %>% sparklyr::sdf_sample(fraction= 0.1, replacement= FALSE)
+
+n_rows_sample <- skewed_sample %>% sparklyr::sdf_nrow()
+
+skewed_sample %>%
+        dplyr::group_by(skew_col) %>%
+        dplyr::count(skew_col,name = 'row_count') %>%
+        sparklyr::mutate(percentage_of_dataframe = row_count/n_rows_sample*100) %>%
+        sdf_sort('skew_col')
+
+equal_partitions_df  <- skewed_df %>% sparklyr::sdf_repartition(20)
+
+equal_partitions_sample <- equal_partitions_df %>% sparklyr::sdf_sample(fraction= 0.1, replacement= FALSE)
+
+n_rows_sample_equal <- equal_partitions_sample %>% sparklyr::sdf_nrow()
+
+equal_partitions_sample %>%
+        dplyr::group_by(skew_col) %>%
+        dplyr::count(skew_col,name = 'row_count') %>%
+        sparklyr::mutate(percentage_of_dataframe = row_count/n_rows_sample_equal*100) %>%
+        sdf_sort('skew_col')
+
+replacement_sample = rescue %>% sparklyr::sdf_sample(fraction=0.1, replacement=TRUE, seed = 20)
+replacement_sample %>% sparklyr::sdf_nrow()
+
+replacement_sample %>%
+    dplyr::group_by(IncidentNumber) %>%
+    dplyr::count(IncidentNumber)%>%
+    dplyr::arrange(desc(n))
+
 fraction <- 0.1
 row_count <- round(sparklyr::sdf_nrow(rescue) * fraction)
 row_count
+
 
 rescue %>%
     sparklyr::mutate(rand_no = rand()) %>%
     dplyr::arrange(rand_no) %>%
     head(row_count) %>%
-    sparklyr::select(-rand_no) %>%
+    sparklyr::select(rand_no) %>%
     sparklyr::sdf_nrow()
 
+
 rescue %>%
-    sparklyr::filter(cal_year == 2012 | cal_year == 2017) %>%
+    sparklyr::filter(CalYear == 2012 | CalYear == 2017) %>%
     sparklyr::sdf_nrow()
 
 splits <- rescue %>% sparklyr::sdf_random_split(
@@ -53,3 +106,17 @@ print(paste0("Split count total: ",
              sparklyr::sdf_nrow(splits$split1) +
              sparklyr::sdf_nrow(splits$split2) +
              sparklyr::sdf_nrow(splits$split3)))
+
+rescue_id <- rescue %>% sparklyr::sdf_repartition(20)
+
+rescue_id <- rescue_id %>%
+                  sparklyr::sdf_with_unique_id(id = "id") %>%
+                  sparklyr::mutate(group_number = id%%3)
+
+rescue_subsample_1 <- rescue_id %>% filter(group_number == 0)
+rescue_subsample_2 <- rescue_id %>% filter(group_number == 1)
+rescue_subsample_3 <- rescue_id %>% filter(group_number == 2)
+
+cat(rescue_subsample_1 %>% sparklyr::sdf_nrow(),
+rescue_subsample_2 %>% sparklyr::sdf_nrow(),
+rescue_subsample_3 %>% sparklyr::sdf_nrow())
