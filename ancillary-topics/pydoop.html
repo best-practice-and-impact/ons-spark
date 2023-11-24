@@ -7,7 +7,7 @@
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Pydoop: HDFS to pandas &#8212; Spark at the ONS</title>
   
@@ -19,12 +19,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -40,12 +40,14 @@
     <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
@@ -56,7 +58,7 @@
     <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../_static/design-tabs.js"></script>
-    <script loading_method="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
     <script>
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){ dataLayer.push(arguments); }
@@ -69,6 +71,7 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'ancillary-topics/pydoop';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Pandas UDFs" href="pandas-udfs.html" />
@@ -83,6 +86,15 @@ const thebe_selector_output = ".output, .cell_output"
   
   
   <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
   
   <input type="checkbox"
           class="sidebar-toggle"
@@ -143,13 +155,14 @@ const thebe_selector_output = ".output, .cell_output"
   
   
   
+  
     
     
       
     
     
-    <img src="../_static/logo.png" class="logo__image only-light" alt="Logo image"/>
-    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Spark at the ONS - Home"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="Spark at the ONS - Home"/>`);</script>
   
   
 </a></div>
@@ -383,10 +396,10 @@ const thebe_selector_output = ".output, .cell_output"
 
 <script>
 document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
   </button>
 `);
 </script>
@@ -394,7 +407,7 @@ document.write(`
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
 </script>
@@ -443,13 +456,13 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section id="pydoop-hdfs-to-pandas">
-<h1>Pydoop: HDFS to pandas<a class="headerlink" href="#pydoop-hdfs-to-pandas" title="Permalink to this headline">#</a></h1>
+<h1>Pydoop: HDFS to pandas<a class="headerlink" href="#pydoop-hdfs-to-pandas" title="Permalink to this heading">#</a></h1>
 <p>The usual way to interact with data stored in the Hadoop Distributed File System (HDFS) is to use Spark.</p>
 <p>Some datasets are small enough that they can be easily handled with pandas. One method is to start a Spark session, read in the data as PySpark DataFrame with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameReader.csv.html"><code class="docutils literal notranslate"><span class="pre">spark.read.csv()</span></code></a>, then convert to a pandas DataFrame with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.toPandas.html"><code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code></a>.</p>
 <p>The <a class="reference external" href="https://crs4.github.io/pydoop/">Pydoop</a>
 package allows you to bypass Spark and read in the data directly to a pandas DataFrame. Remember that your data will have to be able to fit into the driver memory, so do not use this for big datasets. Guidance on when to use Spark and when to consider alternatives is in the <a class="reference internal" href="../spark-overview/when-to-use-spark.html"><span class="doc std std-doc">When To Use Spark</span></a> article.</p>
 <section id="pydoop-setup">
-<h2>Pydoop Setup<a class="headerlink" href="#pydoop-setup" title="Permalink to this headline">#</a></h2>
+<h2>Pydoop Setup<a class="headerlink" href="#pydoop-setup" title="Permalink to this heading">#</a></h2>
 <p>Pydoop can be installed in the same way as any other package, e.g. with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pydoop</span></code>. If using CDSW you need to use <code class="docutils literal notranslate"><span class="pre">pip3</span> <span class="pre">install</span></code> to ensure that Python 3 is being used.</p>
 <p>Then import <code class="docutils literal notranslate"><span class="pre">hdfs</span></code> from Pydoop, as well as pandas; note that PySpark is not being imported:</p>
 <div class="cell docutils container">
@@ -462,7 +475,7 @@ package allows you to bypass Spark and read in the data directly to a pandas Dat
 </div>
 </section>
 <section id="reading-files">
-<h2>Reading files<a class="headerlink" href="#reading-files" title="Permalink to this headline">#</a></h2>
+<h2>Reading files<a class="headerlink" href="#reading-files" title="Permalink to this heading">#</a></h2>
 <p>This example will use a CSV stored in the ONS training area on HDFS. You can read in other file types that are supported by pandas, e.g. <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_json.html">json</a> or <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_excel.html">Excel</a>.</p>
 <p>Reading in the data is then a two stage process; first open the file with <code class="docutils literal notranslate"><span class="pre">hdfs.open()</span></code>, then read in as a pandas DataFrame with <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html"><code class="docutils literal notranslate"><span class="pre">pd.read_csv()</span></code></a>. If a <code class="docutils literal notranslate"><span class="pre">with</span></code> statement is used you do not need to explicitly close the file with <code class="docutils literal notranslate"><span class="pre">f.close()</span></code>.</p>
 <div class="cell docutils container">
@@ -568,7 +581,7 @@ package allows you to bypass Spark and read in the data directly to a pandas Dat
 </div>
 </section>
 <section id="writing-files">
-<h2>Writing files<a class="headerlink" href="#writing-files" title="Permalink to this headline">#</a></h2>
+<h2>Writing files<a class="headerlink" href="#writing-files" title="Permalink to this heading">#</a></h2>
 <p>You can write files with Pydoop in a similar way to reading them. One advantage of this is that the CSV will be written as one file, whereas using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameWriter.csv.html"><code class="docutils literal notranslate"><span class="pre">df.write.csv()</span></code></a> in PySpark will <a class="reference internal" href="../spark-functions/writing-data.html"><span class="doc std std-doc">write out a partitioned CSV</span></a>.</p>
 <p>Another difference is that CSV files from pandas will have an index written by default, which you may want to remove.</p>
 <p>First of all, get the path to write out to; e.g. if using the ONS development and testing environment the following code will get a path to your own user area on HDFS:</p>
@@ -593,10 +606,10 @@ package allows you to bypass Spark and read in the data directly to a pandas Dat
 <p>The file will now be stored on HDFS; to check you can read it in, or open it using a user interface such as Hadoop User Experience (HUE).</p>
 </section>
 <section id="other-useful-functions">
-<h2>Other Useful Functions<a class="headerlink" href="#other-useful-functions" title="Permalink to this headline">#</a></h2>
+<h2>Other Useful Functions<a class="headerlink" href="#other-useful-functions" title="Permalink to this heading">#</a></h2>
 <p>Pydoop has lots of functions; see the <a class="reference external" href="https://crs4.github.io/pydoop/index.html">documentation</a> for a full list. A couple of examples are given below.</p>
 <section id="isfile-isdir-and-ls-see-if-a-file-directory-exists-and-list-files">
-<h3><code class="docutils literal notranslate"><span class="pre">isfile()</span></code>, <code class="docutils literal notranslate"><span class="pre">isdir()</span></code> and <code class="docutils literal notranslate"><span class="pre">ls()</span></code>: See if a file/directory exists and list files<a class="headerlink" href="#isfile-isdir-and-ls-see-if-a-file-directory-exists-and-list-files" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">isfile()</span></code>, <code class="docutils literal notranslate"><span class="pre">isdir()</span></code> and <code class="docutils literal notranslate"><span class="pre">ls()</span></code>: See if a file/directory exists and list files<a class="headerlink" href="#isfile-isdir-and-ls-see-if-a-file-directory-exists-and-list-files" title="Permalink to this heading">#</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">hdfs.path.isdir(dir_path)</span></code> will return <code class="docutils literal notranslate"><span class="pre">True</span></code> if a file exists:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -627,7 +640,7 @@ package allows you to bypass Spark and read in the data directly to a pandas Dat
 <p><code class="docutils literal notranslate"><span class="pre">ls()</span></code> lists files in the specified directory. You may be familiar with the this command from Unix.</p>
 </section>
 <section id="getsize-file-size-in-bytes">
-<h3><code class="docutils literal notranslate"><span class="pre">getsize()</span></code>: File size in bytes<a class="headerlink" href="#getsize-file-size-in-bytes" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getsize()</span></code>: File size in bytes<a class="headerlink" href="#getsize-file-size-in-bytes" title="Permalink to this heading">#</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">getsize()</span></code> returns the file size in bytes. For large files, bytes are often not a practical unit to use so you may want to divide it to get it in KB or MB:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -666,13 +679,13 @@ package allows you to bypass Spark and read in the data directly to a pandas Dat
 </section>
 </section>
 <section id="limitations">
-<h2>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">#</a></h2>
+<h2>Limitations<a class="headerlink" href="#limitations" title="Permalink to this heading">#</a></h2>
 <p>Remember that your pandas DataFrame is stored in the driver memory, rather than the Spark cluster, so some larger datasets are not able to be read in in this way. You can read in the data using <code class="docutils literal notranslate"><span class="pre">spark.read.csv()</span></code> and then subset the data by filtering or <a class="reference internal" href="../spark-functions/sampling.html"><span class="doc std std-doc">taking a sample</span></a> first, then converting to pandas with <code class="docutils literal notranslate"><span class="pre">.toPandas()</span></code>.</p>
 <p>CSV files that are saved from PySpark will often be partitioned, so to use this method you would have to write a loop that reads in all the files in the directory, so in this case you may prefer to read and convert with PySpark first.</p>
 <p>This method works for reading in files from a directory on HDFS, but not for Hive tables. In theory you can read the underlying parquet files but it is much easier just to read in using PySpark using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameReader.table.html"><code class="docutils literal notranslate"><span class="pre">spark.read.table()</span></code></a> then convert with <code class="docutils literal notranslate"><span class="pre">.toPandas</span></code>.</p>
 </section>
 <section id="further-resources">
-<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">#</a></h2>
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this heading">#</a></h2>
 <p>Spark at the ONS Articles:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../spark-overview/when-to-use-spark.html"><span class="doc std std-doc">When To Use Spark</span></a></p></li>
@@ -728,11 +741,10 @@ package allows you to bypass Spark and read in the data directly to a pandas Dat
 
               
               
-                <footer class="bd-footer-article">
-                  
-<div class="footer-article-items footer-article__inner">
-  
-    <div class="footer-article-item"><!-- Previous / next buttons -->
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
        href="module-imports.html"
@@ -752,10 +764,7 @@ package allows you to bypass Spark and read in the data directly to a pandas Dat
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
-</div></div>
-  
 </div>
-
                 </footer>
               
             </div>
@@ -820,8 +829,8 @@ By Wil Roberts & Adrian Prince
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
 
   <footer class="bd-footer">
   </footer>
