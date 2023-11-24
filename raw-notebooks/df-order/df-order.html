@@ -7,7 +7,7 @@
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Spark DataFrames Are Not Ordered &#8212; Spark at the ONS</title>
   
@@ -19,12 +19,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
 
   
-  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -40,12 +40,14 @@
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
+  <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
 
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
@@ -56,7 +58,7 @@
     <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../_static/design-tabs.js"></script>
-    <script loading_method="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
     <script>
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){ dataLayer.push(arguments); }
@@ -69,6 +71,7 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'raw-notebooks/df-order/df-order';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -81,6 +84,15 @@ const thebe_selector_output = ".output, .cell_output"
   
   
   <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
   
   <input type="checkbox"
           class="sidebar-toggle"
@@ -141,13 +153,14 @@ const thebe_selector_output = ".output, .cell_output"
   
   
   
+  
     
     
       
     
     
-    <img src="../../_static/logo.png" class="logo__image only-light" alt="Logo image"/>
-    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="Spark at the ONS - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="Spark at the ONS - Home"/>`);</script>
   
   
 </a></div>
@@ -381,10 +394,10 @@ const thebe_selector_output = ".output, .cell_output"
 
 <script>
 document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
   </button>
 `);
 </script>
@@ -392,7 +405,7 @@ document.write(`
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
 </script>
@@ -437,11 +450,11 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section id="spark-dataframes-are-not-ordered">
-<h1>Spark DataFrames Are Not Ordered<a class="headerlink" href="#spark-dataframes-are-not-ordered" title="Permalink to this headline">#</a></h1>
+<h1>Spark DataFrames Are Not Ordered<a class="headerlink" href="#spark-dataframes-are-not-ordered" title="Permalink to this heading">#</a></h1>
 <p>Spark DataFrames do not have the order preserved in the same way as pandas or base R DataFrames. Subsetting a pandas or R DataFrame, e.g. with <code class="docutils literal notranslate"><span class="pre">head()</span></code>, will always return identical rows, whereas the rows returned may be different when subsetting PySpark or sparklyr DFs, e.g with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.show.html"><code class="docutils literal notranslate"><span class="pre">.show()</span></code></a> or <code class="docutils literal notranslate"><span class="pre">head()</span></code>.</p>
 <p>The reason for this is that Spark DataFrames are distributed across partitions. Some operations, such as joining, grouping or sorting, cause data to be moved between <span class="xref myst">partitions</span>, known as a <span class="xref myst"><em>shuffle</em></span>. Running the exact same Spark code can result in different data being on different partitions, as well as a different order within each partition.</p>
 <section id="why-spark-dfs-are-not-ordered">
-<h2>Why Spark DFs are not ordered<a class="headerlink" href="#why-spark-dfs-are-not-ordered" title="Permalink to this headline">#</a></h2>
+<h2>Why Spark DFs are not ordered<a class="headerlink" href="#why-spark-dfs-are-not-ordered" title="Permalink to this heading">#</a></h2>
 <p>The lack of an order in a Spark DataFrame is due to two related concepts: partitioning and lazy evaluation.</p>
 <p>A Spark DataFrame is distributed across partitions on the Spark cluster, rather than being one complete object stored in the driver memory. Executing an identical Spark plan can result in the same rows going to different partitions. Within these partitions, the rows can also be in a different order.</p>
 <p>The lazy evaluation will cause the DataFrame to be re-evaluated each time an action is called. Spark will only do the minimum required to return the result of the action specified, e.g. subsetting and previewing the data with <code class="docutils literal notranslate"><span class="pre">.show()</span></code>/<code class="docutils literal notranslate"><span class="pre">head()</span> <span class="pre">%&gt;%</span> </code> <a class="reference external" href="https://dplyr.tidyverse.org/reference/compute.html"><code class="docutils literal notranslate"><span class="pre">collect()</span></code></a> may not require evaluation of the whole DataFrame (this can be demonstrated when using <span class="xref myst">caching</span>, as the cache may only be partially filled with these operations). As such, if no order is specified then the data may be returned in a different order, despite the Spark plan being identical. If the data is being subset in a non-specific way, e.g. with <code class="docutils literal notranslate"><span class="pre">.show()</span></code>/<code class="docutils literal notranslate"><span class="pre">head()</span> <span class="pre">%&gt;%</span> <span class="pre">collect()</span></code>, then different rows may be returned.</p>
@@ -449,11 +462,11 @@ document.write(`
 <p>The main lesson from this is that if you want to rely on the order of a Spark DataFrame, you need to <span class="xref myst">explicitly specify the order</span>; this may involve using a column as a tie-breaker (e.g. a key column such as an ID, which is unique).</p>
 </section>
 <section id="does-the-order-really-matter">
-<h2>Does the order really matter?<a class="headerlink" href="#does-the-order-really-matter" title="Permalink to this headline">#</a></h2>
+<h2>Does the order really matter?<a class="headerlink" href="#does-the-order-really-matter" title="Permalink to this heading">#</a></h2>
 <p>Before looking at examples, it is worth remembering that often the order of the data does not matter. Ordering data in Spark is an expensive operation as it requires a <span class="xref myst">shuffle of the data</span>, so try to avoid sorting if you can. You may want to aim for only ordering the data when <span class="xref myst">writing out final results</span> (e.g. to a CSV if you need the result to be human readable).</p>
 </section>
 <section id="an-example-different-order-within-same-partition">
-<h2>An example: different order within same partition<a class="headerlink" href="#an-example-different-order-within-same-partition" title="Permalink to this headline">#</a></h2>
+<h2>An example: different order within same partition<a class="headerlink" href="#an-example-different-order-within-same-partition" title="Permalink to this heading">#</a></h2>
 <p>First, create a new Spark session and a small DataFrame; this example uses the winners of the Six Nations rugby union tournament:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -612,7 +625,7 @@ only showing top 5 rows
 <p>Note that if you run the code again, you may get different results.</p>
 </section>
 <section id="another-example-different-partition-id">
-<h2>Another example: different <code class="docutils literal notranslate"><span class="pre">partition_id</span></code><a class="headerlink" href="#another-example-different-partition-id" title="Permalink to this headline">#</a></h2>
+<h2>Another example: different <code class="docutils literal notranslate"><span class="pre">partition_id</span></code><a class="headerlink" href="#another-example-different-partition-id" title="Permalink to this heading">#</a></h2>
 <p>During a shuffle the data can be sent to different partitions when executing the same Spark plan multiple times.</p>
 <p>First, import the Animal Rescue CSV data and do some data cleansing. The data is also being sorted by <code class="docutils literal notranslate"><span class="pre">AnimalGroup</span></code>; this causes a shuffle which will repartition the data:</p>
 <div class="cell docutils container">
@@ -698,12 +711,12 @@ only showing top 5 rows
 <p>Although the same plan is being executed each time, the <code class="docutils literal notranslate"><span class="pre">partition_id</span></code> can be different. The <code class="docutils literal notranslate"><span class="pre">partition_id</span></code> is allocated by the <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.groupBy.html"><code class="docutils literal notranslate"><span class="pre">.groupBy()</span></code></a>/<a class="reference external" href="https://dplyr.tidyverse.org/reference/group_by.html"><code class="docutils literal notranslate"><span class="pre">group_by()</span></code></a> operation, which causes a shuffle.</p>
 </section>
 <section id="final-thoughts">
-<h2>Final thoughts<a class="headerlink" href="#final-thoughts" title="Permalink to this headline">#</a></h2>
+<h2>Final thoughts<a class="headerlink" href="#final-thoughts" title="Permalink to this heading">#</a></h2>
 <p>Remember that sorting the data causes a <span class="xref myst">shuffle</span>, which is an expensive operation. Try and only sort data when necessary.</p>
 <p>Sometimes you do want your code to be non-deterministic, e.g. when using random numbers. You can set a seed to replicate results if needed. You may also want to use <span class="xref myst">mocking</span> if unit testing in PySpark with random numbers.</p>
 </section>
 <section id="further-resources">
-<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">#</a></h2>
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this heading">#</a></h2>
 <p>Spark at the ONS Articles:</p>
 <ul class="simple">
 <li><p><span class="xref myst">Managing Partitions</span></p></li>
@@ -749,7 +762,7 @@ only showing top 5 rows
         },
         kernelOptions: {
             name: "python3",
-            path: "./raw-notebooks\df-order"
+            path: "./raw-notebooks/df-order"
         },
         predefinedOutput: true
     }
@@ -761,16 +774,12 @@ only showing top 5 rows
 
               
               
-                <footer class="bd-footer-article">
-                  
-<div class="footer-article-items footer-article__inner">
-  
-    <div class="footer-article-item"><!-- Previous / next buttons -->
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
 <div class="prev-next-area">
-</div></div>
-  
 </div>
-
                 </footer>
               
             </div>
@@ -831,8 +840,8 @@ By Wil Roberts & Adrian Prince
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
-<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+  <script src="../../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
 
   <footer class="bd-footer">
   </footer>

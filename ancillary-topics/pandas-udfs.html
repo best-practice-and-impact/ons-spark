@@ -7,7 +7,7 @@
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Pandas UDFs &#8212; Spark at the ONS</title>
   
@@ -19,12 +19,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -40,12 +40,14 @@
     <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
@@ -56,7 +58,7 @@
     <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../_static/design-tabs.js"></script>
-    <script loading_method="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
     <script>
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){ dataLayer.push(arguments); }
@@ -69,6 +71,7 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'ancillary-topics/pandas-udfs';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="prev" title="Pydoop: HDFS to pandas" href="pydoop.html" />
@@ -82,6 +85,15 @@ const thebe_selector_output = ".output, .cell_output"
   
   
   <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
   
   <input type="checkbox"
           class="sidebar-toggle"
@@ -142,13 +154,14 @@ const thebe_selector_output = ".output, .cell_output"
   
   
   
+  
     
     
       
     
     
-    <img src="../_static/logo.png" class="logo__image only-light" alt="Logo image"/>
-    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Spark at the ONS - Home"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="Spark at the ONS - Home"/>`);</script>
   
   
 </a></div>
@@ -382,10 +395,10 @@ const thebe_selector_output = ".output, .cell_output"
 
 <script>
 document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
   </button>
 `);
 </script>
@@ -393,7 +406,7 @@ document.write(`
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
 </script>
@@ -440,15 +453,15 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="pandas-udfs">
-<h1>Pandas UDFs<a class="headerlink" href="#pandas-udfs" title="Permalink to this headline">#</a></h1>
+<h1>Pandas UDFs<a class="headerlink" href="#pandas-udfs" title="Permalink to this heading">#</a></h1>
 <p>When coding with Spark, you will generally want to try and use native Spark functions wherever possible (i.e. functions in <code class="docutils literal notranslate"><span class="pre">pyspark.sql.functions</span></code> for PySpark). However, there are instances where there may not be a Spark function available to do what you need. In cases such as this, the second best option is to use a Pandas UDF.</p>
 <section id="why-are-pandas-udfs-better-than-python-udfs">
-<h2>Why are Pandas UDFs better than Python UDFs?<a class="headerlink" href="#why-are-pandas-udfs-better-than-python-udfs" title="Permalink to this headline">#</a></h2>
+<h2>Why are Pandas UDFs better than Python UDFs?<a class="headerlink" href="#why-are-pandas-udfs-better-than-python-udfs" title="Permalink to this heading">#</a></h2>
 <p>Ordinary Python UDFs are not particularly efficient in Spark as they do not make full use of the Spark cluster and can only be processed in the Python runtime. As the code for Python UDFs cannot be executed in the Java Virtual Machine (JVM), the platform which runs Spark, each row of the dataframe is serialised and deserialised between the Python runtime and the JVM. As can be imagined, this causes massive (de)serialisation overheads, high data copy in memory and is very slow!</p>
 <p>Pandas UDFs (also known as vectorised UDFs) can work on the Spark executors to process data in a distributed manner and allow for vectorised operations. This means that Pandas UDFs can work on the whole data partition at once instead of just one row at a time like Python UDFs. This vectorisation is achieved by using Apache Arrow to transfer data across the cluster between the JVM and the Python executors with very low data copy in memory and (de)serialisation overheads. Essentially, Apache Arrow acts as a middleman to store a single copy of the data which can be accessed by both Python and Java processes.</p>
 </section>
 <section id="types-of-pandas-udfs">
-<h2>Types of Pandas UDFs<a class="headerlink" href="#types-of-pandas-udfs" title="Permalink to this headline">#</a></h2>
+<h2>Types of Pandas UDFs<a class="headerlink" href="#types-of-pandas-udfs" title="Permalink to this heading">#</a></h2>
 <p>Spark 2.4 is compatible with 3 types of Pandas UDFs:</p>
 <ul class="simple">
 <li><p>Scalar</p></li>
@@ -464,7 +477,7 @@ document.write(`
 <p>This demo will cover the three types supported in Spark 2.4. Additional information on the other types for Spark 3.x can be found <a class="reference external" href="https://towardsdatascience.com/pyspark-or-pandas-why-not-both-95523946ec7c">here</a>.</p>
 </section>
 <section id="declaring-pandas-udfs-in-spark">
-<h2>Declaring Pandas UDFs in Spark<a class="headerlink" href="#declaring-pandas-udfs-in-spark" title="Permalink to this headline">#</a></h2>
+<h2>Declaring Pandas UDFs in Spark<a class="headerlink" href="#declaring-pandas-udfs-in-spark" title="Permalink to this heading">#</a></h2>
 <p>You can create a Pandas UDF in a number of ways.</p>
 <ul class="simple">
 <li><p>Using the <code class="docutils literal notranslate"><span class="pre">&#64;pandas_udf(&lt;type&gt;,</span> <span class="pre">F.PandasUDFType.&lt;type&gt;)</span></code> decorator.</p></li>
@@ -474,7 +487,7 @@ document.write(`
 <p>This demo will use the <code class="docutils literal notranslate"><span class="pre">pandas_udf</span></code> decorator and Python hints to annotate the functions with the input and output data types.</p>
 </section>
 <section id="spark-setup-for-pandas-udfs">
-<h2>Spark Setup for Pandas UDFs<a class="headerlink" href="#spark-setup-for-pandas-udfs" title="Permalink to this headline">#</a></h2>
+<h2>Spark Setup for Pandas UDFs<a class="headerlink" href="#spark-setup-for-pandas-udfs" title="Permalink to this heading">#</a></h2>
 <p>For Spark 3, to use Pandas UDFs you will have to install Pandas and PyArrow using:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pandas</span>
 <span class="n">pip</span> <span class="n">install</span> <span class="n">pyarrow</span>
@@ -662,7 +675,7 @@ document.write(`
 </div>
 </section>
 <section id="scalar-pandas-udfs">
-<h2>Scalar Pandas UDFs<a class="headerlink" href="#scalar-pandas-udfs" title="Permalink to this headline">#</a></h2>
+<h2>Scalar Pandas UDFs<a class="headerlink" href="#scalar-pandas-udfs" title="Permalink to this heading">#</a></h2>
 <p>Scalar Pandas UDFs take in a <code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code> and output a <code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code>.</p>
 <p>Spark executes scalar Pandas UDFs by serialising each partition column into a <code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code> object (basically splitting the data into batches). The UDF is then called on each of of these Series objects as a subset of the data and then results are concactenated together and returned as a <code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code>.</p>
 <p>Be aware that scalar UDFs may cause incorrect results (if your dataframe is over multiple partitions) when calculating means and standard deviations. For more info on this and how to overcome this issue see <a class="reference external" href="https://towardsdatascience.com/pyspark-or-pandas-why-not-both-95523946ec7c">this towards data science post</a>.</p>
@@ -770,7 +783,7 @@ document.write(`
 </div>
 </section>
 <section id="grouped-map-pandas-udfs">
-<h2>Grouped Map Pandas UDFs<a class="headerlink" href="#grouped-map-pandas-udfs" title="Permalink to this headline">#</a></h2>
+<h2>Grouped Map Pandas UDFs<a class="headerlink" href="#grouped-map-pandas-udfs" title="Permalink to this heading">#</a></h2>
 <p>Grouped map UDFs take in a pandas.DataFrame and output a pandas.DataFrame.</p>
 <p>Grouped Map UDFs use the split-apply-combine format. This is where data is first split into groups based on the <code class="docutils literal notranslate"><span class="pre">.groupby()</span></code> function. The UDF is then mapped over each group to return multiple Pandas dataframes. The results of the Pandas dataframes are then  combined and a new Spark dataframe is returned.</p>
 <p>In the decorator of a grouped map Pandas UDF the first argument is the schema of the output dataframe and the second argument is the UDF type. Here is a grouped map UDF to find the <code class="docutils literal notranslate"><span class="pre">distance</span></code> travelled by the London Fire Brigade compared to the overall mean <code class="docutils literal notranslate"><span class="pre">distance</span></code> they travel to an incident, grouped by <code class="docutils literal notranslate"><span class="pre">animal_group</span></code>. This example uses the outputted dataframe: <code class="docutils literal notranslate"><span class="pre">lfb_distance</span></code> from the scalar UDF example above. The output is in ‘km’.</p>
@@ -925,7 +938,7 @@ document.write(`
 </div>
 </section>
 <section id="grouped-aggregate-pandas-udfs">
-<h2>Grouped Aggregate Pandas UDFs<a class="headerlink" href="#grouped-aggregate-pandas-udfs" title="Permalink to this headline">#</a></h2>
+<h2>Grouped Aggregate Pandas UDFs<a class="headerlink" href="#grouped-aggregate-pandas-udfs" title="Permalink to this heading">#</a></h2>
 <p>Grouped aggregate Pandas UDFs take in one or more pandas.Series and output a scalar.</p>
 <p>Grouped aggregate Pandas UDFs are used alongisde the <code class="docutils literal notranslate"><span class="pre">.groupby()</span></code> and <code class="docutils literal notranslate"><span class="pre">.agg()</span></code> functions and are similiar to the Spark <code class="docutils literal notranslate"><span class="pre">.agg()</span></code> function.</p>
 <p>In the decorator of a grouped aggregate Pandas UDF the first argument is the data type of the output dataframe and the second argument is the UDF type. Below is an example of a grouped aggregate Pandas UDF to find the mean distance travelled by the London Fire Brigade based on the <code class="docutils literal notranslate"><span class="pre">animal_group</span></code>.</p>
@@ -1191,7 +1204,7 @@ document.write(`
 </div>
 </section>
 <section id="additional-resources">
-<h2>Additional Resources<a class="headerlink" href="#additional-resources" title="Permalink to this headline">#</a></h2>
+<h2>Additional Resources<a class="headerlink" href="#additional-resources" title="Permalink to this heading">#</a></h2>
 <p>For a more in-depth explaination of what happens under the hood of different types of Pandas UDFs see:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://freecontent.manning.com/big-data-is-just-a-lot-of-small-data-using-pandas-udf/">Big Data is Just a Lot of Small Data: Using pandas UDF part 1</a></p></li>
@@ -1225,11 +1238,10 @@ document.write(`
 
               
               
-                <footer class="bd-footer-article">
-                  
-<div class="footer-article-items footer-article__inner">
-  
-    <div class="footer-article-item"><!-- Previous / next buttons -->
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
        href="pydoop.html"
@@ -1240,10 +1252,7 @@ document.write(`
         <p class="prev-next-title">Pydoop: HDFS to pandas</p>
       </div>
     </a>
-</div></div>
-  
 </div>
-
                 </footer>
               
             </div>
@@ -1306,8 +1315,8 @@ By Wil Roberts & Adrian Prince
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
 
   <footer class="bd-footer">
   </footer>

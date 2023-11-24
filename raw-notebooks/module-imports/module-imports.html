@@ -7,7 +7,7 @@
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Naming Conflicts in Module Imports &#8212; Spark at the ONS</title>
   
@@ -19,12 +19,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
 
   
-  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -40,12 +40,14 @@
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
+  <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
 
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
@@ -56,7 +58,7 @@
     <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../_static/design-tabs.js"></script>
-    <script loading_method="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
     <script>
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){ dataLayer.push(arguments); }
@@ -69,6 +71,7 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'raw-notebooks/module-imports/module-imports';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -81,6 +84,15 @@ const thebe_selector_output = ".output, .cell_output"
   
   
   <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
   
   <input type="checkbox"
           class="sidebar-toggle"
@@ -141,13 +153,14 @@ const thebe_selector_output = ".output, .cell_output"
   
   
   
+  
     
     
       
     
     
-    <img src="../../_static/logo.png" class="logo__image only-light" alt="Logo image"/>
-    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="Spark at the ONS - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="Spark at the ONS - Home"/>`);</script>
   
   
 </a></div>
@@ -381,10 +394,10 @@ const thebe_selector_output = ".output, .cell_output"
 
 <script>
 document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
   </button>
 `);
 </script>
@@ -392,7 +405,7 @@ document.write(`
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
 </script>
@@ -439,15 +452,15 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section id="naming-conflicts-in-module-imports">
-<h1>Naming Conflicts in Module Imports<a class="headerlink" href="#naming-conflicts-in-module-imports" title="Permalink to this headline">#</a></h1>
+<h1>Naming Conflicts in Module Imports<a class="headerlink" href="#naming-conflicts-in-module-imports" title="Permalink to this heading">#</a></h1>
 <p>Importing modules in Python and R can lead to naming conflicts if a function with that name already exists. This article demonstrates why you should be careful when importing modules to ensure that these conflicts do not occur.</p>
 <p>A common example in Python is using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/functions.html"><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">pyspark.sql.functions</span> <span class="pre">import</span> <span class="pre">*</span></code></a>, which will overwrite some built-in Python functions (e.g. <code class="docutils literal notranslate"><span class="pre">sum()</span></code>). Instead, it is good practice to use <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">pyspark.sql</span> <span class="pre">import</span> <span class="pre">functions</span> <span class="pre">as</span> <span class="pre">F</span></code>, where you prefix the functions  with <code class="docutils literal notranslate"><span class="pre">F</span></code>, e.g. <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.sum.html"><code class="docutils literal notranslate"><span class="pre">F.sum()</span></code></a>.</p>
 <section id="naming-variables">
-<h2>Naming variables<a class="headerlink" href="#naming-variables" title="Permalink to this headline">#</a></h2>
+<h2>Naming variables<a class="headerlink" href="#naming-variables" title="Permalink to this heading">#</a></h2>
 <p>When writing code, it is important to give your variables sensible names, that are informative but not too long. A good reference on this is the <a class="reference external" href="https://best-practice-and-impact.github.io/qa-of-code-guidance/core_programming.html#clean-code">Clean Code</a> section from <a class="reference external" href="https://best-practice-and-impact.github.io/qa-of-code-guidance/intro.html">QA of Code for Analysis and Research</a>. <strong>You should avoid using the names of existing built in functions for user-defined variables</strong>.</p>
 </section>
 <section id="keywords">
-<h2>Keywords<a class="headerlink" href="#keywords" title="Permalink to this headline">#</a></h2>
+<h2>Keywords<a class="headerlink" href="#keywords" title="Permalink to this heading">#</a></h2>
 <p>Some words are reserved: for instance, in Python you cannot have a variable called <code class="docutils literal notranslate"><span class="pre">def</span></code>, <code class="docutils literal notranslate"><span class="pre">False</span></code> or <code class="docutils literal notranslate"><span class="pre">lambda</span></code>. These are referred to as <em>keywords</em> and the code will not even compile if you try, raising a <code class="docutils literal notranslate"><span class="pre">SyntaxError</span></code>. You can generate a list of these with <a class="reference external" href="https://docs.python.org/3/library/keyword.html"><code class="docutils literal notranslate"><span class="pre">keyword.kwlist</span></code></a>.</p>
 <p>In R, use <code class="docutils literal notranslate"><span class="pre">?reserved</span></code> to get a list of the reserved words.</p>
 <div class="cell docutils container">
@@ -468,13 +481,13 @@ document.write(`
 </div>
 </section>
 <section id="built-in-functions-and-module-imports-in-python">
-<h2>Built in functions and module imports in Python<a class="headerlink" href="#built-in-functions-and-module-imports-in-python" title="Permalink to this headline">#</a></h2>
+<h2>Built in functions and module imports in Python<a class="headerlink" href="#built-in-functions-and-module-imports-in-python" title="Permalink to this heading">#</a></h2>
 <details>
 <summary><b>Python Example</b></summary>
 <p>You might notice that the Python keyword list is quite short and that some common Python functionality is not listed, for instance, <code class="docutils literal notranslate"><span class="pre">sum()</span></code> or <code class="docutils literal notranslate"><span class="pre">round()</span></code>. This means that it is possible to overwrite these; obviously this is not good practice and should be avoided.</p>
 <p>This can be surprisingly easy to do in PySpark, and can be hard to debug if you do not know the reason for the error.</p>
 <section id="python-example">
-<h3>Python Example<a class="headerlink" href="#python-example" title="Permalink to this headline">#</a></h3>
+<h3>Python Example<a class="headerlink" href="#python-example" title="Permalink to this heading">#</a></h3>
 <p>First, look at the documentation for <code class="docutils literal notranslate"><span class="pre">sum</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -671,7 +684,7 @@ sum(col)
 </section>
 </section>
 <section id="built-in-functions-and-package-imports-in-r">
-<h2>Built in functions and package imports in R<a class="headerlink" href="#built-in-functions-and-package-imports-in-r" title="Permalink to this headline">#</a></h2>
+<h2>Built in functions and package imports in R<a class="headerlink" href="#built-in-functions-and-package-imports-in-r" title="Permalink to this heading">#</a></h2>
 <details>
 <summary><b>R Example</b></summary>
 <p>It is advised to use <code class="docutils literal notranslate"><span class="pre">::</span></code> to directly call a function from a package. For instance, there is a <code class="docutils literal notranslate"><span class="pre">filter</span></code> function in both <a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/filter.html"><code class="docutils literal notranslate"><span class="pre">stats</span></code></a> and <a class="reference external" href="https://dplyr.tidyverse.org/reference/filter.html"><code class="docutils literal notranslate"><span class="pre">dplyr</span></code></a>; you can specify exactly which to use with <code class="docutils literal notranslate"><span class="pre">dplyr::filter()</span></code> or <code class="docutils literal notranslate"><span class="pre">stats::filter()</span></code>.</p>
@@ -682,7 +695,7 @@ sum(col)
 </details>
 </section>
 <section id="further-resources">
-<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">#</a></h2>
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this heading">#</a></h2>
 <p>PySpark Documentation:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/functions.html"><code class="docutils literal notranslate"><span class="pre">pyspark.sql.functions</span></code></a></p></li>
@@ -718,7 +731,7 @@ sum(col)
         },
         kernelOptions: {
             name: "python3",
-            path: "./raw-notebooks\module-imports"
+            path: "./raw-notebooks/module-imports"
         },
         predefinedOutput: true
     }
@@ -730,16 +743,12 @@ sum(col)
 
               
               
-                <footer class="bd-footer-article">
-                  
-<div class="footer-article-items footer-article__inner">
-  
-    <div class="footer-article-item"><!-- Previous / next buttons -->
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
 <div class="prev-next-area">
-</div></div>
-  
 </div>
-
                 </footer>
               
             </div>
@@ -802,8 +811,8 @@ By Wil Roberts & Adrian Prince
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
-<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+  <script src="../../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
 
   <footer class="bd-footer">
   </footer>

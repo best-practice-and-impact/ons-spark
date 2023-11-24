@@ -7,7 +7,7 @@
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Reading and Writing Data in Spark &#8212; Spark at the ONS</title>
   
@@ -19,12 +19,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
 
   
-  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -40,12 +40,14 @@
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
+  <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
 
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
@@ -56,7 +58,7 @@
     <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../_static/design-tabs.js"></script>
-    <script loading_method="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
     <script>
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){ dataLayer.push(arguments); }
@@ -69,6 +71,7 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'raw-notebooks/reading-and-writing-data/reading-and-writing-data-spark';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -81,6 +84,15 @@ const thebe_selector_output = ".output, .cell_output"
   
   
   <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
   
   <input type="checkbox"
           class="sidebar-toggle"
@@ -141,13 +153,14 @@ const thebe_selector_output = ".output, .cell_output"
   
   
   
+  
     
     
       
     
     
-    <img src="../../_static/logo.png" class="logo__image only-light" alt="Logo image"/>
-    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="Spark at the ONS - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="Spark at the ONS - Home"/>`);</script>
   
   
 </a></div>
@@ -381,10 +394,10 @@ const thebe_selector_output = ".output, .cell_output"
 
 <script>
 document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
   </button>
 `);
 </script>
@@ -392,7 +405,7 @@ document.write(`
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
 </script>
@@ -463,7 +476,7 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="reading-and-writing-data-in-spark">
-<h1>Reading and Writing Data in Spark<a class="headerlink" href="#reading-and-writing-data-in-spark" title="Permalink to this headline">#</a></h1>
+<h1>Reading and Writing Data in Spark<a class="headerlink" href="#reading-and-writing-data-in-spark" title="Permalink to this heading">#</a></h1>
 <p>This chapter will go into more detail about the various file formats available to use with Spark, and how Spark interacts with these file formats. <span class="xref myst">Introduction to PySpark</span> and <span class="xref myst">Introduction to SparklyR</span> briefly covered CSV files and Parquet files and some basic differences between them.</p>
 <p>This chapter will provide more detail on parquet files, CSV files, ORC files and Avro files, the differences between them and how to read and write data using these formats.</p>
 <p>Let’s start by setting up a Spark session and reading in the config file.</p>
@@ -495,9 +508,9 @@ document.write(`
 </pre></div>
 </div>
 <section id="csv-files">
-<h2>CSV files<a class="headerlink" href="#csv-files" title="Permalink to this headline">#</a></h2>
+<h2>CSV files<a class="headerlink" href="#csv-files" title="Permalink to this heading">#</a></h2>
 <section id="reading-in-a-csv-file">
-<h3>Reading in a CSV file<a class="headerlink" href="#reading-in-a-csv-file" title="Permalink to this headline">#</a></h3>
+<h3>Reading in a CSV file<a class="headerlink" href="#reading-in-a-csv-file" title="Permalink to this heading">#</a></h3>
 <p>To read in a CSV file, you can use <a class="reference external" href="https://spark.apache.org/docs/latest/sql-data-sources-csv.html"><code class="docutils literal notranslate"><span class="pre">spark.read.csv()</span></code></a> with PySpark or <a class="reference external" href="https://rdrr.io/cran/sparklyr/man/spark_read_csv.html"><code class="docutils literal notranslate"><span class="pre">spark_read_csv()</span></code></a> with SparklyR as demonstrated below.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -601,7 +614,7 @@ document.write(`
 <p>Generally, if you’re using a small dataset it is fine to use infer schema - however if you’re reading in a large dataset, it may take considerably longer to read in and this will be repeated after every action (see <span class="xref myst">Persisting in Spark</span> to understand why this is the case), potentially increasing your execution time even further.</p>
 </section>
 <section id="writing-out-csv-files">
-<h3>Writing out CSV files<a class="headerlink" href="#writing-out-csv-files" title="Permalink to this headline">#</a></h3>
+<h3>Writing out CSV files<a class="headerlink" href="#writing-out-csv-files" title="Permalink to this heading">#</a></h3>
 <p>To write a Spark dataframe to a CSV file, you can use the <a class="reference external" href="https://sparkbyexamples.com/pyspark/pyspark-write-dataframe-to-csv-file/"><code class="docutils literal notranslate"><span class="pre">.write.csv()</span></code></a> method in PySpark, or <a class="reference external" href="https://rdrr.io/cran/sparklyr/man/spark_write_csv.html"><code class="docutils literal notranslate"><span class="pre">spark_write_csv()</span></code></a> in SparklyR, as demonstrated below:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -621,9 +634,9 @@ document.write(`
 </section>
 </section>
 <section id="parquet-files">
-<h2>Parquet files<a class="headerlink" href="#parquet-files" title="Permalink to this headline">#</a></h2>
+<h2>Parquet files<a class="headerlink" href="#parquet-files" title="Permalink to this heading">#</a></h2>
 <section id="reading-in-a-parquet-file">
-<h3>Reading in a parquet file<a class="headerlink" href="#reading-in-a-parquet-file" title="Permalink to this headline">#</a></h3>
+<h3>Reading in a parquet file<a class="headerlink" href="#reading-in-a-parquet-file" title="Permalink to this heading">#</a></h3>
 <p>To read in a parquet file in PySpark, you can use <a class="reference external" href="https://spark.apache.org/docs/latest/sql-data-sources-parquet.html"><code class="docutils literal notranslate"><span class="pre">spark.read.parquet()</span></code></a> as demonstrated below. For SparklyR, you would use the <a class="reference external" href="https://www.rdocumentation.org/packages/sparklyr/versions/1.8.3/topics/spark_read_parquet"><code class="docutils literal notranslate"><span class="pre">spark_read_parquet()</span></code></a> method.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -638,7 +651,7 @@ document.write(`
 <p>As you can see, we didn’t have to provide a schema or use the inferSchema argument - this is because parquet files already have a schema associated with them, which is stored in the metadata.</p>
 </section>
 <section id="writing-out-parquet-files">
-<h3>Writing out parquet files<a class="headerlink" href="#writing-out-parquet-files" title="Permalink to this headline">#</a></h3>
+<h3>Writing out parquet files<a class="headerlink" href="#writing-out-parquet-files" title="Permalink to this heading">#</a></h3>
 <p>To write out a Spark dataframe as a parquet file, you can use <a class="reference external" href="https://sparkbyexamples.com/pyspark/pyspark-read-and-write-parquet-file/"><code class="docutils literal notranslate"><span class="pre">.write.parquet()</span></code></a> in PySpark or <a class="reference external" href="https://rdrr.io/cran/sparklyr/man/spark_write_parquet.html"><code class="docutils literal notranslate"><span class="pre">spark_write_parquet()</span></code></a> in SparklyR.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -661,9 +674,9 @@ document.write(`
 </section>
 </section>
 <section id="optimised-row-columnar-orc-files">
-<h2>Optimised Row Columnar (ORC) files<a class="headerlink" href="#optimised-row-columnar-orc-files" title="Permalink to this headline">#</a></h2>
+<h2>Optimised Row Columnar (ORC) files<a class="headerlink" href="#optimised-row-columnar-orc-files" title="Permalink to this heading">#</a></h2>
 <section id="reading-in-orc-files">
-<h3>Reading in ORC files<a class="headerlink" href="#reading-in-orc-files" title="Permalink to this headline">#</a></h3>
+<h3>Reading in ORC files<a class="headerlink" href="#reading-in-orc-files" title="Permalink to this heading">#</a></h3>
 <p>To read in an ORC file, using PySpark, you can use <a class="reference external" href="https://sparkbyexamples.com/spark/spark-read-orc-file-into-dataframe/"><code class="docutils literal notranslate"><span class="pre">spark.read.orc()</span></code></a>. Using SparklyR, you would use <a class="reference external" href="https://rdrr.io/cran/sparklyr/man/spark_read_orc.html"><code class="docutils literal notranslate"><span class="pre">spark_read_orc()</span></code></a></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -677,7 +690,7 @@ document.write(`
 </div>
 </section>
 <section id="writing-out-orc-files">
-<h3>Writing out ORC files<a class="headerlink" href="#writing-out-orc-files" title="Permalink to this headline">#</a></h3>
+<h3>Writing out ORC files<a class="headerlink" href="#writing-out-orc-files" title="Permalink to this heading">#</a></h3>
 <p>To write out an ORC file, you can use <a class="reference external" href="https://sparkbyexamples.com/spark/spark-read-orc-file-into-dataframe/"><code class="docutils literal notranslate"><span class="pre">dataframe.write.orc()</span></code></a> in PySpark or <a class="reference external" href="https://rdrr.io/cran/sparklyr/man/spark_write_orc.html"><code class="docutils literal notranslate"><span class="pre">spark_write_orc()</span></code></a> in SparklyR.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -701,9 +714,9 @@ document.write(`
 </section>
 </section>
 <section id="avro-files">
-<h2>Avro files<a class="headerlink" href="#avro-files" title="Permalink to this headline">#</a></h2>
+<h2>Avro files<a class="headerlink" href="#avro-files" title="Permalink to this heading">#</a></h2>
 <section id="reading-in-avro-files">
-<h3>Reading in Avro files<a class="headerlink" href="#reading-in-avro-files" title="Permalink to this headline">#</a></h3>
+<h3>Reading in Avro files<a class="headerlink" href="#reading-in-avro-files" title="Permalink to this heading">#</a></h3>
 <p>To read in an Avro file using PySpark, you can use <a class="reference external" href="https://sparkbyexamples.com/spark/read-write-avro-file-spark-dataframe/"><code class="docutils literal notranslate"><span class="pre">spark.read.format(&quot;avro&quot;)</span></code></a>.</p>
 <p>Please note: the Avro section for SparklyR is still under construction.</p>
 <div class="cell docutils container">
@@ -716,7 +729,7 @@ document.write(`
 <p>Note that unlike other methods, Spark doesn’t have a built in <code class="docutils literal notranslate"><span class="pre">spark.read.avro()</span></code> method so we need to use a slightly different method to read this in, by first specifying the format as “avro” and then using <code class="docutils literal notranslate"><span class="pre">.load()</span></code> to read in the file. Note that this method would also work for other formats, such as <code class="docutils literal notranslate"><span class="pre">spark.read.format(&quot;parquet&quot;).load(...)</span></code> but is slightly more verbose than the other methods demonstrated.</p>
 </section>
 <section id="writing-out-avro-files">
-<h3>Writing out Avro files<a class="headerlink" href="#writing-out-avro-files" title="Permalink to this headline">#</a></h3>
+<h3>Writing out Avro files<a class="headerlink" href="#writing-out-avro-files" title="Permalink to this heading">#</a></h3>
 <p>To write out an Avro file, you can use <a class="reference external" href="https://sparkbyexamples.com/spark/read-write-avro-file-spark-dataframe/"><code class="docutils literal notranslate"><span class="pre">dataframe.write.format(&quot;avro&quot;).save()</span></code></a>. Note that like the method to read in Avro files, we need to specify the format and then use <code class="docutils literal notranslate"><span class="pre">save</span></code> to specify that we want to save this out.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -732,9 +745,9 @@ An Avro file is row-based, not column-based.</p>
 </section>
 </section>
 <section id="hive-tables">
-<h2>Hive tables<a class="headerlink" href="#hive-tables" title="Permalink to this headline">#</a></h2>
+<h2>Hive tables<a class="headerlink" href="#hive-tables" title="Permalink to this heading">#</a></h2>
 <section id="reading-in-hive-tables">
-<h3>Reading in Hive tables<a class="headerlink" href="#reading-in-hive-tables" title="Permalink to this headline">#</a></h3>
+<h3>Reading in Hive tables<a class="headerlink" href="#reading-in-hive-tables" title="Permalink to this heading">#</a></h3>
 <p>To read in a Hive table, we can use one of the following approaches:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -762,7 +775,7 @@ An Avro file is row-based, not column-based.</p>
 </div>
 </section>
 <section id="writing-out-a-hive-table">
-<h3>Writing out a Hive table<a class="headerlink" href="#writing-out-a-hive-table" title="Permalink to this headline">#</a></h3>
+<h3>Writing out a Hive table<a class="headerlink" href="#writing-out-a-hive-table" title="Permalink to this heading">#</a></h3>
 <p>To write out a Hive table, we can use <a class="reference external" href="https://sparkbyexamples.com/python/pyspark-save-dataframe-to-hive-table/"><code class="docutils literal notranslate"><span class="pre">dataframe.write.mode('overwrite').saveAsTable()</span></code></a> or <a class="reference external" href="https://rdrr.io/cran/sparklyr/man/spark_write_table.html"><code class="docutils literal notranslate"><span class="pre">spark_write_table</span></code></a> in SparklyR.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -779,24 +792,24 @@ An Avro file is row-based, not column-based.</p>
 </section>
 </section>
 <section id="so-which-file-format-should-i-use">
-<h2>So, which file format should I use?<a class="headerlink" href="#so-which-file-format-should-i-use" title="Permalink to this headline">#</a></h2>
+<h2>So, which file format should I use?<a class="headerlink" href="#so-which-file-format-should-i-use" title="Permalink to this heading">#</a></h2>
 <p>There are a number of factors to consider when deciding which file format to use.</p>
 <section id="do-i-need-my-data-to-be-human-readable">
-<h3>Do I need my data to be human-readable?<a class="headerlink" href="#do-i-need-my-data-to-be-human-readable" title="Permalink to this headline">#</a></h3>
+<h3>Do I need my data to be human-readable?<a class="headerlink" href="#do-i-need-my-data-to-be-human-readable" title="Permalink to this heading">#</a></h3>
 <p>Of the file formats discussed in this chapter, only CSV files are human-readable. This means that if you need to look at the data yourself, i.e. for quality assurance purposes, you would need to ensure that your data is in a CSV file. However, CSV files are generally less efficient to read in than other file formats such as parquet or ORC files, particularly if you only require a subset of the available columns.</p>
 <p>It’s also important to note that Spark is a big data solution, so if you’re only working with only a small amount of data that needs to be manually examined by a human, it may be worth reconsidering whether Spark is needed at all - it could be a good idea to read <span class="xref myst">when to use Spark</span>.</p>
 </section>
 <section id="row-based-vs-columnar-based-formats">
-<h3>Row-based vs columnar-based formats<a class="headerlink" href="#row-based-vs-columnar-based-formats" title="Permalink to this headline">#</a></h3>
+<h3>Row-based vs columnar-based formats<a class="headerlink" href="#row-based-vs-columnar-based-formats" title="Permalink to this heading">#</a></h3>
 <p>Generally, both row-based and columnar-based formats are fine to use with Spark. The benefits of choosing one or the other are highly dependent on downstream processing and would likely result in relatively small improvements in processing speed. For a more in-depth discussion on which types of downstream processing would be more suited to a row-based or a columnar-based file format, <a class="reference external" href="https://www.snowflake.com/trending/avro-vs-parquet">this article</a> may be useful.</p>
 </section>
 <section id="do-you-work-primarily-with-databases-sql">
-<h3>Do you work primarily with databases/SQL?<a class="headerlink" href="#do-you-work-primarily-with-databases-sql" title="Permalink to this headline">#</a></h3>
+<h3>Do you work primarily with databases/SQL?<a class="headerlink" href="#do-you-work-primarily-with-databases-sql" title="Permalink to this heading">#</a></h3>
 <p>If you’re primarily working with databases/tables within databases and SQL, it may be a good idea to use a Hive table. You can use any format as the underlying data format within a Hive table - so it may be worthwhile reviewing the data formats presented in this chapter to decide which format would be most appropriate for your use case.</p>
 </section>
 </section>
 <section id="further-resources">
-<h2>Further resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">#</a></h2>
+<h2>Further resources<a class="headerlink" href="#further-resources" title="Permalink to this heading">#</a></h2>
 <p><a class="reference external" href="https://spark.apache.org/docs/3.2.0/sql-data-sources-load-save-functions.html">Generic Load/Save Functions - Spark 3.4.1 Documentation</a></p>
 <p><a class="reference external" href="https://spark.apache.org/docs/latest/sql-data-sources-csv.html">CSV Files - Spark 3.4.1 Documentation</a></p>
 <p><a class="reference external" href="https://spark.apache.org/docs/latest/sql-data-sources-parquet.html">Parquet Files - Spark 3.4.1 Documentation</a></p>
@@ -819,7 +832,7 @@ An Avro file is row-based, not column-based.</p>
         },
         kernelOptions: {
             name: "python3",
-            path: "./raw-notebooks\reading-and-writing-data"
+            path: "./raw-notebooks/reading-and-writing-data"
         },
         predefinedOutput: true
     }
@@ -831,16 +844,12 @@ An Avro file is row-based, not column-based.</p>
 
               
               
-                <footer class="bd-footer-article">
-                  
-<div class="footer-article-items footer-article__inner">
-  
-    <div class="footer-article-item"><!-- Previous / next buttons -->
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
 <div class="prev-next-area">
-</div></div>
-  
 </div>
-
                 </footer>
               
             </div>
@@ -927,8 +936,8 @@ By Wil Roberts & Adrian Prince
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
-<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+  <script src="../../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
 
   <footer class="bd-footer">
   </footer>
