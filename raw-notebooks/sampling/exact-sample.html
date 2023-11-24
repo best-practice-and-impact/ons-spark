@@ -1,0 +1,945 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Alice White python function &#8212; Spark at the ONS</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/accessibility.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-95MGHSRD0S');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../../intro.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../intro.html">
+                    Introduction
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark overview</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/spark-start.html">Getting Started with Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/when-to-use-spark.html">When To Use Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/spark-session-guidance.html">Guidance on Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/example-spark-sessions.html">Example Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/spark-defaults.html">Configuration Hierarchy and <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/data-types.html">Data Types in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/creating-dataframes.html">Creating DataFrames Manually</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/reading-and-writing-data-spark.html">Reading and Writing Data in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/data-storage.html">Data Storage</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to PySpark</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../pyspark-intro/pyspark-intro.html">Introduction to PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyspark-intro/returning-data.html">Returning Data from Cluster to Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyspark-intro/f-col.html">Reference columns by name: <code class="docutils literal notranslate"><span class="pre">F.col()</span></code></a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to sparklyr</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../sparklyr-intro/sparklyr-intro.html">Introduction to sparklyr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sparklyr-intro/sparklyr-functions.html">Using Spark functions in sparklyr</a></li>
+
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark functions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/union-dataframes-with-different-columns.html">Union two DataFrames with different columns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/padding.html">Add leading zeros with <code class="docutils literal notranslate"><span class="pre">lpad()</span></code></a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/sampling.html">Sampling: an overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/pivot-tables.html">Pivot tables in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/rounding.html">Rounding differences in Python, R and Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/window-functions.html">Window Functions in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/cross-joins.html">Cross Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/arrays.html">Arrays Functions in PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/writing-data.html">Writing Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/job-description.html">Set Spark Job Description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/logistic-regression.html">Logistic Regression</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Understanding and Optimising Spark</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/optimisation-tips.html">Ideas for optimising Spark code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/spark-application-and-ui.html">Spark Application and UI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/shuffling.html">Shuffling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/join-concepts.html">Optimising Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/salted-joins.html">Salted Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/partitions.html">Managing Partitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/persistence.html">Persisting in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/cache.html">Caching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/checkpoint-staging.html">Checkpoints and Staging Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/garbage-collection.html">Garbage Collection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/df-order.html">Spark DataFrames Are Not Ordered</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/exercises.html">Exercises</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Testing and Debugging</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../testing-debugging/spark-errors.html">Understanding and Handling Spark Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../testing-debugging/unit-testing.html">Unit Testing in Spark</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Ancillary Topics</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/visualisation.html">Spark and Visualisation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/module-imports.html">Naming Conflicts in Module Imports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/pydoop.html">Pydoop: HDFS to pandas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/pandas-udfs.html">Pandas UDFs</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fraw-notebooks/sampling/exact-sample.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/raw-notebooks/sampling/exact-sample.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Alice White python function</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Alice White python function</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#find-a-strata">Find a strata:</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#applying-map">Applying map()</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#returning-an-exact-sample-per-strata">Returning an exact sample per strata</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simplifying-the-required-sample-column">Simplifying the required sample column</a></li>
+</ul>
+</li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="alice-white-python-function">
+<h1>Alice White python function<a class="headerlink" href="#alice-white-python-function" title="Permalink to this heading">#</a></h1>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">stratified_random_sample</span><span class="p">(</span><span class="n">sampling_frame</span><span class="p">,</span> <span class="n">strata</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">sampling_frame</span> <span class="o">=</span> <span class="n">sampling_frame</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;random_number&#39;</span><span class="p">,</span><span class="n">f</span><span class="o">.</span><span class="n">rand</span><span class="p">())</span>
+
+    <span class="n">window_spec</span> <span class="o">=</span> <span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="n">strata</span><span class="p">)</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;random_number&#39;</span><span class="p">))</span>
+
+    <span class="n">sampling_frame</span> <span class="o">=</span> <span class="p">(</span><span class="n">sampling_frame</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">unit</span><span class="si">}</span><span class="s1">_sampled</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                                               <span class="n">f</span><span class="o">.</span><span class="n">when</span><span class="p">((</span><span class="n">f</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;random_number_rank&#39;</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">f</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;required_ss&#39;</span><span class="p">)),</span> <span class="mi">1</span><span class="p">)</span>
+                                               <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="mi">9</span><span class="p">)))</span>
+    <span class="n">sampling_frame</span> <span class="o">=</span> <span class="n">sampling_frame</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;random_number&#39;</span><span class="p">,</span> <span class="s1">&#39;random_number_rank&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">sampling_frame</span>
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
+
+<span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;sampling&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    
+<span class="c1">#rescue_path = </span>
+<span class="n">rescue_path</span> <span class="o">=</span> <span class="s2">&quot;../../data/animal_rescue.csv&quot;</span>
+<span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s1">&#39;AnimalGroupParent&#39;</span><span class="p">,</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+--------------+----------------+-------+-------+---------------+---------+--------------+---------------------+-----------------------+--------------------+-----------+------------------+--------------------+-----------------+--------------------------+--------------------+---------+--------------------+-----------+----------+-------------+----------------+---------+----------+---------------+----------------+
+|IncidentNumber|  DateTimeOfCall|CalYear|FinYear| TypeOfIncident|PumpCount|PumpHoursTotal|HourlyNotionalCost(£)|IncidentNotionalCost(£)|    FinalDescription|animal_type|      OriginofCall|        PropertyType| PropertyCategory|SpecialServiceTypeCategory|  SpecialServiceType| WardCode|                Ward|BoroughCode|   Borough|StnGroundName|PostcodeDistrict|Easting_m|Northing_m|Easting_rounded|Northing_rounded|
++--------------+----------------+-------+-------+---------------+---------+--------------+---------------------+-----------------------+--------------------+-----------+------------------+--------------------+-----------------+--------------------------+--------------------+---------+--------------------+-----------+----------+-------------+----------------+---------+----------+---------------+----------------+
+|        139091|01/01/2009 03:01|   2009|2008/09|Special Service|      1.0|           2.0|                  255|                  510.0|DOG WITH JAW TRAP...|        Dog|Person (land line)|House - single oc...|         Dwelling|      Other animal assi...|Animal assistance...|E05011467|Crystal Palace &amp; ...|  E09000008|   Croydon|      Norbury|            SE19|     null|      null|         532350|          170050|
+|        275091|01/01/2009 08:51|   2009|2008/09|Special Service|      1.0|           1.0|                  255|                  255.0|ASSIST RSPCA WITH...|        Fox|Person (land line)|            Railings|Outdoor Structure|      Other animal assi...|Animal assistance...|E05000169|            Woodside|  E09000008|   Croydon|     Woodside|            SE25| 534785.0|  167546.0|         534750|          167550|
+|       2075091|04/01/2009 10:07|   2009|2008/09|Special Service|      1.0|           1.0|                  255|                  255.0|DOG CAUGHT IN DRA...|        Dog|   Person (mobile)|      Pipe or drain |Outdoor Structure|      Animal rescue fro...|Animal rescue fro...|E05000558|  Carshalton Central|  E09000029|    Sutton|   Wallington|             SM5| 528041.0|  164923.0|         528050|          164950|
+|       2872091|05/01/2009 12:27|   2009|2008/09|Special Service|      1.0|           1.0|                  255|                  255.0|HORSE TRAPPED IN ...|      Horse|   Person (mobile)|Intensive Farming...|  Non Residential|      Animal rescue fro...|Animal rescue fro...|E05000330|           Harefield|  E09000017|Hillingdon|      Ruislip|             UB9| 504689.0|  190685.0|         504650|          190650|
+|       3553091|06/01/2009 15:23|   2009|2008/09|Special Service|      1.0|           1.0|                  255|                  255.0|RABBIT TRAPPED UN...|     Rabbit|   Person (mobile)|House - single oc...|         Dwelling|      Other animal assi...|Animal assistance...|E05000310|            Gooshays|  E09000016|  Havering|  Harold Hill|             RM3|     null|      null|         554650|          192350|
++--------------+----------------+-------+-------+---------------+---------+--------------+---------------------+-----------------------+--------------------+-----------+------------------+--------------------+-----------------+--------------------------+--------------------+---------+--------------------+-----------+----------+-------------+----------------+---------+----------+---------------+----------------+
+only showing top 5 rows
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fraction</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">row_count</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">rescue</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">*</span> <span class="n">fraction</span><span class="p">)</span>
+<span class="n">row_count</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>590
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;rand_no&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">rand</span><span class="p">())</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;rand_no&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">row_count</span><span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;rand_no&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>590
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="find-a-strata">
+<h1>Find a strata:<a class="headerlink" href="#find-a-strata" title="Permalink to this heading">#</a></h1>
+<p>What is a reasonable strata to sample by?
+Alex used animal type-This could work
+How could we generalise this so that it can work for any number of strata, dictionary?</p>
+<p>Check the github code for stratified sampling in pyspark, one input variable is a dictionary.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#rescue.groupBy(&#39;animal_type&#39;).agg(F.count(&#39;animal_type&#39;).alias(&#39;count&#39;)).sort(&#39;count&#39;,ascending = False).show()</span>
+
+<span class="c1"># strata_dict = rescue.select(&#39;animal_type&#39;).distinct().collect()</span>
+<span class="n">restructured</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">,</span><span class="n">F</span><span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Cat&#39;</span><span class="p">,</span><span class="s1">&#39;Cat&#39;</span><span class="p">)</span>
+                                                <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Bird&#39;</span><span class="p">,</span><span class="s1">&#39;Bird&#39;</span><span class="p">)</span>
+                                                <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Dog&#39;</span><span class="p">,</span><span class="s1">&#39;Dog&#39;</span><span class="p">)</span>
+                                                <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Fox&#39;</span><span class="p">,</span><span class="s1">&#39;Fox&#39;</span><span class="p">)</span>
+                                                <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="s1">&#39;Other&#39;</span><span class="p">))</span>
+<span class="n">restructured</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span><span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">restructured</span> <span class="o">=</span> <span class="n">restructured</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;sample_size&#39;</span><span class="p">,</span><span class="n">F</span><span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Cat&#39;</span><span class="p">,</span><span class="mi">20</span><span class="p">)</span>
+                                                <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Bird&#39;</span><span class="p">,</span><span class="mi">15</span><span class="p">)</span>
+                                                <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Dog&#39;</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+                                                <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Fox&#39;</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+                                                <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="c1"># restructured.show()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+-----------+-----+
+|animal_type|count|
++-----------+-----+
+|        Cat| 2909|
+|       Bird| 1100|
+|        Dog| 1008|
+|      Other|  643|
+|        Fox|  238|
++-----------+-----+
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.window</span> <span class="kn">import</span> <span class="n">Window</span>
+<span class="n">restructured</span> <span class="o">=</span> <span class="n">restructured</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;random_number&#39;</span><span class="p">,</span><span class="n">F</span><span class="o">.</span><span class="n">rand</span><span class="p">())</span>
+<span class="n">window_spec</span> <span class="o">=</span> <span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s1">&#39;random_number&#39;</span><span class="p">)</span>
+<span class="n">restructured</span> <span class="o">=</span> <span class="n">restructured</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;strata_rank&quot;</span><span class="p">,</span><span class="n">F</span><span class="o">.</span><span class="n">rank</span><span class="p">()</span><span class="o">.</span><span class="n">over</span><span class="p">(</span><span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s1">&#39;random_number&#39;</span><span class="p">)))</span>
+
+<span class="n">restructured</span> <span class="o">=</span> <span class="p">(</span><span class="n">restructured</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;sampled&#39;</span><span class="p">,</span><span class="n">F</span><span class="o">.</span><span class="n">when</span><span class="p">((</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;strata_rank&#39;</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;sample_size&#39;</span><span class="p">)),</span> <span class="mi">1</span><span class="p">)</span>
+                                    <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span>
+
+<span class="n">sample</span> <span class="o">=</span> <span class="n">restructured</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;sampled&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># restructured.filter(F.col(&#39;strata_rank&#39;) &lt;= F.col(&#39;required_ss&#39;))</span>
+<span class="c1"># sampling_frame = (restructured.withColumn(&#39;sampled&#39;,</span>
+<span class="c1">#                                                f.when((f.col(&#39;random_number_rank&#39;) &lt;= f.col(&#39;required_ss&#39;)), 1)</span>
+<span class="c1">#                                                .otherwise(9)))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">,</span><span class="s1">&#39;sample_size&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span><span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+-----------+-----------+-----+
+|animal_type|sample_size|count|
++-----------+-----------+-----+
+|        Cat|         20|   20|
+|       Bird|         15|   15|
+|        Dog|         10|   10|
+|      Other|          5|    5|
+|        Fox|          2|    2|
++-----------+-----------+-----+
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="applying-map">
+<h1>Applying map()<a class="headerlink" href="#applying-map" title="Permalink to this heading">#</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#rescue.groupBy(&#39;animal_type&#39;).agg(F.count(&#39;animal_type&#39;).alias(&#39;count&#39;)).sort(&#39;count&#39;,ascending = False).show()</span>
+
+<span class="c1"># strata_dict = rescue.select(&#39;animal_type&#39;).distinct().collect()</span>
+<span class="n">strata_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Cat&#39;</span><span class="p">:</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;Dog&#39;</span><span class="p">:</span><span class="mi">20</span><span class="p">,</span><span class="s1">&#39;Bird&#39;</span><span class="p">:</span><span class="mi">15</span><span class="p">,</span> <span class="s1">&#39;Fox&#39;</span><span class="p">:</span> <span class="mi">49</span><span class="p">,</span><span class="s1">&#39;Other&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">strata_dict</span><span class="p">)</span>
+<span class="n">restructured</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">,</span><span class="n">F</span><span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Cat&#39;</span><span class="p">,</span><span class="s1">&#39;Cat&#39;</span><span class="p">)</span>
+                                                <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Bird&#39;</span><span class="p">,</span><span class="s1">&#39;Bird&#39;</span><span class="p">)</span>
+                                                <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Dog&#39;</span><span class="p">,</span><span class="s1">&#39;Dog&#39;</span><span class="p">)</span>
+                                                <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Fox&#39;</span><span class="p">,</span><span class="s1">&#39;Fox&#39;</span><span class="p">)</span>
+                                                <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="s1">&#39;Other&#39;</span><span class="p">))</span>
+
+<span class="n">restructured</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span><span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># restructured = restructured.withColumn(&#39;sample_size&#39;,F.when(F.col(&#39;animal_type&#39;) == &#39;Cat&#39;,20)</span>
+<span class="c1">#                                                 .when(F.col(&#39;animal_type&#39;) == &#39;Bird&#39;,15)</span>
+<span class="c1">#                                                 .when(F.col(&#39;animal_type&#39;) == &#39;Dog&#39;,10)</span>
+<span class="c1">#                                                 .when(F.col(&#39;animal_type&#39;) == &#39;Fox&#39;,2)</span>
+<span class="c1">#                                                 .otherwise(5))</span>
+<span class="c1"># restructured.show()</span>
+
+<span class="c1"># Chain is an external package from itertools</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+<span class="n">mapping_expr</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">create_map</span><span class="p">([</span><span class="n">F</span><span class="o">.</span><span class="n">lit</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">strata_dict</span><span class="o">.</span><span class="n">items</span><span class="p">())])</span> 
+<span class="n">restructured</span> <span class="o">=</span> <span class="n">restructured</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;sample_size&quot;</span><span class="p">,</span> 
+              <span class="n">mapping_expr</span><span class="p">[</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_type&quot;</span><span class="p">)])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;Cat&#39;: 100, &#39;Dog&#39;: 20, &#39;Bird&#39;: 15, &#39;Fox&#39;: 49, &#39;Other&#39;: 0}
++-----------+-----+
+|animal_type|count|
++-----------+-----+
+|        Cat| 2909|
+|       Bird| 1100|
+|        Dog| 1008|
+|      Other|  643|
+|        Fox|  238|
++-----------+-----+
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.window</span> <span class="kn">import</span> <span class="n">Window</span>
+<span class="n">restructured</span> <span class="o">=</span> <span class="n">restructured</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;random_number&#39;</span><span class="p">,</span><span class="n">F</span><span class="o">.</span><span class="n">rand</span><span class="p">())</span>
+<span class="n">window_spec</span> <span class="o">=</span> <span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s1">&#39;random_number&#39;</span><span class="p">)</span>
+<span class="n">restructured</span> <span class="o">=</span> <span class="n">restructured</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;strata_rank&quot;</span><span class="p">,</span><span class="n">F</span><span class="o">.</span><span class="n">rank</span><span class="p">()</span><span class="o">.</span><span class="n">over</span><span class="p">(</span><span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s1">&#39;random_number&#39;</span><span class="p">)))</span>
+
+<span class="n">restructured</span> <span class="o">=</span> <span class="p">(</span><span class="n">restructured</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;sampled&#39;</span><span class="p">,</span><span class="n">F</span><span class="o">.</span><span class="n">when</span><span class="p">((</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;strata_rank&#39;</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;sample_size&#39;</span><span class="p">)),</span> <span class="mi">1</span><span class="p">)</span>
+                                    <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span>
+
+<span class="n">sample</span> <span class="o">=</span> <span class="n">restructured</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;sampled&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">,</span><span class="s1">&#39;sample_size&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span><span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+-----------+-----------+-----+
+|animal_type|sample_size|count|
++-----------+-----------+-----+
+|        Cat|        100|  100|
+|        Fox|         49|   49|
+|        Dog|         20|   20|
+|       Bird|         15|   15|
++-----------+-----------+-----+
+</pre></div>
+</div>
+</div>
+</div>
+<section id="returning-an-exact-sample-per-strata">
+<h2>Returning an exact sample per strata<a class="headerlink" href="#returning-an-exact-sample-per-strata" title="Permalink to this heading">#</a></h2>
+<p>If you are wishing to use a form of stratified sampling where an exact number of samples are needed per strata, this can be implemented using a window function. More details and examples using window functions can be found in the <a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-functions/window-functions.html">window function page</a>. We found that the simplest way of returning an exact number of samples per strata is to create a column for each strata with the number of samples required. To simplify this example we have reduced the number of animals in the <code class="docutils literal notranslate"><span class="pre">animal_type</span></code> column to 5: Bird; Cat; Dog; Fox; and Other.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Preprocessing to simplify the number of animals in the `animal_type` column</span>
+<span class="n">simplified_animal_types</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">,</span><span class="n">F</span><span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="o">~</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39;Cat&#39;</span><span class="p">,</span><span class="s1">&#39;Bird&#39;</span><span class="p">,</span><span class="s1">&#39;Dog&#39;</span><span class="p">,</span><span class="s1">&#39;Fox&#39;</span><span class="p">]),</span><span class="s1">&#39;Other&#39;</span><span class="p">)</span>
+                                              <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)))</span>
+
+<span class="c1"># Counting the number of animals in each group</span>
+<span class="n">simplified_animal_types</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span><span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+-----------+-----+
+|animal_type|count|
++-----------+-----+
+|        Cat| 2909|
+|       Bird| 1100|
+|        Dog| 1008|
+|      Other|  643|
+|        Fox|  238|
++-----------+-----+
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Preprocessing to simplify the number of animals in the `animal_type` column</span>
+<span class="n">simplified_animal_types</span><span class="w"> </span><span class="o">&lt;-</span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">animal_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">case_when</span><span class="p">(</span><span class="o">!</span><span class="n">animal_group</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&#39;Cat&#39;</span><span class="p">,</span><span class="s">&#39;Bird&#39;</span><span class="p">,</span><span class="s">&#39;Dog&#39;</span><span class="p">,</span><span class="s">&#39;Fox&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s">&#39;Other&#39;</span><span class="p">,</span>
+<span class="w">                                                       </span><span class="n">.default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">animal_group</span><span class="p">))</span>
+
+<span class="c1"># Counting the number of animals in each group</span>
+<span class="n">simplified_animal_types</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">        </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">animal_type</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">        </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">count</span><span class="p">(</span><span class="n">animal_type</span><span class="p">,</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;row_count&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">        </span><span class="nf">sdf_sort</span><span class="p">(</span><span class="s">&#39;animal_type&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Next we create our column which has the required number of samples per strata. This can be done simply using <code class="docutils literal notranslate"><span class="pre">F.when</span></code> statements, however this may not be viable when you are sampling across a lot of variables as this would require a <code class="docutils literal notranslate"><span class="pre">when</span></code> statement for each distinct value. A work around to this can be done using UDFs or a mapping function however, the efficiency of this has not been assessed. We will also give each row a randomly generated number from a uniform distribution which is used to order the rows per strata.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a sample_size column for each strata </span>
+<span class="n">simplified_animal_types</span> <span class="o">=</span> <span class="p">(</span><span class="n">simplified_animal_types</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;sample_size&#39;</span><span class="p">,</span><span class="n">F</span><span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Bird&#39;</span><span class="p">,</span><span class="mi">15</span><span class="p">)</span>
+                                                <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Cat&#39;</span><span class="p">,</span><span class="mi">20</span><span class="p">)</span>
+                                                <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Dog&#39;</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+                                                <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Fox&#39;</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+                                                <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Other&#39;</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+                                                <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+                                                <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;random_number&#39;</span><span class="p">,</span><span class="n">F</span><span class="o">.</span><span class="n">rand</span><span class="p">())</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">simplified_animal_types</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">simplified_animal_types</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">                            </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">sample_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">case_when</span><span class="p">(</span>
+<span class="w">                                            </span><span class="n">animal_type</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&#39;Bird&#39;</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="m">15</span><span class="p">,</span>
+<span class="w">                                            </span><span class="n">animal_type</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&#39;Cat&#39;</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="m">20</span><span class="p">,</span>
+<span class="w">                                            </span><span class="n">animal_type</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&#39;Dog&#39;</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="m">10</span><span class="p">,</span>
+<span class="w">                                            </span><span class="n">animal_type</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&#39;Fox&#39;</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="m">2</span><span class="p">,</span>
+<span class="w">                                            </span><span class="n">animal_type</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&#39;Other&#39;</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="m">5</span><span class="p">,</span>
+<span class="w">                                            </span><span class="n">.default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">                            </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">random_number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">rand</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>Using a window function, we create a column <code class="docutils literal notranslate"><span class="pre">strata_rank</span></code> which will rank each of the random numbers from <code class="docutils literal notranslate"><span class="pre">random_number</span></code> column in order. From this, we create a final column <code class="docutils literal notranslate"><span class="pre">sampled</span></code> which will contain a <code class="docutils literal notranslate"><span class="pre">1</span></code> if the ranked value of a random number is less than or equal to the required sample size for each strata. Otherwise it will contain a <code class="docutils literal notranslate"><span class="pre">0</span></code>. To obtain our final sample, we simply filter on the <code class="docutils literal notranslate"><span class="pre">sampled</span></code> column and extract all rows where this equals <code class="docutils literal notranslate"><span class="pre">1</span></code>. We can check the number of entries per sample by using a aggregating function (<code class="docutils literal notranslate"><span class="pre">agg</span></code>) and a <code class="docutils literal notranslate"><span class="pre">groupBy</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.window</span> <span class="kn">import</span> <span class="n">Window</span>
+<span class="c1"># use Window function to rank based on size of random number</span>
+<span class="n">simplified_animal_types</span> <span class="o">=</span> <span class="n">simplified_animal_types</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;strata_rank&quot;</span><span class="p">,</span><span class="n">F</span><span class="o">.</span><span class="n">rank</span><span class="p">()</span><span class="o">.</span><span class="n">over</span><span class="p">(</span><span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s1">&#39;random_number&#39;</span><span class="p">)))</span>
+<span class="c1"># Set sampled column to 1 if rank is lower than sample_size, 0 otherwise</span>
+<span class="n">simplified_animal_types</span> <span class="o">=</span> <span class="p">(</span><span class="n">simplified_animal_types</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;sampled&#39;</span><span class="p">,</span><span class="n">F</span><span class="o">.</span><span class="n">when</span><span class="p">((</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;strata_rank&#39;</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;sample_size&#39;</span><span class="p">)),</span> <span class="mi">1</span><span class="p">)</span>
+                                    <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span>
+ 
+<span class="c1"># Take our sample by filtering where `sampled` is 1</span>
+<span class="n">sample</span> <span class="o">=</span> <span class="n">simplified_animal_types</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;sampled&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+<span class="c1"># Count rows in sample</span>
+<span class="n">sample</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">,</span><span class="s1">&#39;sample_size&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span><span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+-----------+-----------+-----+
+|animal_type|sample_size|count|
++-----------+-----------+-----+
+|        Cat|         20|   20|
+|       Bird|         15|   15|
+|        Dog|         10|   10|
+|      Other|          5|    5|
+|        Fox|          2|    2|
++-----------+-----------+-----+
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">simplified_animal_types</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">simplified_animal_types</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">              </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">animal_type</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">              </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">strata_rank</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">rank</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">random_number</span><span class="p">)))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">              </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">ungroup</span><span class="p">()</span>
+
+<span class="n">simplified_animal_types</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">simplified_animal_types</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">sampled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">case_when</span><span class="p">(</span>
+<span class="w">              </span><span class="n">strata_rank</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">sample_size</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="m">1</span><span class="p">,</span>
+<span class="w">              </span><span class="n">.default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">))</span>
+
+<span class="n">sampled</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">simplified_animal_types</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">sampled</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+
+<span class="n">sampled</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">        </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">animal_type</span><span class="p">,</span><span class="n">sample_size</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">        </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">count</span><span class="p">(</span><span class="n">animal_type</span><span class="p">,</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;row_count&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">        </span><span class="nf">sdf_sort</span><span class="p">(</span><span class="s">&#39;animal_type&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It should be pointed out that using a Window function and partitioning by a strata can lead to issues in datasets which have large skews. If one strata is significantly larger than others, this could also cause memory overflow issues on the executors resulting in spark sessions crashing.</p>
+</section>
+<section id="simplifying-the-required-sample-column">
+<h2>Simplifying the required sample column<a class="headerlink" href="#simplifying-the-required-sample-column" title="Permalink to this heading">#</a></h2>
+<p>For pyspark, we can simplify the creation of the required sample column by using dictionaries. This does require the use of the <code class="docutils literal notranslate"><span class="pre">itertools</span></code> package and <code class="docutils literal notranslate"><span class="pre">chain</span></code> function to map the values within the column. A similar work around may also be possible in R.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+<span class="c1"># Create dictionary</span>
+<span class="n">strata_dictionary</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Bird&#39;</span><span class="p">:</span><span class="mi">15</span><span class="p">,</span> <span class="s1">&#39;Cat&#39;</span><span class="p">:</span><span class="mi">20</span><span class="p">,</span> <span class="s1">&#39;Dog&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;Fox&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;Other&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">}</span>
+
+
+<span class="n">mapping_example</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">,</span><span class="n">F</span><span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="o">~</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39;Cat&#39;</span><span class="p">,</span><span class="s1">&#39;Bird&#39;</span><span class="p">,</span><span class="s1">&#39;Dog&#39;</span><span class="p">,</span><span class="s1">&#39;Fox&#39;</span><span class="p">]),</span><span class="s1">&#39;Other&#39;</span><span class="p">)</span>
+                                              <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)))</span>
+
+<span class="n">mapping_expr</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">create_map</span><span class="p">([</span><span class="n">F</span><span class="o">.</span><span class="n">lit</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">strata_dictionary</span><span class="o">.</span><span class="n">items</span><span class="p">())])</span> 
+<span class="n">mapping_example</span> <span class="o">=</span> <span class="n">mapping_example</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;sample_size&quot;</span><span class="p">,</span> 
+              <span class="n">mapping_expr</span><span class="p">[</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_type&quot;</span><span class="p">)])</span>
+
+<span class="n">mapping_example</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">,</span><span class="s1">&#39;sample_size&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span><span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+-----------+-----------+-----+
+|animal_type|sample_size|count|
++-----------+-----------+-----+
+|        Cat|         20| 2909|
+|       Bird|         15| 1100|
+|        Dog|         10| 1008|
+|      Other|          5|  643|
+|        Fox|          2|  238|
++-----------+-----------+-----+
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./raw-notebooks\sampling"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Alice White python function</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#find-a-strata">Find a strata:</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#applying-map">Applying map()</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#returning-an-exact-sample-per-strata">Returning an exact sample per strata</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simplifying-the-required-sample-column">Simplifying the required sample column</a></li>
+</ul>
+</li>
+</ul>
+
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Wil Roberts & Adrian Prince
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
