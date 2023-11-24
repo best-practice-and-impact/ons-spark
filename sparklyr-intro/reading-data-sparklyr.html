@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Configuration Hierarchy and spark-defaults.conf &#8212; Spark at the ONS</title>
+    <title>Reading Data in sparklyr &#8212; Spark at the ONS</title>
   
   
   
@@ -56,7 +56,6 @@
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
-    <script src="../_static/tabs.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../_static/design-tabs.js"></script>
     <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
@@ -72,11 +71,11 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'spark-overview/spark-defaults';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'sparklyr-intro/reading-data-sparklyr';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Data Types in Spark" href="data-types.html" />
-    <link rel="prev" title="Example Spark Sessions" href="example-spark-sessions.html" />
+    <link rel="next" title="Using Spark functions in sparklyr" href="sparklyr-functions.html" />
+    <link rel="prev" title="Introduction to sparklyr" href="sparklyr-intro.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -178,15 +177,15 @@ const thebe_selector_output = ".output, .cell_output"
             </li>
         </ul>
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark overview</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="spark-start.html">Getting Started with Spark</a></li>
-<li class="toctree-l1"><a class="reference internal" href="when-to-use-spark.html">When To Use Spark</a></li>
-<li class="toctree-l1"><a class="reference internal" href="spark-session-guidance.html">Guidance on Spark Sessions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="example-spark-sessions.html">Example Spark Sessions</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Configuration Hierarchy and <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="data-types.html">Data Types in Spark</a></li>
-<li class="toctree-l1"><a class="reference internal" href="creating-dataframes.html">Creating DataFrames Manually</a></li>
-<li class="toctree-l1"><a class="reference internal" href="data-storage.html">Data Storage</a></li>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-start.html">Getting Started with Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/when-to-use-spark.html">When To Use Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-session-guidance.html">Guidance on Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/example-spark-sessions.html">Example Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-defaults.html">Configuration Hierarchy and <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/data-types.html">Data Types in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/creating-dataframes.html">Creating DataFrames Manually</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/data-storage.html">Data Storage</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to PySpark</span></p>
 <ul class="nav bd-sidenav">
@@ -196,10 +195,10 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/f-col.html">Reference columns by name: <code class="docutils literal notranslate"><span class="pre">F.col()</span></code></a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to sparklyr</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/sparklyr-intro.html">Introduction to sparklyr</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/reading-data-sparklyr.html">Reading Data in sparklyr</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">Using Spark functions in sparklyr</a></li>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="sparklyr-intro.html">Introduction to sparklyr</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Reading Data in sparklyr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sparklyr-functions.html">Using Spark functions in sparklyr</a></li>
 
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark functions</span></p>
@@ -312,7 +311,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fspark-overview/spark-defaults.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fsparklyr-intro/reading-data-sparklyr.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -342,7 +341,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="../_sources/spark-overview/spark-defaults.md" target="_blank"
+      <li><a href="../_sources/sparklyr-intro/reading-data-sparklyr.md" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -424,7 +423,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Configuration Hierarchy and spark-defaults.conf</h1>
+    <h1>Reading Data in sparklyr</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -434,8 +433,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#default-global-settings">Default global settings</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spark-defaults-conf-configuration-file"><code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code> configuration file</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further Resources</a></li>
 </ul>
             </nav>
         </div>
@@ -447,98 +445,14 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section id="configuration-hierarchy-and-spark-defaults-conf">
-<h1>Configuration Hierarchy and <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code><a class="headerlink" href="#configuration-hierarchy-and-spark-defaults-conf" title="Permalink to this heading">#</a></h1>
-<p>Every Spark session has a <em>configuration</em>, where important settings such as the amount of memory, number of executors and cores are defined. There are three places that can contain configuration settings for a Spark session:</p>
-<ul class="simple">
-<li><p>Directly in <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.html#pyspark.sql.SparkSession.builder"><code class="docutils literal notranslate"><span class="pre">SparkSession.builder</span></code></a> (PySpark) or <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html"><code class="docutils literal notranslate"><span class="pre">spark_connect()</span></code></a> (sparklyr)</p></li>
-<li><p>In a <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code> configuration file</p></li>
-<li><p>The default global setting</p></li>
-</ul>
-<p>These work on a hierarchy, first looking at the value in <code class="docutils literal notranslate"><span class="pre">SparkSession.builder</span></code> (for PySpark) or <code class="docutils literal notranslate"><span class="pre">spark_connect()</span></code> (for sparklyr), if this is not defined then the value in <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code>, and finally the default setting for that environment if not defined in either.</p>
-<p>Remember that when using the Spark cluster to only use the resource that you need. Depending on your organisations architecture, using excessive memory could cause cloud computing bills to be higher, or prevent other users from running Spark jobs. This is the most important point to remember, regardless of where the Spark session is defined.</p>
-<section id="default-global-settings">
-<h2>Default global settings<a class="headerlink" href="#default-global-settings" title="Permalink to this heading">#</a></h2>
-<p>If no value is supplied in <code class="docutils literal notranslate"><span class="pre">SparkSession.builder</span></code>/<code class="docutils literal notranslate"><span class="pre">spark_connect()</span></code> or <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code>, then the default global settings will be used. These are ultimately derived either from the <a class="reference external" href="https://spark.apache.org/docs/latest/configuration.html#available-properties">Spark default value</a>, or in some cases the global setting specific to the environment. For instance, at the ONS, the <code class="docutils literal notranslate"><span class="pre">spark.dynamicAllocation.maxExecutors</span></code> is set to <code class="docutils literal notranslate"><span class="pre">3</span></code> in the Dev Test environment.</p>
-<p>To use the global default settings in Spark you use the Spark session builder with no config options apart from the application name:</p>
-<div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-0-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-0-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;default-session&quot;</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
-<span class="p">)</span>
-</pre></div>
+  <section id="reading-data-in-sparklyr">
+<h1>Reading Data in sparklyr<a class="headerlink" href="#reading-data-in-sparklyr" title="Permalink to this heading">#</a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This section is under construction.</p>
 </div>
-</div><div aria-labelledby="tab-0-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">default_config</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">spark_config</span><span class="p">()</span>
-
-<span class="n">sc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">spark_connect</span><span class="p">(</span>
-<span class="w">  </span><span class="n">master</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;yarn-client&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="n">app_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;default-session&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">default_config</span><span class="p">)</span>
-</pre></div>
-</div>
-</div></div>
-<p>It is advised to use the default settings when you are not yet sure of your requirements, such as in the initial investigation of new data sources. See the section <em>Default/Blank Session</em> in the Sample Spark Session Sizes guidance for more details.</p>
-</section>
-<section id="spark-defaults-conf-configuration-file">
-<h2><code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code> configuration file<a class="headerlink" href="#spark-defaults-conf-configuration-file" title="Permalink to this heading">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code> is an optional configuration file, located in the home directory of the project. If it exists, then it sits in the middle of the hierarchy; any values not specified in the <code class="docutils literal notranslate"><span class="pre">SparkSession.builder</span></code> will instead use the values in <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code>. If they are not defined in either then the default global settings will apply.</p>
-<p>The format of <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code> is one property per line, with the setting name and values separated by whitespace; these should <strong>not</strong> be given as strings. As an example, we can give the example small session in the <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code> format:</p>
-<div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-c3BhcmstZGVmYXVsdHMuY29uZg==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-c3BhcmstZGVmYXVsdHMuY29uZg==" name="c3BhcmstZGVmYXVsdHMuY29uZg==" role="tab" tabindex="0">spark-defaults.conf</button></div><div aria-labelledby="tab-1-c3BhcmstZGVmYXVsdHMuY29uZg==" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-c3BhcmstZGVmYXVsdHMuY29uZg==" name="c3BhcmstZGVmYXVsdHMuY29uZg==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>spark.executor.memory                1g
-spark.executor.cores                 1
-spark.dynamicAllocation.enabled      true
-spark.dynamicAllocation.maxExecutors 3
-spark.sql.shuffle.partitions         12
-spark.shuffle.service.enabled        true
-spark.ui.showConsoleProgress         false
-</pre></div>
-</div>
-</div><p>There are advantages and disadvantages to using a <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code> file; they can be useful in some circumstances but often users prefer to define their Spark sessions from within the script. As with any coding practice, try and be consistent within your team.</p>
-<p>Advantages:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code> is a specific example of a configuration file; one particular advantage is allowing editing of the configuration without altering the main script, which can be useful when running the code in different environments or when the size of the source data varies considerably.</p></li>
-<li><p>It is language agnostic and the same configuration file can be used with Python and R (and also Scala).</p></li>
-<li><p>One use case for <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code> if using CDSW is setting <code class="docutils literal notranslate"><span class="pre">spark.ui.showConsoleProgress</span></code> to <code class="docutils literal notranslate"><span class="pre">false</span></code>; this disables the progress bar from obscuring some outputs in CDSW and is almost always a desired setting in any project.</p></li>
-<li><p>If the Git repo is cloned to the home directory rather than a subdirectory then it is easy to track it with Git.</p></li>
-</ul>
-<p>Disadvantages:</p>
-<ul class="simple">
-<li><p>The Spark session settings become less visible as they are contained in a different file. It is sensible to document in a docstring or comment that you are using the settings in <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code>.</p></li>
-<li><p>Depending on how the Git repositories in your container are set up, you may not be able to track <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code> with Git. If you use one repository per container, then it can be tracked; if several repositories are cloned in the same container as subdirectories then the <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code> will be outside the tracked repository.</p></li>
-</ul>
-<p class="rubric">Using <code class="docutils literal notranslate"><span class="pre">SparkSession.builder</span></code>/<code class="docutils literal notranslate"><span class="pre">spark_connect()</span></code></p>
-<p>The values in <code class="docutils literal notranslate"><span class="pre">SparkSession.builder</span></code>/<code class="docutils literal notranslate"><span class="pre">spark_connect()</span></code> will override any values set either globally or in
-<code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code>. This is the most commonly used option at the ONS.</p>
-<p>When starting a new project which requires Spark, think about your requirements and use the appropriate amount of memory; the Guidance on Spark Sessions and Sample Spark Session Sizes articles are a good starting point. If unsure, use a blank session which will use the global defaults. It is important not to copy and paste Spark session builders between projects as you may use far more memory than needed, or too little, which may case the code to run slowly or not at all.</p>
-<p class="rubric">Legacy configuration options</p>
-<p>The values in <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code> are read once when the Python or R kernel is initiated, so if these values are altered you will need to restart the kernel to use them.</p>
-<p>The hierarchy of Spark session settings is more complicated once a Spark session has been started, as in the absence of a value specifically defined in <code class="docutils literal notranslate"><span class="pre">SparkSession.builder</span></code>/<code class="docutils literal notranslate"><span class="pre">spark_connect()</span></code>, the value from the previous Spark session will be used. For example, assume that you need to join two small DataFrames and so start a Spark session with <code class="docutils literal notranslate"><span class="pre">spark.sql.shuffle.partitions</span></code> set to <code class="docutils literal notranslate"><span class="pre">12</span></code>. You then want to process much larger data and so stop the current Spark session and create a new one with the default value for <code class="docutils literal notranslate"><span class="pre">spark.sql.shuffle.partitions</span></code>, which is <code class="docutils literal notranslate"><span class="pre">200</span></code>, and so do not include this in the builder. However, it will still start a session with the previous value, <code class="docutils literal notranslate"><span class="pre">12</span></code>. To avoid this issue, either explicitly specify any setting that has been previously defined, or stop and restart the kernel.</p>
-<p class="rubric">Scala and CDSW</p>
-<p>If using <a class="reference external" href="https://www.scala-lang.org/">Scala</a> in CDSW, a Spark session will be automatically started when loading a CDSW session, so you will have to use <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code>, unless the default settings are appropriate for your project.</p>
-<p>At the ONS, we recommend that Spark code is written with Python or R, using the PySpark or sparklyr packages. Most users find writing Spark code with Python or R much easier than learning Scala. There are also more users of Python and R at the ONS, meaning it is easier to find people to peer review and maintain your code.</p>
-<p class="rubric">Further Resources</p>
-<p>Spark at the ONS Articles:</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="spark-session-guidance.html"><span class="doc std std-doc">Guidance on Spark Sessions</span></a></p></li>
-<li><p><a class="reference internal" href="example-spark-sessions.html"><span class="doc std std-doc">Example Spark Sessions</span></a></p></li>
-</ul>
-<p>PySpark Documentation:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.html#pyspark.sql.SparkSession.builder"><code class="docutils literal notranslate"><span class="pre">SparkSession.builder</span></code></a></p></li>
-</ul>
-<p>sparklyr and tidyverse Documentation:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/spark-connections.html"><code class="docutils literal notranslate"><span class="pre">spark_connect()</span></code></a></p></li>
-</ul>
-<p>Spark Documentation:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/configuration.html#available-properties">Spark Properties and Defaults</a></p></li>
-</ul>
-<p>Other Links:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://www.scala-lang.org/">Scala</a></p></li>
-</ul>
-</div>
+<section id="further-resources">
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this heading">#</a></h2>
 </section>
 </section>
 
@@ -555,7 +469,7 @@ spark.ui.showConsoleProgress         false
         },
         kernelOptions: {
             name: "python3",
-            path: "./spark-overview"
+            path: "./sparklyr-intro"
         },
         predefinedOutput: true
     }
@@ -573,20 +487,20 @@ spark.ui.showConsoleProgress         false
                   <!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="example-spark-sessions.html"
+       href="sparklyr-intro.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Example Spark Sessions</p>
+        <p class="prev-next-title">Introduction to sparklyr</p>
       </div>
     </a>
     <a class="right-next"
-       href="data-types.html"
+       href="sparklyr-functions.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Data Types in Spark</p>
+        <p class="prev-next-title">Using Spark functions in sparklyr</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -605,8 +519,7 @@ spark.ui.showConsoleProgress         false
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#default-global-settings">Default global settings</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spark-defaults-conf-configuration-file"><code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code> configuration file</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further Resources</a></li>
 </ul>
   </nav></div>
 
