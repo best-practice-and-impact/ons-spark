@@ -7,7 +7,7 @@
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>Logistic Regression &#8212; Spark at the ONS</title>
   
@@ -19,12 +19,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -40,14 +40,12 @@
     <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
-  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
@@ -59,7 +57,7 @@
     <script src="../_static/tabs.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../_static/design-tabs.js"></script>
-    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+    <script loading_method="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
     <script>
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){ dataLayer.push(arguments); }
@@ -87,15 +85,6 @@ const thebe_selector_output = ".output, .cell_output"
   
   
   <a class="skip-link" href="#main-content">Skip to main content</a>
-  
-  <div id="pst-scroll-pixel-helper"></div>
-
-  
-  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>
-    Back to top
-  </button>
-
   
   <input type="checkbox"
           class="sidebar-toggle"
@@ -396,10 +385,10 @@ const thebe_selector_output = ".output, .cell_output"
 
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
   </button>
 `);
 </script>
@@ -407,7 +396,7 @@ document.write(`
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+    <i class="fa-solid fa-magnifying-glass"></i>
   </button>
 `);
 </script>
@@ -466,7 +455,7 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="logistic-regression">
-<h1>Logistic Regression<a class="headerlink" href="#logistic-regression" title="Permalink to this heading">#</a></h1>
+<h1>Logistic Regression<a class="headerlink" href="#logistic-regression" title="Permalink to this headline">#</a></h1>
 <p>Logistic regression is often used in both predictive and inferential analysis. A logistic
 regression model is trained on a dataset to learn how certain
 independent variables relate to the probability of a binary outcome
@@ -479,7 +468,7 @@ discussion of the steps necessary to prepare the data and potential
 issues to consider. We will also show how to access standard errors and
 confidence intervals for inferential analysis and how to assemble these steps into a pipeline.</p>
 <section id="preparing-the-data">
-<h2>Preparing the data<a class="headerlink" href="#preparing-the-data" title="Permalink to this heading">#</a></h2>
+<h2>Preparing the data<a class="headerlink" href="#preparing-the-data" title="Permalink to this headline">#</a></h2>
 <p>We will be using the <code class="docutils literal notranslate"><span class="pre">Spark</span> <span class="pre">ML</span></code> functions <code class="docutils literal notranslate"><span class="pre">GeneralizedLinearRegression</span></code>/<code class="docutils literal notranslate"><span class="pre">ml_generalised_linear_regression</span></code>. The syntax used to call these
 functions is somewhat similar to logistic regression functions in python or R.
 However, there may be some additional steps to take in preparing the data
@@ -594,7 +583,7 @@ before the model can be run successfully.</p>
 </div>
 </div></div>
 <section id="missing-values">
-<h3>Missing values<a class="headerlink" href="#missing-values" title="Permalink to this heading">#</a></h3>
+<h3>Missing values<a class="headerlink" href="#missing-values" title="Permalink to this headline">#</a></h3>
 <p>You may already be familiar with functions such as <code class="docutils literal notranslate"><span class="pre">LogisticRegression</span></code> or <code class="docutils literal notranslate"><span class="pre">glm</span></code> for performing
 logistic regression in python and R. Some of these commonly used functions are quite
 user-friendly and will automatically account for issues such as missing
@@ -652,7 +641,7 @@ ready to run our logistic regression.</p>
 </section>
 </section>
 <section id="running-a-logistic-regression-model">
-<h2>Running a logistic regression model<a class="headerlink" href="#running-a-logistic-regression-model" title="Permalink to this heading">#</a></h2>
+<h2>Running a logistic regression model<a class="headerlink" href="#running-a-logistic-regression-model" title="Permalink to this headline">#</a></h2>
 <p>When running a logistic regression model in sparklyr using <code class="docutils literal notranslate"><span class="pre">ml_generalised_linear_regression</span></code>, it is sufficient to prepare the data and deal with missing values as shown above before running the model. The function will automatically encode categorical variables without user input.</p>
 <p>However, using the <code class="docutils literal notranslate"><span class="pre">Spark</span> <span class="pre">ML</span></code> functions for logistic regression in PySpark requires the user to encode any categorical variables in the dataset so they can be represented numerically before running the regression model. Typically this is done using a method called <strong>one-hot encoding</strong>. One category is selected as the reference category and new columns are created in the data for each of the other
 categories, assigning a 1 or 0 for each row depending on whether that
@@ -823,7 +812,7 @@ the formula syntax
 </details>
 </section>
 <section id="inferential-analysis">
-<h2>Inferential Analysis<a class="headerlink" href="#inferential-analysis" title="Permalink to this heading">#</a></h2>
+<h2>Inferential Analysis<a class="headerlink" href="#inferential-analysis" title="Permalink to this headline">#</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">Spark</span> <span class="pre">ML</span></code> functions available in PySpark and sparklyr were largely developed
 with predictive analysis in mind. This means that they have been built
 primarily to specify a regression model and retrieve the prediction (as we have done above), with little information in between.</p>
@@ -1106,9 +1095,9 @@ approximation is sufficient.</p>
 </details>
 </section>
 <section id="things-to-watch-out-for">
-<h2>Things to watch out for<a class="headerlink" href="#things-to-watch-out-for" title="Permalink to this heading">#</a></h2>
+<h2>Things to watch out for<a class="headerlink" href="#things-to-watch-out-for" title="Permalink to this headline">#</a></h2>
 <section id="singularity-issue">
-<h3>Singularity issue<a class="headerlink" href="#singularity-issue" title="Permalink to this heading">#</a></h3>
+<h3>Singularity issue<a class="headerlink" href="#singularity-issue" title="Permalink to this headline">#</a></h3>
 <p>Some functions for carrying out logistic regression, such as <code class="docutils literal notranslate"><span class="pre">glm</span></code> when using R, are able to detect when a predictor in the model only takes a singular value and drop these columns from the analysis. However, the equivalent functions in PySpark and sparklyr do not have this functionality, so we need to be careful to check that variables included in the model take
 more than one value in order to avoid errors.</p>
 <details>
@@ -1193,7 +1182,7 @@ will not run unless <code class="docutils literal notranslate"><span class="pre"
 </details>
 </section>
 <section id="selecting-reference-categories">
-<h3>Selecting reference categories<a class="headerlink" href="#selecting-reference-categories" title="Permalink to this heading">#</a></h3>
+<h3>Selecting reference categories<a class="headerlink" href="#selecting-reference-categories" title="Permalink to this headline">#</a></h3>
 <p>When including categorical variables as independent variables in a
 regression, one of the categories must act as the reference category.
 The coefficients for all other categories are relative to the reference
@@ -1468,7 +1457,7 @@ term                  estimate std.error statistic  p.value lower_ci upper_ci
 </details>
 </section>
 <section id="multicollinearity">
-<h3>Multicollinearity<a class="headerlink" href="#multicollinearity" title="Permalink to this heading">#</a></h3>
+<h3>Multicollinearity<a class="headerlink" href="#multicollinearity" title="Permalink to this headline">#</a></h3>
 <p>A key assumption of linear and logistic regression models is that the feature columns are independent of one another. Including features that correlate with each other in the model is a clear violation of this assumption, so we need to identify these and remove them to get a valid result.</p>
 <p>A useful way of identifying these variables is to generate a correlation matrix of all the the features in the model. This can be done using the <code class="docutils literal notranslate"><span class="pre">corr</span></code> function from the ml subpackage <code class="docutils literal notranslate"><span class="pre">pyspark.ml.stat</span></code> in PySpark, or the <code class="docutils literal notranslate"><span class="pre">ml_corr</span></code> function in sparklyr.</p>
 <p>In PySpark, note that the correlation function is only applicable to a vector and not to a dataframe. We will therefore have to apply it to the “features” column of the <code class="docutils literal notranslate"><span class="pre">rescue_cat_final</span></code> dataset produced after the indexing, encoding and vector assembly stages of the model setup.</p>
@@ -1647,7 +1636,7 @@ Residual deviance: 7535.0784 on 5841 degrees of freedom
 </section>
 </section>
 <section id="spark-ml-pipelines">
-<h2>Spark ML Pipelines<a class="headerlink" href="#spark-ml-pipelines" title="Permalink to this heading">#</a></h2>
+<h2>Spark ML Pipelines<a class="headerlink" href="#spark-ml-pipelines" title="Permalink to this headline">#</a></h2>
 <p>We can also combine all of the analysis steps outlined above into a single workflow using Spark’s ML Pipelines. Data manipulation, feature transformation and modelling can be rewritten into a <code class="docutils literal notranslate"><span class="pre">pipeline</span></code>/<code class="docutils literal notranslate"><span class="pre">ml_pipeline()</span></code> object and saved.</p>
 <p>The output of this in sparklyr is in Scala code, meaning that it can be added to scheduled Spark ML jobs without any dependencies in R. However, it should be noted that we have not yet found a simple way of generating a summary coefficient table as shown in the sections above when using a pipeline for analysis. Although coefficients, p-values etc. can be obtained it is difficult to map these to the corresponding features for inferential analysis. As a result, pipelines for logistic regression in sparklyr are currently best used for predictive analysis only.</p>
 <p>PySpark pipelines do not have this problem and we can access the coefficients in a similar way to that shown above even when using a pipeline for analysis.</p>
@@ -1831,7 +1820,7 @@ AIC: 7573.0784
 </div>
 </div></div>
 <section id="creating-the-pipeline">
-<h3>Creating the Pipeline<a class="headerlink" href="#creating-the-pipeline" title="Permalink to this heading">#</a></h3>
+<h3>Creating the Pipeline<a class="headerlink" href="#creating-the-pipeline" title="Permalink to this headline">#</a></h3>
 <p>Our sparklyr pipeline will have a total of 9 steps:</p>
 <ol class="arabic simple">
 <li><p>SQL transformer - resulting from the <code class="docutils literal notranslate"><span class="pre">ft_dplyr_transformer()</span></code> transformation</p></li>
@@ -1972,7 +1961,7 @@ AIC: 7573.0784
 </section>
 </section>
 <section id="further-resources">
-<h2>Further resources<a class="headerlink" href="#further-resources" title="Permalink to this heading">#</a></h2>
+<h2>Further resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">#</a></h2>
 <p><strong>PySpark references and documentation:</strong></p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://spark.apache.org/docs/2.3.0/api/python/pyspark.ml.html"><code class="docutils literal notranslate"><span class="pre">pyspark.ml</span></code> package</a></p></li>
@@ -1993,7 +1982,7 @@ AIC: 7573.0784
 <li><p><a class="reference external" href="https://www.rdocumentation.org/packages/sparklyr/versions/0.4/topics/ml_logistic_regression"><code class="docutils literal notranslate"><span class="pre">ml_logistic_regression</span></code></a></p></li>
 </ul>
 <section id="acknowledgements">
-<h3>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this heading">#</a></h3>
+<h3>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this headline">#</a></h3>
 <p>Thanks to Ted Dolby for providing guidance on logistic regression in sparklyr which was adapted to produce this page.</p>
 </section>
 </section>
@@ -2024,10 +2013,11 @@ AIC: 7573.0784
 
               
               
-              
-              
-                <footer class="prev-next-footer">
-                  <!-- Previous / next buttons -->
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
        href="job-description.html"
@@ -2047,7 +2037,10 @@ AIC: 7573.0784
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
+</div></div>
+  
 </div>
+
                 </footer>
               
             </div>
@@ -2122,8 +2115,8 @@ By Wil Roberts & Adrian Prince
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
 
   <footer class="bd-footer">
   </footer>

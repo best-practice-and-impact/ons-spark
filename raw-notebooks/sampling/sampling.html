@@ -7,7 +7,7 @@
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>Sampling: an overview &#8212; Spark at the ONS</title>
   
@@ -19,12 +19,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="../../_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
   
-  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -40,14 +40,12 @@
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
-  <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
-    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
@@ -58,7 +56,7 @@
     <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../_static/design-tabs.js"></script>
-    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+    <script loading_method="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
     <script>
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){ dataLayer.push(arguments); }
@@ -71,8 +69,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -85,15 +83,6 @@ const thebe_selector_output = ".output, .cell_output"
   
   
   <a class="skip-link" href="#main-content">Skip to main content</a>
-  
-  <div id="pst-scroll-pixel-helper"></div>
-
-  
-  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>
-    Back to top
-  </button>
-
   
   <input type="checkbox"
           class="sidebar-toggle"
@@ -394,10 +383,10 @@ const thebe_selector_output = ".output, .cell_output"
 
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
   </button>
 `);
 </script>
@@ -405,7 +394,7 @@ document.write(`
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+    <i class="fa-solid fa-magnifying-glass"></i>
   </button>
 `);
 </script>
@@ -465,7 +454,7 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section id="sampling-an-overview">
-<h1>Sampling: an overview<a class="headerlink" href="#sampling-an-overview" title="Permalink to this heading">#</a></h1>
+<h1>Sampling: an overview<a class="headerlink" href="#sampling-an-overview" title="Permalink to this headline">#</a></h1>
 <p>Sampling is something that you may want to do during development or initial analysis of data, as with a smaller amount of data your code will run faster and requires less memory to process.</p>
 <p>There are many different ways that a dataframe can be sampled, the two main types covered in this page are:</p>
 <ol class="arabic simple">
@@ -476,7 +465,7 @@ document.write(`
 <p>Both <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> and <code class="docutils literal notranslate"><span class="pre">.sampleBy()</span></code> in Pyspark use the same base functions for sampling with and without replacement. For sampling without replacement PySpark implements a uniform sampling method using random number generation. A row will be added to the sample if the randomly generated number is smaller than the fraction input and each row has an equal probability of being sampled. Whereas for sampling with replacement numbers are generated from a Poisson sample. A link to the alogirithm breakdown can be found <a class="reference external" href="https://github.com/apache/spark/blob/master/python/pyspark/rddsampler.py">here</a>.</p>
 <p>It is important to note that sampling in Spark returns an approximate fraction of the data, rather than an exact one. The reason for this is explained in the <span class="xref myst">sample</span> section.</p>
 <section id="creating-spark-session-and-loading-data">
-<h2>Creating spark session and loading data<a class="headerlink" href="#creating-spark-session-and-loading-data" title="Permalink to this heading">#</a></h2>
+<h2>Creating spark session and loading data<a class="headerlink" href="#creating-spark-session-and-loading-data" title="Permalink to this headline">#</a></h2>
 <p>First, set up the Spark session, read the Animal Rescue data:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -546,13 +535,13 @@ document.write(`
 </div>
 </section>
 <section id="sampling-sample-and-sdf-sample">
-<h2>Sampling: <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code><a class="headerlink" href="#sampling-sample-and-sdf-sample" title="Permalink to this heading">#</a></h2>
+<h2>Sampling: <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code><a class="headerlink" href="#sampling-sample-and-sdf-sample" title="Permalink to this headline">#</a></h2>
 <p>By using <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> in Pyspark and <code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code> in SparklyR you take a sampled subset of the original dataframe by setting a <code class="docutils literal notranslate"><span class="pre">seed</span></code>, a <code class="docutils literal notranslate"><span class="pre">fraction</span></code> and whether replacement is required. For the latter argument, in PySpark you use <code class="docutils literal notranslate"><span class="pre">withReplacement</span> <span class="pre">=</span></code>, if this is not set then the default answer is <code class="docutils literal notranslate"><span class="pre">False</span></code>, on the other hand in SparklyR you use <code class="docutils literal notranslate"><span class="pre">replacement</span> <span class="pre">=</span></code> and if not set the default answer = <code class="docutils literal notranslate"><span class="pre">True</span></code>. For both functions, <code class="docutils literal notranslate"><span class="pre">seed</span></code> is an optional argument which defaults to a random seed. The <code class="docutils literal notranslate"><span class="pre">fraction</span></code> however is compulsory and must be a value betwen 0.0 and 1.0; so, if we want to obtain a 20% sample we would use <code class="docutils literal notranslate"><span class="pre">fraction</span> <span class="pre">=</span> <span class="pre">0.2</span></code>.</p>
 <p>For these two functions it is advised to specify the arguments explicitly. One reason being that in Pyspark <code class="docutils literal notranslate"><span class="pre">fraction</span></code> must come after <code class="docutils literal notranslate"><span class="pre">withReplacement</span></code> whereas when you use <code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code> in SparklyR <code class="docutils literal notranslate"><span class="pre">fraction</span></code> must be listed first. If you use both languages it is easy to make this mistake.</p>
 <p>From the <a class="reference external" href="https://spark.apache.org/docs/3.1.2/api/python/reference/api/pyspark.sql.DataFrame.sample.html">PySpark documentation</a>, we see that a uniform sampling method is used for <code class="docutils literal notranslate"><span class="pre">.sample()</span></code>. Here each each row is equally likely to be sampled.
 We should check that this is indeed occuring for an evenly distrubuted dataframe across a number of partitions (<code class="docutils literal notranslate"><span class="pre">rescue</span></code>) and a skewed dataset (<code class="docutils literal notranslate"><span class="pre">skew_df</span></code>). As both <code class="docutils literal notranslate"><span class="pre">.sample</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code> implement uniform sampling, an <em>approximate</em> sample is returned, so you will get either slightly more or less than the specified fraction you originally input.</p>
 <section id="sampling-without-replacement">
-<h3>Sampling without replacement<a class="headerlink" href="#sampling-without-replacement" title="Permalink to this heading">#</a></h3>
+<h3>Sampling without replacement<a class="headerlink" href="#sampling-without-replacement" title="Permalink to this headline">#</a></h3>
 <p>We will perform checks on the <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> function to determine how this will impact our skewed distribution. We will also check how the partitions impact the end distribution.</p>
 <p>First we will compare the distrubution of our skewed dataset before our sampling.</p>
 <div class="cell docutils container">
@@ -614,7 +603,7 @@ Seed 2 count: 593
 <p>Another way of replicating results is with <a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-concepts/cache.html#persist">persisting</a>. <a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-concepts/cache.html">Caching</a> or <a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-concepts/checkpoint-staging.html#checkpoint">checkpointing</a> the DataFrame will avoid recalculation of the DF within the same Spark session. Writing out the DF to a Hive table or parquet enables it to be used in subsequent Spark sessions. See the chapter on persisting for more detail.</p>
 </section>
 <section id="does-sample-preserve-the-distribution-regardless-of-partitions">
-<h3>Does <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> preserve the distribution, regardless of partitions?<a class="headerlink" href="#does-sample-preserve-the-distribution-regardless-of-partitions" title="Permalink to this heading">#</a></h3>
+<h3>Does <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> preserve the distribution, regardless of partitions?<a class="headerlink" href="#does-sample-preserve-the-distribution-regardless-of-partitions" title="Permalink to this headline">#</a></h3>
 <p>We also wish to perform checks on the <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> function to determine how this will be impacted when the original dataframe has a large skew across partitions.
 Additionally we will verify that the original distribution is preserved when sampling without replacement.
 First we group the data by <code class="docutils literal notranslate"><span class="pre">skew_col</span></code> and caclulate how much of the dataframe each column represents.</p>
@@ -736,7 +725,7 @@ We will now re-run the above sampling, but we first repartition our skewed dataf
 Although one sample has been shown here, this has been tested using multiple random samples.</p>
 </section>
 <section id="sampling-with-replacement">
-<h3>Sampling with Replacement<a class="headerlink" href="#sampling-with-replacement" title="Permalink to this heading">#</a></h3>
+<h3>Sampling with Replacement<a class="headerlink" href="#sampling-with-replacement" title="Permalink to this headline">#</a></h3>
 <p>We have constructed a small example for sampling with replacement. Here we count the number of times the unique <code class="docutils literal notranslate"><span class="pre">IncidentNumber</span></code> occurs within the sampled dataframe.
 This will show how many times each <code class="docutils literal notranslate"><span class="pre">IncidentNumber</span></code> occurs within the sample, verifiying we are sampling with replacement as these rows have been sampled multiple times.</p>
 <div class="cell docutils container">
@@ -778,7 +767,7 @@ only showing top 5 rows
 </section>
 </section>
 <section id="stratified-samples-sampleby">
-<h2>Stratified samples: <code class="docutils literal notranslate"><span class="pre">.sampleBy()</span></code><a class="headerlink" href="#stratified-samples-sampleby" title="Permalink to this heading">#</a></h2>
+<h2>Stratified samples: <code class="docutils literal notranslate"><span class="pre">.sampleBy()</span></code><a class="headerlink" href="#stratified-samples-sampleby" title="Permalink to this headline">#</a></h2>
 <p>A stratified sample can be taken with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sampleby.html"><code class="docutils literal notranslate"><span class="pre">.sampleBy()</span></code></a> in PySpark. This takes a column, <code class="docutils literal notranslate"><span class="pre">col</span></code>, to sample by, and a dictionary of weights, <code class="docutils literal notranslate"><span class="pre">fractions</span></code>.</p>
 <p>In common with other sampling methods this does not return an exact proportion and you can also optionally set a seed.</p>
 <p>Note that there is no native sparklyr implementation for stratified sampling, although there is a method for weighted sampling, <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_weighted_sample.html"><code class="docutils literal notranslate"><span class="pre">sdf_weighted_sample()</span></code></a>.</p>
@@ -836,7 +825,7 @@ only showing top 5 rows
 </div>
 </div>
 <section id="an-example-using-the-skewed-dataset">
-<h3>An example using the skewed dataset:<a class="headerlink" href="#an-example-using-the-skewed-dataset" title="Permalink to this heading">#</a></h3>
+<h3>An example using the skewed dataset:<a class="headerlink" href="#an-example-using-the-skewed-dataset" title="Permalink to this headline">#</a></h3>
 <p>Using <code class="docutils literal notranslate"><span class="pre">.sampleBy()</span></code> to sample a skewed dataset is perhaps better than using <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> as you can specify the fractions of each strata within your sample to ensure that the strata in the sample are representative of the overall population.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -871,13 +860,13 @@ only showing top 5 rows
 </section>
 </section>
 <section id="information-on-alternate-sampling-methods">
-<h2>Information on alternate sampling methods<a class="headerlink" href="#information-on-alternate-sampling-methods" title="Permalink to this heading">#</a></h2>
+<h2>Information on alternate sampling methods<a class="headerlink" href="#information-on-alternate-sampling-methods" title="Permalink to this headline">#</a></h2>
 </section>
 <section id="more-details-on-sampling">
-<h2>More details on sampling<a class="headerlink" href="#more-details-on-sampling" title="Permalink to this heading">#</a></h2>
+<h2>More details on sampling<a class="headerlink" href="#more-details-on-sampling" title="Permalink to this headline">#</a></h2>
 <p>The following section gives more detail on sampling and how it is processed on the Spark cluster. It is not compulsory reading, but may be of interest to some Spark users.</p>
 <section id="returning-an-exact-sample">
-<h3>Returning an exact sample<a class="headerlink" href="#returning-an-exact-sample" title="Permalink to this heading">#</a></h3>
+<h3>Returning an exact sample<a class="headerlink" href="#returning-an-exact-sample" title="Permalink to this headline">#</a></h3>
 <p>We have demonstrated above that <code class="docutils literal notranslate"><span class="pre">.sample()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code> return an approximate fraction, not an exact one. This is because every row is independently assigned a probability equal to the <code class="docutils literal notranslate"><span class="pre">fraction</span></code> of being included in the sample, e.g. with <code class="docutils literal notranslate"><span class="pre">fraction=0.2</span></code> every row has a <span class="math notranslate nohighlight">\(20\%\)</span> probability of being in the sample. The number of rows returned in the sample therefore follows the binomial distribution.</p>
 <p>The advantage of the sample being calculated in this way is that it is processed as a <em>narrow transformation</em>, which is more efficient than a <em>wide transformation</em>.</p>
 <p>To return an exact sample, one method is to calculate how many rows are required in the sample, create a new column of random numbers and sort by it, and use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.limit.html"><code class="docutils literal notranslate"><span class="pre">.limit()</span></code></a> in PySpark or <a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/utils/html/head.html"><code class="docutils literal notranslate"><span class="pre">head()</span></code></a> in sparklyr. This requires an action and a wide transformation, and so will take longer to process than using <code class="docutils literal notranslate"><span class="pre">.sample()</span></code>.</p>
@@ -922,12 +911,12 @@ only showing top 5 rows
 </div>
 </section>
 <section id="partitioning">
-<h3>Partitioning<a class="headerlink" href="#partitioning" title="Permalink to this heading">#</a></h3>
+<h3>Partitioning<a class="headerlink" href="#partitioning" title="Permalink to this headline">#</a></h3>
 <p>Even though your sample DF will be smaller than the original DF the number of partitions will remain the same. For example, by default your original DF will have 200 partitions, but your sample DF may only be a 10 % fraction of the original DF and therefore does not need to be partitioned in 200 parts. Too many partitions can be expensive for Spark as it causes excessive overhead for managing smaller tasks; please see our page on <a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-concepts/partitions.html">partitions</a> for more information.</p>
 <p>To reduce the number of partitions in your sample you can use .coalesce() in PySpark or sdf_coalesce() in SparklyR. An example of reducing partitions to 20 in PySpark is given here: <code class="docutils literal notranslate"><span class="pre">df.sample(fraction=0.1).coalesce(20)</span></code>.</p>
 </section>
 <section id="sampling-consistently-by-filtering-the-data">
-<h3>Sampling consistently by filtering the data<a class="headerlink" href="#sampling-consistently-by-filtering-the-data" title="Permalink to this heading">#</a></h3>
+<h3>Sampling consistently by filtering the data<a class="headerlink" href="#sampling-consistently-by-filtering-the-data" title="Permalink to this headline">#</a></h3>
 <p>If the primary reason for using sampling is to process less data during development then an alternative is to filter the data and specify a condition which gives approximately the desired number of rows. This will give consistent results, which may or may not be desirable. For instance, in the Animal Rescue data we could use two years data:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -949,7 +938,7 @@ only showing top 5 rows
 <p>The disadvantage of this method is that you may have data quality issues in the original DF that will not be encountered, whereas these may be discovered with <code class="docutils literal notranslate"><span class="pre">.sample()</span></code>. Using unit testing and test driven development can mitigate the risk of these issues.</p>
 </section>
 <section id="splitting-a-df-randomsplit-and-sdf-random-split">
-<h3>Splitting a DF: <code class="docutils literal notranslate"><span class="pre">.randomSplit()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_random_split()</span></code><a class="headerlink" href="#splitting-a-df-randomsplit-and-sdf-random-split" title="Permalink to this heading">#</a></h3>
+<h3>Splitting a DF: <code class="docutils literal notranslate"><span class="pre">.randomSplit()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_random_split()</span></code><a class="headerlink" href="#splitting-a-df-randomsplit-and-sdf-random-split" title="Permalink to this headline">#</a></h3>
 <p>Every row in the DF will be allocated to one of the split DFs. In common with the other sampling methods the exact size of each split may vary. An optional seed can also be set.</p>
 <p>For instance, to split the animal rescue data into three DFs with a weighting of <span class="math notranslate nohighlight">\(50\%\)</span>, <span class="math notranslate nohighlight">\(40\%\)</span> and <span class="math notranslate nohighlight">\(10\%\)</span> in PySpark:</p>
 <div class="cell docutils container">
@@ -1004,7 +993,7 @@ Split count total: 5898
 </div>
 </section>
 <section id="splitting-via-monotonically-increasing-id-or-sdf-with-unique-id">
-<h3>Splitting via <code class="docutils literal notranslate"><span class="pre">monotonically_increasing_id()</span></code> or <code class="docutils literal notranslate"><span class="pre">sdf_with_unique_id()</span></code><a class="headerlink" href="#splitting-via-monotonically-increasing-id-or-sdf-with-unique-id" title="Permalink to this heading">#</a></h3>
+<h3>Splitting via <code class="docutils literal notranslate"><span class="pre">monotonically_increasing_id()</span></code> or <code class="docutils literal notranslate"><span class="pre">sdf_with_unique_id()</span></code><a class="headerlink" href="#splitting-via-monotonically-increasing-id-or-sdf-with-unique-id" title="Permalink to this headline">#</a></h3>
 <p>Finally we will cover an alternate method of splitting a dataframe by using the <code class="docutils literal notranslate"><span class="pre">monotonically_increasing_id()</span></code> Pyspark function or <code class="docutils literal notranslate"><span class="pre">sdf_with_unique_id()</span></code> SparklyR function.
 This will add a unique id number to each row which is larger than the previous id.
 Within a partition, rows will be numbered sequentially starting at 0 for the first row in the first partition, with large increases in row id occuring between partitions.</p>
@@ -1051,7 +1040,7 @@ Within a partition, rows will be numbered sequentially starting at 0 for the fir
 </section>
 </section>
 <section id="further-resources">
-<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this heading">#</a></h2>
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">#</a></h2>
 <p>Spark at the ONS Articles:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-concepts/persistence.html">Persisting in Spark</a></p></li>
@@ -1096,7 +1085,7 @@ Within a partition, rows will be numbered sequentially starting at 0 for the fir
         },
         kernelOptions: {
             name: "python3",
-            path: "./raw-notebooks/sampling"
+            path: "./raw-notebooks\sampling"
         },
         predefinedOutput: true
     }
@@ -1108,12 +1097,16 @@ Within a partition, rows will be numbered sequentially starting at 0 for the fir
 
               
               
-              
-              
-                <footer class="prev-next-footer">
-                  <!-- Previous / next buttons -->
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
+</div></div>
+  
 </div>
+
                 </footer>
               
             </div>
@@ -1189,8 +1182,8 @@ By Wil Roberts & Adrian Prince
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
-<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
+  <script src="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
 
   <footer class="bd-footer">
   </footer>

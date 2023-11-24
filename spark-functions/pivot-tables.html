@@ -7,7 +7,7 @@
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>Pivot tables in Spark &#8212; Spark at the ONS</title>
   
@@ -19,12 +19,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -40,14 +40,12 @@
     <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
-  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
@@ -59,7 +57,7 @@
     <script src="../_static/tabs.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../_static/design-tabs.js"></script>
-    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+    <script loading_method="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
     <script>
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){ dataLayer.push(arguments); }
@@ -87,15 +85,6 @@ const thebe_selector_output = ".output, .cell_output"
   
   
   <a class="skip-link" href="#main-content">Skip to main content</a>
-  
-  <div id="pst-scroll-pixel-helper"></div>
-
-  
-  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>
-    Back to top
-  </button>
-
   
   <input type="checkbox"
           class="sidebar-toggle"
@@ -396,10 +385,10 @@ const thebe_selector_output = ".output, .cell_output"
 
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
   </button>
 `);
 </script>
@@ -407,7 +396,7 @@ document.write(`
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+    <i class="fa-solid fa-magnifying-glass"></i>
   </button>
 `);
 </script>
@@ -451,7 +440,7 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section id="pivot-tables-in-spark">
-<h1>Pivot tables in Spark<a class="headerlink" href="#pivot-tables-in-spark" title="Permalink to this heading">#</a></h1>
+<h1>Pivot tables in Spark<a class="headerlink" href="#pivot-tables-in-spark" title="Permalink to this headline">#</a></h1>
 <p>A pivot table is a way of displaying the result of grouped and aggregated data as a two dimensional table, rather than in the list form that you get from regular grouping and aggregating. You might be familiar with them from Excel.</p>
 <p>The principles are the same in PySpark and sparklyr, although unlike some Spark functions that are used in both PySpark and sparklyr the syntax is very different.</p>
 <details>
@@ -465,7 +454,7 @@ document.write(`
 <p><code class="docutils literal notranslate"><span class="pre">sdf_pivot(x,</span> <span class="pre">formula,</span> <span class="pre">fun.aggregate)</span></code> has three arguments. The first, <code class="docutils literal notranslate"><span class="pre">x</span></code> is the sparklyr DataFrame, the second, formula is an R formula with grouped columns on the left and pivot column on the right, separated by a tilde (e.g. <code class="docutils literal notranslate"><span class="pre">col1</span> <span class="pre">+</span> <span class="pre">col2</span> <span class="pre">~</span> <span class="pre">pivot_col</span></code>), and the third, <code class="docutils literal notranslate"><span class="pre">fun.aggregate</span></code>, is the functions used for aggregation; by default it will count the rows if left blank. Be careful with pivoting data where your pivot column has a large number of distinct values; it will return a very wide DataFrame that will be untidy to view. It is recommended to <a class="reference external" href="https://dplyr.tidyverse.org/reference/filter.html"><code class="docutils literal notranslate"><span class="pre">filter()</span></code></a> the data first to only include the values you want in the output columns. The second example uses <code class="docutils literal notranslate"><span class="pre">filter()</span></code>.</p>
 </details>
 <section id="example-1-group-by-one-column-and-count">
-<h2>Example 1: Group by one column and count<a class="headerlink" href="#example-1-group-by-one-column-and-count" title="Permalink to this heading">#</a></h2>
+<h2>Example 1: Group by one column and count<a class="headerlink" href="#example-1-group-by-one-column-and-count" title="Permalink to this headline">#</a></h2>
 <p>Create a new Spark session and read the Animal Rescue data. To make the example easier to read, just filter on a few animal groups:</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-0-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-0-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">yaml</span>
@@ -660,7 +649,7 @@ document.write(`
 </details>
 </section>
 <section id="example-2-aggregate-by-another-column-and-specify-values">
-<h2>Example 2: Aggregate by another column and specify values<a class="headerlink" href="#example-2-aggregate-by-another-column-and-specify-values" title="Permalink to this heading">#</a></h2>
+<h2>Example 2: Aggregate by another column and specify values<a class="headerlink" href="#example-2-aggregate-by-another-column-and-specify-values" title="Permalink to this headline">#</a></h2>
 <details>
 <summary><b>Python Example</b></summary>
 <p>You can use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.GroupedData.agg.html"><code class="docutils literal notranslate"><span class="pre">.agg()</span></code></a> with <code class="docutils literal notranslate"><span class="pre">.pivot()</span></code> in the same way as you do with <code class="docutils literal notranslate"><span class="pre">.groupBy()</span></code>. This example will sum the <code class="docutils literal notranslate"><span class="pre">total_cost</span></code>.</p>
@@ -715,7 +704,7 @@ document.write(`
 </details>
 </section>
 <section id="example-3-multiple-groupings-and-aggregations-fill-nulls-and-sort">
-<h2>Example 3: Multiple groupings and aggregations, fill nulls and sort<a class="headerlink" href="#example-3-multiple-groupings-and-aggregations-fill-nulls-and-sort" title="Permalink to this heading">#</a></h2>
+<h2>Example 3: Multiple groupings and aggregations, fill nulls and sort<a class="headerlink" href="#example-3-multiple-groupings-and-aggregations-fill-nulls-and-sort" title="Permalink to this headline">#</a></h2>
 <details>
 <summary><b>Python Example</b></summary>
 <p>You can only supply one column to <code class="docutils literal notranslate"><span class="pre">.pivot()</span></code>, but you can have multiple aggregations. Adding an <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.alias.html"><code class="docutils literal notranslate"><span class="pre">.alias()</span></code></a> makes the result easier to read.</p>
@@ -817,7 +806,7 @@ document.write(`
 </details>
 </section>
 <section id="comparison-with-pivot-wider">
-<h2>Comparison with <code class="docutils literal notranslate"><span class="pre">pivot_wider()</span></code><a class="headerlink" href="#comparison-with-pivot-wider" title="Permalink to this heading">#</a></h2>
+<h2>Comparison with <code class="docutils literal notranslate"><span class="pre">pivot_wider()</span></code><a class="headerlink" href="#comparison-with-pivot-wider" title="Permalink to this headline">#</a></h2>
 <p>This section is just for those interested in R and dplyr.</p>
 <details>
 <summary><b>R Explanation</b></summary>
@@ -872,7 +861,7 @@ document.write(`
 </details>
 </section>
 <section id="further-resources">
-<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this heading">#</a></h2>
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">#</a></h2>
 <p>PySpark Documentation:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.GroupedData.pivot.html"><code class="docutils literal notranslate"><span class="pre">.pivot()</span></code></a></p></li>
@@ -919,10 +908,11 @@ document.write(`
 
               
               
-              
-              
-                <footer class="prev-next-footer">
-                  <!-- Previous / next buttons -->
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
        href="sampling.html"
@@ -942,7 +932,10 @@ document.write(`
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
+</div></div>
+  
 </div>
+
                 </footer>
               
             </div>
@@ -1002,8 +995,8 @@ By Wil Roberts & Adrian Prince
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
 
   <footer class="bd-footer">
   </footer>

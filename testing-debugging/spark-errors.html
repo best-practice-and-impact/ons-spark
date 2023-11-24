@@ -7,7 +7,7 @@
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>Understanding and Handling Spark Errors &#8212; Spark at the ONS</title>
   
@@ -19,12 +19,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -40,14 +40,12 @@
     <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
-  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
@@ -59,7 +57,7 @@
     <script src="../_static/tabs.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../_static/design-tabs.js"></script>
-    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+    <script loading_method="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
     <script>
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){ dataLayer.push(arguments); }
@@ -87,15 +85,6 @@ const thebe_selector_output = ".output, .cell_output"
   
   
   <a class="skip-link" href="#main-content">Skip to main content</a>
-  
-  <div id="pst-scroll-pixel-helper"></div>
-
-  
-  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>
-    Back to top
-  </button>
-
   
   <input type="checkbox"
           class="sidebar-toggle"
@@ -396,10 +385,10 @@ const thebe_selector_output = ".output, .cell_output"
 
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
   </button>
 `);
 </script>
@@ -407,7 +396,7 @@ document.write(`
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+    <i class="fa-solid fa-magnifying-glass"></i>
   </button>
 `);
 </script>
@@ -465,12 +454,12 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section id="understanding-and-handling-spark-errors">
-<h1>Understanding and Handling Spark Errors<a class="headerlink" href="#understanding-and-handling-spark-errors" title="Permalink to this heading">#</a></h1>
+<h1>Understanding and Handling Spark Errors<a class="headerlink" href="#understanding-and-handling-spark-errors" title="Permalink to this headline">#</a></h1>
 <p>Spark errors can be very long, often with redundant information and can appear intimidating at first. However, if you know which parts of the error message to look at you will often be able to resolve it. Sometimes you may want to handle errors programmatically, enabling you to simplify the output of an error message, or to continue the code execution in some circumstances.</p>
 <p>Errors can be rendered differently depending on the software you are using to write code, e.g. CDSW will generally give you long passages of red text whereas Jupyter notebooks have code highlighting. This example uses the CDSW error messages as this is the most commonly used tool to write code at the ONS. The general principles are the same regardless of IDE used to write code.</p>
 <p>There are some examples of errors given here but the intention of this article is to help you debug errors for yourself rather than being a list of all potential problems that you may encounter. We focus on error messages that are caused by Spark code.</p>
 <section id="practical-tips-for-error-handling-in-spark">
-<h2>Practical tips for error handling in Spark<a class="headerlink" href="#practical-tips-for-error-handling-in-spark" title="Permalink to this heading">#</a></h2>
+<h2>Practical tips for error handling in Spark<a class="headerlink" href="#practical-tips-for-error-handling-in-spark" title="Permalink to this headline">#</a></h2>
 <p>Spark error messages can be long, but the most important principle is that <strong>the first line returned is the most important</strong>. This first line gives a description of the error, put there by the package developers. The output when you get an error will often be larger than the length of the screen and so you may have to scroll up to find this. The examples in the next sections show some PySpark and sparklyr errors.</p>
 <p>The most likely cause of an error is your code being incorrect in some way. Use the information given on the first line of the error message to try and resolve it. In many cases this will give you enough information to help diagnose and attempt to resolve the situation. If you are still struggling, try using a search engine; <a class="reference external" href="https://stackoverflow.com/">Stack Overflow</a> will often be the first result and whatever error you have you are very unlikely to be the first person to have encountered it. If you are still stuck, then consulting your colleagues is often a good next step.</p>
 <p>Remember that Spark uses the concept of lazy evaluation, which means that your error might be elsewhere in the code to where you think it is, since the plan will only be executed upon calling an action. If you suspect this is the case, try and put an action earlier in the code and see if it runs. Repeat this process until you have found the line of code which causes the error. With more experience of coding in Spark you will come to know which areas of your code could cause potential issues</p>
@@ -478,7 +467,7 @@ document.write(`
 <p>Occasionally your error may be because of a software or hardware issue with the Spark cluster rather than your code. It is worth resetting as much as possible, e.g. if you are using a Docker container then close and reopen a session. If there are still issues then raise a ticket with your organisations IT support department.</p>
 <p>If you are struggling to get started with Spark then ensure that you have read the <a class="reference internal" href="../spark-overview/spark-start.html"><span class="doc std std-doc">Getting Started with Spark</span></a> article; in particular, ensure that your environment variables are set correctly.</p>
 <section id="a-recap-of-python-and-r-errors">
-<h3>A recap of Python and R errors<a class="headerlink" href="#a-recap-of-python-and-r-errors" title="Permalink to this heading">#</a></h3>
+<h3>A recap of Python and R errors<a class="headerlink" href="#a-recap-of-python-and-r-errors" title="Permalink to this headline">#</a></h3>
 <details>
 <summary><b>Python Errors</b></summary>
 <p>PySpark errors are just a variation of Python errors and are structured the same way, so it is worth looking at the documentation for <a class="reference external" href="https://docs.python.org/3/tutorial/errors.html">errors</a> and the <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#bltin-exceptions">base exceptions</a>.</p>
@@ -533,7 +522,7 @@ NameError: name &#39;spark&#39; is not defined
 </details>
 </section>
 <section id="example-spark-error-missing-file">
-<h3>Example Spark error: missing file<a class="headerlink" href="#example-spark-error-missing-file" title="Permalink to this heading">#</a></h3>
+<h3>Example Spark error: missing file<a class="headerlink" href="#example-spark-error-missing-file" title="Permalink to this headline">#</a></h3>
 <p>When using Spark, sometimes errors from other languages that the code is compiled into can be raised. You may see messages about Scala and Java errors. Do not be overwhelmed, just locate the error message on the first line rather than being distracted. An example is reading a file that does not exist.</p>
 <details>
 <summary><b>Python Example</b></summary>
@@ -630,7 +619,7 @@ only showing top 3 rows
 </details>
 </section>
 <section id="understanding-errors-summary-of-key-points">
-<h3>Understanding Errors: Summary of key points<a class="headerlink" href="#understanding-errors-summary-of-key-points" title="Permalink to this heading">#</a></h3>
+<h3>Understanding Errors: Summary of key points<a class="headerlink" href="#understanding-errors-summary-of-key-points" title="Permalink to this headline">#</a></h3>
 <ul class="simple">
 <li><p>Spark error messages can be long, but most of the output can be ignored</p></li>
 <li><p><strong>Look at the first line</strong>; this is the error message and will often give you all the information you need</p></li>
@@ -640,13 +629,13 @@ only showing top 3 rows
 </section>
 </section>
 <section id="handling-exceptions-in-spark">
-<h2>Handling exceptions in Spark<a class="headerlink" href="#handling-exceptions-in-spark" title="Permalink to this heading">#</a></h2>
+<h2>Handling exceptions in Spark<a class="headerlink" href="#handling-exceptions-in-spark" title="Permalink to this headline">#</a></h2>
 <p>When there is an error with Spark code, the code execution will be interrupted and will display an error message. In many cases this will be desirable, giving you chance to fix the error and then restart the script. You can however use error handling to print out a more useful error message. Sometimes you may want to handle the error and then let the code continue.</p>
 <p>It is recommend to read the sections above on understanding errors first, especially if you are new to error handling in Python or base R.</p>
 <p>The most important principle for handling errors is to look at the first line of the code. This will tell you the exception type and it is this that needs to be handled. The examples here use error outputs from CDSW; they may look different in other editors.</p>
 <p>Error handling can be a tricky concept and can actually make understanding errors more difficult if implemented incorrectly, so you may want to get more experience before trying some of the ideas in this section.</p>
 <section id="what-is-error-handling-and-why-use-it">
-<h3>What is error handling and why use it?<a class="headerlink" href="#what-is-error-handling-and-why-use-it" title="Permalink to this heading">#</a></h3>
+<h3>What is error handling and why use it?<a class="headerlink" href="#what-is-error-handling-and-why-use-it" title="Permalink to this headline">#</a></h3>
 <p>You will often have lots of errors when developing your code and these can be put in two categories: <em>syntax errors</em> and <em>runtime errors</em>. A <em>syntax error</em> is where the code has been written incorrectly, e.g. a missing comma, and has to be fixed before the code will compile. A <em>runtime error</em> is where the code compiles and starts running, but then gets interrupted and an error message is displayed, e.g. trying to divide by zero or non-existent file trying to be read in. We saw some examples in the the section above. Only <em>runtime errors</em> can be handled.</p>
 <p>We saw that Spark errors are often long and hard to read. You can use error handling to test if a block of code returns a certain type of error and instead return a clearer error message. This can save time when debugging.</p>
 <p>You can also set the code to continue after an error, rather than being interrupted. You may want to do this if the error is not critical to the end result. If you do this it is a good idea to print a warning with the <code class="docutils literal notranslate"><span class="pre">print()</span></code> statement or use logging, e.g. using the <a class="reference external" href="https://docs.python.org/3/library/logging.html">Python logger</a>.</p>
@@ -659,7 +648,7 @@ only showing top 3 rows
 </div>
 </section>
 <section id="how-to-handle-spark-errors">
-<h3>How to handle Spark errors<a class="headerlink" href="#how-to-handle-spark-errors" title="Permalink to this heading">#</a></h3>
+<h3>How to handle Spark errors<a class="headerlink" href="#how-to-handle-spark-errors" title="Permalink to this headline">#</a></h3>
 <details>
 <summary><b>Handling Errors in PySpark</b></summary>
 <p>PySpark errors can be handled in the usual Python way, with a <code class="docutils literal notranslate"><span class="pre">try</span></code>/<code class="docutils literal notranslate"><span class="pre">except</span></code> block. Python contains some base exceptions that do not need to be imported, e.g. <code class="docutils literal notranslate"><span class="pre">NameError</span></code> and <code class="docutils literal notranslate"><span class="pre">ZeroDivisionError</span></code>. Package authors sometimes create custom exceptions which need to be imported to be handled; for PySpark errors you will likely need to import <code class="docutils literal notranslate"><span class="pre">AnalysisException</span></code> from <code class="docutils literal notranslate"><span class="pre">pyspark.sql.utils</span></code> and potentially <code class="docutils literal notranslate"><span class="pre">Py4JJavaError</span></code> from <code class="docutils literal notranslate"><span class="pre">py4j.protocol</span></code>:</p>
@@ -678,9 +667,9 @@ only showing top 3 rows
 </section>
 </section>
 <section id="error-handling-examples">
-<h2>Error Handling Examples<a class="headerlink" href="#error-handling-examples" title="Permalink to this heading">#</a></h2>
+<h2>Error Handling Examples<a class="headerlink" href="#error-handling-examples" title="Permalink to this headline">#</a></h2>
 <section id="example-1-no-spark-session">
-<h3>Example 1: No Spark session<a class="headerlink" href="#example-1-no-spark-session" title="Permalink to this heading">#</a></h3>
+<h3>Example 1: No Spark session<a class="headerlink" href="#example-1-no-spark-session" title="Permalink to this headline">#</a></h3>
 <p>A simple example of error handling is ensuring that we have a running Spark session. If want to run this code yourself, restart your container or console entirely before looking at this section.</p>
 <details>
 <summary><b>Python Example</b></summary>
@@ -874,7 +863,7 @@ NameError: No running Spark session. Start one before creating a DataFrame
 </details>
 </section>
 <section id="example-2-handle-multiple-errors-in-a-function">
-<h3>Example 2: Handle multiple errors in a function<a class="headerlink" href="#example-2-handle-multiple-errors-in-a-function" title="Permalink to this heading">#</a></h3>
+<h3>Example 2: Handle multiple errors in a function<a class="headerlink" href="#example-2-handle-multiple-errors-in-a-function" title="Permalink to this headline">#</a></h3>
 <p>This example shows how functions can be used to handle errors.</p>
 <details>
 <summary><b>Python Example</b></summary>
@@ -1103,7 +1092,7 @@ lead to fewer user errors when writing the code.</p>
 </details>
 </section>
 <section id="example-3-capture-and-ignore-the-error">
-<h3>Example 3: Capture and ignore the error<a class="headerlink" href="#example-3-capture-and-ignore-the-error" title="Permalink to this heading">#</a></h3>
+<h3>Example 3: Capture and ignore the error<a class="headerlink" href="#example-3-capture-and-ignore-the-error" title="Permalink to this headline">#</a></h3>
 <p>Another option is to capture the error and ignore it. Generally you will only want to do this in limited circumstances when you are ignoring errors that you expect, and even then it is better to anticipate them using logic. After all, the code returned an error for a reason!</p>
 <p>This example counts the number of distinct values in a column, returning <code class="docutils literal notranslate"><span class="pre">0</span></code> and printing a message if the column does not exist.</p>
 <details>
@@ -1279,7 +1268,7 @@ lead to fewer user errors when writing the code.</p>
 </section>
 </section>
 <section id="clean-up-options">
-<h2>Clean up options<a class="headerlink" href="#clean-up-options" title="Permalink to this heading">#</a></h2>
+<h2>Clean up options<a class="headerlink" href="#clean-up-options" title="Permalink to this headline">#</a></h2>
 <p>It is worth briefly mentioning the <code class="docutils literal notranslate"><span class="pre">finally</span></code> clause which exists in both Python and R.</p>
 <p>In Python, <code class="docutils literal notranslate"><span class="pre">finally</span></code> is added at the end of a <code class="docutils literal notranslate"><span class="pre">try</span></code>/<code class="docutils literal notranslate"><span class="pre">except</span></code> block. This is where clean up code which will always be ran regardless of the outcome of the <code class="docutils literal notranslate"><span class="pre">try</span></code>/<code class="docutils literal notranslate"><span class="pre">except</span></code>. See <a class="reference external" href="https://docs.python.org/3/tutorial/errors.html#defining-clean-up-actions">Defining Clean Up Action</a> for more information.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">tryCatch()</span></code> function in R has two other options:</p>
@@ -1289,7 +1278,7 @@ lead to fewer user errors when writing the code.</p>
 </ul>
 </section>
 <section id="further-resources">
-<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this heading">#</a></h2>
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">#</a></h2>
 <p>Spark at the ONS Articles:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html"><span class="doc std std-doc">Checkpointing and Staging Tables</span></a></p></li>
@@ -1354,10 +1343,11 @@ lead to fewer user errors when writing the code.</p>
 
               
               
-              
-              
-                <footer class="prev-next-footer">
-                  <!-- Previous / next buttons -->
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
        href="../spark-concepts/exercises.html"
@@ -1377,7 +1367,10 @@ lead to fewer user errors when writing the code.</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
+</div></div>
+  
 </div>
+
                 </footer>
               
             </div>
@@ -1451,8 +1444,8 @@ By Wil Roberts & Adrian Prince
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
 
   <footer class="bd-footer">
   </footer>
