@@ -7,7 +7,7 @@
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>Persisting in Spark &#8212; Spark at the ONS</title>
   
@@ -19,12 +19,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -40,14 +40,12 @@
     <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
-  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
@@ -58,7 +56,7 @@
     <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../_static/design-tabs.js"></script>
-    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+    <script loading_method="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
     <script>
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){ dataLayer.push(arguments); }
@@ -71,7 +69,6 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'spark-concepts/persistence';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Caching" href="cache.html" />
@@ -86,15 +83,6 @@ const thebe_selector_output = ".output, .cell_output"
   
   
   <a class="skip-link" href="#main-content">Skip to main content</a>
-  
-  <div id="pst-scroll-pixel-helper"></div>
-
-  
-  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>
-    Back to top
-  </button>
-
   
   <input type="checkbox"
           class="sidebar-toggle"
@@ -155,14 +143,13 @@ const thebe_selector_output = ".output, .cell_output"
   
   
   
-  
     
     
       
     
     
-    <img src="../_static/logo.png" class="logo__image only-light" alt="Spark at the ONS - Home"/>
-    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="Spark at the ONS - Home"/>`);</script>
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
   
   
 </a></div>
@@ -185,19 +172,18 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-defaults.html">Configuration Hierarchy and <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../spark-overview/data-types.html">Data Types in Spark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../spark-overview/creating-dataframes.html">Creating DataFrames Manually</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/reading-and-writing-data-spark.html">Reading and Writing Data in Spark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../spark-overview/data-storage.html">Data Storage</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to PySpark</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/pyspark-intro.html">Introduction to PySpark</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/reading-data-pyspark.html">Reading Data in PySpark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/returning-data.html">Returning Data from Cluster to Driver</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/f-col.html">Reference columns by name: <code class="docutils literal notranslate"><span class="pre">F.col()</span></code></a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to sparklyr</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/sparklyr-intro.html">Introduction to sparklyr</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/reading-data-sparklyr.html">Reading Data in sparklyr</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">Using Spark functions in sparklyr</a></li>
 
 </ul>
@@ -206,7 +192,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../spark-functions/union-dataframes-with-different-columns.html">Union two DataFrames with different columns</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../spark-functions/padding.html">Add leading zeros with <code class="docutils literal notranslate"><span class="pre">lpad()</span></code></a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="../spark-functions/sampling.html">Sampling: <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/sampling.html">Sampling: an overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../spark-functions/pivot-tables.html">Pivot tables in Spark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../spark-functions/rounding.html">Rounding differences in Python, R and Spark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../spark-functions/window-functions.html">Window Functions in Spark</a></li>
@@ -214,6 +200,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../spark-functions/arrays.html">Arrays Functions in PySpark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../spark-functions/writing-data.html">Writing Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../spark-functions/job-description.html">Set Spark Job Description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/logistic-regression.html">Logistic Regression</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Understanding and Optimising Spark</span></p>
 <ul class="current nav bd-sidenav">
@@ -225,7 +212,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="partitions.html">Managing Partitions</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Persisting in Spark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cache.html">Caching</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="checkpoint-staging.html">Checkpoints and Staging Tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="garbage-collection.html">Garbage Collection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="df-order.html">Spark DataFrames Are Not Ordered</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exercises.html">Exercises</a></li>
@@ -240,6 +227,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/visualisation.html">Spark and Visualisation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/module-imports.html">Naming Conflicts in Module Imports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/pydoop.html">Pydoop: HDFS to pandas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/pandas-udfs.html">Pandas UDFs</a></li>
 </ul>
 
     </div>
@@ -395,10 +383,10 @@ const thebe_selector_output = ".output, .cell_output"
 
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
   </button>
 `);
 </script>
@@ -406,7 +394,7 @@ document.write(`
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+    <i class="fa-solid fa-magnifying-glass"></i>
   </button>
 `);
 </script>
@@ -459,7 +447,7 @@ document.write(`
                   
   <!-- #region -->
 <section id="persisting-in-spark">
-<h1>Persisting in Spark<a class="headerlink" href="#persisting-in-spark" title="Permalink to this heading">#</a></h1>
+<h1>Persisting in Spark<a class="headerlink" href="#persisting-in-spark" title="Permalink to this headline">#</a></h1>
 <p>Persisting Spark DataFrames is done for a number of reasons, a common reason is creating intermediate outputs in a pipeline for quality assurance purposes. In this article we are mainly interested in using <a class="reference external" href="https://en.wikipedia.org/wiki/Persistence_(computer_science)">persistence</a> to improve performance, i.e. reduce processing time. There are two different cases where persisting DataFrames can be useful in this context:</p>
 <ol class="arabic simple">
 <li><p>To remove unnecessary repetitions of the same processing</p></li>
@@ -467,25 +455,25 @@ document.write(`
 </ol>
 <p>In this article we discuss why persisting is useful with Spark, introduce the different methods of persisting data and discuss their use cases. Examples are given in the <a class="reference internal" href="cache.html"><span class="doc std std-doc">Caching</span></a> and <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html"><span class="doc std std-doc">Checkpoint and Staging Tables</span></a> articles.</p>
 <section id="theory-lineage-execution-plan-and-the-catalyst-optimiser">
-<h2>Theory: lineage, execution plan and the catalyst optimiser<a class="headerlink" href="#theory-lineage-execution-plan-and-the-catalyst-optimiser" title="Permalink to this heading">#</a></h2>
+<h2>Theory: lineage, execution plan and the catalyst optimiser<a class="headerlink" href="#theory-lineage-execution-plan-and-the-catalyst-optimiser" title="Permalink to this headline">#</a></h2>
 <p>Before we discuss persistence we should discuss lineage, the execution plan and the catalyst optimiser.</p>
 <p>We know that Spark uses lazy evaluation, meaning it doesn’t process data until it has to e.g. inferring the schema of a file, a row count, returning some data using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.show.html"><code class="docutils literal notranslate"><span class="pre">.show()</span></code></a>/<code class="docutils literal notranslate"><span class="pre">head()</span> <span class="pre">%&gt;%</span></code> <a class="reference external" href="https://dplyr.tidyverse.org/reference/compute.html"><code class="docutils literal notranslate"><span class="pre">collect()</span></code></a> or writing data to disk. As we execute DataFrame transformations Spark tracks the lineage of the DataFrame and creates an execution plan. When we execute an action Spark executes the plan. This is quite different to how regular Python, pandas or R works. Why does Spark work in this way? One reason is that Spark wont have to store intermediate objects in memory, which makes it more efficient for processing big data. Another reason is that Spark will find more efficient ways to process the data than just following our commands one after the other, and again, this is really useful when processing big data.</p>
 <p>The way Spark optimises our jobs is using the <a class="reference external" href="https://databricks.com/glossary/catalyst-optimizer">catalyst optimiser</a> and the <a class="reference external" href="https://databricks.com/glossary/tungsten">tungsten optimiser</a>. The former uses a list of rules to change our code into a more efficient strategy, whereas the latter performs optimisations on the hardware. If we want to see how Spark will or has processed a DataFrame we can look at the execution plan. For a quick view you can apply the <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.explain.html"><code class="docutils literal notranslate"><span class="pre">.explain()</span></code></a>/<a class="reference external" href="https://dplyr.tidyverse.org/reference/explain.html"><code class="docutils literal notranslate"><span class="pre">explain()</span></code></a> functions to DataFrames in PySpark/sparklyr. The <code class="docutils literal notranslate"><span class="pre">full</span></code> argument can be set to <code class="docutils literal notranslate"><span class="pre">true</span></code> to see how the catalyst optimiser has taken the original Spark code and optimised it to reach the final version, called the Physical Plan. Examples are given in the <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html"><span class="doc std std-doc">Checkpoint and Staging Tables</span></a> article on how to read the output of the <code class="docutils literal notranslate"><span class="pre">explain</span></code> function. The execution plan is also given in the form of a DAG diagram within the SQL tab in the Spark UI. Examples are given in the <a class="reference internal" href="cache.html"><span class="doc std std-doc">Caching</span></a> article on understanding these diagrams.</p>
 </section>
 <section id="remove-repeated-processing">
-<h2>Remove repeated processing<a class="headerlink" href="#remove-repeated-processing" title="Permalink to this heading">#</a></h2>
+<h2>Remove repeated processing<a class="headerlink" href="#remove-repeated-processing" title="Permalink to this headline">#</a></h2>
 <p>The default behaviour of Spark when it encounters an action is to execute the full execution plan from when the data was read in from disk to the output of the action which was called. There are some optimisations provided by the tungsten optimiser that diverge from this default behaviour, but we will ignore these for now.</p>
 <p>Now imagine we read in a dataset and perform some cleaning transformations to get the data ready for some analysis. We then perform three different aggregations on the cleansed data and write these summary tables to disk. If we consider how Spark executes the full execution plan when it gets to an action, we see that Spark will repeat the cleaning transformations for each summary table. Surely it would be more efficient to clean the data once and not three times (one for each aggregation)? This where persisting can help. A possible solution here would be to persist the cleansed data into memory using a cache before performing the aggregations. This means that the first time Spark executes the full plan it will create a copy of the cleansed data in the executor memory, so next time the DataFrame is used it can be accessed quickly and efficiently.</p>
 <p>An example of using cache to remove repeated processing is given in the <a class="reference internal" href="cache.html"><span class="doc std std-doc">Caching</span></a> article.</p>
 </section>
 <section id="breaking-dataframe-lineage">
-<h2>Breaking DataFrame lineage<a class="headerlink" href="#breaking-dataframe-lineage" title="Permalink to this heading">#</a></h2>
+<h2>Breaking DataFrame lineage<a class="headerlink" href="#breaking-dataframe-lineage" title="Permalink to this headline">#</a></h2>
 <p>As we apply more transformations to our DataFrames the lineage grows and so does the execution plan. If the lineage is long and complex Spark will struggle to optimise the plan and take a long time to process the DataFrame. Hence, in a data pipeline we might write intermediate tables at sensible points that can be used for quality assurance purposes, but also this process breaks the DataFrame lineage.</p>
 <p>Let’s say we are executing an iterative algorithm on a DataFrame, for example we apply some calculation to a column to create a new column and use this new column as the input to the calculation in the next iteration. We notice that Spark struggles to execute the code after many iterations. What we can try to solve this issue is every few iterations we write the DataFrame out to disk and read it back in for the next iteration. Writing the data out to disk is a form of persistence, and so this is an example where persistence is used in Spark to break the lineage of a DataFrame.</p>
 <p>An example of persistence in an iterative process is given in the article on <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html"><span class="doc std std-doc">Checkpoint and Staging Tables</span></a>.</p>
 </section>
 <section id="different-types-of-persisting">
-<h2>Different types of persisting<a class="headerlink" href="#different-types-of-persisting" title="Permalink to this heading">#</a></h2>
+<h2>Different types of persisting<a class="headerlink" href="#different-types-of-persisting" title="Permalink to this headline">#</a></h2>
 <p>There are multiple ways of persisting data with Spark, they are:</p>
 <ul class="simple">
 <li><p>Caching a DataFrame into the executor memory using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.cache.html"><code class="docutils literal notranslate"><span class="pre">.cache()</span></code></a>/<a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/tbl_cache.html"><code class="docutils literal notranslate"><span class="pre">tbl_cache()</span></code></a> for PySpark/sparklyr. This forces Spark to compute the DataFrame and store it in the memory of the executors.</p></li>
@@ -497,24 +485,24 @@ document.write(`
 <p>Please see the Cache article for a more detailed explanation of the first two options above. Examples of checkpointing and staging tables are given in the <a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html"><span class="doc std std-doc">Checkpoint and Staging Tables</span></a>.</p>
 </section>
 <section id="why-should-we-not-persist">
-<h2>Why should we not persist?<a class="headerlink" href="#why-should-we-not-persist" title="Permalink to this heading">#</a></h2>
+<h2>Why should we not persist?<a class="headerlink" href="#why-should-we-not-persist" title="Permalink to this headline">#</a></h2>
 <p>Persisting data in Spark is no <em>silver bullet</em>. Some data platform support teams say that over half of their issue tickets are to do with poor use of caching. Make sure you understand the pros <em>and cons</em> before you use it to improve performance.</p>
 <section id="predicate-pushdown">
-<h3>Predicate pushdown<a class="headerlink" href="#predicate-pushdown" title="Permalink to this heading">#</a></h3>
+<h3>Predicate pushdown<a class="headerlink" href="#predicate-pushdown" title="Permalink to this headline">#</a></h3>
 <p>As explained above, Spark uses the catalyst optimiser to improve performance by optimising the whole execution plan. However, when we persist the data the plan is made shorter. This is sometimes a good thing if the plan is too complex, but in general we want the catalyst optimiser to take all our transformations to find the optimum execution plan. For example, in the Cache article we saw that the catalyst optimiser will move a filter as early as possible in the execution plan so Spark has to process fewer rows of data later on; this is called a predicate pushdown. If we cached at the wrong point in the code, the optimiser would not be able to push the filter to the beginning of the execution plan.</p>
 </section>
 <section id="writing-and-reading-is-not-free">
-<h3>Writing and reading is not free<a class="headerlink" href="#writing-and-reading-is-not-free" title="Permalink to this heading">#</a></h3>
+<h3>Writing and reading is not free<a class="headerlink" href="#writing-and-reading-is-not-free" title="Permalink to this headline">#</a></h3>
 <p>The process of writing and reading data for checkpoints and staging tables, as well as general write/read operations, takes some amount of time. Perhaps the time it takes to do this process is greater than the gains from breaking the lineage. As we often say, it makes sense to get the code working first and try to improve performance where needed. When experimenting on improving performance record the evidence used to inform decisions so that others can clearly understand why a decision to persist was made.</p>
 </section>
 <section id="filling-up-cache-file-system-with-persisted-data">
-<h3>Filling up cache/file system with persisted data<a class="headerlink" href="#filling-up-cache-file-system-with-persisted-data" title="Permalink to this heading">#</a></h3>
+<h3>Filling up cache/file system with persisted data<a class="headerlink" href="#filling-up-cache-file-system-with-persisted-data" title="Permalink to this headline">#</a></h3>
 <p>There is a limited amount of memory on the executors of the Spark cluster and if you fill it up with cached data Spark will start to spill data onto disk or return an out of memory error. Spark will prioritise recent caches and run more expensive processes to manage the low priority data. Remember to empty the cache when you’ve stopped using a DataFrame and don’t cache too many DataFrames at one time. Memory management in a Spark cluster is a complex topic, a good introduction is given in the <a class="reference external" href="https://spark.apache.org/docs/latest/tuning.html#memory-management-overview">Spark documentation</a>.</p>
 <p>The same is true for the file system, although there is much more space to store data of course. It’s good practice to delete a checkpoint directory after use within a Spark script. The same is true for staging tables, unless you want to view the data at a later date.</p>
 </section>
 </section>
 <section id="use-cases-for-persisting">
-<h2>Use cases for persisting<a class="headerlink" href="#use-cases-for-persisting" title="Permalink to this heading">#</a></h2>
+<h2>Use cases for persisting<a class="headerlink" href="#use-cases-for-persisting" title="Permalink to this headline">#</a></h2>
 <ul class="simple">
 <li><p>It usually makes sense to cache data in memory before repeated actions are applied to the DataFrame, like the example in the <a class="reference internal" href="cache.html"><span class="doc std std-doc">Caching</span></a> article.</p></li>
 <li><p>Another use case for caching in memory is just before running an iterative algorithm, where you make use of the cached DataFrame in each iteration.</p></li>
@@ -524,7 +512,7 @@ document.write(`
 </ul>
 </section>
 <section id="checkpoint-or-staging-tables">
-<h2>Checkpoint or staging tables?<a class="headerlink" href="#checkpoint-or-staging-tables" title="Permalink to this heading">#</a></h2>
+<h2>Checkpoint or staging tables?<a class="headerlink" href="#checkpoint-or-staging-tables" title="Permalink to this headline">#</a></h2>
 <p><strong>Checkpoint</strong></p>
 <ul class="simple">
 <li><p>Checkpointing is more convenient than staging tables in terms of writing the code</p></li>
@@ -540,7 +528,7 @@ document.write(`
 </ul>
 </section>
 <section id="further-resources">
-<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this heading">#</a></h2>
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">#</a></h2>
 <p>Spark at the ONS Articles:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="cache.html"><span class="doc std std-doc">Caching</span></a></p></li>
@@ -595,10 +583,11 @@ document.write(`
 
               
               
-              
-              
-                <footer class="prev-next-footer">
-                  <!-- Previous / next buttons -->
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
        href="partitions.html"
@@ -618,7 +607,10 @@ document.write(`
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
+</div></div>
+  
 </div>
+
                 </footer>
               
             </div>
@@ -686,8 +678,8 @@ By Wil Roberts & Adrian Prince
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
 
   <footer class="bd-footer">
   </footer>

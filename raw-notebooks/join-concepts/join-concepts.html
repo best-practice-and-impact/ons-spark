@@ -7,7 +7,7 @@
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>Optimising Joins &#8212; Spark at the ONS</title>
   
@@ -19,12 +19,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
-<link href="../../_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
   
-  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -40,14 +40,12 @@
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
-  <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
-    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
@@ -58,7 +56,7 @@
     <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../_static/design-tabs.js"></script>
-    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+    <script loading_method="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
     <script>
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){ dataLayer.push(arguments); }
@@ -71,7 +69,6 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'raw-notebooks/join-concepts/join-concepts';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -84,15 +81,6 @@ const thebe_selector_output = ".output, .cell_output"
   
   
   <a class="skip-link" href="#main-content">Skip to main content</a>
-  
-  <div id="pst-scroll-pixel-helper"></div>
-
-  
-  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>
-    Back to top
-  </button>
-
   
   <input type="checkbox"
           class="sidebar-toggle"
@@ -153,14 +141,13 @@ const thebe_selector_output = ".output, .cell_output"
   
   
   
-  
     
     
       
     
     
-    <img src="../../_static/logo.png" class="logo__image only-light" alt="Spark at the ONS - Home"/>
-    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="Spark at the ONS - Home"/>`);</script>
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
   
   
 </a></div>
@@ -183,19 +170,18 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../../spark-overview/spark-defaults.html">Configuration Hierarchy and <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../spark-overview/data-types.html">Data Types in Spark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../spark-overview/creating-dataframes.html">Creating DataFrames Manually</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/reading-and-writing-data-spark.html">Reading and Writing Data in Spark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../spark-overview/data-storage.html">Data Storage</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to PySpark</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../pyspark-intro/pyspark-intro.html">Introduction to PySpark</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../pyspark-intro/reading-data-pyspark.html">Reading Data in PySpark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyspark-intro/returning-data.html">Returning Data from Cluster to Driver</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyspark-intro/f-col.html">Reference columns by name: <code class="docutils literal notranslate"><span class="pre">F.col()</span></code></a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to sparklyr</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../sparklyr-intro/sparklyr-intro.html">Introduction to sparklyr</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../sparklyr-intro/reading-data-sparklyr.html">Reading Data in sparklyr</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../sparklyr-intro/sparklyr-functions.html">Using Spark functions in sparklyr</a></li>
 
 </ul>
@@ -204,7 +190,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../../spark-functions/union-dataframes-with-different-columns.html">Union two DataFrames with different columns</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../spark-functions/padding.html">Add leading zeros with <code class="docutils literal notranslate"><span class="pre">lpad()</span></code></a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/sampling.html">Sampling: <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/sampling.html">Sampling: an overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../spark-functions/pivot-tables.html">Pivot tables in Spark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../spark-functions/rounding.html">Rounding differences in Python, R and Spark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../spark-functions/window-functions.html">Window Functions in Spark</a></li>
@@ -212,6 +198,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../../spark-functions/arrays.html">Arrays Functions in PySpark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../spark-functions/writing-data.html">Writing Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../spark-functions/job-description.html">Set Spark Job Description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/logistic-regression.html">Logistic Regression</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Understanding and Optimising Spark</span></p>
 <ul class="nav bd-sidenav">
@@ -223,7 +210,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/partitions.html">Managing Partitions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/persistence.html">Persisting in Spark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/cache.html">Caching</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../checkpoint-staging/checkpoint-staging.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/checkpoint-staging.html">Checkpoints and Staging Tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/garbage-collection.html">Garbage Collection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/df-order.html">Spark DataFrames Are Not Ordered</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/exercises.html">Exercises</a></li>
@@ -238,6 +225,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/visualisation.html">Spark and Visualisation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/module-imports.html">Naming Conflicts in Module Imports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/pydoop.html">Pydoop: HDFS to pandas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/pandas-udfs.html">Pandas UDFs</a></li>
 </ul>
 
     </div>
@@ -393,10 +381,10 @@ const thebe_selector_output = ".output, .cell_output"
 
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
   </button>
 `);
 </script>
@@ -404,7 +392,7 @@ document.write(`
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+    <i class="fa-solid fa-magnifying-glass"></i>
   </button>
 `);
 </script>
@@ -461,13 +449,13 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section id="optimising-joins">
-<h1>Optimising Joins<a class="headerlink" href="#optimising-joins" title="Permalink to this heading">#</a></h1>
+<h1>Optimising Joins<a class="headerlink" href="#optimising-joins" title="Permalink to this headline">#</a></h1>
 <p>Joining DataFrames is a common and often essential operation in Spark. However, joins are one of the more expensive operations in terms of processing time. This is because by default both source DataFrames are first sorted, which is a <em>wide transformation</em>, causing a <em>shuffle</em> (or <em>exchange</em>). As such, it is worth paying extra attention to where joins occur in the code and trying to figure out which method to use to make them more efficient.</p>
 <p>This article describes the different join algorithms in Spark, explains how they work, when to use them, and shows examples of each. It also covers replacing joins entirely with narrow transformations, and gives a brief overview of <span class="xref myst"><em>salted joins</em></span>, that can be used when the data are skewed.</p>
 <p>Before reading this article ensure that you understand how to join two DataFrames in Spark. Knowledge of <span class="xref myst">shuffles</span> and the difference between wide and narrow transformations will also help understanding of why some methods are faster than others, although not mandatory. Useful resources on this include the <a class="reference external" href="https://databricks.com/glossary/what-are-transformations">DataBricks Transformations definition</a>, and the <span class="xref myst">Spark Application and UI</span>, <span class="xref myst">Shuffling</span> and <span class="xref myst">Partitions</span> articles in this book.</p>
 <p>It is important to note that in this notebook when we talk about different joins and the way they are processed we are not talking about left, right, inner or outer joins, but how it is processed on the cluster. The result of the join will always be the same, regardless of which of the algorithms described in this article is used.</p>
 <section id="the-join-algorithms-in-spark">
-<h2>The Join Algorithms in Spark<a class="headerlink" href="#the-join-algorithms-in-spark" title="Permalink to this heading">#</a></h2>
+<h2>The Join Algorithms in Spark<a class="headerlink" href="#the-join-algorithms-in-spark" title="Permalink to this headline">#</a></h2>
 <p>You do not need to know how joins work when writing Spark code, but you can make them more efficient by understanding that there are different ways for them to be processed and coding appropriately. These are:</p>
 <ul class="simple">
 <li><p>Shuffle Hash Join</p></li>
@@ -478,13 +466,13 @@ document.write(`
 <p>We will look at each in more detail, get a better idea of how they are processed by looking at the Spark UI. We will then compare them and give the advantages and disadvantages of using each.</p>
 </section>
 <section id="shuffle-hash-join">
-<h2>Shuffle Hash Join<a class="headerlink" href="#shuffle-hash-join" title="Permalink to this heading">#</a></h2>
+<h2>Shuffle Hash Join<a class="headerlink" href="#shuffle-hash-join" title="Permalink to this headline">#</a></h2>
 <p>In the development of Spark, the shuffle hash join was the original join implementation.</p>
 <p>This consists of two stages: <em>shuffle</em> and <em>hash</em>. First a <em>shuffle</em>, where data with the same keys from both DataFrames are moved to the same executors. Once all the data are on the relevant executors, they are joined using the hash join algorithm. This involves building a hash table in memory and may fail for some larger joins.</p>
 <p>Shuffle hash joins will not be explored further as they have been superseded by sort merge join, which is similar apart from the processing stage.</p>
 </section>
 <section id="sort-merge-join">
-<h2>Sort Merge Join<a class="headerlink" href="#sort-merge-join" title="Permalink to this heading">#</a></h2>
+<h2>Sort Merge Join<a class="headerlink" href="#sort-merge-join" title="Permalink to this headline">#</a></h2>
 <p>This is now the default method of joining two DataFrames in Spark.</p>
 <p>It consists of two key stages, as suggested by the name: <em>sort</em> and <em>merge</em>.</p>
 <p>First of all, the data in each DataFrame will be sorted. A sort operation requires a shuffle on each DataFrame. This will also ensure that all the same key values are on the same partition. This also means that the join can be done in parallel on each partition, although it can potentially be a problem if your data are skewed (in which case a <em>salted join</em> may be useful).</p>
@@ -498,7 +486,7 @@ document.write(`
 </figure>
 <p>Both sort merge joins and shuffle hash joins use a shuffle; the difference is in the processing stage, where the former uses a searching algorithm and the latter uses a hash table.</p>
 <section id="sort-merge-join-example">
-<h3>Sort Merge Join Example<a class="headerlink" href="#sort-merge-join-example" title="Permalink to this heading">#</a></h3>
+<h3>Sort Merge Join Example<a class="headerlink" href="#sort-merge-join-example" title="Permalink to this headline">#</a></h3>
 <p>Let us see an example of a sort merge join and then look at the plan and the Spark UI. The example uses the Animal Rescue (as CSV) and Population (as parquet) datasets, left joining on the <code class="docutils literal notranslate"><span class="pre">postcode_district</span></code>. Note that we are disabling automatic broadcast joins by setting <code class="docutils literal notranslate"><span class="pre">spark.sql.autoBroadcastJoinThreshold</span></code> to <code class="docutils literal notranslate"><span class="pre">-1</span></code>; broadcast joins are covered in the next section. First, start a Spark session, read the data and select and rename the relevant columns:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -682,13 +670,13 @@ only showing top 5 rows
 <p>This diagram has the same information as the <code class="docutils literal notranslate"><span class="pre">explain()</span></code>, just presented in a much nicer way. Again, we can see that there is an <strong>Exchange</strong> for each DataFrame, before the <strong>SortMergeJoin</strong>, and a <strong>Filter</strong> when reading the parquet.</p>
 </section>
 <section id="understanding-sort-merge-join">
-<h3>Understanding Sort Merge Join<a class="headerlink" href="#understanding-sort-merge-join" title="Permalink to this heading">#</a></h3>
+<h3>Understanding Sort Merge Join<a class="headerlink" href="#understanding-sort-merge-join" title="Permalink to this headline">#</a></h3>
 <p>The sort merge join involves two <strong>Exchanges</strong> (also called <em>shuffles</em>), one for the sorting of each source DataFrame (see the Shuffles article for a full discussion of this topic). Spark is most powerful when it can process data in parallel (<em>narrow transformations</em>), and sorting is instead a <em>wide transformation</em>, causing a <em>shuffle</em>, meaning that a sort merge join can take significant time to process, depending on the size and composition of your data. There is a full discussion in the when to use each join method section.</p>
 <p>The sort merge join is the <em>default</em> join although not always chosen automatically; the next section on <em>broadcast joins</em> explains this further.</p>
 </section>
 </section>
 <section id="broadcast-join">
-<h2>Broadcast Join<a class="headerlink" href="#broadcast-join" title="Permalink to this heading">#</a></h2>
+<h2>Broadcast Join<a class="headerlink" href="#broadcast-join" title="Permalink to this headline">#</a></h2>
 <p>The other common method is the broadcast join. This can be used when you are joining a small DataFrame to a large one. The smaller DataFrame is copied to every node on the cluster and then a traditional hash join is performed. This avoids the need for the sorting step that exists in the sort merge join, and therefore the expensive shuffles.</p>
 <p>Broadcast joins are suitable when you are joining a small DataFrame to a larger one. As one DataFrame is pushed to several places, this may actually be too slow or impossible if you are joining two large DataFrames.</p>
 <p>The diagram below shows how a broadcast join works visually:</p>
@@ -704,7 +692,7 @@ only showing top 5 rows
 <li><p>Spark will use a broadcast join by default if the size of the DataFrame to be broadcast is known and smaller 10MB; this value can be changed with the <a class="reference external" href="https://spark.apache.org/docs/latest/sql-performance-tuning.html"><code class="docutils literal notranslate"><span class="pre">spark.sql.autoBroadcastJoinThreshold</span></code></a> configuration setting.</p></li>
 </ol>
 <section id="example-using-a-broadcast-hint">
-<h3>Example: Using a Broadcast Hint<a class="headerlink" href="#example-using-a-broadcast-hint" title="Permalink to this heading">#</a></h3>
+<h3>Example: Using a Broadcast Hint<a class="headerlink" href="#example-using-a-broadcast-hint" title="Permalink to this headline">#</a></h3>
 <p>We can use the same source DataFrames as the sort merge join example, <code class="docutils literal notranslate"><span class="pre">rescue</span></code> and <code class="docutils literal notranslate"><span class="pre">population</span></code>. To perform a broadcast join, we just add the broadcast join hint <code class="docutils literal notranslate"><span class="pre">F.broadcast()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_broadcast()</span></code> around <code class="docutils literal notranslate"><span class="pre">population</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -887,7 +875,7 @@ only showing top 5 rows
 </section>
 </section>
 <section id="replacing-a-join-with-a-narrow-transformation">
-<h2>Replacing a join with a narrow transformation<a class="headerlink" href="#replacing-a-join-with-a-narrow-transformation" title="Permalink to this heading">#</a></h2>
+<h2>Replacing a join with a narrow transformation<a class="headerlink" href="#replacing-a-join-with-a-narrow-transformation" title="Permalink to this headline">#</a></h2>
 <p>If your second DataFrame is tiny, you could potentially even not do a join at all, and replace it with a series of <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.when.html"><code class="docutils literal notranslate"><span class="pre">F.when()</span></code></a> statements in PySpark or <a class="reference external" href="https://dplyr.tidyverse.org/reference/case_when.html"><code class="docutils literal notranslate"><span class="pre">case_when()</span></code></a> in sparklyr. These will be processed as a <em>narrow transformation</em> in parallel rather than a <em>wide transformation</em>, meaning that it should be quicker than joining using the usual methods.</p>
 <p>The following diagram from the  shows how this works visually; the <code class="docutils literal notranslate"><span class="pre">F.when()</span></code>/<code class="docutils literal notranslate"><span class="pre">case_when()</span></code> method is a narrow <em>narrow transformation</em> is within the same stage, rather than a <em>wide transformation</em> between stages:</p>
 <figure class="align-default" id="sparkapplication">
@@ -897,7 +885,7 @@ only showing top 5 rows
 </figcaption>
 </figure>
 <section id="example-narrow-transformations">
-<h3>Example: Narrow Transformations<a class="headerlink" href="#example-narrow-transformations" title="Permalink to this heading">#</a></h3>
+<h3>Example: Narrow Transformations<a class="headerlink" href="#example-narrow-transformations" title="Permalink to this headline">#</a></h3>
 <p>The rescue data has a column, <code class="docutils literal notranslate"><span class="pre">origin_of_call</span></code>, which contains information about who reported the incident.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1089,7 +1077,7 @@ only showing top 5 rows
 </section>
 </section>
 <section id="when-to-use-each-method">
-<h2>When to use each method<a class="headerlink" href="#when-to-use-each-method" title="Permalink to this heading">#</a></h2>
+<h2>When to use each method<a class="headerlink" href="#when-to-use-each-method" title="Permalink to this headline">#</a></h2>
 <p>We have seen examples of three ways of joining data:</p>
 <ul class="simple">
 <li><p>Sort Merge Join</p></li>
@@ -1106,11 +1094,11 @@ only showing top 5 rows
 <p>The analysis above assumes that the join keys in the DataFrames are roughly equally partitioned. If your DataFrame is skewed so that some partitions contain significantly more data than others, then the efficiency of the join could be affected. See the article on <span class="xref myst">partitions</span> for more detail. The solution here is to use a <em>salted join</em>.</p>
 </section>
 <section id="salted-joins">
-<h2>Salted Joins<a class="headerlink" href="#salted-joins" title="Permalink to this heading">#</a></h2>
+<h2>Salted Joins<a class="headerlink" href="#salted-joins" title="Permalink to this headline">#</a></h2>
 <p>A sort merge join will move all the data with the same join keys to the same partition, which can lead to skew in the DataFrame and cause the join to process inefficiently, or not at all in some cases. This can be resolved with a <em>salted join</em>: splitting the join keys, so that the DataFrame is distributed into more equal partition sizes. See the article on <span class="xref myst">salted joins</span> for more information.</p>
 </section>
 <section id="further-resources">
-<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this heading">#</a></h2>
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">#</a></h2>
 <p>Spark at the ONS Articles:</p>
 <ul class="simple">
 <li><p><span class="xref myst">Salted Joins</span></p></li>
@@ -1165,7 +1153,7 @@ only showing top 5 rows
         },
         kernelOptions: {
             name: "python3",
-            path: "./raw-notebooks/join-concepts"
+            path: "./raw-notebooks\join-concepts"
         },
         predefinedOutput: true
     }
@@ -1177,12 +1165,16 @@ only showing top 5 rows
 
               
               
-              
-              
-                <footer class="prev-next-footer">
-                  <!-- Previous / next buttons -->
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
+</div></div>
+  
 </div>
+
                 </footer>
               
             </div>
@@ -1255,8 +1247,8 @@ By Wil Roberts & Adrian Prince
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
-<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
+  <script src="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
 
   <footer class="bd-footer">
   </footer>

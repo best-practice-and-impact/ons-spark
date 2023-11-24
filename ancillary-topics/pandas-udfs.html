@@ -1,0 +1,1315 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Pandas UDFs &#8212; Spark at the ONS</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/accessibility.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script loading_method="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-95MGHSRD0S');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Pydoop: HDFS to pandas" href="pydoop.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Introduction
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark overview</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-start.html">Getting Started with Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/when-to-use-spark.html">When To Use Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-session-guidance.html">Guidance on Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/example-spark-sessions.html">Example Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-defaults.html">Configuration Hierarchy and <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/data-types.html">Data Types in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/creating-dataframes.html">Creating DataFrames Manually</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/reading-and-writing-data-spark.html">Reading and Writing Data in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/data-storage.html">Data Storage</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to PySpark</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/pyspark-intro.html">Introduction to PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/returning-data.html">Returning Data from Cluster to Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/f-col.html">Reference columns by name: <code class="docutils literal notranslate"><span class="pre">F.col()</span></code></a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to sparklyr</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/sparklyr-intro.html">Introduction to sparklyr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">Using Spark functions in sparklyr</a></li>
+
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark functions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/union-dataframes-with-different-columns.html">Union two DataFrames with different columns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/padding.html">Add leading zeros with <code class="docutils literal notranslate"><span class="pre">lpad()</span></code></a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/sampling.html">Sampling: an overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/pivot-tables.html">Pivot tables in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/rounding.html">Rounding differences in Python, R and Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/window-functions.html">Window Functions in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/cross-joins.html">Cross Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/arrays.html">Arrays Functions in PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/writing-data.html">Writing Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/job-description.html">Set Spark Job Description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/logistic-regression.html">Logistic Regression</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Understanding and Optimising Spark</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/optimisation-tips.html">Ideas for optimising Spark code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/spark-application-and-ui.html">Spark Application and UI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/shuffling.html">Shuffling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/join-concepts.html">Optimising Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/salted-joins.html">Salted Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/partitions.html">Managing Partitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/persistence.html">Persisting in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/cache.html">Caching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/checkpoint-staging.html">Checkpoints and Staging Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/garbage-collection.html">Garbage Collection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/df-order.html">Spark DataFrames Are Not Ordered</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/exercises.html">Exercises</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Testing and Debugging</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../testing-debugging/spark-errors.html">Understanding and Handling Spark Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing-debugging/unit-testing.html">Unit Testing in Spark</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Ancillary Topics</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="visualisation.html">Spark and Visualisation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module-imports.html">Naming Conflicts in Module Imports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pydoop.html">Pydoop: HDFS to pandas</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Pandas UDFs</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fancillary-topics/pandas-udfs.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/ancillary-topics/pandas-udfs.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Pandas UDFs</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-are-pandas-udfs-better-than-python-udfs">Why are Pandas UDFs better than Python UDFs?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#types-of-pandas-udfs">Types of Pandas UDFs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#declaring-pandas-udfs-in-spark">Declaring Pandas UDFs in Spark</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spark-setup-for-pandas-udfs">Spark Setup for Pandas UDFs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scalar-pandas-udfs">Scalar Pandas UDFs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grouped-map-pandas-udfs">Grouped Map Pandas UDFs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grouped-aggregate-pandas-udfs">Grouped Aggregate Pandas UDFs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#additional-resources">Additional Resources</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="pandas-udfs">
+<h1>Pandas UDFs<a class="headerlink" href="#pandas-udfs" title="Permalink to this headline">#</a></h1>
+<p>When coding with Spark, you will generally want to try and use native Spark functions wherever possible (i.e. functions in <code class="docutils literal notranslate"><span class="pre">pyspark.sql.functions</span></code> for PySpark). However, there are instances where there may not be a Spark function available to do what you need. In cases such as this, the second best option is to use a Pandas UDF.</p>
+<section id="why-are-pandas-udfs-better-than-python-udfs">
+<h2>Why are Pandas UDFs better than Python UDFs?<a class="headerlink" href="#why-are-pandas-udfs-better-than-python-udfs" title="Permalink to this headline">#</a></h2>
+<p>Ordinary Python UDFs are not particularly efficient in Spark as they do not make full use of the Spark cluster and can only be processed in the Python runtime. As the code for Python UDFs cannot be executed in the Java Virtual Machine (JVM), the platform which runs Spark, each row of the dataframe is serialised and deserialised between the Python runtime and the JVM. As can be imagined, this causes massive (de)serialisation overheads, high data copy in memory and is very slow!</p>
+<p>Pandas UDFs (also known as vectorised UDFs) can work on the Spark executors to process data in a distributed manner and allow for vectorised operations. This means that Pandas UDFs can work on the whole data partition at once instead of just one row at a time like Python UDFs. This vectorisation is achieved by using Apache Arrow to transfer data across the cluster between the JVM and the Python executors with very low data copy in memory and (de)serialisation overheads. Essentially, Apache Arrow acts as a middleman to store a single copy of the data which can be accessed by both Python and Java processes.</p>
+</section>
+<section id="types-of-pandas-udfs">
+<h2>Types of Pandas UDFs<a class="headerlink" href="#types-of-pandas-udfs" title="Permalink to this headline">#</a></h2>
+<p>Spark 2.4 is compatible with 3 types of Pandas UDFs:</p>
+<ul class="simple">
+<li><p>Scalar</p></li>
+<li><p>Grouped Map</p></li>
+<li><p>Grouped Aggregate</p></li>
+</ul>
+<p>Spark 3.x is compatible with the additional types:</p>
+<ul class="simple">
+<li><p>Scalar Iterator</p></li>
+<li><p>Map</p></li>
+<li><p>Cogroup Mapped</p></li>
+</ul>
+<p>This demo will cover the three types supported in Spark 2.4. Additional information on the other types for Spark 3.x can be found <a class="reference external" href="https://towardsdatascience.com/pyspark-or-pandas-why-not-both-95523946ec7c">here</a>.</p>
+</section>
+<section id="declaring-pandas-udfs-in-spark">
+<h2>Declaring Pandas UDFs in Spark<a class="headerlink" href="#declaring-pandas-udfs-in-spark" title="Permalink to this headline">#</a></h2>
+<p>You can create a Pandas UDF in a number of ways.</p>
+<ul class="simple">
+<li><p>Using the <code class="docutils literal notranslate"><span class="pre">&#64;pandas_udf(&lt;type&gt;,</span> <span class="pre">F.PandasUDFType.&lt;type&gt;)</span></code> decorator.</p></li>
+<li><p>Assigning the UDF using <code class="docutils literal notranslate"><span class="pre">&lt;udf_name&gt;_udf</span> <span class="pre">=</span> <span class="pre">F.pandas_udf(&lt;udf_name&gt;,</span> <span class="pre">returnType</span> <span class="pre">=</span> <span class="pre">&lt;type&gt;)</span></code></p></li>
+<li><p>Using Python Type hints. Python hints can be used to make Pandas UDFs more descriptive. For more info see <a class="reference external" href="https://www.databricks.com/blog/2020/05/20/new-pandas-udfs-and-python-type-hints-in-the-upcoming-release-of-apache-spark-3-0.html">here</a>.</p></li>
+</ul>
+<p>This demo will use the <code class="docutils literal notranslate"><span class="pre">pandas_udf</span></code> decorator and Python hints to annotate the functions with the input and output data types.</p>
+</section>
+<section id="spark-setup-for-pandas-udfs">
+<h2>Spark Setup for Pandas UDFs<a class="headerlink" href="#spark-setup-for-pandas-udfs" title="Permalink to this headline">#</a></h2>
+<p>For Spark 3, to use Pandas UDFs you will have to install Pandas and PyArrow using:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pandas</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">pyarrow</span>
+</pre></div>
+</div>
+<p>For Spark 2.4 you will need to install the older versions of Pandas and PyArrow using. We found the following versions to be the highest which will work with Pandas UDFs, although expect a deprecation warning:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pandas</span><span class="o">==</span><span class="mf">1.1.5</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">pyarrow</span><span class="o">==</span><span class="mf">0.14.0</span>
+</pre></div>
+</div>
+<p>The <a class="reference external" href="https://spark.apache.org/docs/2.4.7/sql-pyspark-pandas-with-arrow.html#compatibiliy-setting-for-pyarrow--0150-and-spark-23x-24x">offical PySpark Usage Guide for Pandas with Apache Arrow</a> advises that compatibility issues may occur with Pandas &gt;0.19.2 and PyArrow &gt;0.8.0, so if you are finding issues, it may be best to switch to these lower versions.</p>
+<p>You should also add configs to enable PyArrow optimisation and fallback if it is not installed. Even if you are not using Pandas UDFs the below configs can make the conversion between Pandas and Spark more efficient.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s1">&#39;spark.sql.execution.arrow.enabled&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">)</span>
+<span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s1">&#39;spark.sql.execution.arrow.fallback.enabled&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For Spark 2.4 you will need to add the below additional configs to your Spark session for compatibility:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s1">&#39;spark.excutorEnv.ARROW_PRE_0_15_IPC_FORMAT&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s1">&#39;spark.workerEnv.ARROW_PRE_0_15_IPC_FORMAT&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In our demo we are using a local Spark session and will be working with the animal rescue dataset used throughout in this book. We have used examples of Pandas UDFs applied to the rescue dataset only for the purpose of demonstration as there are Spark functions which in a real-life scenario would be used instead. For other simple examples of Pandas UDFs please see <a class="reference external" href="https://www.databricks.com/blog/2017/10/30/introducing-vectorized-udfs-for-pyspark.html">Databricks Introduction to Pandas UDFs</a>.</p>
+<p>Firstly, we need to import packages and set up a Spark session for PyArrow optimisation and compatibility with Spark 2.4. Then read the data, rename and add columns and if necessary remove nulls:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span>
+<span class="kn">import</span> <span class="nn">pyspark.sql.functions</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">pandas_udf</span>
+<span class="kn">import</span> <span class="nn">pyspark.sql.types</span> <span class="k">as</span> <span class="nn">T</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">lit</span>
+
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;pandas_udfs&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s1">&#39;spark.sql.execution.arrow.enabled&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s1">&#39;spark.sql.execution.arrow.fallback.enabled&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s1">&#39;spark.excutorEnv.ARROW_PRE_0_15_IPC_FORMAT&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s1">&#39;spark.workerEnv.ARROW_PRE_0_15_IPC_FORMAT&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
+
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+     <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="n">rescue_path_csv</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path_csv&quot;</span><span class="p">]</span>
+<span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">rescue_path_csv</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;IncidentNumber&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;incident_number&#39;</span><span class="p">),</span>
+                       <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;AnimalGroupParent&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;animal_group&#39;</span><span class="p">),</span> 
+                       <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;Easting_rounded&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;easting_rounded&#39;</span><span class="p">),</span> 
+                       <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;Northing_rounded&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;northing_rounded&#39;</span><span class="p">))</span>
+
+<span class="n">rescue</span><span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;lfb_easting&#39;</span><span class="p">,</span> <span class="n">lit</span><span class="p">(</span><span class="mi">532066</span><span class="p">))</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;lfb_northing&#39;</span><span class="p">,</span> <span class="n">lit</span><span class="p">(</span><span class="mi">180010</span><span class="p">))</span>
+
+
+<span class="n">rescue</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/cdsw/.local/lib/python3.6/site-packages/pyarrow/__init__.py:157: UserWarning: pyarrow.open_stream is deprecated, please use pyarrow.ipc.open_stream
+  warnings.warn(&quot;pyarrow.open_stream is deprecated, please use &quot;
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>incident_number</th>
+      <th>animal_group</th>
+      <th>easting_rounded</th>
+      <th>northing_rounded</th>
+      <th>lfb_easting</th>
+      <th>lfb_northing</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>139091</td>
+      <td>Dog</td>
+      <td>532350</td>
+      <td>170050</td>
+      <td>532066</td>
+      <td>180010</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>275091</td>
+      <td>Fox</td>
+      <td>534750</td>
+      <td>167550</td>
+      <td>532066</td>
+      <td>180010</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2075091</td>
+      <td>Dog</td>
+      <td>528050</td>
+      <td>164950</td>
+      <td>532066</td>
+      <td>180010</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2872091</td>
+      <td>Horse</td>
+      <td>504650</td>
+      <td>190650</td>
+      <td>532066</td>
+      <td>180010</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>3553091</td>
+      <td>Rabbit</td>
+      <td>554650</td>
+      <td>192350</td>
+      <td>532066</td>
+      <td>180010</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>3742091</td>
+      <td>Unknown - Heavy Livestock Animal</td>
+      <td>549350</td>
+      <td>184950</td>
+      <td>532066</td>
+      <td>180010</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>4011091</td>
+      <td>Dog</td>
+      <td>539050</td>
+      <td>186150</td>
+      <td>532066</td>
+      <td>180010</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>4211091</td>
+      <td>Dog</td>
+      <td>541350</td>
+      <td>186650</td>
+      <td>532066</td>
+      <td>180010</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>4306091</td>
+      <td>Squirrel</td>
+      <td>538750</td>
+      <td>163350</td>
+      <td>532066</td>
+      <td>180010</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>4715091</td>
+      <td>Dog</td>
+      <td>535450</td>
+      <td>186750</td>
+      <td>532066</td>
+      <td>180010</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+<section id="scalar-pandas-udfs">
+<h2>Scalar Pandas UDFs<a class="headerlink" href="#scalar-pandas-udfs" title="Permalink to this headline">#</a></h2>
+<p>Scalar Pandas UDFs take in a <code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code> and output a <code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code>.</p>
+<p>Spark executes scalar Pandas UDFs by serialising each partition column into a <code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code> object (basically splitting the data into batches). The UDF is then called on each of of these Series objects as a subset of the data and then results are concactenated together and returned as a <code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code>.</p>
+<p>Be aware that scalar UDFs may cause incorrect results (if your dataframe is over multiple partitions) when calculating means and standard deviations. For more info on this and how to overcome this issue see <a class="reference external" href="https://towardsdatascience.com/pyspark-or-pandas-why-not-both-95523946ec7c">this towards data science post</a>.</p>
+<p>In the decorator of a scalar Pandas UDF the first argument is the data type of the output dataframe and the second argument is the UDF type. Here is a simple Pandas scalar UDF to find out the <code class="docutils literal notranslate"><span class="pre">distance</span></code> between the London Fire Brigade (lfb) and the location of an animal-related incident. The inputs to the function are Eastings and Northings which are types of coordinates that tell you how far East or North a point is; therefore, there are two points inputted for the lfb location and two points inputted for the animal-related incident. The function works to find the distance between these two points and converts the answer into ‘km’.</p>
+<p>Please note that the following example has been used here to illustrate how to use a Pandas UDF, this is not necessarily the most efficient way to write this function as it can also be written in PySpark.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@pandas_udf</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">DoubleType</span><span class="p">(),</span> <span class="n">F</span><span class="o">.</span><span class="n">PandasUDFType</span><span class="o">.</span><span class="n">SCALAR</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">distance_to_incident</span><span class="p">(</span><span class="n">easting_rounded</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">lfb_easting</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">northing_rounded</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">lfb_northing</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+    <span class="n">distance</span> <span class="o">=</span> <span class="p">((</span><span class="n">easting_rounded</span> <span class="o">-</span> <span class="n">lfb_easting</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">northing_rounded</span> <span class="o">-</span> <span class="n">lfb_northing</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="n">distance_km</span> <span class="o">=</span> <span class="n">distance</span><span class="o">/</span><span class="mi">1000</span>
+    <span class="k">return</span> <span class="n">distance_km</span>
+
+<span class="n">lfb_distance</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;distance&quot;</span><span class="p">,</span> <span class="n">distance_to_incident</span><span class="p">(</span><span class="s1">&#39;easting_rounded&#39;</span><span class="p">,</span> <span class="s1">&#39;lfb_easting&#39;</span><span class="p">,</span> <span class="s1">&#39;northing_rounded&#39;</span><span class="p">,</span> <span class="s1">&#39;lfb_northing&#39;</span><span class="p">))</span>
+<span class="n">lfb_distance</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/cdsw/.local/lib/python3.6/site-packages/pyarrow/__init__.py:157: UserWarning: pyarrow.open_stream is deprecated, please use pyarrow.ipc.open_stream
+  warnings.warn(&quot;pyarrow.open_stream is deprecated, please use &quot;
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>incident_number</th>
+      <th>animal_group</th>
+      <th>easting_rounded</th>
+      <th>northing_rounded</th>
+      <th>lfb_easting</th>
+      <th>lfb_northing</th>
+      <th>distance</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>139091</td>
+      <td>Dog</td>
+      <td>532350</td>
+      <td>170050</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>9.964048</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>275091</td>
+      <td>Fox</td>
+      <td>534750</td>
+      <td>167550</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>12.745802</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2075091</td>
+      <td>Dog</td>
+      <td>528050</td>
+      <td>164950</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>15.586271</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2872091</td>
+      <td>Horse</td>
+      <td>504650</td>
+      <td>190650</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>29.408275</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>3553091</td>
+      <td>Rabbit</td>
+      <td>554650</td>
+      <td>192350</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>25.735436</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+<section id="grouped-map-pandas-udfs">
+<h2>Grouped Map Pandas UDFs<a class="headerlink" href="#grouped-map-pandas-udfs" title="Permalink to this headline">#</a></h2>
+<p>Grouped map UDFs take in a pandas.DataFrame and output a pandas.DataFrame.</p>
+<p>Grouped Map UDFs use the split-apply-combine format. This is where data is first split into groups based on the <code class="docutils literal notranslate"><span class="pre">.groupby()</span></code> function. The UDF is then mapped over each group to return multiple Pandas dataframes. The results of the Pandas dataframes are then  combined and a new Spark dataframe is returned.</p>
+<p>In the decorator of a grouped map Pandas UDF the first argument is the schema of the output dataframe and the second argument is the UDF type. Here is a grouped map UDF to find the <code class="docutils literal notranslate"><span class="pre">distance</span></code> travelled by the London Fire Brigade compared to the overall mean <code class="docutils literal notranslate"><span class="pre">distance</span></code> they travel to an incident, grouped by <code class="docutils literal notranslate"><span class="pre">animal_group</span></code>. This example uses the outputted dataframe: <code class="docutils literal notranslate"><span class="pre">lfb_distance</span></code> from the scalar UDF example above. The output is in ‘km’.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@pandas_udf</span><span class="p">(</span><span class="n">lfb_distance</span><span class="o">.</span><span class="n">schema</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">PandasUDFType</span><span class="o">.</span><span class="n">GROUPED_MAP</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">dist_animal</span><span class="p">(</span><span class="n">pdf</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="n">distance</span> <span class="o">=</span> <span class="n">pdf</span><span class="o">.</span><span class="n">distance</span>
+    <span class="k">return</span> <span class="n">pdf</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">distance</span><span class="o">=</span><span class="p">((</span><span class="n">distance</span> <span class="o">-</span> <span class="n">distance</span><span class="o">.</span><span class="n">mean</span><span class="p">()))</span><span class="o">/</span> <span class="n">distance</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
+
+<span class="n">dist_by_animal</span> <span class="o">=</span> <span class="n">lfb_distance</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s1">&#39;animal_group&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">dist_animal</span><span class="p">)</span>
+<span class="n">dist_by_animal</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/cdsw/.local/lib/python3.6/site-packages/pyarrow/__init__.py:157: UserWarning: pyarrow.open_stream is deprecated, please use pyarrow.ipc.open_stream
+  warnings.warn(&quot;pyarrow.open_stream is deprecated, please use &quot;
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>incident_number</th>
+      <th>animal_group</th>
+      <th>easting_rounded</th>
+      <th>northing_rounded</th>
+      <th>lfb_easting</th>
+      <th>lfb_northing</th>
+      <th>distance</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>59442121</td>
+      <td>Unknown - Animal rescue from water - Farm animal</td>
+      <td>558450</td>
+      <td>189150</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>-5.407423</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>4149</td>
+      <td>Unknown - Animal rescue from water - Farm animal</td>
+      <td>552850</td>
+      <td>175450</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>-27.915184</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>012249-30012019</td>
+      <td>Unknown - Animal rescue from water - Farm animal</td>
+      <td>571350</td>
+      <td>177650</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>33.322606</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>188198101</td>
+      <td>Cow</td>
+      <td>528350</td>
+      <td>185350</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>-66.012881</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>207392101</td>
+      <td>Cow</td>
+      <td>559650</td>
+      <td>187050</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>48.723553</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>100125121</td>
+      <td>Cow</td>
+      <td>504050</td>
+      <td>191350</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>57.896324</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>113544121</td>
+      <td>Cow</td>
+      <td>551350</td>
+      <td>180850</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>0.838977</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>122937121</td>
+      <td>Cow</td>
+      <td>536350</td>
+      <td>195950</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>-13.771242</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>112376141</td>
+      <td>Cow</td>
+      <td>535950</td>
+      <td>196450</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>-11.749838</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>120222-06092016</td>
+      <td>Cow</td>
+      <td>536250</td>
+      <td>195550</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>-15.924893</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+<section id="grouped-aggregate-pandas-udfs">
+<h2>Grouped Aggregate Pandas UDFs<a class="headerlink" href="#grouped-aggregate-pandas-udfs" title="Permalink to this headline">#</a></h2>
+<p>Grouped aggregate Pandas UDFs take in one or more pandas.Series and output a scalar.</p>
+<p>Grouped aggregate Pandas UDFs are used alongisde the <code class="docutils literal notranslate"><span class="pre">.groupby()</span></code> and <code class="docutils literal notranslate"><span class="pre">.agg()</span></code> functions and are similiar to the Spark <code class="docutils literal notranslate"><span class="pre">.agg()</span></code> function.</p>
+<p>In the decorator of a grouped aggregate Pandas UDF the first argument is the data type of the output dataframe and the second argument is the UDF type. Below is an example of a grouped aggregate Pandas UDF to find the mean distance travelled by the London Fire Brigade based on the <code class="docutils literal notranslate"><span class="pre">animal_group</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@pandas_udf</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">DoubleType</span><span class="p">(),</span> <span class="n">F</span><span class="o">.</span><span class="n">PandasUDFType</span><span class="o">.</span><span class="n">GROUPED_AGG</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">mean_distance</span><span class="p">(</span><span class="n">distance</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="o">.</span><span class="n">DoubleType</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">distance</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+<span class="n">mean_distance_travelled</span> <span class="o">=</span> <span class="p">(</span><span class="n">lfb_distance</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s1">&#39;animal_group&#39;</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">mean_distance</span><span class="p">(</span><span class="n">lfb_distance</span><span class="p">[</span><span class="s1">&#39;distance&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;mean_distance&#39;</span><span class="p">))</span>
+      <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s1">&#39;mean_distance&#39;</span><span class="p">,</span> <span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">))</span>
+
+<span class="n">mean_distance_travelled</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/cdsw/.local/lib/python3.6/site-packages/pyarrow/__init__.py:157: UserWarning: pyarrow.open_stream is deprecated, please use pyarrow.ipc.open_stream
+  warnings.warn(&quot;pyarrow.open_stream is deprecated, please use &quot;
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>animal_group</th>
+      <th>mean_distance</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Unknown - Animal rescue from water - Farm animal</td>
+      <td>29.518494</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Hedgehog</td>
+      <td>21.457480</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Bull</td>
+      <td>21.059503</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Deer</td>
+      <td>19.603281</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Cow</td>
+      <td>19.141692</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Horse</td>
+      <td>19.112879</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Budgie</td>
+      <td>18.338150</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Fish</td>
+      <td>17.896080</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Lizard</td>
+      <td>17.358752</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Sheep</td>
+      <td>16.884412</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>The grouped aggregate Pandas UDF can also be used with the PySpark window functions. Each <code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code> in the input represents a group or window. In Spark 2.4, the grouped aggregate UDF does not support partial aggregations with only an unbounded window supported. Here is an example:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.window</span> <span class="kn">import</span> <span class="n">Window</span>
+
+<span class="n">w</span> <span class="o">=</span> <span class="p">(</span><span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s1">&#39;animal_group&#39;</span><span class="p">)</span>
+           <span class="o">.</span><span class="n">rowsBetween</span><span class="p">(</span><span class="n">Window</span><span class="o">.</span><span class="n">unboundedPreceding</span><span class="p">,</span> <span class="n">Window</span><span class="o">.</span><span class="n">unboundedFollowing</span><span class="p">))</span>
+
+<span class="n">rescue</span> <span class="o">=</span> <span class="p">(</span><span class="n">lfb_distance</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;mean_distance&#39;</span><span class="p">,</span> <span class="n">mean_distance</span><span class="p">(</span><span class="n">lfb_distance</span><span class="p">[</span><span class="s1">&#39;distance&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">over</span><span class="p">(</span><span class="n">w</span><span class="p">))</span>
+                <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s1">&#39;mean_distance&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+
+<span class="n">rescue</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/cdsw/.local/lib/python3.6/site-packages/pyarrow/__init__.py:157: UserWarning: pyarrow.open_stream is deprecated, please use pyarrow.ipc.open_stream
+  warnings.warn(&quot;pyarrow.open_stream is deprecated, please use &quot;
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>incident_number</th>
+      <th>animal_group</th>
+      <th>easting_rounded</th>
+      <th>northing_rounded</th>
+      <th>lfb_easting</th>
+      <th>lfb_northing</th>
+      <th>distance</th>
+      <th>mean_distance</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>59442121</td>
+      <td>Unknown - Animal rescue from water - Farm animal</td>
+      <td>558450</td>
+      <td>189150</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>27.922304</td>
+      <td>29.518494</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>4149</td>
+      <td>Unknown - Animal rescue from water - Farm animal</td>
+      <td>552850</td>
+      <td>175450</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>21.278352</td>
+      <td>29.518494</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>012249-30012019</td>
+      <td>Unknown - Animal rescue from water - Farm animal</td>
+      <td>571350</td>
+      <td>177650</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>39.354825</td>
+      <td>29.518494</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>144140091</td>
+      <td>Hedgehog</td>
+      <td>510750</td>
+      <td>177550</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>21.457480</td>
+      <td>21.457480</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>165500101</td>
+      <td>Bull</td>
+      <td>514650</td>
+      <td>191850</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>21.059503</td>
+      <td>21.059503</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>151097091</td>
+      <td>Deer</td>
+      <td>529850</td>
+      <td>192450</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>12.635832</td>
+      <td>19.603281</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>181559091</td>
+      <td>Deer</td>
+      <td>555150</td>
+      <td>192650</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>26.318067</td>
+      <td>19.603281</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>153698091</td>
+      <td>Deer</td>
+      <td>535150</td>
+      <td>198750</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>18.992068</td>
+      <td>19.603281</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>206935091</td>
+      <td>Deer</td>
+      <td>536150</td>
+      <td>162250</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>18.223519</td>
+      <td>19.603281</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>167858091</td>
+      <td>Deer</td>
+      <td>522650</td>
+      <td>192450</td>
+      <td>532066</td>
+      <td>180010</td>
+      <td>15.601752</td>
+      <td>19.603281</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+<section id="additional-resources">
+<h2>Additional Resources<a class="headerlink" href="#additional-resources" title="Permalink to this headline">#</a></h2>
+<p>For a more in-depth explaination of what happens under the hood of different types of Pandas UDFs see:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://freecontent.manning.com/big-data-is-just-a-lot-of-small-data-using-pandas-udf/">Big Data is Just a Lot of Small Data: Using pandas UDF part 1</a></p></li>
+<li><p><a class="reference external" href="https://freecontent.manning.com/big-data-is-just-a-lot-of-small-data-using-pandas-udf-part-2/">Big Data is Just a Lot of Small Data: Using pandas UDF part 2</a></p></li>
+</ul>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./ancillary-topics"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="pydoop.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Pydoop: HDFS to pandas</p>
+      </div>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-are-pandas-udfs-better-than-python-udfs">Why are Pandas UDFs better than Python UDFs?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#types-of-pandas-udfs">Types of Pandas UDFs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#declaring-pandas-udfs-in-spark">Declaring Pandas UDFs in Spark</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spark-setup-for-pandas-udfs">Spark Setup for Pandas UDFs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scalar-pandas-udfs">Scalar Pandas UDFs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grouped-map-pandas-udfs">Grouped Map Pandas UDFs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grouped-aggregate-pandas-udfs">Grouped Aggregate Pandas UDFs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#additional-resources">Additional Resources</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Wil Roberts & Adrian Prince
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -7,7 +7,7 @@
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>Window Functions in Spark &#8212; Spark at the ONS</title>
   
@@ -19,12 +19,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -40,14 +40,12 @@
     <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
-  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
@@ -59,7 +57,7 @@
     <script src="../_static/tabs.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../_static/design-tabs.js"></script>
-    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+    <script loading_method="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
     <script>
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){ dataLayer.push(arguments); }
@@ -87,15 +85,6 @@ const thebe_selector_output = ".output, .cell_output"
   
   
   <a class="skip-link" href="#main-content">Skip to main content</a>
-  
-  <div id="pst-scroll-pixel-helper"></div>
-
-  
-  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>
-    Back to top
-  </button>
-
   
   <input type="checkbox"
           class="sidebar-toggle"
@@ -156,14 +145,13 @@ const thebe_selector_output = ".output, .cell_output"
   
   
   
-  
     
     
       
     
     
-    <img src="../_static/logo.png" class="logo__image only-light" alt="Spark at the ONS - Home"/>
-    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="Spark at the ONS - Home"/>`);</script>
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
   
   
 </a></div>
@@ -186,19 +174,18 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-defaults.html">Configuration Hierarchy and <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../spark-overview/data-types.html">Data Types in Spark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../spark-overview/creating-dataframes.html">Creating DataFrames Manually</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/reading-and-writing-data-spark.html">Reading and Writing Data in Spark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../spark-overview/data-storage.html">Data Storage</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to PySpark</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/pyspark-intro.html">Introduction to PySpark</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/reading-data-pyspark.html">Reading Data in PySpark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/returning-data.html">Returning Data from Cluster to Driver</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/f-col.html">Reference columns by name: <code class="docutils literal notranslate"><span class="pre">F.col()</span></code></a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to sparklyr</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/sparklyr-intro.html">Introduction to sparklyr</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/reading-data-sparklyr.html">Reading Data in sparklyr</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">Using Spark functions in sparklyr</a></li>
 
 </ul>
@@ -207,7 +194,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="union-dataframes-with-different-columns.html">Union two DataFrames with different columns</a></li>
 <li class="toctree-l1"><a class="reference internal" href="padding.html">Add leading zeros with <code class="docutils literal notranslate"><span class="pre">lpad()</span></code></a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="sampling.html">Sampling: <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="sampling.html">Sampling: an overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pivot-tables.html">Pivot tables in Spark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rounding.html">Rounding differences in Python, R and Spark</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Window Functions in Spark</a></li>
@@ -215,6 +202,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="arrays.html">Arrays Functions in PySpark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="writing-data.html">Writing Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="job-description.html">Set Spark Job Description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logistic-regression.html">Logistic Regression</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Understanding and Optimising Spark</span></p>
 <ul class="nav bd-sidenav">
@@ -226,7 +214,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../spark-concepts/partitions.html">Managing Partitions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../spark-concepts/persistence.html">Persisting in Spark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../spark-concepts/cache.html">Caching</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/checkpoint-staging.html">Checkpoints and Staging Tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../spark-concepts/garbage-collection.html">Garbage Collection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../spark-concepts/df-order.html">Spark DataFrames Are Not Ordered</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../spark-concepts/exercises.html">Exercises</a></li>
@@ -241,6 +229,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/visualisation.html">Spark and Visualisation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/module-imports.html">Naming Conflicts in Module Imports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/pydoop.html">Pydoop: HDFS to pandas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/pandas-udfs.html">Pandas UDFs</a></li>
 </ul>
 
     </div>
@@ -396,10 +385,10 @@ const thebe_selector_output = ".output, .cell_output"
 
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
   </button>
 `);
 </script>
@@ -407,7 +396,7 @@ document.write(`
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+    <i class="fa-solid fa-magnifying-glass"></i>
   </button>
 `);
 </script>
@@ -455,11 +444,11 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section id="window-functions-in-spark">
-<h1>Window Functions in Spark<a class="headerlink" href="#window-functions-in-spark" title="Permalink to this heading">#</a></h1>
+<h1>Window Functions in Spark<a class="headerlink" href="#window-functions-in-spark" title="Permalink to this headline">#</a></h1>
 <p>Window functions use values from other rows within the same group, or <em>window</em>, and return a value in a new column for every row. This can be in the form of aggregations (similar to a <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.groupBy.html"><code class="docutils literal notranslate"><span class="pre">.groupBy()</span></code></a>/<a class="reference external" href="https://dplyr.tidyverse.org/reference/group_by.html"><code class="docutils literal notranslate"><span class="pre">group_by()</span></code></a> but preserving the original DataFrame), ranking rows within groups, or returning values from previous rows. If you’re familiar with SQL then a window function in PySpark works in the same way.</p>
 <p>This article explains how to use window functions in three ways: for aggregation, ranking, and referencing the previous row. An SQL example is also given.</p>
 <section id="window-functions-for-aggregations">
-<h2>Window Functions for Aggregations<a class="headerlink" href="#window-functions-for-aggregations" title="Permalink to this heading">#</a></h2>
+<h2>Window Functions for Aggregations<a class="headerlink" href="#window-functions-for-aggregations" title="Permalink to this headline">#</a></h2>
 <p>You can use a window function for aggregations. Rather than returning an aggregated DataFrame, the result of the aggregation will be placed in a new column.</p>
 <p>One example of where this is useful is for deriving a total to be used as the denominator for another calculation. For instance, in the Animal Rescue data we may want to work out what percentage of animals rescued each year are dogs. We can do this by getting the total of all animals by year, then dividing each animal group count by this.</p>
 <p>First, import the relevant packages and start a Spark session. To use window functions in PySpark, we need to import <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Window.html"><code class="docutils literal notranslate"><span class="pre">Window</span></code></a> from <code class="docutils literal notranslate"><span class="pre">pyspark.sql.window</span></code>. No extra packages are needed for sparklyr, as Spark functions are referenced inside <a class="reference external" href="https://dplyr.tidyverse.org/reference/mutate.html"><code class="docutils literal notranslate"><span class="pre">mutate()</span></code></a>.</p>
@@ -779,7 +768,7 @@ only showing top 5 rows
 </div></div>
 </section>
 <section id="using-window-functions-for-ranking">
-<h2>Using Window Functions for Ranking<a class="headerlink" href="#using-window-functions-for-ranking" title="Permalink to this heading">#</a></h2>
+<h2>Using Window Functions for Ranking<a class="headerlink" href="#using-window-functions-for-ranking" title="Permalink to this headline">#</a></h2>
 <p>Window functions can also be ordered as well as grouped. This can be combined with <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.rank.html"><code class="docutils literal notranslate"><span class="pre">F.rank()</span></code></a>/<a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#rank"><code class="docutils literal notranslate"><span class="pre">rank()</span></code></a> or <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.row_number.html"><code class="docutils literal notranslate"><span class="pre">F.row_number()</span></code></a>/<a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#rank"><code class="docutils literal notranslate"><span class="pre">row_number()</span></code></a> to get ranks within groups. For instance, we can get the ranking of the most commonly rescued animals by year, then filter on the top three.</p>
 <p>The syntax is again different between PySpark and sparklyr. In PySpark, use the same method as described above for aggregations, but replace <code class="docutils literal notranslate"><span class="pre">F.sum()</span></code> with <code class="docutils literal notranslate"><span class="pre">F.rank()</span></code> (or another ordered function), and add <code class="docutils literal notranslate"><span class="pre">orderBy()</span></code>. In this example, use <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.desc.html"><code class="docutils literal notranslate"><span class="pre">F.desc(&quot;animal_count&quot;)</span></code></a> to sort descending. The <code class="docutils literal notranslate"><span class="pre">.partitionBy()</span></code> step is optional; without a <code class="docutils literal notranslate"><span class="pre">.partitionBy()</span></code> it will treat the whole DataFrame as one group.</p>
 <p>In sparklyr, the method is also almost the same as using aggregations. The ordering is done directly with the <code class="docutils literal notranslate"><span class="pre">rank()</span></code> function. <code class="docutils literal notranslate"><span class="pre">desc(animal_count)</span></code> is used to sort descending.</p>
@@ -899,7 +888,7 @@ only showing top 12 rows
 </div>
 </div></div>
 <section id="comparison-of-ranking-methods">
-<h3>Comparison of ranking methods<a class="headerlink" href="#comparison-of-ranking-methods" title="Permalink to this heading">#</a></h3>
+<h3>Comparison of ranking methods<a class="headerlink" href="#comparison-of-ranking-methods" title="Permalink to this headline">#</a></h3>
 <p>Note that you can have duplicate ranks within each group when using <code class="docutils literal notranslate"><span class="pre">rank()</span></code>; if this is not desirable then one method is to partition by more columns to break ties. There are also alternatives to <code class="docutils literal notranslate"><span class="pre">rank()</span></code> depending on your use case:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">F.rank()</span></code>/<code class="docutils literal notranslate"><span class="pre">rank()</span></code> will assign the same value to ties.</p></li>
@@ -996,7 +985,7 @@ only showing top 12 rows
 <p><code class="docutils literal notranslate"><span class="pre">row_number</span></code> has a unique value for each row, even for tied values.</p>
 </section>
 <section id="generating-unique-row-numbers">
-<h3>Generating unique row numbers<a class="headerlink" href="#generating-unique-row-numbers" title="Permalink to this heading">#</a></h3>
+<h3>Generating unique row numbers<a class="headerlink" href="#generating-unique-row-numbers" title="Permalink to this headline">#</a></h3>
 <p>Spark DataFrames do not have an index in the same way as pandas or base R DataFrames as they are partitioned on the cluster. You can however use <code class="docutils literal notranslate"><span class="pre">row_number()</span></code> to generate a unique identifier for each row.</p>
 <p>Whereas in the previous example we ranked within groups, here we need to treat the whole DataFrame as one group.</p>
 <p>To do this in PySpark, use just <code class="docutils literal notranslate"><span class="pre">Window.orderBy(col1,</span> <span class="pre">col2,</span> <span class="pre">...)</span></code> without the <code class="docutils literal notranslate"><span class="pre">partitionBy()</span></code>. In sparklyr, just use <code class="docutils literal notranslate"><span class="pre">mutate()</span></code> without <code class="docutils literal notranslate"><span class="pre">group_by()</span></code> and <code class="docutils literal notranslate"><span class="pre">ungroup()</span></code>.</p>
@@ -1053,7 +1042,7 @@ only showing top 10 rows
 </section>
 </section>
 <section id="reference-other-rows-with-lag-and-lead">
-<h2>Reference other rows with <code class="docutils literal notranslate"><span class="pre">lag()</span></code> and <code class="docutils literal notranslate"><span class="pre">lead()</span></code><a class="headerlink" href="#reference-other-rows-with-lag-and-lead" title="Permalink to this heading">#</a></h2>
+<h2>Reference other rows with <code class="docutils literal notranslate"><span class="pre">lag()</span></code> and <code class="docutils literal notranslate"><span class="pre">lead()</span></code><a class="headerlink" href="#reference-other-rows-with-lag-and-lead" title="Permalink to this headline">#</a></h2>
 <p>The window function <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.lag.html"><code class="docutils literal notranslate"><span class="pre">F.lag()</span></code></a>/<a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#lag"><code class="docutils literal notranslate"><span class="pre">lag()</span></code></a>  allows you to reference the values of previous rows within a group, and <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.lead.html"><code class="docutils literal notranslate"><span class="pre">F.lead()</span></code></a>/<a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#lead"><code class="docutils literal notranslate"><span class="pre">lead()</span></code></a> will do the same for subsequent rows. You can specify how many previous rows you want to reference with the <code class="docutils literal notranslate"><span class="pre">count</span></code> argument. By default this is <code class="docutils literal notranslate"><span class="pre">1</span></code>. Note that <code class="docutils literal notranslate"><span class="pre">count</span></code> can be negative, so <code class="docutils literal notranslate"><span class="pre">lag(col,</span> <span class="pre">count=1)</span></code> is the same as <code class="docutils literal notranslate"><span class="pre">lead(col,</span> <span class="pre">count=-1)</span></code>.</p>
 <p>The first or last row within the window partition will be null values, as they do not have a previous or subsequent row to reference. This can be changed by setting the <code class="docutils literal notranslate"><span class="pre">default</span></code> parameter, which by default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 <p>These window functions differ from <code class="docutils literal notranslate"><span class="pre">rank()</span></code> and <code class="docutils literal notranslate"><span class="pre">row_number()</span></code> as they are referencing values, rather than returning a rank. They do however use ordering in the same way.</p>
@@ -1219,7 +1208,7 @@ only showing top 20 rows
 </div></div>
 </section>
 <section id="window-functions-in-sql">
-<h2>Window Functions in SQL<a class="headerlink" href="#window-functions-in-sql" title="Permalink to this heading">#</a></h2>
+<h2>Window Functions in SQL<a class="headerlink" href="#window-functions-in-sql" title="Permalink to this headline">#</a></h2>
 <p>You can also use the regular SQL syntax for window functions when using Spark, <code class="docutils literal notranslate"><span class="pre">OVER(PARTITION</span> <span class="pre">BY...GROUP</span> <span class="pre">BY)</span></code>. This needs an SQL wrapper to be processed in Spark, <a class="reference external" href="https://spark.apache.org/docs/latest/sql-getting-started.html#running-sql-queries-programmatically"><code class="docutils literal notranslate"><span class="pre">spark.sql()</span></code></a> in PySpark and <a class="reference external" href="https://dplyr.tidyverse.org/reference/tbl.html"><code class="docutils literal notranslate"><span class="pre">tbl(sc,</span> <span class="pre">sql())</span></code></a> in sparklyr. Remember that SQL works on tables rather than DataFrames, so register the DataFrame first.</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-25-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-25-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-25-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-25-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-25-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-25-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_agg</span><span class="o">.</span><span class="n">registerTempTable</span><span class="p">(</span><span class="s2">&quot;rescue_agg&quot;</span><span class="p">)</span>
@@ -1296,7 +1285,7 @@ only showing top 20 rows
 </div></div>
 </section>
 <section id="further-resources">
-<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this heading">#</a></h2>
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">#</a></h2>
 <p>Spark at the ONS Articles:</p>
 <ul class="simple">
 <li><p><span class="xref myst">Cross Joins</span></p></li>
@@ -1366,10 +1355,11 @@ only showing top 20 rows
 
               
               
-              
-              
-                <footer class="prev-next-footer">
-                  <!-- Previous / next buttons -->
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
        href="rounding.html"
@@ -1389,7 +1379,10 @@ only showing top 20 rows
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
+</div></div>
+  
 </div>
+
                 </footer>
               
             </div>
@@ -1453,8 +1446,8 @@ By Wil Roberts & Adrian Prince
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
 
   <footer class="bd-footer">
   </footer>
