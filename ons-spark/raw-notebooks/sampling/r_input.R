@@ -11,6 +11,8 @@ sc <- sparklyr::spark_connect(
 config <- yaml::yaml.load_file("ons-spark/config.yaml")
 
 rescue <- sparklyr::spark_read_csv(sc, config$rescue_path_csv, header=TRUE, infer_schema=TRUE)
+rescue <- rescue %>% sparklyr::mutate(animal_type = AnimalGroupParent)
+rescue <- select(rescue,-AnimalGroupParent)
 
 skewed_df <- sparklyr::sdf_seq(sc,from = 1, to = 1e6) %>%
           sparklyr::mutate(skew_col = case_when(
@@ -86,6 +88,44 @@ rescue %>%
     head(row_count) %>%
     sparklyr::select(rand_no) %>%
     sparklyr::sdf_nrow()
+
+
+# Preprocessing to simplify the number of animals in the `animal_type` column
+simplified_animal_types <-rescue %>% sparklyr::mutate(animal_type = case_when(!animal_type %in% c('Cat','Bird','Dog','Fox') ~ 'Other',
+                                                       .default = animal_type))
+
+# Counting the number of animals in each group
+simplified_animal_types %>%
+        dplyr::group_by(animal_type) %>%
+        dplyr::count(animal_type,name = 'row_count') %>%
+        sdf_sort('animal_type')
+
+simplified_animal_types <- simplified_animal_types %>% 
+                            sparklyr::mutate(sample_size = case_when(
+                                            animal_type == 'Bird' ~ 15,
+                                            animal_type == 'Cat' ~ 20,
+                                            animal_type == 'Dog' ~ 10,
+                                            animal_type == 'Fox' ~ 2,
+                                            animal_type == 'Other' ~ 5,
+                                            .default = 0)) %>%
+                            sparklyr::mutate(random_number = rand())
+
+
+simplified_animal_types <- simplified_animal_types %>% 
+              dplyr::group_by(animal_type) %>%
+              sparklyr::mutate(strata_rank = rank(desc(random_number))) %>%
+              dplyr::ungroup()
+
+simplified_animal_types <- simplified_animal_types %>% sparklyr::mutate(sampled = case_when(
+              strata_rank <= sample_size ~ 1,
+              .default = 0))
+
+sampled <- simplified_animal_types %>% sparklyr::filter(sampled == 1)
+
+sampled %>%
+        dplyr::group_by(animal_type,sample_size) %>%
+        dplyr::count(animal_type,name = 'row_count') %>%
+        sdf_sort('animal_type')
 
 
 rescue %>%
