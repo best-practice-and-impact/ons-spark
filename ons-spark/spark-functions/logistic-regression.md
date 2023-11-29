@@ -28,14 +28,18 @@ We can read the data in as follows:
 
 from pyspark.sql import SparkSession
 import pyspark.sql.functions as F
+import yaml
 
 import pandas as pd
 
 #local session 
 spark = (SparkSession.builder.master("local[2]").appName("logistic-regression").getOrCreate())
 
+with open("ons-spark/config.yaml") as f:
+    config = yaml.safe_load(f)
+
 # Set the data path
-rescue_path_parquet = '/training/rescue_clean.parquet'
+rescue_path_parquet = config["rescue_clean_path"]
 
 # Read in the data
 rescue = spark.read.parquet(rescue_path_parquet)
@@ -57,9 +61,10 @@ sc <- sparklyr::spark_connect(
 # check connection is open
 sparklyr::spark_connection_is_open(sc)
 
+config <- yaml::yaml.load_file("ons-spark/config.yaml")
+
 # read in data
-rescue_path_parquet = "/training/rescue_clean.parquet"
-rescue <- sparklyr::spark_read_parquet(sc, rescue_path_parquet)
+rescue <- sparklyr::spark_read_parquet(sc, config$rescue_clean_path)
 
 # preview data
 dplyr::glimpse(rescue)
