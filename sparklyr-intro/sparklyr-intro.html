@@ -1344,7 +1344,8 @@ $ population        &lt;dbl&gt; 41076, 52376, 22331, 44742, 14357, 58658, 87171,
 </section>
 <section id="write-to-a-csv-spark-write-csv-and-sdf-coalesce">
 <h2>Write to a CSV: <code class="docutils literal notranslate"><span class="pre">spark_write_csv()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_coalesce()</span></code><a class="headerlink" href="#write-to-a-csv-spark-write-csv-and-sdf-coalesce" title="Permalink to this heading">#</a></h2>
-<p>CSVs will also be written out in a distributed manner as multiple files. While this is desirable in a parquet, it is not very useful with CSV, as the main benefit is to make them human readable. First, write out the data with <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_write_csv.html"><code class="docutils literal notranslate"><span class="pre">spark_write_csv()</span></code></a>, using the path defined in the config:</p>
+<p>CSVs will also be written out in a distributed manner as multiple files. While this is desirable in a parquet, it is not very useful with CSV, as the main benefit is to make them human readable. Below are two examples of writing out a Spark dataframe to a CSV file. The first will produce multiple CSV files across multiple partitions, whereas the <strong>second example will write your data to a single partition and is therefore the desired output</strong>.</p>
+<p>First, write out the data with <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_write_csv.html"><code class="docutils literal notranslate"><span class="pre">spark_write_csv()</span></code></a>, using the path defined in the config:</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-31-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-31-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-31-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-31-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">output_path_csv</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">rescue_with_pop_path_csv</span>
 
@@ -1353,9 +1354,9 @@ $ population        &lt;dbl&gt; 41076, 52376, 22331, 44742, 14357, 58658, 87171,
 </pre></div>
 </div>
 </div></div>
-<p>Again, look at the raw data in a file browser. You can see that it has written out a directory called <code class="docutils literal notranslate"><span class="pre">rescue_with_pop.csv</span></code>, with multiple files inside. Each of these on their own is a legitimate CSV file, with the correct headers.</p>
-<p>To reduce the number of partitions, pipe the data into <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html"><code class="docutils literal notranslate"><span class="pre">sdf_coalesce(partitions)</span></code></a>; this will combine existing partitions. Setting <code class="docutils literal notranslate"><span class="pre">partitions</span></code> to <code class="docutils literal notranslate"><span class="pre">1</span></code> will put all of the data on the same partition.</p>
-<p>As the file will already exist, we need to tell Spark to overwrite the existing file. Use <code class="docutils literal notranslate"><span class="pre">mode=&quot;overwrite&quot;</span></code> to do this:</p>
+<p>Again, look at the raw data in a file browser. You can see that it has written out a directory called <code class="docutils literal notranslate"><span class="pre">rescue_with_pop.csv</span></code>, with multiple files inside. Each of these on their own is a legitimate CSV file, with the correct headers, however it makes it difficult to read your data.</p>
+<p>Instead, it is more desirable to reduce the number of partitions and to do this you need to pipe the data into <a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html"><code class="docutils literal notranslate"><span class="pre">sdf_coalesce(partitions)</span></code></a>; this will combine existing partitions. Setting <code class="docutils literal notranslate"><span class="pre">partitions</span></code> to <code class="docutils literal notranslate"><span class="pre">1</span></code> will put all of the data on the same partition.</p>
+<p>As the file will already exist (due to the previous example), we need to tell Spark to overwrite the existing file. Use <code class="docutils literal notranslate"><span class="pre">mode=&quot;overwrite&quot;</span></code> to do this:</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-32-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-32-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-32-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-32-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_with_pop</span><span class="w"> </span><span class="o">%&gt;%</span>
 <span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_coalesce</span><span class="p">(</span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
@@ -1448,6 +1449,9 @@ $ population        &lt;dbl&gt; 41076, 52376, 22331, 44742, 14357, 58658, 87171,
 <section id="acknowledgements">
 <h3>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this heading">#</a></h3>
 <p>Thanks to Karina Marks, Chris Musselle and Beth Ashlee for creating the initial version of this article.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
 </section>
 </section>
 </section>
