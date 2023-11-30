@@ -215,7 +215,6 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../spark-functions/arrays.html">Arrays Functions in PySpark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../spark-functions/writing-data.html">Writing Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../spark-functions/job-description.html">Set Spark Job Description</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../spark-functions/logistic-regression.html">Logistic Regression</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Understanding and Optimising Spark</span></p>
 <ul class="nav bd-sidenav">
@@ -232,6 +231,11 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../spark-concepts/df-order.html">Spark DataFrames Are Not Ordered</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../spark-concepts/exercises.html">Exercises</a></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Analysis in Spark</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../spark-analysis/logistic-regression.html">Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-analysis/visualisation.html">Spark and Visualisation</a></li>
+</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Testing and Debugging</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../testing-debugging/spark-errors.html">Understanding and Handling Spark Errors</a></li>
@@ -239,7 +243,6 @@ const thebe_selector_output = ".output, .cell_output"
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Ancillary Topics</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/visualisation.html">Spark and Visualisation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/module-imports.html">Naming Conflicts in Module Imports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/pydoop.html">Pydoop: HDFS to pandas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/pandas-udfs.html">Pandas UDFs</a></li>
@@ -667,7 +670,7 @@ $ Northing_rounded           &lt;int&gt; 170050, 167550, 164950, 190650, 192350,
 </section>
 <section id="convert-to-a-tibble-collect-and-head">
 <h2>Convert to a tibble: <code class="docutils literal notranslate"><span class="pre">collect()</span></code> and <code class="docutils literal notranslate"><span class="pre">head()</span></code><a class="headerlink" href="#convert-to-a-tibble-collect-and-head" title="Permalink to this heading">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">glimpse()</span></code> and <code class="docutils literal notranslate"><span class="pre">print()</span></code> both only give us a partial preview of the rows in the DataFrame, and do not assign the results to a variable. <a class="reference external" href="https://dplyr.tidyverse.org/reference/compute.html"><code class="docutils literal notranslate"><span class="pre">collect()</span></code></a> will bring the sparklyr DataFrame into the driver from the cluster as a tibble, and you can therefore take advantage of all the usual tibble and base R functionality. For instance, you may want to <a class="reference internal" href="../ancillary-topics/visualisation.html"><span class="doc std std-doc">visualise your results</span></a>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">glimpse()</span></code> and <code class="docutils literal notranslate"><span class="pre">print()</span></code> both only give us a partial preview of the rows in the DataFrame, and do not assign the results to a variable. <a class="reference external" href="https://dplyr.tidyverse.org/reference/compute.html"><code class="docutils literal notranslate"><span class="pre">collect()</span></code></a> will bring the sparklyr DataFrame into the driver from the cluster as a tibble, and you can therefore take advantage of all the usual tibble and base R functionality. For instance, you may want to <span class="xref myst">visualise your results</span>.</p>
 <p>In some IDEs, printing a tibble will display a nicely formatted HTML table, so this is another option when previewing data.</p>
 <p>Be careful: the DataFrame is currently on the <em>Spark cluster</em> with lots of memory capacity, whereas tibbles are stored on the <em>driver</em>, which will have much less. Trying to use <code class="docutils literal notranslate"><span class="pre">collect()</span></code> and a huge sparklyr DF will not work. If converting to a tibble just to view the data, use <code class="docutils literal notranslate"><span class="pre">head()</span></code> to just bring back a small number of rows. Note that <a class="reference internal" href="../spark-concepts/df-order.html"><span class="doc std std-doc">sparklyr DataFrames are not ordered by default</span></a>, and <code class="docutils literal notranslate"><span class="pre">head()</span></code> on a sparklyr DataFrame will <strong>not</strong> always return the same rows. This is <a class="reference internal" href="#sort-data"><span class="std std-ref">discussed in more detail later</span></a>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">collect()</span></code> is an <em>action</em> and will process the whole plan on the Spark cluster. In this example, it will read the CSV file, return three rows, and then convert the result to the driver as a tibble. Note that the number of rows is now <code class="docutils literal notranslate"><span class="pre">3</span></code> rather than <code class="docutils literal notranslate"><span class="pre">??</span></code>, as tibbles have known dimensions.</p>
@@ -1397,7 +1400,7 @@ $ population        &lt;dbl&gt; 41076, 52376, 22331, 44742, 14357, 58658, 87171,
 <li><p><span class="xref myst">Reading Data in sparklyr</span></p></li>
 <li><p><a class="reference internal" href="../spark-overview/data-storage.html"><span class="doc std std-doc">Data Storage</span></a></p></li>
 <li><p><a class="reference internal" href="../spark-overview/data-types.html"><span class="doc std std-doc">Data Types in Spark</span></a></p></li>
-<li><p><a class="reference internal" href="../ancillary-topics/visualisation.html"><span class="doc std std-doc">Spark and Visualisation</span></a></p></li>
+<li><p><span class="xref myst">Spark and Visualisation</span></p></li>
 <li><p><a class="reference internal" href="../spark-concepts/df-order.html"><span class="doc std std-doc">Spark DataFrames Are Not Ordered</span></a></p></li>
 <li><p><a class="reference internal" href="sparklyr-functions.html"><span class="doc std std-doc">Using Spark functions in sparklyr</span></a></p></li>
 <li><p><a class="reference internal" href="../spark-concepts/shuffling.html"><span class="doc std std-doc">Shuffling</span></a></p></li>
