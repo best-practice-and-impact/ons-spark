@@ -91,8 +91,9 @@ rescue %>%
 
 
 # Preprocessing to simplify the number of animals in the `animal_type` column
-simplified_animal_types <-rescue %>% sparklyr::mutate(animal_type = case_when(!animal_type %in% c('Cat','Bird','Dog','Fox') ~ 'Other',
-                                                       .default = animal_type))
+simplified_animal_types <- rescue %>% sparklyr::mutate(animal_type = case_when(
+                                                        !animal_type %in% c('Cat','Bird','Dog','Fox') ~ 'Other',
+                                                        .default = animal_type))
 
 # Counting the number of animals in each group
 simplified_animal_types %>%
@@ -127,6 +128,28 @@ sampled %>%
         dplyr::count(animal_type,name = 'row_count') %>%
         sdf_sort('animal_type')
 
+
+# Create our reference dataframe
+strata_reference <- dplyr::tibble(type = c("Bird", "Dog", "Cat", "Fox", "Other"),
+                                sample_size = c(105, 20, 20, 2, 5))
+
+# Generate sample_size column
+tibble_example <- rescue %>% sparklyr::mutate(animal_type = case_when(
+                                                        !animal_type %in% c('Cat','Bird','Dog','Fox') ~ 'Other',
+                                                        .default = animal_type))
+
+tibble_example <- tibble_example %>% 
+                        sparklyr::mutate(sample_size = case_when(!!!rlang::parse_exprs(paste0("animal_type == \"",
+                                                                    strata_reference$type, 
+                                                                    "\" ~ ",
+                                                                    strata_reference$sample_size,
+                                                                    collapse = "\n"))))
+
+# Check sample size column has been generated correcty
+tibble_example %>% 
+            dplyr::group_by(animal_type,sample_size) %>%
+            dplyr::count(animal_type,name = 'row_count') %>%
+            sdf_sort('animal_type')
 
 rescue %>%
     sparklyr::filter(CalYear == 2012 | CalYear == 2017) %>%
