@@ -495,7 +495,9 @@ An ORC file shares a lot of the same benefits that a parquet file has over a CSV
 ### Reading in Avro files
 To read in an Avro file using PySpark, you can use [`spark.read.format("avro")`](https://sparkbyexamples.com/spark/read-write-avro-file-spark-dataframe/).
 
-Using SparklyR, you will need to install the [`sparkavro`](https://cran.r-project.org/web/packages/sparkavro/) package to use the `spark_read_avro()` function. Note that this function requires three arguments: the spark connection name, a name to assign the newly read in table (in this case "animal_rescue"), and the path to the avro file.
+Note that unlike other methods, Spark doesn't have a built in `spark.read.avro()` method so we need to use a slightly different method to read this in, by first specifying the format as "avro" and then using `.load()` to read in the file. Note that this method would also work for other formats, such as `spark.read.format("parquet").load(...)` but is slightly more verbose than the other methods demonstrated. 
+
+Using SparklyR, you will need to install the [`sparkavro`](https://cran.r-project.org/web/packages/sparkavro/) package and use the `spark_read_avro()` function. Note that this function requires three arguments: the spark connection name, a name to assign the newly read in table (in this case "animal_rescue"), and the path to the avro file.
 ````{tabs}
 ```{code-tab} py
 animal_rescue = spark.read.format("avro").load(config["rescue_path_avro"])
@@ -506,12 +508,11 @@ library(sparkavro)
 animal_rescue = sparkavro::spark_read_avro(sc, "animal_rescue", config$rescue_path_avro)
 ```
 ````
-Note that unlike other methods, Spark doesn't have a built in `spark.read.avro()` method so we need to use a slightly different method to read this in, by first specifying the format as "avro" and then using `.load()` to read in the file. Note that this method would also work for other formats, such as `spark.read.format("parquet").load(...)` but is slightly more verbose than the other methods demonstrated. 
 
 ### Writing out Avro files
 To write out an Avro file, you can use [`dataframe.write.format("avro").save()`](https://sparkbyexamples.com/spark/read-write-avro-file-spark-dataframe/) in PySpark. Note that like the method to read in Avro files, we need to specify the format and then use `save` to specify that we want to save this out.
 
-In SparklyR, we can use the `spark_write_avro()' function. This only requires two arguments; the name of the dataframe to be written to file and the output path. 
+In SparklyR, we can use the `spark_write_avro()` function. This only requires two arguments: the name of the dataframe to be written to file and the output path. 
 
 ````{tabs}
 ```{code-tab} py
