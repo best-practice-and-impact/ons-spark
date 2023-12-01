@@ -132,10 +132,10 @@ Fraction of rows sampled 0.0929128518141743
 ```
 
 ```{code-tab} plaintext R Output
-[1] 602
+[1] 586
 [1] "Total rows in original DF: 5898"
-[1] "Total rows in sampled DF: 602"
-[1] "Fraction of rows sampled: 0.102068497795863"
+[1] "Total rows in sampled DF: 586"
+[1] "Fraction of rows sampled: 0.0993557138012886"
 ```
 ````
 You can also set a seed, in a similar way to how random numbers generators work. This enables replication, which is useful in Spark given that the DataFrame will otherwise be re-sampled every time an action is called.
@@ -222,8 +222,7 @@ skewed_df %>%
 ```
 
 ```{code-tab} plaintext R Output
-
-# Source: spark<?> [?? x 3]
+ Source: spark<?> [?? x 3]
   skew_col row_count percentage_of_dataframe
   <chr>        <dbl>                   <dbl>
 1 A              100                    0.01
@@ -279,11 +278,11 @@ skewed_sample %>%
 # Source: spark<?> [?? x 3]
   skew_col row_count percentage_of_dataframe
   <chr>        <dbl>                   <dbl>
-1 A               10                  0.0100
-2 B               92                  0.0925
-3 C              854                  0.858 
-4 D             9061                  9.11  
-5 E            89474                 89.9   
+1 A                8                 0.00802
+2 B              102                 0.102  
+3 C              938                 0.940  
+4 D             8967                 8.98   
+5 E            89790                90.0    
 ```
 ````
 From the above example, it looks like the original distribution is preserved.
@@ -333,14 +332,15 @@ equal_partitions_sample %>%
 ```
 
 ```{code-tab} plaintext R Output
- Source: spark<?> [?? x 3]
+
+# Source: spark<?> [?? x 3]
   skew_col row_count percentage_of_dataframe
   <chr>        <dbl>                   <dbl>
-1 A                8                 0.00806
-2 B               86                 0.0866 
-3 C              843                 0.849  
-4 D             8867                 8.93   
-5 E            89466                90.1    
+1 A                7                  0.007 
+2 B               89                  0.0890
+3 C              884                  0.884 
+4 D             9191                  9.20  
+5 E            89781                 89.8   
 ```
 ````
 From the above examples we can see that we get similar samples regardless of how the data is partitioned, where each row within the dataframe is equally likely to be added to the sample.
@@ -388,23 +388,22 @@ only showing top 5 rows
 ```
 
 ```{code-tab} plaintext R Output
-
 [1] 630
 # Source:     spark<?> [?? x 2]
 # Groups:     IncidentNumber
 # Ordered by: desc(n)
    IncidentNumber      n
    <chr>           <dbl>
- 1 69362121            2
- 2 62512121            2
- 3 49034121            2
- 4 153277141           2
- 5 70935101            2
- 6 34221131            2
- 7 63575131            2
+ 1 173242141           2
+ 2 34221131            2
+ 3 016538-10022016     2
+ 4 133403-01102016     2
+ 5 69362121            2
+ 6 15682091            2
+ 7 145854121           2
  8 64398111            2
- 9 31381101            2
-10 133403-01102016     2
+ 9 62512121            2
+10 49034121            2
 # ℹ more rows
 ```
 ````
@@ -541,7 +540,7 @@ row_count
 ```
 
 ```{code-tab} plaintext R Output
-1] 590
+[1] 590
 ```
 ````
 
@@ -571,7 +570,7 @@ rescue %>%
 ```
 
 ```{code-tab} plaintext R Output
-1] 590
+[1] 590
 ```
 ````
 #### Returning an exact sample - Stratified Sampling
@@ -618,7 +617,6 @@ simplified_animal_types %>%
 ```
 
 ```{code-tab} plaintext R Output
-0
 # Source: spark<?> [?? x 2]
   animal_type row_count
   <chr>           <dbl>
@@ -629,7 +627,7 @@ simplified_animal_types %>%
 5 Other             643
 ```
 ````
-Next we create our column which has the required number of samples per strata. This can be done simply using `F.when` statements. This may not be viable when sampling across a lot of variables as a `when` statement is needed for each distinct value. An alternate method can be done using UDFs or a mapping function however, the efficiency of this has not been assessed. We will also give each row a randomly generated number from a uniform distribution which is used to order the rows per strata.  
+Next we create our column which has the required number of samples per strata. This can be done simply using `F.when` statements. This may not be viable when sampling across a lot of variables as a `when` statement is needed for each distinct value. An alternate method can be done using UDFs or a mapping function (An example of this can be found further down the page in the [Simplifying the required sample column](#simplifying-the-required-sample-column) section). The efficiency of these methods has not been thoroughly tested for large datasets and a large number of strata, but we expect that UDFs would be less efficient vs Pyspark mappings and therefore mappings are the recommended method. For more information on UDFs and their efficiency, see the [Pandas UDFs](../ancillary-topics/pandas-udfs.ipynb) page. Alongside the `sample_size` column, we will also give each row a randomly generated number from a uniform distribution which is used to order the rows per strata.  
 ````{tabs}
 ```{code-tab} py
 # Create a sample_size column for each strata 
@@ -783,8 +781,7 @@ tibble_example %>%
 ```
 
 ```{code-tab} plaintext R Output
-
-# Source: spark<?> [?? x 3]
+Source: spark<?> [?? x 3]
   animal_type sample_size row_count
   <chr>             <dbl>     <dbl>
 1 Bird                105      1100
@@ -824,6 +821,7 @@ rescue %>%
 ```
 
 ```{code-tab} plaintext R Output
+
 [1] 1142
 ```
 ````
@@ -867,9 +865,9 @@ Split3: 601
 ```
 
 ```{code-tab} plaintext R Output
-1] "Split1: 2911"
-[1] "Split2: 2374"
-[1] "Split3: 613"
+1] "Split1: 2968"
+[1] "Split2: 2372"
+[1] "Split3: 558"
 ```
 ````
 Check that the count of the splits equals the total row count:
@@ -898,7 +896,7 @@ Split count total: 5898
 ```
 
 ```{code-tab} plaintext R Output
-
+"
 [1] "DF count: 5898"
 [1] "Split count total: 5898"
 ```
