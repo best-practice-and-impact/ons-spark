@@ -88,6 +88,14 @@ df = spark.createDataFrame([
     ],
     ["area_code", "period", "count"])
 ```
+```{code-tab} r R
+table = data.frame(area_code = c("A", "A", "A", "A", "A", "A", "A", "A", "B", "B", "B", "B", "B", "B", "B", "B"),
+period = c("20210101", "20210106", "20210111", "20210116", "20210121", "20210126", "20210131", "20210205",
+"20210101", "20210111", "20210119", "20210131", "20210210", "20210215", "20210220", "20210225"),
+count = c(100,NA, NA, 130, 100, 120, NA, 130, NA, 85, 82, 75, NA, 85, NA, 75))
+
+df <- copy_to(sc, table)
+```
 ````
 
 Let's take a quick look at some charts to see what this looks like
