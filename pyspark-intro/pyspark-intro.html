@@ -639,7 +639,7 @@ only showing top 3 rows
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><style>div.output_scroll { height: 44em; }</style></div><div class="output text_html"><div>
+<div class="output text_html"><div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
@@ -667,12 +667,7 @@ only showing top 3 rows
       <th>HourlyNotionalCost(£)</th>
       <th>IncidentNotionalCost(£)</th>
       <th>FinalDescription</th>
-      <th>AnimalGroupParent</th>
-      <th>OriginofCall</th>
-      <th>PropertyType</th>
-      <th>PropertyCategory</th>
-      <th>SpecialServiceTypeCategory</th>
-      <th>SpecialServiceType</th>
+      <th>...</th>
       <th>WardCode</th>
       <th>Ward</th>
       <th>BoroughCode</th>
@@ -698,12 +693,7 @@ only showing top 3 rows
       <td>255</td>
       <td>510.0</td>
       <td>DOG WITH JAW TRAPPED IN MAGAZINE RACK,B15</td>
-      <td>Dog</td>
-      <td>Person (land line)</td>
-      <td>House - single occupancy</td>
-      <td>Dwelling</td>
-      <td>Other animal assistance</td>
-      <td>Animal assistance involving livestock - Other ...</td>
+      <td>...</td>
       <td>E05011467</td>
       <td>Crystal Palace &amp; Upper Norwood</td>
       <td>E09000008</td>
@@ -727,12 +717,7 @@ only showing top 3 rows
       <td>255</td>
       <td>255.0</td>
       <td>ASSIST RSPCA WITH FOX TRAPPED,B15</td>
-      <td>Fox</td>
-      <td>Person (land line)</td>
-      <td>Railings</td>
-      <td>Outdoor Structure</td>
-      <td>Other animal assistance</td>
-      <td>Animal assistance involving livestock - Other ...</td>
+      <td>...</td>
       <td>E05000169</td>
       <td>Woodside</td>
       <td>E09000008</td>
@@ -756,12 +741,7 @@ only showing top 3 rows
       <td>255</td>
       <td>255.0</td>
       <td>DOG CAUGHT IN DRAIN,B15</td>
-      <td>Dog</td>
-      <td>Person (mobile)</td>
-      <td>Pipe or drain</td>
-      <td>Outdoor Structure</td>
-      <td>Animal rescue from below ground</td>
-      <td>Animal rescue from below ground - Domestic pet</td>
+      <td>...</td>
       <td>E05000558</td>
       <td>Carshalton Central</td>
       <td>E09000029</td>
@@ -775,6 +755,7 @@ only showing top 3 rows
     </tr>
   </tbody>
 </table>
+<p>3 rows × 26 columns</p>
 </div></div></div>
 </div>
 <p>See the article on <a class="reference internal" href="returning-data.html"><span class="doc std std-doc">Returning Data from Cluster to Driver</span></a> for more details.</p>
@@ -1043,6 +1024,56 @@ only showing top 3 rows
 |       38636121|         Dog|    2012|     780.0|
 |       64764121|         Dog|    2012|    1040.0|
 +---------------+------------+--------+----------+
+</pre></div>
+</div>
+</div>
+</div>
+<p>If you want to filter the values in a column to match the values in the list, for example you want to filter for where the <code class="docutils literal notranslate"><span class="pre">animal_group</span></code> value is cats OR dogs, you can use <code class="docutils literal notranslate"><span class="pre">isin()</span></code>. This is equivalent to using multiple OR conditions on the same column, but using <code class="docutils literal notranslate"><span class="pre">isin()</span></code> is a lot cleaner, particularly if you have a large number of values you want to filter by.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#using isin()</span>
+<span class="n">cats_and_dogs</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+<span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="s2">&quot;Cat&quot;</span><span class="p">,</span> <span class="s2">&quot;Dog&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1">#using OR</span>
+<span class="n">cats_and_dogs</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Cat&quot;</span><span class="p">)</span><span class="o">|</span>
+    <span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Dog&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+---------------+------------+--------+----------+---------+------------+--------------------+-----------------+
+|incident_number|animal_group|cal_year|total_cost|job_hours|engine_count|         description|postcode_district|
++---------------+------------+--------+----------+---------+------------+--------------------+-----------------+
+|         139091|         Dog|    2009|     510.0|      2.0|         1.0|DOG WITH JAW TRAP...|             SE19|
+|        2075091|         Dog|    2009|     255.0|      1.0|         1.0|DOG CAUGHT IN DRA...|              SM5|
+|        4011091|         Dog|    2009|     255.0|      1.0|         1.0|DOG WITH HEAD TRA...|              E11|
+|        4211091|         Dog|    2009|     255.0|      1.0|         1.0|LABRADOR FALLEN T...|              E12|
+|        4715091|         Dog|    2009|     255.0|      1.0|         1.0|DOG STUCK IN MUD,...|               E5|
++---------------+------------+--------+----------+---------+------------+--------------------+-----------------+
+</pre></div>
+</div>
+</div>
+</div>
+<p>If you want to filter for values between a range of values, for example if you’re only interested in incidents that have occurred between 2015 and 2017, or incidents for which the <code class="docutils literal notranslate"><span class="pre">total_cost</span></code> is between 300 and 500, you can use <code class="docutils literal notranslate"><span class="pre">between()</span></code>. Note that <code class="docutils literal notranslate"><span class="pre">between()</span></code> is inclusive of the values in the upper and lower bounds.</p>
+<p>Note: you will run into unexpected outputs if you try and use <code class="docutils literal notranslate"><span class="pre">between()</span></code> with any non-numeric datatypes, so before you use this function, ensure that the column you are filtering by is numeric (such as an integer, double or timestamp datatype) by using <code class="docutils literal notranslate"><span class="pre">dataframe.printSchema()</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">specific_years</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">between</span><span class="p">(</span><span class="mi">2015</span><span class="p">,</span> <span class="mi">2017</span><span class="p">))</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+---------------+--------------------+--------+----------+---------+------------+--------------------+-----------------+
+|incident_number|        animal_group|cal_year|total_cost|job_hours|engine_count|         description|postcode_district|
++---------------+--------------------+--------+----------+---------+------------+--------------------+-----------------+
+|         304151|                 Dog|    2015|     295.0|      1.0|         1.0|   TERRIER IN BURROW|              KT8|
+|         468151|Unknown - Domesti...|    2015|     295.0|      1.0|         1.0|PERSON STUCK UP TREE|              SE1|
+|        1074151|                 Cat|    2015|     295.0|      1.0|         1.0|ASSIST RSPCA WITH...|              EN2|
+|        1528151|                 Dog|    2015|     590.0|      2.0|         1.0|2 DOGS STUCK IN Q...|              CR8|
+|        2217151|                Bird|    2015|     295.0|      1.0|         1.0|BIRD TRAPPED IN C...|              NW2|
++---------------+--------------------+--------+----------+---------+------------+--------------------+-----------------+
 </pre></div>
 </div>
 </div>
@@ -1613,6 +1644,8 @@ only showing top 10 rows
 </table>
 </div></div></div>
 </div>
+<p><b>Note: </b> a common mistake people make is joining two dataframes with the same column names (other than the column(s) mentioned in the “on” argument). Although this will not result in an error when joining, if you try to do anything with the duplicate columns in the resultant dataframe, such as modifying them using <code class="docutils literal notranslate"><span class="pre">withColumn()</span></code>, you will receive this error message: <code class="docutils literal notranslate"><span class="pre">pyspark.errors.exceptions.captured.AnalysisException:</span> <span class="pre">[AMBIGUOUS_REFERENCE]</span> <span class="pre">Reference</span> <span class="pre">column_name</span> <span class="pre">is</span> <span class="pre">ambiguous,</span> <span class="pre">could</span> <span class="pre">be:</span> <span class="pre">[column_name,</span> <span class="pre">column_name]</span></code> as PySpark will be unsure which column you are referring to. If you try to rectify this by dropping the column, both columns will be dropped which could potentially cause confusion.</p>
+<p>To avoid this, you can rename duplicate column names by using <code class="docutils literal notranslate"><span class="pre">withColumnRenamed()</span></code> prior to the join to ensure that there are no duplicate column names across the left and right dataframes.</p>
 </section>
 <section id="writing-data-file-choice">
 <h2>Writing data: file choice<a class="headerlink" href="#writing-data-file-choice" title="Permalink to this heading">#</a></h2>
@@ -1622,7 +1655,7 @@ only showing top 10 rows
 <li><p>If the data are intended to be human readable, e.g. as the basis for a presentation, or as a publication on the ONS website, then you will likely want to output the data as a CSV</p></li>
 <li><p>If the data are intended to be used as an input to another Spark process, then use parquet or a Hive table.</p></li>
 </ul>
-<p>There are other use cases, e.g. JSON can be useful if you want the results to analysed with a different programming language, although here we only focus on CSV and parquet. See the article on <a class="reference internal" href="../spark-functions/writing-data.html"><span class="doc std std-doc">Writing Data</span></a> for more information.</p>
+<p>There are other use cases, e.g. JSON can be useful if you want the results to analysed with a different programming language, although here we only focus on CSV and parquet. See the article on <a class="reference internal" href="../spark-overview/reading-and-writing-data-spark.html"><span class="doc std std-doc">Reading and Writing Data</span></a> for more information.</p>
 </section>
 <section id="write-to-a-parquet-write-parquet">
 <h2>Write to a parquet: <code class="docutils literal notranslate"><span class="pre">.write.parquet()</span></code><a class="headerlink" href="#write-to-a-parquet-write-parquet" title="Permalink to this heading">#</a></h2>
