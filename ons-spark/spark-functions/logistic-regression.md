@@ -35,7 +35,7 @@ import pandas as pd
 #local session 
 spark = (SparkSession.builder.master("local[2]").appName("logistic-regression").getOrCreate())
 
-with open("ons-spark/config.yaml") as f:
+with open("../../../config.yaml") as f:
     config = yaml.safe_load(f)
 
 # Set the data path
