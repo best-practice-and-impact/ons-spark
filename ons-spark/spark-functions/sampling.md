@@ -959,6 +959,7 @@ Spark at the ONS Articles:
 - [Caching](https://best-practice-and-impact.github.io/ons-spark/spark-concepts/cache.html)
 - [Checkpoint](https://best-practice-and-impact.github.io/ons-spark/spark-concepts/checkpoint-staging.html#checkpoint)
 - [Partitions](https://best-practice-and-impact.github.io/ons-spark/spark-concepts/partitions.html)
+- [Pandas UDFs](../ancillary-topics/pandas-udfs.ipynb)
 
 PySpark Documentation:
 - [`.sample()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sample.html)
