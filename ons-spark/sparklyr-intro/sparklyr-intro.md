@@ -1016,7 +1016,9 @@ When reading the data in, Spark will treat every individual file as a partition.
 
 ### Write to a CSV: `spark_write_csv()` and `sdf_coalesce()`
 
-CSVs will also be written out in a distributed manner as multiple files. While this is desirable in a parquet, it is not very useful with CSV, as the main benefit is to make them human readable. First, write out the data with [`spark_write_csv()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_write_csv.html), using the path defined in the config:
+CSVs will also be written out in a distributed manner as multiple files. While this is desirable in a parquet, it is not very useful with CSV, as the main benefit is to make them human readable. Below are two examples of writing out a Spark dataframe to a CSV file. The first will produce multiple CSV files across multiple partitions, whereas the **second example will write your data to a single partition and is therefore the desired output**.
+
+First, write out the data with [`spark_write_csv()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_write_csv.html), using the path defined in the config:
 ````{tabs}
 
 ```{code-tab} r R
@@ -1028,11 +1030,11 @@ rescue_with_pop %>%
 
 ```
 ````
-Again, look at the raw data in a file browser. You can see that it has written out a directory called `rescue_with_pop.csv`, with multiple files inside. Each of these on their own is a legitimate CSV file, with the correct headers.
+Again, look at the raw data in a file browser. You can see that it has written out a directory called `rescue_with_pop.csv`, with multiple files inside. Each of these on their own is a legitimate CSV file, with the correct headers, however it makes it difficult to read your data.
 
-To reduce the number of partitions, pipe the data into [`sdf_coalesce(partitions)`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html); this will combine existing partitions. Setting `partitions` to `1` will put all of the data on the same partition. 
+Instead, it is more desirable to reduce the number of partitions and to do this you need to pipe the data into [`sdf_coalesce(partitions)`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html); this will combine existing partitions. Setting `partitions` to `1` will put all of the data on the same partition. 
 
-As the file will already exist, we need to tell Spark to overwrite the existing file. Use `mode="overwrite"` to do this:
+As the file will already exist (due to the previous example), we need to tell Spark to overwrite the existing file. Use `mode="overwrite"` to do this:
 ````{tabs}
 
 ```{code-tab} r R
@@ -1125,3 +1127,7 @@ Other Links:
 #### Acknowledgements
 
 Thanks to Karina Marks, Chris Musselle and Beth Ashlee for creating the initial version of this article.
+
+```python
+
+```
