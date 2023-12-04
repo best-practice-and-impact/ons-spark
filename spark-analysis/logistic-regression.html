@@ -497,14 +497,18 @@ before the model can be run successfully.</p>
 
 <span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span>
 <span class="kn">import</span> <span class="nn">pyspark.sql.functions</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="c1">#local session </span>
 <span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;logistic-regression&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
 
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
 <span class="c1"># Set the data path</span>
-<span class="n">rescue_path_parquet</span> <span class="o">=</span> <span class="s1">&#39;/training/rescue_clean.parquet&#39;</span>
+<span class="n">rescue_path_parquet</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_clean_path&quot;</span><span class="p">]</span>
 
 <span class="c1"># Read in the data</span>
 <span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">rescue_path_parquet</span><span class="p">)</span>
@@ -525,9 +529,10 @@ before the model can be run successfully.</p>
 <span class="c1"># check connection is open</span>
 <span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connection_is_open</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
 
+<span class="n">config</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">yaml</span><span class="o">::</span><span class="nf">yaml.load_file</span><span class="p">(</span><span class="s">&quot;ons-spark/config.yaml&quot;</span><span class="p">)</span>
+
 <span class="c1"># read in data</span>
-<span class="n">rescue_path_parquet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;/training/rescue_clean.parquet&quot;</span>
-<span class="n">rescue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_parquet</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">rescue_path_parquet</span><span class="p">)</span>
+<span class="n">rescue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_parquet</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">rescue_clean_path</span><span class="p">)</span>
 
 <span class="c1"># preview data</span>
 <span class="n">dplyr</span><span class="o">::</span><span class="nf">glimpse</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span>
