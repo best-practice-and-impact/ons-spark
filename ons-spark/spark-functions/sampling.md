@@ -46,6 +46,8 @@ sc <- sparklyr::spark_connect(
 config <- yaml::yaml.load_file("ons-spark/config.yaml")
 
 rescue <- sparklyr::spark_read_csv(sc, config$rescue_path_csv, header=TRUE, infer_schema=TRUE)
+rescue <- rescue %>% sparklyr::mutate(animal_type = AnimalGroupParent)
+rescue <- select(rescue,-AnimalGroupParent)
 
 ```
 ````
@@ -125,15 +127,15 @@ print(paste0("Fraction of rows sampled: ", sparklyr::sdf_nrow(rescue_sample)/spa
 
 ```{code-tab} plaintext Python Output
 Total rows in original DF: 5898
-Total rows in sampled DF: 600
-Fraction of rows sampled 0.1017293997965412
+Total rows in sampled DF: 548
+Fraction of rows sampled 0.0929128518141743
 ```
 
 ```{code-tab} plaintext R Output
-[1] 619
+[1] 586
 [1] "Total rows in original DF: 5898"
-[1] "Total rows in sampled DF: 619"
-[1] "Fraction of rows sampled: 0.104950830790098"
+[1] "Total rows in sampled DF: 586"
+[1] "Fraction of rows sampled: 0.0993557138012886"
 ```
 ````
 You can also set a seed, in a similar way to how random numbers generators work. This enables replication, which is useful in Spark given that the DataFrame will otherwise be re-sampled every time an action is called.
@@ -171,7 +173,6 @@ Seed 2 count: 593
 ```
 
 ```{code-tab} plaintext R Output
-
 [1] "Seed 1 count: 607"
 [1] "Seed 2 count: 607"
 ```
@@ -221,7 +222,7 @@ skewed_df %>%
 ```
 
 ```{code-tab} plaintext R Output
-# Source: spark<?> [?? x 3]
+ Source: spark<?> [?? x 3]
   skew_col row_count percentage_of_dataframe
   <chr>        <dbl>                   <dbl>
 1 A              100                    0.01
@@ -265,23 +266,23 @@ skewed_sample %>%
 +--------+---------+-----------------------+
 |skew_col|row_count|percentage_of_dataframe|
 +--------+---------+-----------------------+
-|       A|       10|   0.010004702210038718|
-|       B|       94|    0.09404420077436394|
-|       C|      918|     0.9184316628815543|
-|       D|     9144|      9.148299700859404|
-|       E|    89787|      89.82921973327464|
+|       A|       10|   0.010004301849795413|
+|       B|       91|    0.09103914683313824|
+|       C|      886|     0.8863811438918736|
+|       D|     8984|        8.9878647818562|
+|       E|    89986|        90.024710625569|
 +--------+---------+-----------------------+
 ```
 
 ```{code-tab} plaintext R Output
- Source: spark<?> [?? x 3]
+# Source: spark<?> [?? x 3]
   skew_col row_count percentage_of_dataframe
   <chr>        <dbl>                   <dbl>
-1 A               10                 0.00998
-2 B               94                 0.0938 
-3 C              928                 0.926  
-4 D             9171                 9.15   
-5 E            89972                89.8    
+1 A                8                 0.00802
+2 B              102                 0.102  
+3 C              938                 0.940  
+4 D             8967                 8.98   
+5 E            89790                90.0    
 ```
 ````
 From the above example, it looks like the original distribution is preserved.
@@ -322,23 +323,24 @@ equal_partitions_sample %>%
 +--------+---------+-----------------------+
 |skew_col|row_count|percentage_of_dataframe|
 +--------+---------+-----------------------+
-|       A|       11|     0.0110026406337521|
-|       B|       98|    0.09802352564615509|
-|       C|      866|     0.8662078898935746|
-|       D|     8941|       8.94314635512523|
-|       E|    90060|      90.08161958870129|
+|       A|       14|   0.014039028499227854|
+|       B|       75|    0.07520908124586351|
+|       C|      895|     0.8974950362006376|
+|       D|     8936|       8.96091133350715|
+|       E|    89802|      90.05234552054712|
 +--------+---------+-----------------------+
 ```
 
 ```{code-tab} plaintext R Output
+
 # Source: spark<?> [?? x 3]
   skew_col row_count percentage_of_dataframe
   <chr>        <dbl>                   <dbl>
-1 A               16                  0.0160
-2 B               88                  0.0879
-3 C              895                  0.894 
-4 D             8829                  8.82  
-5 E            90249                 90.2   
+1 A                7                  0.007 
+2 B               89                  0.0890
+3 C              884                  0.884 
+4 D             9191                  9.20  
+5 E            89781                 89.8   
 ```
 ````
 From the above examples we can see that we get similar samples regardless of how the data is partitioned, where each row within the dataframe is equally likely to be added to the sample.
@@ -386,7 +388,6 @@ only showing top 5 rows
 ```
 
 ```{code-tab} plaintext R Output
-
 [1] 630
 # Source:     spark<?> [?? x 2]
 # Groups:     IncidentNumber
@@ -394,15 +395,15 @@ only showing top 5 rows
    IncidentNumber      n
    <chr>           <dbl>
  1 173242141           2
- 2 69362121            2
+ 2 34221131            2
  3 016538-10022016     2
  4 133403-01102016     2
- 5 49034121            2
+ 5 69362121            2
  6 15682091            2
  7 145854121           2
  8 64398111            2
  9 62512121            2
-10 34221131            2
+10 49034121            2
 # ℹ more rows
 ```
 ````
@@ -435,9 +436,9 @@ stratified_sample_count.show()
 +-----------+---------+
 |animal_type|row_count|
 +-----------+---------+
-|        Cat|      146|
-|        Dog|       90|
-|    Hamster|        8|
+|        Cat|      140|
+|        Dog|      120|
+|    Hamster|        7|
 +-----------+---------+
 ```
 ````
@@ -463,9 +464,9 @@ weights_df = spark.createDataFrame(list(weights.items()), schema=["animal_type",
 +-----------+-----+------+-------------+---------+
 |animal_type|count|weight|expected_rows|row_count|
 +-----------+-----+------+-------------+---------+
-|        Cat| 2909|  0.05|        145.0|      146|
-|        Dog| 1008|   0.1|        101.0|       90|
-|    Hamster|   14|   0.5|          7.0|        8|
+|        Cat| 2909|  0.05|        145.0|      140|
+|        Dog| 1008|   0.1|        101.0|      120|
+|    Hamster|   14|   0.5|          7.0|        7|
 +-----------+-----+------+-------------+---------+
 ```
 ````
@@ -493,11 +494,11 @@ stratified_sk_sample = skewed_df.sampleBy("skew_col", fractions=sk_weights)
 +--------+---------+-----------------------+
 |skew_col|row_count|percentage_of_dataframe|
 +--------+---------+-----------------------+
-|       A|       21|   0.007409602845287492|
-|       B|       84|    0.02963841138114997|
-|       C|     4506|     1.5898890676602593|
-|       D|     9105|       3.21259209077822|
-|       E|   269700|      95.16047082733509|
+|       A|       19|   0.006711883566482973|
+|       B|       94|    0.03320616080259997|
+|       C|     4507|     1.5921294333757243|
+|       D|     8999|      3.178960011304225|
+|       E|   269461|      95.18899251095097|
 +--------+---------+-----------------------+
 ```
 ````
@@ -539,7 +540,7 @@ row_count
 ```
 
 ```{code-tab} plaintext R Output
-] 590
+[1] 590
 ```
 ````
 
@@ -569,8 +570,225 @@ rescue %>%
 ```
 
 ```{code-tab} plaintext R Output
-
 [1] 590
+```
+````
+#### Returning an exact sample - Stratified Sampling
+If you are wishing to use a form of stratified sampling where an exact number of samples are needed per strata, this can be implemented using a window function in either PySpark or SparklyR. More details and examples using window functions can be found in the [window function page](https://best-practice-and-impact.github.io/ons-spark/spark-functions/window-functions.html). We found that the simplest way of returning an exact number of samples per strata is to create a column for each strata with the number of samples required. To simplify this example we have reduced the number of animals in the `animal_type` column to 5: Bird; Cat; Dog; Fox; and Other.
+````{tabs}
+```{code-tab} py
+# Preprocessing to simplify the number of animals in the `animal_type` column
+simplified_animal_types = rescue.withColumn('animal_type',F.when(~F.col('animal_type').isin(['Cat','Bird','Dog','Fox']),'Other')
+                                              .otherwise(F.col('animal_type')))
+
+# Counting the number of animals in each group
+simplified_animal_types.groupBy('animal_type').agg(F.count('animal_type').alias('count')).sort('count',ascending = False).show()
+
+```
+
+```{code-tab} r R
+
+# Preprocessing to simplify the number of animals in the `animal_type` column
+simplified_animal_types <- rescue %>% sparklyr::mutate(animal_type = case_when(
+                                                        !animal_type %in% c('Cat','Bird','Dog','Fox') ~ 'Other',
+                                                        .default = animal_type))
+
+# Counting the number of animals in each group
+simplified_animal_types %>%
+        dplyr::group_by(animal_type) %>%
+        dplyr::count(animal_type,name = 'row_count') %>%
+        sdf_sort('animal_type')
+
+```
+````
+
+````{tabs}
+
+```{code-tab} plaintext Python Output
++-----------+-----+
+|animal_type|count|
++-----------+-----+
+|        Cat| 2909|
+|       Bird| 1100|
+|        Dog| 1008|
+|      Other|  643|
+|        Fox|  238|
++-----------+-----+
+```
+
+```{code-tab} plaintext R Output
+# Source: spark<?> [?? x 2]
+  animal_type row_count
+  <chr>           <dbl>
+1 Bird             1100
+2 Cat              2909
+3 Dog              1008
+4 Fox               238
+5 Other             643
+```
+````
+Next we create our column which has the required number of samples per strata. This can be done simply using `F.when` statements. This may not be viable when sampling across a lot of variables as a `when` statement is needed for each distinct value. An alternate method can be done using UDFs or a mapping function (An example of this can be found further down the page in the [Simplifying the required sample column](#simplifying-the-required-sample-column) section). The efficiency of these methods has not been thoroughly tested for large datasets and a large number of strata, but we expect that UDFs would be less efficient vs Pyspark mappings and therefore mappings are the recommended method. For more information on UDFs and their efficiency, see the [Pandas UDFs](../ancillary-topics/pandas-udfs.ipynb) page. Alongside the `sample_size` column, we will also give each row a randomly generated number from a uniform distribution which is used to order the rows per strata.  
+````{tabs}
+```{code-tab} py
+# Create a sample_size column for each strata 
+simplified_animal_types = (simplified_animal_types.withColumn('sample_size',F.when(F.col('animal_type') == 'Bird',15)
+                                                .when(F.col('animal_type') == 'Cat',20)
+                                                .when(F.col('animal_type') == 'Dog',10)
+                                                .when(F.col('animal_type') == 'Fox',2)
+                                                .when(F.col('animal_type') == 'Other',5)
+                                                .otherwise(0))
+                                                .withColumn('random_number',F.rand())
+)
+```
+
+```{code-tab} r R
+
+simplified_animal_types <- simplified_animal_types %>% 
+                            sparklyr::mutate(sample_size = case_when(
+                                            animal_type == 'Bird' ~ 15,
+                                            animal_type == 'Cat' ~ 20,
+                                            animal_type == 'Dog' ~ 10,
+                                            animal_type == 'Fox' ~ 2,
+                                            animal_type == 'Other' ~ 5,
+                                            .default = 0)) %>%
+                            sparklyr::mutate(random_number = rand())
+
+```
+````
+Using a window function, we create a column `strata_rank` which will rank each of the random numbers from `random_number` column in order. From this, we create a final column `sampled` which will contain a `1` if the ranked value of a random number is less than or equal to the required sample size for each strata. Otherwise it will contain a `0`. To obtain our final sample, we simply filter on the `sampled` column and extract all rows where this equals `1`. We can check the number of entries per sample by using a aggregating function (`agg`) and a `groupBy`.
+````{tabs}
+```{code-tab} py
+from pyspark.sql.window import Window
+# use Window function to rank based on size of random number
+simplified_animal_types = simplified_animal_types.withColumn("strata_rank",F.rank().over(Window.partitionBy('animal_type').orderBy('random_number')))
+# Set sampled column to 1 if rank is lower than sample_size, 0 otherwise
+simplified_animal_types = (simplified_animal_types.withColumn('sampled',F.when((F.col('strata_rank') <= F.col('sample_size')), 1)
+                                    .otherwise(0)))
+ 
+# Take our sample by filtering where `sampled` is 1
+sample = simplified_animal_types.filter(F.col('sampled') == 1)
+# Count rows in sample
+sample.groupBy('animal_type','sample_size').agg(F.count('animal_type').alias('count')).sort('count',ascending = False).show()
+```
+
+```{code-tab} r R
+
+
+simplified_animal_types <- simplified_animal_types %>% 
+              dplyr::group_by(animal_type) %>%
+              sparklyr::mutate(strata_rank = rank(desc(random_number))) %>%
+              dplyr::ungroup()
+
+simplified_animal_types <- simplified_animal_types %>% sparklyr::mutate(sampled = case_when(
+              strata_rank <= sample_size ~ 1,
+              .default = 0))
+
+sampled <- simplified_animal_types %>% sparklyr::filter(sampled == 1)
+
+sampled %>%
+        dplyr::group_by(animal_type,sample_size) %>%
+        dplyr::count(animal_type,name = 'row_count') %>%
+        sdf_sort('animal_type')
+
+
+```
+````
+
+````{tabs}
+
+```{code-tab} plaintext Python Output
++-----------+-----------+-----+
+|animal_type|sample_size|count|
++-----------+-----------+-----+
+|        Cat|         20|   20|
+|       Bird|         15|   15|
+|        Dog|         10|   10|
+|      Other|          5|    5|
+|        Fox|          2|    2|
++-----------+-----------+-----+
+```
+
+```{code-tab} plaintext R Output
+# Source: spark<?> [?? x 3]
+  animal_type sample_size row_count
+  <chr>             <dbl>     <dbl>
+1 Bird                 15        15
+2 Cat                  20        20
+3 Dog                  10        10
+4 Fox                   2         2
+5 Other                 5         5
+```
+````
+It should be pointed out that using a Window function and partitioning by a strata can lead to issues in datasets which have large skews. If one strata is significantly larger than others, this could also cause memory overflow issues on the executors resulting in spark sessions crashing. For more info see the [partitioning page](../spark-concepts/partitions).
+##### Simplifying the required sample column
+We can simplify the creation of the required sample column by using dictionaries (python) or a dataframe and parse expressions (R). This does require the use of the `itertools` package and `chain()` function to map the values within the column for python. A similar work around is also possible in R by using `dplyr::tibble()` and `parse_exprs()`. Both methods can be used to easily set the `sample_size` column when dealing with a large number of strata.
+````{tabs}
+```{code-tab} py
+from itertools import chain
+# Create dictionary
+strata_dictionary = {'Bird':15, 'Cat':20, 'Dog':10, 'Fox': 2, 'Other':5}
+
+
+mapping_example = rescue.withColumn('animal_type',F.when(~F.col('animal_type').isin(['Cat','Bird','Dog','Fox']),'Other')
+                                              .otherwise(F.col('animal_type')))
+
+mapping_expression = F.create_map([F.lit(x) for x in chain(*strata_dictionary.items())]) 
+mapping_example = mapping_example.withColumn("sample_size", 
+              mapping_expression[F.col("animal_type")])
+
+mapping_example.groupBy('animal_type','sample_size').agg(F.count('animal_type').alias('count')).sort('animal_type').show()
+```
+
+```{code-tab} r R
+
+# Create our reference dataframe
+strata_reference <- dplyr::tibble(type = c("Bird", "Dog", "Cat", "Fox", "Other"),
+                                sample_size = c(105, 20, 20, 2, 5))
+
+# Generate sample_size column
+tibble_example <- rescue %>% sparklyr::mutate(animal_type = case_when(
+                                                        !animal_type %in% c('Cat','Bird','Dog','Fox') ~ 'Other',
+                                                        .default = animal_type))
+
+tibble_example <- tibble_example %>% 
+                        sparklyr::mutate(sample_size = case_when(!!!rlang::parse_exprs(paste0("animal_type == \"",
+                                                                    strata_reference$type, 
+                                                                    "\" ~ ",
+                                                                    strata_reference$sample_size,
+                                                                    collapse = "\n"))))
+
+# Check sample size column has been generated correcty
+tibble_example %>% 
+            dplyr::group_by(animal_type,sample_size) %>%
+            dplyr::count(animal_type,name = 'row_count') %>%
+            sdf_sort('animal_type')
+
+```
+````
+
+````{tabs}
+
+```{code-tab} plaintext Python Output
++-----------+-----------+-----+
+|animal_type|sample_size|count|
++-----------+-----------+-----+
+|       Bird|         15| 1100|
+|        Cat|         20| 2909|
+|        Dog|         10| 1008|
+|        Fox|          2|  238|
+|      Other|          5|  643|
++-----------+-----------+-----+
+```
+
+```{code-tab} plaintext R Output
+Source: spark<?> [?? x 3]
+  animal_type sample_size row_count
+  <chr>             <dbl>     <dbl>
+1 Bird                105      1100
+2 Cat                  20      2909
+3 Dog                  20      1008
+4 Fox                   2       238
+5 Other                 5       643
 ```
 ````
 #### Partitioning
@@ -641,15 +859,15 @@ print(paste0("Split3: ", sparklyr::sdf_nrow(splits$split3)))
 ````{tabs}
 
 ```{code-tab} plaintext Python Output
-Split1: 2941
-Split2: 2367
-Split3: 590
+Split1: 2897
+Split2: 2400
+Split3: 601
 ```
 
 ```{code-tab} plaintext R Output
-[1] "Split1: 2986"
-[1] "Split2: 2293"
-[1] "Split3: 619"
+1] "Split1: 2968"
+[1] "Split2: 2372"
+[1] "Split3: 558"
 ```
 ````
 Check that the count of the splits equals the total row count:
@@ -678,7 +896,8 @@ Split count total: 5898
 ```
 
 ```{code-tab} plaintext R Output
-1] "DF count: 5898"
+"
+[1] "DF count: 5898"
 [1] "Split count total: 5898"
 ```
 ````
@@ -731,7 +950,7 @@ rescue_subsample_3 %>% sparklyr::sdf_nrow())
 ```
 
 ```{code-tab} plaintext R Output
-1966 1966 1966```
+966 1966 1966```
 ````
 ### Further Resources
 
@@ -740,6 +959,7 @@ Spark at the ONS Articles:
 - [Caching](https://best-practice-and-impact.github.io/ons-spark/spark-concepts/cache.html)
 - [Checkpoint](https://best-practice-and-impact.github.io/ons-spark/spark-concepts/checkpoint-staging.html#checkpoint)
 - [Partitions](https://best-practice-and-impact.github.io/ons-spark/spark-concepts/partitions.html)
+- [Pandas UDFs](../ancillary-topics/pandas-udfs.ipynb)
 
 PySpark Documentation:
 - [`.sample()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.sample.html)
