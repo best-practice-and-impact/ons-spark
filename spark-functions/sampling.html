@@ -457,6 +457,10 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#information-on-alternate-sampling-methods">Information on alternate sampling methods</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#more-details-on-sampling">More details on sampling</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#returning-an-exact-sample">Returning an exact sample</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#returning-an-exact-sample-stratified-sampling">Returning an exact sample - Stratified Sampling</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#simplifying-the-required-sample-column">Simplifying the required sample column</a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#partitioning">Partitioning</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sampling-consistently-by-filtering-the-data">Sampling consistently by filtering the data</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#splitting-a-df-randomsplit-and-sdf-random-split">Splitting a DF: <code class="docutils literal notranslate"><span class="pre">.randomSplit()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_random_split()</span></code></a></li>
@@ -517,6 +521,8 @@ document.write(`
 <span class="n">config</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">yaml</span><span class="o">::</span><span class="nf">yaml.load_file</span><span class="p">(</span><span class="s">&quot;ons-spark/config.yaml&quot;</span><span class="p">)</span>
 
 <span class="n">rescue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_csv</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">rescue_path_csv</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">infer_schema</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="n">rescue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">animal_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AnimalGroupParent</span><span class="p">)</span>
+<span class="n">rescue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="n">rescue</span><span class="p">,</span><span class="o">-</span><span class="n">AnimalGroupParent</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></div>
@@ -580,14 +586,14 @@ We should check that this is indeed occuring for an evenly distrubuted dataframe
 </div></div>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-4-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-4-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-4-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Total rows in original DF: 5898
-Total rows in sampled DF: 600
-Fraction of rows sampled 0.1017293997965412
+Total rows in sampled DF: 548
+Fraction of rows sampled 0.0929128518141743
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-4-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] 619
+</div><div aria-labelledby="tab-4-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] 586
 [1] &quot;Total rows in original DF: 5898&quot;
-[1] &quot;Total rows in sampled DF: 619&quot;
-[1] &quot;Fraction of rows sampled: 0.104950830790098&quot;
+[1] &quot;Total rows in sampled DF: 586&quot;
+[1] &quot;Fraction of rows sampled: 0.0993557138012886&quot;
 </pre></div>
 </div>
 </div></div>
@@ -660,7 +666,7 @@ First we group the data by <code class="docutils literal notranslate"><span clas
 +--------+---------+-----------------------+
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-8-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-8-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># Source: spark&lt;?&gt; [?? x 3]
+</div><div aria-labelledby="tab-8-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-8-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span> Source: spark&lt;?&gt; [?? x 3]
   skew_col row_count percentage_of_dataframe
   &lt;chr&gt;        &lt;dbl&gt;                   &lt;dbl&gt;
 1 A              100                    0.01
@@ -699,22 +705,22 @@ Now we will sample 10% of the dataframe and assess the distribution of the sampl
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-10-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-10-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-10-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-10-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+--------+---------+-----------------------+
 |skew_col|row_count|percentage_of_dataframe|
 +--------+---------+-----------------------+
-|       A|       10|   0.010004702210038718|
-|       B|       94|    0.09404420077436394|
-|       C|      918|     0.9184316628815543|
-|       D|     9144|      9.148299700859404|
-|       E|    89787|      89.82921973327464|
+|       A|       10|   0.010004301849795413|
+|       B|       91|    0.09103914683313824|
+|       C|      886|     0.8863811438918736|
+|       D|     8984|        8.9878647818562|
+|       E|    89986|        90.024710625569|
 +--------+---------+-----------------------+
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-10-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-10-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span> Source: spark&lt;?&gt; [?? x 3]
+</div><div aria-labelledby="tab-10-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-10-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># Source: spark&lt;?&gt; [?? x 3]
   skew_col row_count percentage_of_dataframe
   &lt;chr&gt;        &lt;dbl&gt;                   &lt;dbl&gt;
-1 A               10                 0.00998
-2 B               94                 0.0938 
-3 C              928                 0.926  
-4 D             9171                 9.15   
-5 E            89972                89.8    
+1 A                8                 0.00802
+2 B              102                 0.102  
+3 C              938                 0.940  
+4 D             8967                 8.98   
+5 E            89790                90.0    
 </pre></div>
 </div>
 </div></div>
@@ -750,22 +756,22 @@ We will now re-run the above sampling, but we first repartition our skewed dataf
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-12-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-12-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-12-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-12-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+--------+---------+-----------------------+
 |skew_col|row_count|percentage_of_dataframe|
 +--------+---------+-----------------------+
-|       A|       11|     0.0110026406337521|
-|       B|       98|    0.09802352564615509|
-|       C|      866|     0.8662078898935746|
-|       D|     8941|       8.94314635512523|
-|       E|    90060|      90.08161958870129|
+|       A|       14|   0.014039028499227854|
+|       B|       75|    0.07520908124586351|
+|       C|      895|     0.8974950362006376|
+|       D|     8936|       8.96091133350715|
+|       E|    89802|      90.05234552054712|
 +--------+---------+-----------------------+
 </pre></div>
 </div>
 </div><div aria-labelledby="tab-12-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-12-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># Source: spark&lt;?&gt; [?? x 3]
   skew_col row_count percentage_of_dataframe
   &lt;chr&gt;        &lt;dbl&gt;                   &lt;dbl&gt;
-1 A               16                  0.0160
-2 B               88                  0.0879
-3 C              895                  0.894 
-4 D             8829                  8.82  
-5 E            90249                 90.2   
+1 A                7                  0.007 
+2 B               89                  0.0890
+3 C              884                  0.884 
+4 D             9191                  9.20  
+5 E            89781                 89.8   
 </pre></div>
 </div>
 </div></div>
@@ -815,15 +821,15 @@ only showing top 5 rows
    IncidentNumber      n
    &lt;chr&gt;           &lt;dbl&gt;
  1 173242141           2
- 2 69362121            2
+ 2 34221131            2
  3 016538-10022016     2
  4 133403-01102016     2
- 5 49034121            2
+ 5 69362121            2
  6 15682091            2
  7 145854121           2
  8 64398111            2
  9 62512121            2
-10 34221131            2
+10 49034121            2
 # ℹ more rows
 </pre></div>
 </div>
@@ -852,9 +858,9 @@ only showing top 5 rows
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-16-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-16-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button></div><div aria-labelledby="tab-16-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-16-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+-----------+---------+
 |animal_type|row_count|
 +-----------+---------+
-|        Cat|      146|
-|        Dog|       90|
-|    Hamster|        8|
+|        Cat|      140|
+|        Dog|      120|
+|    Hamster|        7|
 +-----------+---------+
 </pre></div>
 </div>
@@ -878,9 +884,9 @@ only showing top 5 rows
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-18-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-18-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button></div><div aria-labelledby="tab-18-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-18-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+-----------+-----+------+-------------+---------+
 |animal_type|count|weight|expected_rows|row_count|
 +-----------+-----+------+-------------+---------+
-|        Cat| 2909|  0.05|        145.0|      146|
-|        Dog| 1008|   0.1|        101.0|       90|
-|    Hamster|   14|   0.5|          7.0|        8|
+|        Cat| 2909|  0.05|        145.0|      140|
+|        Dog| 1008|   0.1|        101.0|      120|
+|    Hamster|   14|   0.5|          7.0|        7|
 +-----------+-----+------+-------------+---------+
 </pre></div>
 </div>
@@ -906,11 +912,11 @@ only showing top 5 rows
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-20-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-20-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button></div><div aria-labelledby="tab-20-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-20-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+--------+---------+-----------------------+
 |skew_col|row_count|percentage_of_dataframe|
 +--------+---------+-----------------------+
-|       A|       21|   0.007409602845287492|
-|       B|       84|    0.02963841138114997|
-|       C|     4506|     1.5898890676602593|
-|       D|     9105|       3.21259209077822|
-|       E|   269700|      95.16047082733509|
+|       A|       19|   0.006711883566482973|
+|       B|       94|    0.03320616080259997|
+|       C|     4507|     1.5921294333757243|
+|       D|     8999|      3.178960011304225|
+|       E|   269461|      95.18899251095097|
 +--------+---------+-----------------------+
 </pre></div>
 </div>
@@ -945,7 +951,7 @@ only showing top 5 rows
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-22-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-22-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-22-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-22-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-22-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-22-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>590
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-22-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-22-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>] 590
+</div><div aria-labelledby="tab-22-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-22-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] 590
 </pre></div>
 </div>
 </div></div>
@@ -971,6 +977,204 @@ only showing top 5 rows
 </div>
 </div></div>
 </section>
+<section id="returning-an-exact-sample-stratified-sampling">
+<h3>Returning an exact sample - Stratified Sampling<a class="headerlink" href="#returning-an-exact-sample-stratified-sampling" title="Permalink to this heading">#</a></h3>
+<p>If you are wishing to use a form of stratified sampling where an exact number of samples are needed per strata, this can be implemented using a window function in either PySpark or SparklyR. More details and examples using window functions can be found in the <a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-functions/window-functions.html">window function page</a>. We found that the simplest way of returning an exact number of samples per strata is to create a column for each strata with the number of samples required. To simplify this example we have reduced the number of animals in the <code class="docutils literal notranslate"><span class="pre">animal_type</span></code> column to 5: Bird; Cat; Dog; Fox; and Other.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-25-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-25-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-25-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-25-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-25-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-25-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="c1"># Preprocessing to simplify the number of animals in the `animal_type` column</span>
+<span class="n">simplified_animal_types</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">,</span><span class="n">F</span><span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="o">~</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39;Cat&#39;</span><span class="p">,</span><span class="s1">&#39;Bird&#39;</span><span class="p">,</span><span class="s1">&#39;Dog&#39;</span><span class="p">,</span><span class="s1">&#39;Fox&#39;</span><span class="p">]),</span><span class="s1">&#39;Other&#39;</span><span class="p">)</span>
+                                              <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)))</span>
+
+<span class="c1"># Counting the number of animals in each group</span>
+<span class="n">simplified_animal_types</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span><span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-25-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-25-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Preprocessing to simplify the number of animals in the `animal_type` column</span>
+<span class="n">simplified_animal_types</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">animal_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">case_when</span><span class="p">(</span>
+<span class="w">                                                        </span><span class="o">!</span><span class="n">animal_type</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&#39;Cat&#39;</span><span class="p">,</span><span class="s">&#39;Bird&#39;</span><span class="p">,</span><span class="s">&#39;Dog&#39;</span><span class="p">,</span><span class="s">&#39;Fox&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s">&#39;Other&#39;</span><span class="p">,</span>
+<span class="w">                                                        </span><span class="n">.default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">animal_type</span><span class="p">))</span>
+
+<span class="c1"># Counting the number of animals in each group</span>
+<span class="n">simplified_animal_types</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">        </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">animal_type</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">        </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">count</span><span class="p">(</span><span class="n">animal_type</span><span class="p">,</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;row_count&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">        </span><span class="nf">sdf_sort</span><span class="p">(</span><span class="s">&#39;animal_type&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-26-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-26-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-26-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-26-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-26-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-26-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+-----------+-----+
+|animal_type|count|
++-----------+-----+
+|        Cat| 2909|
+|       Bird| 1100|
+|        Dog| 1008|
+|      Other|  643|
+|        Fox|  238|
++-----------+-----+
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-26-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-26-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># Source: spark&lt;?&gt; [?? x 2]
+  animal_type row_count
+  &lt;chr&gt;           &lt;dbl&gt;
+1 Bird             1100
+2 Cat              2909
+3 Dog              1008
+4 Fox               238
+5 Other             643
+</pre></div>
+</div>
+</div></div>
+<p>Next we create our column which has the required number of samples per strata. This can be done simply using <code class="docutils literal notranslate"><span class="pre">F.when</span></code> statements. This may not be viable when sampling across a lot of variables as a <code class="docutils literal notranslate"><span class="pre">when</span></code> statement is needed for each distinct value. An alternate method can be done using UDFs or a mapping function (An example of this can be found further down the page in the <span class="xref myst">Simplifying the required sample column</span> section). The efficiency of these methods has not been thoroughly tested for large datasets and a large number of strata, but we expect that UDFs would be less efficient vs Pyspark mappings and therefore mappings are the recommended method. For more information on UDFs and their efficiency, see the <a class="reference internal" href="../ancillary-topics/pandas-udfs.html"><span class="doc std std-doc">Pandas UDFs</span></a> page. Alongside the <code class="docutils literal notranslate"><span class="pre">sample_size</span></code> column, we will also give each row a randomly generated number from a uniform distribution which is used to order the rows per strata.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-27-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-27-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-27-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-27-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-27-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-27-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a sample_size column for each strata </span>
+<span class="n">simplified_animal_types</span> <span class="o">=</span> <span class="p">(</span><span class="n">simplified_animal_types</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;sample_size&#39;</span><span class="p">,</span><span class="n">F</span><span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Bird&#39;</span><span class="p">,</span><span class="mi">15</span><span class="p">)</span>
+                                                <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Cat&#39;</span><span class="p">,</span><span class="mi">20</span><span class="p">)</span>
+                                                <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Dog&#39;</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+                                                <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Fox&#39;</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+                                                <span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Other&#39;</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+                                                <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+                                                <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;random_number&#39;</span><span class="p">,</span><span class="n">F</span><span class="o">.</span><span class="n">rand</span><span class="p">())</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-27-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-27-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">simplified_animal_types</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">simplified_animal_types</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">                            </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">sample_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">case_when</span><span class="p">(</span>
+<span class="w">                                            </span><span class="n">animal_type</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&#39;Bird&#39;</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="m">15</span><span class="p">,</span>
+<span class="w">                                            </span><span class="n">animal_type</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&#39;Cat&#39;</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="m">20</span><span class="p">,</span>
+<span class="w">                                            </span><span class="n">animal_type</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&#39;Dog&#39;</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="m">10</span><span class="p">,</span>
+<span class="w">                                            </span><span class="n">animal_type</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&#39;Fox&#39;</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="m">2</span><span class="p">,</span>
+<span class="w">                                            </span><span class="n">animal_type</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&#39;Other&#39;</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="m">5</span><span class="p">,</span>
+<span class="w">                                            </span><span class="n">.default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">                            </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">random_number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">rand</span><span class="p">())</span>
+</pre></div>
+</div>
+</div></div>
+<p>Using a window function, we create a column <code class="docutils literal notranslate"><span class="pre">strata_rank</span></code> which will rank each of the random numbers from <code class="docutils literal notranslate"><span class="pre">random_number</span></code> column in order. From this, we create a final column <code class="docutils literal notranslate"><span class="pre">sampled</span></code> which will contain a <code class="docutils literal notranslate"><span class="pre">1</span></code> if the ranked value of a random number is less than or equal to the required sample size for each strata. Otherwise it will contain a <code class="docutils literal notranslate"><span class="pre">0</span></code>. To obtain our final sample, we simply filter on the <code class="docutils literal notranslate"><span class="pre">sampled</span></code> column and extract all rows where this equals <code class="docutils literal notranslate"><span class="pre">1</span></code>. We can check the number of entries per sample by using a aggregating function (<code class="docutils literal notranslate"><span class="pre">agg</span></code>) and a <code class="docutils literal notranslate"><span class="pre">groupBy</span></code>.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-28-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-28-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-28-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-28-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-28-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-28-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.window</span> <span class="kn">import</span> <span class="n">Window</span>
+<span class="c1"># use Window function to rank based on size of random number</span>
+<span class="n">simplified_animal_types</span> <span class="o">=</span> <span class="n">simplified_animal_types</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;strata_rank&quot;</span><span class="p">,</span><span class="n">F</span><span class="o">.</span><span class="n">rank</span><span class="p">()</span><span class="o">.</span><span class="n">over</span><span class="p">(</span><span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s1">&#39;random_number&#39;</span><span class="p">)))</span>
+<span class="c1"># Set sampled column to 1 if rank is lower than sample_size, 0 otherwise</span>
+<span class="n">simplified_animal_types</span> <span class="o">=</span> <span class="p">(</span><span class="n">simplified_animal_types</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;sampled&#39;</span><span class="p">,</span><span class="n">F</span><span class="o">.</span><span class="n">when</span><span class="p">((</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;strata_rank&#39;</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;sample_size&#39;</span><span class="p">)),</span> <span class="mi">1</span><span class="p">)</span>
+                                    <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span>
+ 
+<span class="c1"># Take our sample by filtering where `sampled` is 1</span>
+<span class="n">sample</span> <span class="o">=</span> <span class="n">simplified_animal_types</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;sampled&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+<span class="c1"># Count rows in sample</span>
+<span class="n">sample</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">,</span><span class="s1">&#39;sample_size&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span><span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-28-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-28-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">simplified_animal_types</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">simplified_animal_types</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">              </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">animal_type</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">              </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">strata_rank</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">rank</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">random_number</span><span class="p">)))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">              </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">ungroup</span><span class="p">()</span>
+
+<span class="n">simplified_animal_types</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">simplified_animal_types</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">sampled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">case_when</span><span class="p">(</span>
+<span class="w">              </span><span class="n">strata_rank</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">sample_size</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="m">1</span><span class="p">,</span>
+<span class="w">              </span><span class="n">.default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">))</span>
+
+<span class="n">sampled</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">simplified_animal_types</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">sampled</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+
+<span class="n">sampled</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">        </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">animal_type</span><span class="p">,</span><span class="n">sample_size</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">        </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">count</span><span class="p">(</span><span class="n">animal_type</span><span class="p">,</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;row_count&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">        </span><span class="nf">sdf_sort</span><span class="p">(</span><span class="s">&#39;animal_type&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-29-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-29-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-29-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-29-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-29-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-29-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+-----------+-----------+-----+
+|animal_type|sample_size|count|
++-----------+-----------+-----+
+|        Cat|         20|   20|
+|       Bird|         15|   15|
+|        Dog|         10|   10|
+|      Other|          5|    5|
+|        Fox|          2|    2|
++-----------+-----------+-----+
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-29-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-29-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># Source: spark&lt;?&gt; [?? x 3]
+  animal_type sample_size row_count
+  &lt;chr&gt;             &lt;dbl&gt;     &lt;dbl&gt;
+1 Bird                 15        15
+2 Cat                  20        20
+3 Dog                  10        10
+4 Fox                   2         2
+5 Other                 5         5
+</pre></div>
+</div>
+</div></div>
+<p>It should be pointed out that using a Window function and partitioning by a strata can lead to issues in datasets which have large skews. If one strata is significantly larger than others, this could also cause memory overflow issues on the executors resulting in spark sessions crashing. For more info see the <a class="reference internal" href="../spark-concepts/partitions.html"><span class="doc std std-doc">partitioning page</span></a>.</p>
+<section id="simplifying-the-required-sample-column">
+<h4>Simplifying the required sample column<a class="headerlink" href="#simplifying-the-required-sample-column" title="Permalink to this heading">#</a></h4>
+<p>We can simplify the creation of the required sample column by using dictionaries (python) or a dataframe and parse expressions (R). This does require the use of the <code class="docutils literal notranslate"><span class="pre">itertools</span></code> package and <code class="docutils literal notranslate"><span class="pre">chain()</span></code> function to map the values within the column for python. A similar work around is also possible in R by using <code class="docutils literal notranslate"><span class="pre">dplyr::tibble()</span></code> and <code class="docutils literal notranslate"><span class="pre">parse_exprs()</span></code>. Both methods can be used to easily set the <code class="docutils literal notranslate"><span class="pre">sample_size</span></code> column when dealing with a large number of strata.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-30-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-30-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-30-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-30-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-30-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-30-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+<span class="c1"># Create dictionary</span>
+<span class="n">strata_dictionary</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Bird&#39;</span><span class="p">:</span><span class="mi">15</span><span class="p">,</span> <span class="s1">&#39;Cat&#39;</span><span class="p">:</span><span class="mi">20</span><span class="p">,</span> <span class="s1">&#39;Dog&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;Fox&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;Other&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">}</span>
+
+
+<span class="n">mapping_example</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">,</span><span class="n">F</span><span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="o">~</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39;Cat&#39;</span><span class="p">,</span><span class="s1">&#39;Bird&#39;</span><span class="p">,</span><span class="s1">&#39;Dog&#39;</span><span class="p">,</span><span class="s1">&#39;Fox&#39;</span><span class="p">]),</span><span class="s1">&#39;Other&#39;</span><span class="p">)</span>
+                                              <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)))</span>
+
+<span class="n">mapping_expression</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">create_map</span><span class="p">([</span><span class="n">F</span><span class="o">.</span><span class="n">lit</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">strata_dictionary</span><span class="o">.</span><span class="n">items</span><span class="p">())])</span> 
+<span class="n">mapping_example</span> <span class="o">=</span> <span class="n">mapping_example</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;sample_size&quot;</span><span class="p">,</span> 
+              <span class="n">mapping_expression</span><span class="p">[</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_type&quot;</span><span class="p">)])</span>
+
+<span class="n">mapping_example</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">,</span><span class="s1">&#39;sample_size&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-30-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-30-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create our reference dataframe</span>
+<span class="n">strata_reference</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">tibble</span><span class="p">(</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;Bird&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Dog&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Cat&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Fox&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Other&quot;</span><span class="p">),</span>
+<span class="w">                                </span><span class="n">sample_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">105</span><span class="p">,</span><span class="w"> </span><span class="m">20</span><span class="p">,</span><span class="w"> </span><span class="m">20</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="m">5</span><span class="p">))</span>
+
+<span class="c1"># Generate sample_size column</span>
+<span class="n">tibble_example</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">animal_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">case_when</span><span class="p">(</span>
+<span class="w">                                                        </span><span class="o">!</span><span class="n">animal_type</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&#39;Cat&#39;</span><span class="p">,</span><span class="s">&#39;Bird&#39;</span><span class="p">,</span><span class="s">&#39;Dog&#39;</span><span class="p">,</span><span class="s">&#39;Fox&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s">&#39;Other&#39;</span><span class="p">,</span>
+<span class="w">                                                        </span><span class="n">.default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">animal_type</span><span class="p">))</span>
+
+<span class="n">tibble_example</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tibble_example</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">                        </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">sample_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">case_when</span><span class="p">(</span><span class="o">!!!</span><span class="n">rlang</span><span class="o">::</span><span class="nf">parse_exprs</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;animal_type == \&quot;&quot;</span><span class="p">,</span>
+<span class="w">                                                                    </span><span class="n">strata_reference</span><span class="o">$</span><span class="n">type</span><span class="p">,</span><span class="w"> </span>
+<span class="w">                                                                    </span><span class="s">&quot;\&quot; ~ &quot;</span><span class="p">,</span>
+<span class="w">                                                                    </span><span class="n">strata_reference</span><span class="o">$</span><span class="n">sample_size</span><span class="p">,</span>
+<span class="w">                                                                    </span><span class="n">collapse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">))))</span>
+
+<span class="c1"># Check sample size column has been generated correcty</span>
+<span class="n">tibble_example</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">            </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">animal_type</span><span class="p">,</span><span class="n">sample_size</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">            </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">count</span><span class="p">(</span><span class="n">animal_type</span><span class="p">,</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;row_count&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">            </span><span class="nf">sdf_sort</span><span class="p">(</span><span class="s">&#39;animal_type&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-31-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-31-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-31-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-31-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-31-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-31-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+-----------+-----------+-----+
+|animal_type|sample_size|count|
++-----------+-----------+-----+
+|       Bird|         15| 1100|
+|        Cat|         20| 2909|
+|        Dog|         10| 1008|
+|        Fox|          2|  238|
+|      Other|          5|  643|
++-----------+-----------+-----+
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-31-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-31-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Source: spark&lt;?&gt; [?? x 3]
+  animal_type sample_size row_count
+  &lt;chr&gt;             &lt;dbl&gt;     &lt;dbl&gt;
+1 Bird                105      1100
+2 Cat                  20      2909
+3 Dog                  20      1008
+4 Fox                   2       238
+5 Other                 5       643
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
 <section id="partitioning">
 <h3>Partitioning<a class="headerlink" href="#partitioning" title="Permalink to this heading">#</a></h3>
 <p>Even though your sample DF will be smaller than the original DF the number of partitions will remain the same. For example, by default your original DF will have 200 partitions, but your sample DF may only be a 10 % fraction of the original DF and therefore does not need to be partitioned in 200 parts. Too many partitions can be expensive for Spark as it causes excessive overhead for managing smaller tasks; please see our page on <a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-concepts/partitions.html">partitions</a> for more information.</p>
@@ -980,20 +1184,20 @@ only showing top 5 rows
 <h3>Sampling consistently by filtering the data<a class="headerlink" href="#sampling-consistently-by-filtering-the-data" title="Permalink to this heading">#</a></h3>
 <p>If the primary reason for using sampling is to process less data during development then an alternative is to filter the data and specify a condition which gives approximately the desired number of rows. This will give consistent results, which may or may not be desirable. For instance, in the Animal Rescue data we could use two years data:</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-25-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-25-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-25-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-25-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-25-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-25-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;CalYear&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span> <span class="mi">2017</span><span class="p">))</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-32-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-32-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-32-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-32-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-32-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-32-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;CalYear&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span> <span class="mi">2017</span><span class="p">))</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-25-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-25-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span>
+</div><div aria-labelledby="tab-32-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-32-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span>
 <span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">CalYear</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">2012</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">CalYear</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">2017</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
 <span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">()</span>
 </pre></div>
 </div>
 </div></div>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-26-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-26-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-26-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-26-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-26-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-26-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>1142
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-33-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-33-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-33-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-33-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-33-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-33-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>1142
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-26-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-26-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] 1142
+</div><div aria-labelledby="tab-33-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-33-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] 1142
 </pre></div>
 </div>
 </div></div>
@@ -1004,14 +1208,14 @@ only showing top 5 rows
 <p>Every row in the DF will be allocated to one of the split DFs. In common with the other sampling methods the exact size of each split may vary. An optional seed can also be set.</p>
 <p>For instance, to split the animal rescue data into three DFs with a weighting of <span class="math notranslate nohighlight">\(50\%\)</span>, <span class="math notranslate nohighlight">\(40\%\)</span> and <span class="math notranslate nohighlight">\(10\%\)</span> in PySpark:</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-27-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-27-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-27-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-27-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-27-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-27-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">split1</span><span class="p">,</span> <span class="n">split2</span><span class="p">,</span> <span class="n">split3</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">randomSplit</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">])</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-34-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-34-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-34-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-34-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-34-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-34-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">split1</span><span class="p">,</span> <span class="n">split2</span><span class="p">,</span> <span class="n">split3</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">randomSplit</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">])</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Split1: </span><span class="si">{</span><span class="n">split1</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Split2: </span><span class="si">{</span><span class="n">split2</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Split3: </span><span class="si">{</span><span class="n">split3</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-27-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-27-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">splits</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_random_split</span><span class="p">(</span>
+</div><div aria-labelledby="tab-34-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-34-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">splits</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_random_split</span><span class="p">(</span>
 <span class="w">    </span><span class="n">split1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.5</span><span class="p">,</span>
 <span class="w">    </span><span class="n">split2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.4</span><span class="p">,</span>
 <span class="w">    </span><span class="n">split3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span><span class="p">)</span>
@@ -1023,24 +1227,24 @@ only showing top 5 rows
 </div>
 </div></div>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-28-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-28-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-28-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-28-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-28-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-28-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Split1: 2941
-Split2: 2367
-Split3: 590
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-35-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-35-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-35-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-35-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-35-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-35-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Split1: 2897
+Split2: 2400
+Split3: 601
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-28-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-28-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] &quot;Split1: 2986&quot;
-[1] &quot;Split2: 2293&quot;
-[1] &quot;Split3: 619&quot;
+</div><div aria-labelledby="tab-35-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-35-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>1] &quot;Split1: 2968&quot;
+[1] &quot;Split2: 2372&quot;
+[1] &quot;Split3: 558&quot;
 </pre></div>
 </div>
 </div></div>
 <p>Check that the count of the splits equals the total row count:</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-29-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-29-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-29-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-29-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-29-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-29-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DF count: </span><span class="si">{</span><span class="n">rescue</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-36-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-36-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-36-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-36-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-36-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-36-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DF count: </span><span class="si">{</span><span class="n">rescue</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Split count total: </span><span class="si">{</span><span class="n">split1</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">split2</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">split3</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-29-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-29-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;DF count: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">(</span><span class="n">rescue</span><span class="p">)))</span>
+</div><div aria-labelledby="tab-36-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-36-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;DF count: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">(</span><span class="n">rescue</span><span class="p">)))</span>
 <span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;Split count total: &quot;</span><span class="p">,</span>
 <span class="w">             </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">(</span><span class="n">splits</span><span class="o">$</span><span class="n">split1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
 <span class="w">             </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">(</span><span class="n">splits</span><span class="o">$</span><span class="n">split2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
@@ -1049,11 +1253,12 @@ Split3: 590
 </div>
 </div></div>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-30-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-30-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-30-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-30-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-30-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-30-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>DF count: 5898
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-37-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-37-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-37-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-37-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-37-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-37-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>DF count: 5898
 Split count total: 5898
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-30-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-30-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>1] &quot;DF count: 5898&quot;
+</div><div aria-labelledby="tab-37-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-37-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>&quot;
+[1] &quot;DF count: 5898&quot;
 [1] &quot;Split count total: 5898&quot;
 </pre></div>
 </div>
@@ -1065,7 +1270,7 @@ Split count total: 5898
 This will add a unique id number to each row which is larger than the previous id.
 Within a partition, rows will be numbered sequentially starting at 0 for the first row in the first partition, with large increases in row id occuring between partitions.</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-31-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-31-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-31-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-31-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-31-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-31-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_id</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">repartition</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-38-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-38-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-38-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-38-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-38-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-38-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_id</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">repartition</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
 
 <span class="n">rescue_id</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue_id</span>
              <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;row_id&#39;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">monotonically_increasing_id</span><span class="p">())</span>
@@ -1081,7 +1286,7 @@ Within a partition, rows will be numbered sequentially starting at 0 for the fir
     <span class="n">rescue_subsample_3</span><span class="o">.</span><span class="n">count</span><span class="p">())</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-31-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-31-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_id</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_repartition</span><span class="p">(</span><span class="m">20</span><span class="p">)</span>
+</div><div aria-labelledby="tab-38-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-38-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_id</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_repartition</span><span class="p">(</span><span class="m">20</span><span class="p">)</span>
 
 <span class="n">rescue_id</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue_id</span><span class="w"> </span><span class="o">%&gt;%</span>
 <span class="w">                  </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_with_unique_id</span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;id&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
@@ -1098,10 +1303,10 @@ Within a partition, rows will be numbered sequentially starting at 0 for the fir
 </div>
 </div></div>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-32-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-32-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-32-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-32-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-32-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-32-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>1966 1966 1966
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-39-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-39-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-39-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-39-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-39-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-39-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>1966 1966 1966
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-32-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-32-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>1966 1966 1966```
+</div><div aria-labelledby="tab-39-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-39-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>966 1966 1966```
 </pre></div>
 </div>
 </div></div>
@@ -1115,6 +1320,7 @@ Within a partition, rows will be numbered sequentially starting at 0 for the fir
 <li><p><a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-concepts/cache.html">Caching</a></p></li>
 <li><p><a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-concepts/checkpoint-staging.html#checkpoint">Checkpoint</a></p></li>
 <li><p><a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-concepts/partitions.html">Partitions</a></p></li>
+<li><p><a class="reference internal" href="../ancillary-topics/pandas-udfs.html"><span class="doc std std-doc">Pandas UDFs</span></a></p></li>
 </ul>
 <p>PySpark Documentation:</p>
 <ul class="simple">
@@ -1217,6 +1423,10 @@ Within a partition, rows will be numbered sequentially starting at 0 for the fir
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#information-on-alternate-sampling-methods">Information on alternate sampling methods</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#more-details-on-sampling">More details on sampling</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#returning-an-exact-sample">Returning an exact sample</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#returning-an-exact-sample-stratified-sampling">Returning an exact sample - Stratified Sampling</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#simplifying-the-required-sample-column">Simplifying the required sample column</a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#partitioning">Partitioning</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sampling-consistently-by-filtering-the-data">Sampling consistently by filtering the data</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#splitting-a-df-randomsplit-and-sdf-random-split">Splitting a DF: <code class="docutils literal notranslate"><span class="pre">.randomSplit()</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_random_split()</span></code></a></li>
