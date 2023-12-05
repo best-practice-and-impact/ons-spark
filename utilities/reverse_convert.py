@@ -14,7 +14,7 @@ base_path = "/home/cdsw/ons-spark/ons-spark/"
 bpname = "logistic-regression"
 
 # Book folder name
-fname = "spark-functions"
+fname = "spark-analysis"
 
 # Path for markdown file
 path_md = base_path + fname + "/" + bpname + ".md"
