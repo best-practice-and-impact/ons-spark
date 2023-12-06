@@ -2,8 +2,8 @@ from notebook_converter import markdown_from_notebook
 
 
 group = "spark-functions"
-folder = "sampling"
-page = "sampling"
+folder = "partitions-unioning-coalesce"
+page = "partitions-unioning"
 base_path = "/home/cdsw/ons-spark/ons-spark/"
 out_path = base_path + group
 
