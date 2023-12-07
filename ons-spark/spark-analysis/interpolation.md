@@ -131,20 +131,23 @@ ggplot(df, mapping = aes(x = period, y = count)) +
 ```
 ````
 
-
-
-# figure out adding pictures
+# figure out adding pictures - check joins page
     <matplotlib.axes._subplots.AxesSubplot at 0x7f1eeac0d860>
 
-
-
-
+````{tabs}
 ![png](interpolation_files/interpolation_12_1.png)
-
-
 
 ![png](interpolation_files/interpolation_12_2.png)
 
+```{figure} ../images/sort_merge_join.png
+---
+width: 100%
+name: Plot of df in R
+alt: Chart showing value of count for area "A" on the left hand side and area "B" on the right. Values are represented by dots and these are joined up by a line. Some values are not joined up to the line due to missing values in between points. 
+---
+R
+```
+````
 
 As you can see, the lines don't meet all the points becuase there are missing counts in between.
 
@@ -170,7 +173,8 @@ df = df.withColumn("impute_flag",
                    .otherwise(0))
 ```
 ```{code-tab} r R
-# create an "impute_flag" column to indicate where the NAs are
+sdf <- sdf %>%
+  mutate(impute_flag = ifelse(is.na(count), 1, 0))
 ```
 ````
 
@@ -190,7 +194,15 @@ df = df.withColumn("timestamp_all",
                   )
 ```
 ```{code-tab} r R
-# add column containing unix timestamps for just data we have and another for all
+# Add timestamp for data we have only. This will be used to interpolate
+sdf <- sdf %>%
+  mutate(timestamp_with_nulls = ifelse(impute_flag != 1, 
+                                       unix_timestamp(period, "yyyyMMdd"), 
+                                       NA))
+                                       
+# Add timestamp for all data
+sdf <- sdf %>%
+  mutate(timestamp_all = unix_timestamp(period, "yyyyMMdd"))
 ```
 ````
 
@@ -219,7 +231,7 @@ window_bf = (
 To forward and backward fill the missing values we use the `F.last()` and `F.first()` functions respectively. These will grab the preceding and following values of a missing value within our defined windows.
 
 Once assembled we can put them in `.withColumn()` to add the forward and backward fill columns.
-
+## Add notes about how this is done in sparklyr
 ````{tabs}
 ```{code-tab} py
 # create the series containing the filled values
@@ -240,6 +252,25 @@ df = (
 df.show()
 ```
 ```{code-tab} r R
+# create the series containing the filled values - find a neater way of doing this!
+test <- sdf %>%
+  group_by(area_code) %>%
+  arrange(period) %>%
+  mutate(count_ff = coalesce(count, lag(count))) %>%
+  mutate(count_bf = coalesce(count, lead(count))) %>%
+  mutate(count_ff = ifelse(is.na(count_ff), coalesce(count, lag(count, 2)), count_ff)) %>%
+  mutate(count_bf = ifelse(is.na(count_bf), coalesce(count, lead(count, 2)), count_bf)) %>%
+  mutate(period_ff = coalesce(timestamp_with_nulls, lag(timestamp_with_nulls))) %>%
+  mutate(period_bf = coalesce(timestamp_with_nulls, lead(timestamp_with_nulls))) %>%
+  mutate(period_ff = ifelse(is.na(period_ff), 
+                     coalesce(timestamp_with_nulls, lag(timestamp_with_nulls, 2)), 
+                     period_ff)) %>%
+  mutate(period_bf = ifelse(is.na(period_bf), 
+                     coalesce(timestamp_with_nulls, lead(timestamp_with_nulls, 2)), 
+                     period_bf)) 
+
+}
+
 
 ```
 ````
@@ -268,7 +299,42 @@ df.show()
     +---------+--------+-----+-----------+--------------------+-------------+--------+--------+----------+----------+
 ```    
 ```{code-tab} plaintext R output
-# add in output here
+   area_code period   count impute_flag timestamp_with_nulls timestamp_all
+   <chr>     <chr>    <dbl>       <dbl>                <dbl>         <dbl>
+ 1 B         20210101    NA           1                   NA    1609459200
+ 2 B         20210111    85           0           1610323200    1610323200
+ 3 B         20210119    82           0           1611014400    1611014400
+ 4 B         20210131    75           0           1612051200    1612051200
+ 5 B         20210210    NA           1                   NA    1612915200
+ 6 B         20210215    85           0           1613347200    1613347200
+ 7 B         20210220    NA           1                   NA    1613779200
+ 8 B         20210225    75           0           1614211200    1614211200
+ 9 A         20210101   100           0           1609459200    1609459200
+10 A         20210106    NA           1                   NA    1609891200
+11 A         20210111    NA           1                   NA    1610323200
+12 A         20210116   130           0           1610755200    1610755200
+13 A         20210121   100           0           1611187200    1611187200
+14 A         20210126   120           0           1611619200    1611619200
+15 A         20210131    NA           1                   NA    1612051200
+16 A         20210205   130           0           1612483200    1612483200
+   count_ff count_bf  period_ff  period_bf
+      <dbl>    <dbl>      <dbl>      <dbl>
+ 1       NA       85         NA 1610323200
+ 2       85       85 1610323200 1610323200
+ 3       82       82 1611014400 1611014400
+ 4       75       75 1612051200 1612051200
+ 5       75       85 1612051200 1613347200
+ 6       85       85 1613347200 1613347200
+ 7       85       75 1613347200 1614211200
+ 8       75       75 1614211200 1614211200
+ 9      100      100 1609459200 1609459200
+10      100      130 1609459200 1610755200
+11      100      130 1609459200 1610755200
+12      130      130 1610755200 1610755200
+13      100      100 1611187200 1611187200
+14      120      120 1611619200 1611619200
+15      120      130 1611619200 1612483200
+16      130      130 1612483200 1612483200
 ```
 
 We're now ready to calculate the gradient between the known points and interpolate. 
