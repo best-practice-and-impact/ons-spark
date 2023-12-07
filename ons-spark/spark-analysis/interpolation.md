@@ -54,6 +54,7 @@ spark = (
 ```{code-tab} r R
 library(sparklyr)
 library(dplyr)
+library(ggplot2)
 library(broom)
 
 # set up spark session
@@ -94,7 +95,7 @@ period = c("20210101", "20210106", "20210111", "20210116", "20210121", "20210126
 "20210101", "20210111", "20210119", "20210131", "20210210", "20210215", "20210220", "20210225"),
 count = c(100,NA, NA, 130, 100, 120, NA, 130, NA, 85, 82, 75, NA, 85, NA, 75))
 
-df <- copy_to(sc, table)
+sdf <- copy_to(sc, table)
 ```
 ````
 
@@ -105,6 +106,15 @@ Let's take a quick look at some charts to see what this looks like
 pdf = df.toPandas()
 pdf.set_index(pd.to_datetime(pdf["period"]), inplace=True)
 ```
+```{code-tab} r R
+df <- sdf %>%
+  collect() 
+  
+df <- df %>%
+  mutate(period = as.Date(period, format = "%Y%m%d"))
+  
+# Collect and convert to eg 18 Jan 2021 format 
+```
 ````
 
 ````{tabs}
@@ -112,11 +122,18 @@ pdf.set_index(pd.to_datetime(pdf["period"]), inplace=True)
 pdf[pdf["area_code"]=="A"].plot(marker="o")
 pdf[pdf["area_code"]=="B"].plot(marker="o")
 ```
+```{code-tab} r R
+# make connected scatter plot for A and B (separate)
+ggplot(df, mapping = aes(x = period, y = count)) +
+  geom_point() +
+  geom_line() +
+  facet_wrap(~area_code)
+```
 ````
 
 
 
-
+# figure out adding pictures
     <matplotlib.axes._subplots.AxesSubplot at 0x7f1eeac0d860>
 
 
@@ -152,6 +169,9 @@ df = df.withColumn("impute_flag",
                    F.when(F.col("count").isNull(), 1)
                    .otherwise(0))
 ```
+```{code-tab} r R
+# create an "impute_flag" column to indicate where the NAs are
+```
 ````
 
 Next we will need to create some new timestamp columns. The function `unix_timestamp()` will convert the `period` column into [seconds since 1st of January 1970](https://en.wikipedia.org/wiki/Unix_time#:~:text=The%20Unix%20epoch%20is%20the,%2D01T00%3A00%3A00Z.). We need one version of the column with missing timestamps corresponding to the missing counts, and another version including all the periods.
@@ -169,10 +189,13 @@ df = df.withColumn("timestamp_all",
                   F.unix_timestamp(F.col("period"), "yyyyMMdd")
                   )
 ```
+```{code-tab} r R
+# add column containing unix timestamps for just data we have and another for all
+```
 ````
 
 Next we create the `Window` functions to forward fill and backward fill the missing values in the `count` and `timestamp_with_nulls` columns.
-
+# this can probably be skipped for sparklyr
 ````{tabs}
 ```{code-tab} py
 # Create window for forward filling
@@ -216,8 +239,13 @@ df = (
 
 df.show()
 ```
+```{code-tab} r R
+
+```
 ````
 
+````{tabs}
+```{code-tab} plaintext Python output
     +---------+--------+-----+-----------+--------------------+-------------+--------+--------+----------+----------+
     |area_code|  period|count|impute_flag|timestamp_with_nulls|timestamp_all|count_ff|count_bf| period_ff| period_bf|
     +---------+--------+-----+-----------+--------------------+-------------+--------+--------+----------+----------+
@@ -238,8 +266,10 @@ df.show()
     |        A|20210131| null|          1|                null|   1612051200|     120|     130|1611619200|1612483200|
     |        A|20210205|  130|          0|          1612483200|   1612483200|     130|     130|1612483200|1612483200|
     +---------+--------+-----+-----------+--------------------+-------------+--------+--------+----------+----------+
-    
-    
+```    
+```{code-tab} plaintext R output
+# add in output here
+```
 
 We're now ready to calculate the gradient between the known points and interpolate. 
 
@@ -263,6 +293,9 @@ df = df.withColumn("count_final",
                    .otherwise(F.col("count"))
                   )
 ```
+```
+# add a gradient col 
+# get imputed values
 ````
 
 ## View the results
@@ -275,159 +308,37 @@ pdf = df.select("area_code", "period", "count", "impute_flag", "count_final").to
 pdf = pdf.set_index(pd.to_datetime(pdf["period"])).drop("period", axis=1)
 pdf
 ```
+```{code-tab} r R
+# select cols, collect
+# order by period (converted), area_code, count, impute_flag, count_final cols
+```
 ````
 
+````{tabs}
+```{code-tab} plaintext Python output
+period     area_code	count	impute_flag	count_final
+				
+2021-01-01	B	        NaN	   1	        NaN
+2021-01-11	B	        85.0	 0	       85.000000
+2021-01-19	B	        82.0	 0	       82.000000
+2021-01-31	B	        75.0	 0	       75.000000
+2021-02-10	B	        NaN	   1	       81.666667
+2021-02-15	B	        85.0	 0	       85.000000
+2021-02-20	B	        NaN	   1	       80.000000
+2021-02-25	B	        75.0	 0	       75.000000
+2021-01-01	A	        100.0	 0	       100.000000
+2021-01-06	A	        NaN	   1	       110.000000
+2021-01-11	A	        NaN	   1	       120.000000
+2021-01-16	A	        130.0	 0	       130.000000
+2021-01-21	A	        100.0	 0	       100.000000
+2021-01-26	A	        120.0	 0	       120.000000
+2021-01-31	A	        NaN	   1	       125.000000
+2021-02-05	A	        130.0	 0	       130.000000
+```
+```{code-tab} plaintext R output
 
-
-
-<div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
-
-    .dataframe thead th {
-        text-align: left;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>area_code</th>
-      <th>count</th>
-      <th>impute_flag</th>
-      <th>count_final</th>
-    </tr>
-    <tr>
-      <th>period</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>2021-01-01</th>
-      <td>B</td>
-      <td>NaN</td>
-      <td>1</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2021-01-11</th>
-      <td>B</td>
-      <td>85.0</td>
-      <td>0</td>
-      <td>85.000000</td>
-    </tr>
-    <tr>
-      <th>2021-01-19</th>
-      <td>B</td>
-      <td>82.0</td>
-      <td>0</td>
-      <td>82.000000</td>
-    </tr>
-    <tr>
-      <th>2021-01-31</th>
-      <td>B</td>
-      <td>75.0</td>
-      <td>0</td>
-      <td>75.000000</td>
-    </tr>
-    <tr>
-      <th>2021-02-10</th>
-      <td>B</td>
-      <td>NaN</td>
-      <td>1</td>
-      <td>81.666667</td>
-    </tr>
-    <tr>
-      <th>2021-02-15</th>
-      <td>B</td>
-      <td>85.0</td>
-      <td>0</td>
-      <td>85.000000</td>
-    </tr>
-    <tr>
-      <th>2021-02-20</th>
-      <td>B</td>
-      <td>NaN</td>
-      <td>1</td>
-      <td>80.000000</td>
-    </tr>
-    <tr>
-      <th>2021-02-25</th>
-      <td>B</td>
-      <td>75.0</td>
-      <td>0</td>
-      <td>75.000000</td>
-    </tr>
-    <tr>
-      <th>2021-01-01</th>
-      <td>A</td>
-      <td>100.0</td>
-      <td>0</td>
-      <td>100.000000</td>
-    </tr>
-    <tr>
-      <th>2021-01-06</th>
-      <td>A</td>
-      <td>NaN</td>
-      <td>1</td>
-      <td>110.000000</td>
-    </tr>
-    <tr>
-      <th>2021-01-11</th>
-      <td>A</td>
-      <td>NaN</td>
-      <td>1</td>
-      <td>120.000000</td>
-    </tr>
-    <tr>
-      <th>2021-01-16</th>
-      <td>A</td>
-      <td>130.0</td>
-      <td>0</td>
-      <td>130.000000</td>
-    </tr>
-    <tr>
-      <th>2021-01-21</th>
-      <td>A</td>
-      <td>100.0</td>
-      <td>0</td>
-      <td>100.000000</td>
-    </tr>
-    <tr>
-      <th>2021-01-26</th>
-      <td>A</td>
-      <td>120.0</td>
-      <td>0</td>
-      <td>120.000000</td>
-    </tr>
-    <tr>
-      <th>2021-01-31</th>
-      <td>A</td>
-      <td>NaN</td>
-      <td>1</td>
-      <td>125.000000</td>
-    </tr>
-    <tr>
-      <th>2021-02-05</th>
-      <td>A</td>
-      <td>130.0</td>
-      <td>0</td>
-      <td>130.000000</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
+```
+````
 
 
 Note that the first value for `area_code` B could not be interpolated because there is no preceding count available. In other words, we would need to extrapolate to estimate for this value.
@@ -439,14 +350,11 @@ Once again, we will plot the series with pandas. The original data are plotted a
 pdf[pdf["area_code"] == "A"].drop("impute_flag", axis=1).plot(style={"count":"ro", "count_final":"b+-"}, alpha=0.5)
 pdf[pdf["area_code"] == "B"].drop("impute_flag", axis=1).plot(style={"count":"ro", "count_final":"b+-"}, alpha=0.5)
 ```
+```{code-tab} r R
+# ggplot red circles for original points and blue crosses for new points
+```
 ````
-
-
-
-
-    <matplotlib.axes._subplots.AxesSubplot at 0x7f1eead5d2b0>
-
-
+### figure out how to get images to display properly
 
 
 ![png](interpolation_files/interpolation_26_1.png)
