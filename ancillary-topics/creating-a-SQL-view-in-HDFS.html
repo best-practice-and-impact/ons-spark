@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Data Storage &#8212; Spark at the ONS</title>
+    <title>Creating a SQL view in HDFS &#8212; Spark at the ONS</title>
   
   
   
@@ -71,11 +71,11 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'spark-overview/data-storage';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'ancillary-topics/creating-a-SQL-view-in-HDFS';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Introduction to PySpark" href="../pyspark-intro/pyspark-intro.html" />
-    <link rel="prev" title="Reading and Writing Data in Spark" href="reading-and-writing-data-spark.html" />
+    <link rel="next" title="Pandas UDFs" href="pandas-udfs.html" />
+    <link rel="prev" title="Pydoop: HDFS to pandas" href="pydoop.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -178,16 +178,16 @@ const thebe_selector_output = ".output, .cell_output"
             </li>
         </ul>
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark overview</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="spark-start.html">Getting Started with Spark</a></li>
-<li class="toctree-l1"><a class="reference internal" href="when-to-use-spark.html">When To Use Spark</a></li>
-<li class="toctree-l1"><a class="reference internal" href="spark-session-guidance.html">Guidance on Spark Sessions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="example-spark-sessions.html">Example Spark Sessions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="spark-defaults.html">Configuration Hierarchy and <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="data-types.html">Data Types in Spark</a></li>
-<li class="toctree-l1"><a class="reference internal" href="creating-dataframes.html">Creating DataFrames Manually</a></li>
-<li class="toctree-l1"><a class="reference internal" href="reading-and-writing-data-spark.html">Reading and Writing Data in Spark</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Data Storage</a></li>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-start.html">Getting Started with Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/when-to-use-spark.html">When To Use Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-session-guidance.html">Guidance on Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/example-spark-sessions.html">Example Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-defaults.html">Configuration Hierarchy and <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/data-types.html">Data Types in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/creating-dataframes.html">Creating DataFrames Manually</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/reading-and-writing-data-spark.html">Reading and Writing Data in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/data-storage.html">Data Storage</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to PySpark</span></p>
 <ul class="nav bd-sidenav">
@@ -245,11 +245,11 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../testing-debugging/unit-testing.html">Unit Testing in Spark</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Ancillary Topics</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/module-imports.html">Naming Conflicts in Module Imports</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/pydoop.html">Pydoop: HDFS to pandas</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/creating-a-SQL-view-in-HDFS.html">Creating a SQL view in HDFS</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/pandas-udfs.html">Pandas UDFs</a></li>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="module-imports.html">Naming Conflicts in Module Imports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pydoop.html">Pydoop: HDFS to pandas</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Creating a SQL view in HDFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pandas-udfs.html">Pandas UDFs</a></li>
 </ul>
 
     </div>
@@ -321,7 +321,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fspark-overview/data-storage.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fancillary-topics/creating-a-SQL-view-in-HDFS.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -351,7 +351,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="../_sources/spark-overview/data-storage.md" target="_blank"
+      <li><a href="../_sources/ancillary-topics/creating-a-SQL-view-in-HDFS.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -361,7 +361,7 @@ const thebe_selector_output = ".output, .cell_output"
 <span class="btn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="btn__text-container">.md</span>
+<span class="btn__text-container">.ipynb</span>
 </a>
 </li>
       
@@ -435,7 +435,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Data Storage</h1>
+    <h1>Creating a SQL view in HDFS</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -445,7 +445,10 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further Resources</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-view">Creating a View</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-spark-and-sql-views">Using Spark and SQL views</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dropping-a-sql-view">Dropping a SQL view</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further resources</a></li>
 </ul>
             </nav>
         </div>
@@ -457,14 +460,88 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section id="data-storage">
-<h1>Data Storage<a class="headerlink" href="#data-storage" title="Permalink to this heading">#</a></h1>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This section is under construction.</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="creating-a-sql-view-in-hdfs">
+<h1>Creating a SQL view in HDFS<a class="headerlink" href="#creating-a-sql-view-in-hdfs" title="Permalink to this heading">#</a></h1>
+<p>A view in SQL is a way of storing a query by creating a virtual table. This can be useful for many reasons, one being that you can more easily get your desired output as it is simpler to access a view than typing a query from scratch repeatedly. For more information on SQL views please refer to <a class="reference external" href="https://learnsql.com/blog/sql-view/">Views in SQL</a>.</p>
+<p>As mentioned above, a SQL view can be used to avoid the re-running or pre-processing everytime you would like to use the same data (that has been created using a query) and avoids saving an entirely new table. A SQL view is simply a stored query that is applied to an underlying Hive table; <strong>only</strong> the metadata of the view will be stored and this happens after the query has been ran. Another advantage of a SQL view is that it refreshes in real-time, which means if the underlying table updates then your view will aswell, the reason being is that each time your view is called the statement used to create the view (from the underlying table) is re-ran.</p>
+<p><strong>Please note that a view is a virtual table</strong>.</p>
+<section id="creating-a-view">
+<h2>Creating a View<a class="headerlink" href="#creating-a-view" title="Permalink to this heading">#</a></h2>
+<p>Below we have an example of using SQL views. We will be working with an existing Hive table called <code class="docutils literal notranslate"><span class="pre">rescue_clean</span></code>. Upon this table we will create a view that involves some very simple processing of the data. To create a view we first need to login to HUE and navigate to where the Hive databases are stored (under the SQL tab on the left-hand-side); the database we are wanting is called <code class="docutils literal notranslate"><span class="pre">train_tmp</span></code> as this is where <code class="docutils literal notranslate"><span class="pre">rescue_clean</span></code> is stored. Please ensure that your editor type is set to Hive (click on the arrow beside the blue Query button and select “Editor -&gt; Hive”).</p>
+<p>Now we are in the right location, we can start to create a SQL view. To do this we use the <code class="docutils literal notranslate"><span class="pre">CREATE</span> <span class="pre">OR</span> <span class="pre">REPLACE</span> <span class="pre">VIEW</span></code> command in SQL:</p>
+<div class="highlight-SQL notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="n">rescue_view</span><span class="w"> </span><span class="k">AS</span>
+<span class="w">    </span><span class="k">SELECT</span><span class="w"> </span><span class="n">animal_group</span><span class="p">,</span><span class="w"> </span><span class="n">ROUND</span><span class="p">(</span><span class="k">AVG</span><span class="p">(</span><span class="n">total_cost</span><span class="p">),</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">average_cost</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">rescue_clean</span>
+<span class="w">    </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">animal_group</span>
+<span class="w">    </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">average_cost</span><span class="w"> </span><span class="k">DESC</span>
+</pre></div>
 </div>
+<p><img alt="Details_of_the_SQL_rescue_view_as_seen_in_HDFS" src="images/SQL_rescue_view_details.PNG" /></p>
+<p>In the screenshot above it can be seen that <code class="docutils literal notranslate"><span class="pre">rescue_view</span></code> has been saved as a <code class="docutils literal notranslate"><span class="pre">VIRTUAL_VIEW</span></code> table type as opposed to being a <code class="docutils literal notranslate"><span class="pre">MANAGED_TABLE</span></code> or <code class="docutils literal notranslate"><span class="pre">EXTERNAL_TABLE</span></code>. Another useful way to tell if you have a view is that in your filestore an ‘eye-icon’ will appear next to <code class="docutils literal notranslate"><span class="pre">rescue_view</span></code>.</p>
+<p>Your view, or virtual table, can now be called by using <code class="docutils literal notranslate"><span class="pre">SELECT</span> <span class="pre">*</span> <span class="pre">FROM</span> <span class="pre">rescue_view</span> <span class="pre">LIMIT</span> <span class="pre">5</span></code> as seen in the screenshot below:</p>
+<p><img alt="Output_of_SELECT_statement_applied_to_SQL_rescue_view" src="images/SQL_rescue_view_output.PNG" /></p>
+</section>
+<section id="using-spark-and-sql-views">
+<h2>Using Spark and SQL views<a class="headerlink" href="#using-spark-and-sql-views" title="Permalink to this heading">#</a></h2>
+<p>As well as using HUE to interact with your view you can also access it from within a Spark session by reading it in in the same way as any other Hive table would be:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span>
+
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;spark_views&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.ui.showConsoleProgress&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
+<span class="p">)</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="s1">&#39;train_tmp.rescue_view&#39;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+--------------------+------------+
+|        animal_group|average_cost|
++--------------------+------------+
+|                Goat|      1180.0|
+|                Fish|       780.0|
+|                Bull|       780.0|
+|               Horse|      747.44|
+|Unknown - Animal ...|      709.67|
+|                 Cow|      624.17|
+|            Hedgehog|       520.0|
+|                Lamb|       520.0|
+|                Deer|      423.88|
+|Unknown - Wild An...|      390.04|
+|Unknown - Heavy L...|      362.55|
+|               Sheep|      359.25|
+|                 Dog|      336.54|
+|                 Fox|      333.26|
+|                 Cat|      329.18|
+|                Bird|      325.71|
+|               Snake|      322.38|
+|Unknown - Domesti...|      314.81|
+|              Pigeon|       311.5|
+|             Hamster|      311.07|
++--------------------+------------+
+only showing top 20 rows
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="dropping-a-sql-view">
+<h2>Dropping a SQL view<a class="headerlink" href="#dropping-a-sql-view" title="Permalink to this heading">#</a></h2>
+<p>You may want to drop a view in SQL from the database, for example you no longer need it, you want to free up space or you want to over-write an existing view. To do the latter you need to drop the previously created view before creating another one with the same name.</p>
+<p>To drop an SQL view you simply write: <code class="docutils literal notranslate"><span class="pre">DROP</span> <span class="pre">VIEW</span> <span class="pre">view_name</span></code> so for us, in this example, it would be <code class="docutils literal notranslate"><span class="pre">DROP</span> <span class="pre">VIEW</span> <span class="pre">rescue_view</span></code></p>
+<p>You can also use the following command: <code class="docutils literal notranslate"><span class="pre">DROP</span> <span class="pre">VIEW</span> <span class="pre">IF</span> <span class="pre">EXISTS</span> <span class="pre">view_name</span></code>. This code checked whether the view actually exists in your database and if so, it removes it.</p>
+</section>
 <section id="further-resources">
-<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this heading">#</a></h2>
+<h2>Further resources<a class="headerlink" href="#further-resources" title="Permalink to this heading">#</a></h2>
+<p>SQL documentation</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://learnsql.com/blog/sql-view/">Views in SQL</a></p></li>
+</ul>
 </section>
 </section>
 
@@ -481,7 +558,7 @@ document.write(`
         },
         kernelOptions: {
             name: "python3",
-            path: "./spark-overview"
+            path: "./ancillary-topics"
         },
         predefinedOutput: true
     }
@@ -499,20 +576,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="reading-and-writing-data-spark.html"
+       href="pydoop.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Reading and Writing Data in Spark</p>
+        <p class="prev-next-title">Pydoop: HDFS to pandas</p>
       </div>
     </a>
     <a class="right-next"
-       href="../pyspark-intro/pyspark-intro.html"
+       href="pandas-udfs.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Introduction to PySpark</p>
+        <p class="prev-next-title">Pandas UDFs</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -531,7 +608,10 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further Resources</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-view">Creating a View</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-spark-and-sql-views">Using Spark and SQL views</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dropping-a-sql-view">Dropping a SQL view</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further resources</a></li>
 </ul>
   </nav></div>
 
