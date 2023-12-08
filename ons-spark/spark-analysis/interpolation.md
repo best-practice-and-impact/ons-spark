@@ -112,8 +112,7 @@ df <- sdf %>%
   
 df <- df %>%
   mutate(period = as.Date(period, format = "%Y%m%d"))
-  
-# Collect and convert to eg 18 Jan 2021 format 
+ 
 ```
 ````
 
@@ -123,7 +122,6 @@ pdf[pdf["area_code"]=="A"].plot(marker="o")
 pdf[pdf["area_code"]=="B"].plot(marker="o")
 ```
 ```{code-tab} r R
-# make connected scatter plot for A and B (separate)
 ggplot(df, mapping = aes(x = period, y = count)) +
   geom_point() +
   geom_line() +
@@ -253,9 +251,9 @@ df.show()
 ```
 ```{code-tab} r R
 # create the series containing the filled values - find a neater way of doing this!
-test <- sdf %>%
-  group_by(area_code) %>%
+sdf <- sdf %>%
   arrange(period) %>%
+  group_by(area_code) %>%
   mutate(count_ff = coalesce(count, lag(count))) %>%
   mutate(count_bf = coalesce(count, lead(count))) %>%
   mutate(count_ff = ifelse(is.na(count_ff), coalesce(count, lag(count, 2)), count_ff)) %>%
@@ -267,7 +265,10 @@ test <- sdf %>%
                      period_ff)) %>%
   mutate(period_bf = ifelse(is.na(period_bf), 
                      coalesce(timestamp_with_nulls, lead(timestamp_with_nulls, 2)), 
-                     period_bf)) 
+                     period_bf)) %>%
+  ungroup()
+  
+                     
 
 }
 
@@ -360,8 +361,17 @@ df = df.withColumn("count_final",
                   )
 ```
 ```
-# add a gradient col 
-# get imputed values
+# Create a gradient column
+sdf <- sdf %>%
+  mutate(gradient = ifelse(impute_flag == 1, 
+                           (count_bf-count_ff)/(period_bf-period_ff), 
+                           0))
+
+# Create the imputed values
+sdf <- sdf %>%
+  mutate(count_final = ifelse(impute_flag ==1, 
+                              count_ff + gradient * (timestamp_all-period_ff),
+                              count))
 ````
 
 ## View the results
@@ -375,7 +385,16 @@ pdf = pdf.set_index(pd.to_datetime(pdf["period"])).drop("period", axis=1)
 pdf
 ```
 ```{code-tab} r R
-# select cols, collect
+df <- sdf %>%
+  select(area_code, period, count, impute_flag, count_final) %>%
+  collect()
+  
+df <- df %>% 
+  mutate(period = as.Date(period, format = "%Y%m%d")) %>%
+  arrange(area_code, period)
+
+df
+
 # order by period (converted), area_code, count, impute_flag, count_final cols
 ```
 ````
@@ -402,14 +421,31 @@ period     area_code	count	impute_flag	count_final
 2021-02-05	A	        130.0	 0	       130.000000
 ```
 ```{code-tab} plaintext R output
-
+   area_code period     count impute_flag count_final
+   <chr>     <date>     <dbl>       <dbl>       <dbl>
+ 1 A         2021-01-01   100           0       100  
+ 2 A         2021-01-06    NA           1       110  
+ 3 A         2021-01-11    NA           1       120  
+ 4 A         2021-01-16   130           0       130  
+ 5 A         2021-01-21   100           0       100  
+ 6 A         2021-01-26   120           0       120  
+ 7 A         2021-01-31    NA           1       125  
+ 8 A         2021-02-05   130           0       130  
+ 9 B         2021-01-01    NA           1        NA  
+10 B         2021-01-11    85           0        85  
+11 B         2021-01-19    82           0        82  
+12 B         2021-01-31    75           0        75  
+13 B         2021-02-10    NA           1        81.7
+14 B         2021-02-15    85           0        85  
+15 B         2021-02-20    NA           1        80  
+16 B         2021-02-25    75           0        75  
 ```
 ````
 
 
 Note that the first value for `area_code` B could not be interpolated because there is no preceding count available. In other words, we would need to extrapolate to estimate for this value.
 
-Once again, we will plot the series with pandas. The original data are plotted as red circles and the final series in blue.
+Once again, we will plot the series with pandas/ggplot. The original data are plotted as red circles and the final series in blue.
 
 ````{tabs}
 ```{code-tab} py
@@ -417,7 +453,12 @@ pdf[pdf["area_code"] == "A"].drop("impute_flag", axis=1).plot(style={"count":"ro
 pdf[pdf["area_code"] == "B"].drop("impute_flag", axis=1).plot(style={"count":"ro", "count_final":"b+-"}, alpha=0.5)
 ```
 ```{code-tab} r R
-# ggplot red circles for original points and blue crosses for new points
+ggplot(df, mapping = aes(x = period, y = count_final)) +
+  geom_point(aes(colour = factor(impute_flag))) +
+  scale_fill_manual(values = c("red", "blue")) +
+  geom_line() +
+  labs(colour = "impute_flag") +
+  facet_wrap(~area_code)
 ```
 ````
 ### figure out how to get images to display properly
