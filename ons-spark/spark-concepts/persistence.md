@@ -91,7 +91,7 @@ The same is true for the file system, although there is much more space to store
 
 Spark at the ONS Articles:
 - [Caching](../spark-concepts/cache)
-- [Checkpoint and Staging Tables](../raw-notebooks/checkpoint-staging/checkpoint-staging)
+- [Checkpoint and Staging Tables](../spark-concepts/checkpoint-staging.md)
 
 PySpark Documentation:
 - [`.count()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.count.html)
