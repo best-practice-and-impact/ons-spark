@@ -601,14 +601,17 @@ ORDER BY `IncidentNumber` DESC
 ```
 ````
 Now save the DataFrame as table, using `mode("overwrite")`, which overwrites the existing table if there is one. The first time you create a staging table this option will be redundant, but on subsequent runs on the code you will get an error without this as the table will already exist.
+
+Note that we specify the database we want to save the table in. In this instance, we want to save the table in the training database. The format for saving within a specified database is `database.table_name`.
 ````{tabs}
 ```{code-tab} py
 username = os.getenv('HADOOP_USER_NAME') 
 
 table_name_plain = config['staging_table_example']
 table_name = table_name_plain+username
+database = "training"
 
-df.write.mode("overwrite").saveAsTable(table_name, format="parquet")
+df.write.mode("overwrite").saveAsTable(f"{database}.{table_name}", format="parquet")
 ```
 
 ```{code-tab} r R
