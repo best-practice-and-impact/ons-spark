@@ -2,8 +2,8 @@ from notebook_converter import markdown_from_notebook
 
 
 group = "spark-functions"
-folder = "spark-job-description"
-page = "job-description"
+folder = "median"
+page = "median"
 base_path = "/home/cdsw/ons-spark/ons-spark/"
 out_path = base_path + group
 
