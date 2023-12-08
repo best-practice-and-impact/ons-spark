@@ -1,6 +1,6 @@
 ## Data binning
 
-Data binning is a data pre-proccessing method which transforms continuous or discrete
+Data binning is a data pre-processing method which transforms continuous or discrete
 data to categorical. The original values which fall into a specific interval are replaced
 by a value representive of that interval.
 
@@ -9,7 +9,7 @@ In a spark dataframe this is easily implemented by applying the [`when()`](https
 ### Creating spark session and sample data
  
 We will start by creating a sample dataframe with Python or R and moving it into a spark cluster.
-For demonstation reasons we will create a dataframe with 10 rows  with  `id` 
+For demonstration reasons we will create a dataframe with 10 rows  with  `id` 
 and `age` columns, we will also populate `age` column with random values from 1 to 30.
 
 ````{tabs}
