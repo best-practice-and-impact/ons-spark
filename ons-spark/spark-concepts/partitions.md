@@ -1,3 +1,4 @@
+---
 ## Managing Partitions
 
 DataFrames in Spark are *distributed*, so although we treat them as one object they might be split up into multiple partitions over many machines on the cluster. The benefit of having multiple partitions is that some operations can be performed on the partitions in parallel. 
@@ -594,7 +595,19 @@ We then decide we want two partitions as opposed to four so we apply `.coalesce(
 
 So the data on Partitions 1 and 2 have not been shuffled. We have just moved the data on Partitions 3 to Partition 1 and Partition 4 to Partition 2, this is sometimes referred to as a partial shuffle. The gains from this simple example would be negligible, but scale this process up to millions of rows and then it becomes significant.
 
-It's also possible to use a column name in `.repartition()` or even a number and column name, see documentation for more information. 
+It's also possible to use a column name in `.repartition()` or even a number and column name, see documentation for more information.
+
+### Partition sizes
+A key concept in both Hadoop and Spark is that files and partitions should optimally be [around 128MB](https://spark.apache.org/docs/latest/sql-performance-tuning.html#other-configuration-options). It is however common that data are stored as many small files rather than fewer large ones. This issue can be solved by reducing the number of partitions before writing to HDFS, using [`.coalesce()`](https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrame.coalesce) or [`.repartition()`](https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrame.repartition) in PySpark and [`sdf_coalesce()`](https://spark.rstudio.com/reference/sdf_coalesce.html) or [`sdf_repartition()`](https://spark.rstudio.com/reference/sdf_repartition.html) in sparklyr.
+
+Below are two reasons why it's a good idea to avoid writing out many small files.
+
+#### Avoiding the small files issue on HDFS
+HDFS consists of many DataNodes, which store the files, and a single NameNode, which essentially works as an index for the file system. The small files issue occurs as every file path is loaded into the NameNode which leads to an inefficient use of the memory capacity, e.g. if a 600MB file is stored as 200 files of 3MB then the NameNode needs to load 200 file paths, instead of the 5 file paths it would have to load if stored as 5 files of 120MB each.
+
+#### More efficient processing with Spark
+Spark will by default use one partition per file on disk when reading in the data. If there are many small files on disk then these will be converted to many small partitions, which leads to slower processing as proportionally more time is spent scheduling tasks and serialising data.
+
 
 ### Intermediate partitions in wide operations
 
@@ -849,7 +862,6 @@ Below are images of the task timeline for the above jobs containing the wide tra
 The main message in this set of images is that we see a clear bottleneck in the case of the join and window function, but there is no bottleneck in the group by.
 
 ```{figure} ../images/partition_skew_join.PNG
----
 width: 100%
 name: JoinTimeline
 alt: Task timeline for skewed join showing unevenly sized tasks
