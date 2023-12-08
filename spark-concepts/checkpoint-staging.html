@@ -446,8 +446,8 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#persisting-to-disk">Persisting to disk</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#checkpoint">Checkpoint</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#persisting-to-disk">Persisting to disk</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#experiment">Experiment</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#without-persisting">Without persisting</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#with-checkpoints">With checkpoints</a></li>
@@ -476,14 +476,15 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="checkpoints-and-staging-tables">
 <h1>Checkpoints and Staging Tables<a class="headerlink" href="#checkpoints-and-staging-tables" title="Permalink to this heading">#</a></h1>
-<section id="checkpoint">
-<h2>Checkpoint<a class="headerlink" href="#checkpoint" title="Permalink to this heading">#</a></h2>
 <section id="persisting-to-disk">
-<h3>Persisting to disk<a class="headerlink" href="#persisting-to-disk" title="Permalink to this heading">#</a></h3>
+<h2>Persisting to disk<a class="headerlink" href="#persisting-to-disk" title="Permalink to this heading">#</a></h2>
 <p>Spark uses lazy evaluation. As we build up many transformations Spark creates an execution plan for the DataFrame and the plan is executed when an action is called. This execution plan represents the DataFrame’s lineage.</p>
 <p>Sometimes the DataFrame’s lineage can grow long and complex, which will slow down the processing and maybe even return an error. However, we can get around this by breaking the lineage.</p>
-<p>There is more than one way of breaking the lineage, this is discussed in more detail in the <a class="reference internal" href="persistence.html"><span class="doc std std-doc">Persisting</span></a> article. In this article we cover a simple method of persisting to disk called checkpointing, which is essentially an out of the box shortcut to a write/read operation.</p>
+<p>There is more than one way of breaking the lineage of a DataFrame, which is discussed in more detail in the <a class="reference internal" href="persistence.html"><span class="doc std std-doc">Persisting</span></a> section.</p>
 </section>
+<section id="checkpoint">
+<h2>Checkpoint<a class="headerlink" href="#checkpoint" title="Permalink to this heading">#</a></h2>
+<p>In this article, we cover a simple method of persisting to disk called checkpointing, which is essentially an out of the box shortcut to a write/read operation.</p>
 <section id="experiment">
 <h3>Experiment<a class="headerlink" href="#experiment" title="Permalink to this heading">#</a></h3>
 <p>To demonstrate the benefit of checkpointing we’ll time how long it takes to create a DataFrame using an iterative calculation. We will run the process without persisting, then again using a checkpoint.</p>
@@ -1015,13 +1016,15 @@ ORDER BY `IncidentNumber` DESC
 </div>
 </div></div>
 <p>Now save the DataFrame as table, using <code class="docutils literal notranslate"><span class="pre">mode(&quot;overwrite&quot;)</span></code>, which overwrites the existing table if there is one. The first time you create a staging table this option will be redundant, but on subsequent runs on the code you will get an error without this as the table will already exist.</p>
+<p>Note that we specify the database we want to save the table in. In this instance, we want to save the table in the training database. The format for saving within a specified database is <code class="docutils literal notranslate"><span class="pre">database.table_name</span></code>.</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-16-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-16-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-16-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-16-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-16-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-16-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">username</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;HADOOP_USER_NAME&#39;</span><span class="p">)</span> 
 
 <span class="n">table_name_plain</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;staging_table_example&#39;</span><span class="p">]</span>
 <span class="n">table_name</span> <span class="o">=</span> <span class="n">table_name_plain</span><span class="o">+</span><span class="n">username</span>
+<span class="n">database</span> <span class="o">=</span> <span class="s2">&quot;training&quot;</span>
 
-<span class="n">df</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="s2">&quot;overwrite&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">saveAsTable</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;parquet&quot;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="s2">&quot;overwrite&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">saveAsTable</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">database</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;parquet&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div><div aria-labelledby="tab-16-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-16-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">username</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">Sys.getenv</span><span class="p">(</span><span class="s">&#39;HADOOP_USER_NAME&#39;</span><span class="p">)</span>
@@ -1232,6 +1235,9 @@ only showing top 5 rows
 </ul>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"></div></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
 </section>
 </section>
 </section>
@@ -1299,8 +1305,8 @@ only showing top 5 rows
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#persisting-to-disk">Persisting to disk</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#checkpoint">Checkpoint</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#persisting-to-disk">Persisting to disk</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#experiment">Experiment</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#without-persisting">Without persisting</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#with-checkpoints">With checkpoints</a></li>
