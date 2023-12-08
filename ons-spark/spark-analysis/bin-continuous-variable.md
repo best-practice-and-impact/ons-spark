@@ -189,15 +189,10 @@ sdf.show()
 ```
 ```{code-tab} r R 
 sdf <- sdf %>%
-
-  mutate(age_bracket = ifelse(age <= 9 ,
-                              "young",
-                              ifelse(
-                                  age <= 19,
-                                  "old",
-                                  "oldest")
-                              )
-        )
+  mutate(age_bracket = case_when(
+  age <= 9 ~ "young",
+  age <= 19 ~ "old",
+  .default = "oldest"))
 
 sdf
 ```
