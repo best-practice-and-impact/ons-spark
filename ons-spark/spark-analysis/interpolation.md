@@ -133,6 +133,16 @@ ggplot(df, mapping = aes(x = period, y = count)) +
 #    <matplotlib.axes._subplots.AxesSubplot at 0x7f1eeac0d860>
 
 ````{tabs}
+```{code-tab} markdown Python
+![Chart showing value of count for area "A" above and area "B" below. Values are represented by dots and these are joined up by a line. Some values are not joined up to the line due to missing values in between points.](../images/interpolation_pyplot_beforeA.png "Plot of pdf in Python")
+```
+```{code-tab} markdown R
+![Chart showing value of count for area "A" on the left hand side and area "B" on the right. Values are represented by dots and these are joined up by a line. Some values are not joined up to the line due to missing values in between points.](../images/interpolation_rplot_before.png "Plot of df in R")
+```
+````
+
+
+````{tabs}
 ```{figure} ../images/interpolation_pyplot_beforeA.png
 ---
 width: 50%
