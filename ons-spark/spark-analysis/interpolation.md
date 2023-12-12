@@ -121,53 +121,43 @@ df <- df %>%
 pdf[pdf["area_code"]=="A"].plot(marker="o")
 pdf[pdf["area_code"]=="B"].plot(marker="o")
 ```
-```{code-tab} r R
-ggplot(df, mapping = aes(x = period, y = count)) +
-  geom_point() +
-  geom_line() +
-  facet_wrap(~area_code)
-```
 ````
 
-# figure out adding pictures - check joins page
-#    <matplotlib.axes._subplots.AxesSubplot at 0x7f1eeac0d860>
-
-````{tabs}
-```{code-tab} markdown Python
-![Chart showing value of count for area "A" above and area "B" below. Values are represented by dots and these are joined up by a line. Some values are not joined up to the line due to missing values in between points.](../images/interpolation_pyplot_beforeA.png "Plot of pdf in Python")
-```
-```{code-tab} markdown R
-![Chart showing value of count for area "A" on the left hand side and area "B" on the right. Values are represented by dots and these are joined up by a line. Some values are not joined up to the line due to missing values in between points.](../images/interpolation_rplot_before.png "Plot of df in R")
-```
-````
-
-
-````{tabs}
 ```{figure} ../images/interpolation_pyplot_beforeA.png
 ---
-width: 50%
+width: 80%
 name: Plot of pdf in Python
-alt: Chart showing value of count for area "A" on the left hand side and area "B" on the right. Values are represented by dots and these are joined up by a line. Some values are not joined up to the line due to missing values in between points. 
+alt: Chart showing value of count for area "A" above and area "B" below. Values are represented by dots and these are joined up by a line. Some values are not joined up to the line due to missing values in between points. 
 ---
 ```
 ```{figure} ../images/interpolation_pyplot_beforeB.png
 ---
-width: 50%
+width: 80%
 name: Plot of pdf in Python
-alt: Chart showing value of count for area "A" on the left hand side and area "B" on the right. Values are represented by dots and these are joined up by a line. Some values are not joined up to the line due to missing values in between points. 
+alt: Chart showing value of count for area "A" above and area "B" below. Values are represented by dots and these are joined up by a line. Some values are not joined up to the line due to missing values in between points. 
 ---
 Python
 ```
 
+
+````{tabs}
+```{code-tab} r R
+ggplot(df, mapping = aes(x = period, y = count)) +
+  geom_point() +
+  geom_line() +
+  facet_wrap(~area_code, nrow = 2)
+```
+````
+
 ```{figure} ../images/interpolation_rplot_before.png
 ---
-width: 100%
+width: 80%
 name: Plot of df in R
-alt: Chart showing value of count for area "A" on the left hand side and area "B" on the right. Values are represented by dots and these are joined up by a line. Some values are not joined up to the line due to missing values in between points. 
+alt: Chart showing value of count for area "A" above and area "B" below. Values are represented by dots and these are joined up by a line. Some values are not joined up to the line due to missing values in between points. 
 ---
 R
 ```
-````
+
 
 As you can see, the lines don't meet all the points becuase there are missing counts in between.
 
@@ -289,10 +279,6 @@ sdf <- sdf %>%
                      coalesce(timestamp_with_nulls, lead(timestamp_with_nulls, 2)), 
                      period_bf)) %>%
   ungroup()
-  
-                     
-
-}
 
 
 ```
@@ -474,43 +460,44 @@ Once again, we will plot the series with pandas/ggplot. The original data are pl
 pdf[pdf["area_code"] == "A"].drop("impute_flag", axis=1).plot(style={"count":"ro", "count_final":"b+-"}, alpha=0.5)
 pdf[pdf["area_code"] == "B"].drop("impute_flag", axis=1).plot(style={"count":"ro", "count_final":"b+-"}, alpha=0.5)
 ```
+````
+
+```{figure} ../images/interpolation_pyplot_afterA.png
+---
+width: 80%
+name: Plot of pdf in Python
+alt: Chart showing value of count for area "A" above and area "B" below. All values are now connected by a line. 
+---
+```
+```{figure} ../images/interpolation_pyplot_afterB.png
+---
+width: 80%
+name: Plot of pdf in Python
+alt: Chart showing value of count for area "A" above and area "B" below. All values are now connected by a line. 
+---
+Python
+```
+
+````{tabs}
 ```{code-tab} r R
 ggplot(df, mapping = aes(x = period, y = count_final)) +
   geom_point(aes(colour = factor(impute_flag))) +
   scale_fill_manual(values = c("red", "blue")) +
   geom_line() +
   labs(colour = "impute_flag") +
-  facet_wrap(~area_code)
+  facet_wrap(~area_code, nrow = 2)
 ```
 ````
-### figure out how to get images to display properly
-
-````{tabs}
-```{figure} ../images/interpolation_pyplot_afterA.png
----
-width: 50%
-name: Plot of pdf in Python
-alt: Chart showing value of count for area "A" on the left hand side and area "B" on the right. All values are connected by a line. 
----
-```
-```{figure} ../images/interpolation_pyplot_afterB.png
----
-width: 50%
-name: Plot of pdf in Python
-alt: Chart showing value of count for area "A" on the left hand side and area "B" on the right. All values are connected by a line. 
----
-Python
-```
 
 ```{figure} ../images/interpolation_rplot_after.png
 ---
-width: 100%
+width: 800%
 name: Plot of df in R
-alt: Chart showing value of count for area "A" on the left hand side and area "B" on the right. All values are connected by a line.
+alt: Chart showing value of count for area "A" above and area "B" below. All values are now connected by a line.
 ---
 R
 ```
-````
+
 
 ## Further resources
 
