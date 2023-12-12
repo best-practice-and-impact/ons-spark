@@ -1,6 +1,6 @@
 # Flags in Spark
 
-A flag is... 
+A flag is a column that indicates whether a certain condition, such as a threshold value, is met. The flag is typically a 0 or 1 depending on whether the condition has been met.
 
 Our example will show how you can create a flag for age differences greater than a threshold wihtin a given group. 
 
@@ -23,9 +23,9 @@ from pyspark.sql import SparkSession, Window
 spark = SparkSession.builder.appName("troubleshooting").getOrCreate()
 ```
 ````
-## Creating your dummy data
+### Creating your dummy data
 
-The dataframe `df` will have an `id` column from 0 to 4. To create multiple `id` entries we will do a `.CrossJoin` with the numbers from 0 to 2 and then drop the latter column. To find more information on cross joins please refer to the [page on cross joins](#../spark-functions/cross-joins). Finally, we will add an `age`column with random numbers from 1 to 10. 
+The dataframe `df` will have an `id` column from 0 to 4. To create multiple `id` entries we will do a `.CrossJoin` with the numbers from 0 to 2 and then drop the latter column. To find more information on cross joins please refer to the [page on cross joins](https://best-practice-and-impact.github.io/ons-spark/spark-functions/cross-joins.html). Finally, we will add an `age` column with random numbers from 1 to 10. 
 ````{tabs}
 ```{code-tab} py
 df = (
@@ -65,7 +65,7 @@ df.show()
 +---+---+
 ```
 ````
-## Creating your columns 
+### Creating your columns 
 
 There will be more than one way to get the desired result. Note that the method outlined here spells out the process in detail; please feel free to combine some of the steps (without sacrificing code readbility of course!).
 
@@ -116,9 +116,4 @@ df.show()
 +---+---+-------+--------+---------+----------------+-------------+
 ```
 ````
-
-````{tabs}
-```{code-tab} py
-
-```
-````
+As you can see in the table above, a flag column has been created with the values 0 and 1. If the age difference is greater than 5 then the flag = 1, if less than 5 then the flag = 0. 
