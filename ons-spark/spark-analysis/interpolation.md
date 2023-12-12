@@ -130,14 +130,26 @@ ggplot(df, mapping = aes(x = period, y = count)) +
 ````
 
 # figure out adding pictures - check joins page
-    <matplotlib.axes._subplots.AxesSubplot at 0x7f1eeac0d860>
+#    <matplotlib.axes._subplots.AxesSubplot at 0x7f1eeac0d860>
 
 ````{tabs}
-![png](interpolation_files/interpolation_12_1.png)
+```{figure} ../images/interpolation_pyplot_beforeA.png
+---
+width: 50%
+name: Plot of pdf in Python
+alt: Chart showing value of count for area "A" on the left hand side and area "B" on the right. Values are represented by dots and these are joined up by a line. Some values are not joined up to the line due to missing values in between points. 
+---
+```
+```{figure} ../images/interpolation_pyplot_beforeB.png
+---
+width: 50%
+name: Plot of pdf in Python
+alt: Chart showing value of count for area "A" on the left hand side and area "B" on the right. Values are represented by dots and these are joined up by a line. Some values are not joined up to the line due to missing values in between points. 
+---
+Python
+```
 
-![png](interpolation_files/interpolation_12_2.png)
-
-```{figure} ../images/sort_merge_join.png
+```{figure} ../images/interpolation_rplot_before.png
 ---
 width: 100%
 name: Plot of df in R
@@ -463,13 +475,32 @@ ggplot(df, mapping = aes(x = period, y = count_final)) +
 ````
 ### figure out how to get images to display properly
 
+````{tabs}
+```{figure} ../images/interpolation_pyplot_afterA.png
+---
+width: 50%
+name: Plot of pdf in Python
+alt: Chart showing value of count for area "A" on the left hand side and area "B" on the right. All values are connected by a line. 
+---
+```
+```{figure} ../images/interpolation_pyplot_afterB.png
+---
+width: 50%
+name: Plot of pdf in Python
+alt: Chart showing value of count for area "A" on the left hand side and area "B" on the right. All values are connected by a line. 
+---
+Python
+```
 
-![png](interpolation_files/interpolation_26_1.png)
-
-
-
-![png](interpolation_files/interpolation_26_2.png)
-
+```{figure} ../images/interpolation_rplot_after.png
+---
+width: 100%
+name: Plot of df in R
+alt: Chart showing value of count for area "A" on the left hand side and area "B" on the right. All values are connected by a line.
+---
+R
+```
+````
 
 ## Further resources
 
