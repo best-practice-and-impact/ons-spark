@@ -241,7 +241,9 @@ To forward and backward fill the missing values we use the `F.last()` and `F.fir
 
 Once assembled we can put them in `.withColumn()` to add the forward and backward fill columns.
 
-For SparklyR, there is no direct equivalent of `F.last()` and `F.first()` that will work with a Spark dataframe. Instead, this solution uses the `lead()` and `lag()` functions to replace missing values with the next or previous value in the dataset respectively. This will cause some problems where there are multiple missing values in a row, like we have in our example data for area code "A", since `lead()`/`lag()` will fill one of these NAs with the previous/next NA in the series. To get around this problem, we suggest ordering the dataframe by period and checking the maximum number of missing values there are in a row. This will give you an idea of how many times you will need to run `lead()` and `lag()` to fill all the NAs and how many steps forward or backwards you need the function to fill from. See the function documentation [here](https://dplyr.tidyverse.org/reference/lead-lag.html) for further information. The [`coalesce()`](https://dplyr.tidyverse.org/reference/coalesce.html) function is also used here to replace NA values with values returned by the `lead()` and `lag()` functions.  
+For SparklyR, there is no direct equivalent of `F.last()` and `F.first()` that will work with a Spark dataframe. Instead, this solution uses the `lead()` and `lag()` functions to replace missing values with the next or previous value in the dataset respectively. 
+
+This will cause some problems where there are multiple missing values in a row, like we have in our example data for area code "A", since `lead()`/`lag()` will fill one of these NAs with the next/previous NA in the series. To get around this problem, we suggest ordering the dataframe in to match the window function ordering and then checking the maximum number of missing values there are in a row. This tell you how many times you will need to run `lead()` and `lag()` to fill all the NAs and how many steps forward or backwards you need the function to fill from. See the function documentation [here](https://dplyr.tidyverse.org/reference/lead-lag.html) for further information. The [`coalesce()`](https://dplyr.tidyverse.org/reference/coalesce.html) function is also used here to replace NA values with values returned by the `lead()` and `lag()` functions.  
 
 ````{tabs}
 ```{code-tab} py
@@ -525,7 +527,7 @@ Interpolated plot of df in R split by area code "A" (top) and area code "B" (bot
 
 ## Further resources
 
-- This tip has been adapted from [another source](https://walkenho.github.io/interpolating-time-series-p2-spark/). Note that the method shown in the linked page uses User Defined Functions (UDFs).
+- This page has been adapted from [another source](https://walkenho.github.io/interpolating-time-series-p2-spark/). Note that the method shown in the linked page uses User Defined Functions (UDFs).
 - For more information about imputation, see the [Awareness in Editing and Imputation](https://learninghub.ons.gov.uk/enrol/index.php?id=574) course on the Learning Hub.
-- If your DataFrame is small enough [just use pandas](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.interpolate.html).
+- If your DataFrame is small enough [just use pandas](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.interpolate.html) or R.
 - Wikipedia definition for [interpolation](https://en.wikipedia.org/wiki/Interpolation)
