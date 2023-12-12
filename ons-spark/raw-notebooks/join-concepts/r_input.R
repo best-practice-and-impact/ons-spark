@@ -13,14 +13,14 @@ sc <- sparklyr::spark_connect(
 
 config <- yaml::yaml.load_file("ons-spark/config.yaml")
 
-rescue <- sparklyr::spark_read_csv(sc, config$rescue_path_csv, header=TRUE, inferSchema=TRUE) %>%
-    sparklyr::select(incident_number = IncidentNumber,
-                     cal_year= CalYear,
-                     animal_group = AnimalGroupParent,
-                     postcode_district = PostcodeDistrict)
+rescue <- sparklyr::spark_read_parquet(sc, config$rescue_path) %>%
+    sparklyr::select(incident_number,
+                     cal_year,
+                     animal_group,
+                     postcode_district,
+                     origin_of_call)
 
-
-population <- sparklyr::spark_read_parquet(sc, config$population_path)            
+population <- sparklyr::spark_read_parquet(sc, config$population_path)          
 
 rescue %>%
     head(5) %>%
@@ -63,14 +63,15 @@ sc <- sparklyr::spark_connect(
     app_name = "joins",
     config = joins_config)
 
-rescue <- sparklyr::spark_read_csv(sc, config$rescue_path_csv, header=TRUE, inferSchema=TRUE) %>%
-    sparklyr::select(incident_number = IncidentNumber,
-                     cal_year= CalYear,
-                     animal_group = AnimalGroupParent,
-                     postcode_district = PostcodeDistrict,
-                     origin_of_call = OriginofCall)
+rescue <- sparklyr::spark_read_parquet(sc, config$rescue_path) %>%
+    sparklyr::select(incident_number,
+                     cal_year,
+                     animal_group,
+                     postcode_district,
+                     origin_of_call)
 
-population <- sparklyr::spark_read_parquet(sc, config$population_path)
+
+population <- sparklyr::spark_read_parquet(sc, config$population_path) 
 
 rescue_with_pop_auto_broadcast<- rescue %>%
     sparklyr::left_join(population, by="postcode_district")
