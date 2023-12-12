@@ -237,13 +237,9 @@ window_bf = (
 ```
 ````
 
-To forward and backward fill the missing values we use the `F.last()` and `F.first()` functions in PySpark, respectively. These will grab the preceding and following values of a missing value within our defined windows.
+To forward and backward fill the missing values we use the `F.last()` and `F.first()` functions in PySpark, respectively. These will grab the preceding and following values of a missing value within our defined windows. Once assembled we can put them in `.withColumn()` to add the forward and backward fill columns.
 
-Once assembled we can put them in `.withColumn()` to add the forward and backward fill columns.
-
-For SparklyR, there is no direct equivalent of `F.last()` and `F.first()` that will work with a Spark dataframe. Instead, this solution uses the `lead()` and `lag()` functions to replace missing values with the next or previous value in the dataset respectively. 
-
-This will cause some problems where there are multiple missing values in a row, like we have in our example data for area code "A", since `lead()`/`lag()` will fill one of these NAs with the next/previous NA in the series. To get around this problem, we suggest ordering the dataframe in to match the window function ordering and then checking the maximum number of missing values there are in a row. This will tell you how many times you will need to run `lead()` and `lag()` to fill all the NAs and how many steps forward or backwards you need the function to fill from. See the function documentation [here](https://dplyr.tidyverse.org/reference/lead-lag.html) for further information. The [`coalesce()`](https://dplyr.tidyverse.org/reference/coalesce.html) function is also used here to replace NA values with values returned by the `lead()` and `lag()` functions.  
+ For SparklyR, we will use the `fill` function with the `"up"` (backward filling) and `"down"` (forward filling) direction arguments. 
 
 ````{tabs}
 ```{code-tab} py
@@ -265,47 +261,21 @@ df = (
 df.show()
 ```
 ```{code-tab} r R
-
-# This code could be adapted to find out how many consecutive NA values you have in a real Spark dataframe 
-NA_consecutive <- sdf %>%
-  group_by(area_code) %>%
-  arrange(desc(area_code), period) %>%      # make sure the dataframe is ordered in the same way it will be for forward/back filling
-  sdf_with_sequential_id("id_no") %>%       # generate sequential id numbers for rows
-  filter(is.na(count)) %>%
-  mutate(consecutive_NAs = 1) %>%           # create a column for counting consecutive NAs and initialise to 1
-  mutate(consecutive_NAs = if_else(id_no == 1 + lag(id_no, order_by = id_no), 
-                                            consecutive_NAs + 1, 
-                                            consecutive_NAs)) %>%   # add 1 to NA count if the id_nos are sequential
-  summarise(max_consecutive_NAs = max(consecutive_NAs))
-
-# Here it returns max_consecutive_NAs = 2 which tells us we need to apply lead() and lag() twice to the count and period columns
-NA_consecutive
-
-# create the series containing the filled values - apply lead() and lag() once
+# create the columns containing the filled values
 sdf <- sdf %>%
   arrange(period) %>%
   group_by(area_code) %>%
-  mutate(count_ff = coalesce(count, lag(count))) %>%
-  mutate(count_bf = coalesce(count, lead(count))) %>%
-  mutate(period_ff = coalesce(timestamp_with_nulls, lag(timestamp_with_nulls))) %>%
-  mutate(period_bf = coalesce(timestamp_with_nulls, lead(timestamp_with_nulls))) %>%
+  mutate(count_ff = count, 
+         count_bf = count,
+         period_ff = timestamp_with_nulls,
+         period_bf = timestamp_with_nulls) %>%
+  sparklyr::fill(count_ff, .direction = "down") %>%
+  sparklyr::fill(count_bf, .direction = "up") %>%
+  sparklyr::fill(period_ff, .direction = "down") %>%
+  sparklyr::fill(period_bf, .direction = "up") %>%
   ungroup()
 
-# notice there are still some NAs in the "_ff" and "_bf" columns
-sdf %>% print(width = Inf, n = 16)
-  
-# apply lead() and lag() to the "_ff" and "_bf" columns again to fill values that are still NA with the value from 2 steps backwards/forwards  
-sdf <- sdf %>%
-  arrange(period) %>%
-  group_by(area_code) %>% 
-  mutate(count_ff = coalesce(count_ff, lag(count, 2))) %>%
-  mutate(count_bf = coalesce(count_bf, lead(count, 2))) %>%
-  mutate(period_ff = coalesce(period_ff, lag(timestamp_with_nulls, 2))) %>%
-  mutate(period_bf = coalesce(period_bf, lead(timestamp_with_nulls,2))) %>%
-  ungroup()
-  
-# now all the NAs have been successfully filled
-sdf %>% print(width = Inf, n = 16)
+sdf %>% print(width = Inf, n=16)
   
 ```
 ````
