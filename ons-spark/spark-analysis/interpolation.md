@@ -399,7 +399,6 @@ df <- df %>%
 
 df
 
-# order by period (converted), area_code, count, impute_flag, count_final cols
 ```
 ````
 
@@ -487,7 +486,7 @@ ggplot(df, mapping = aes(x = period, y = count_final)) +
 
 ```{figure} ../images/interpolation_rplot_after.png
 ---
-width: 800%
+width: 80%
 name: Plot of df in R
 alt: Chart showing value of count for area "A" above and area "B" below. All values are now connected by a line.
 ---
