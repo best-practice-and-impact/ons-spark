@@ -117,3 +117,9 @@ df.show()
 ```
 ````
 As you can see in the table above, a flag column has been created with the values 0 and 1. If the age difference is greater than 5 then the flag = 1, if less than 5 then the flag = 0. 
+
+### Further Resources
+
+Spark at the ONS articles:
+- [Cross joins](https://best-practice-and-impact.github.io/ons-spark/spark-functions/cross-joins.html)
+- 
