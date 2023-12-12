@@ -4,7 +4,9 @@ Data binning is a data pre-processing method which transforms continuous or disc
 data to categorical. The original values which fall into a specific interval are replaced
 by a value representive of that interval.
 
-In a spark dataframe this is easily implemented by applying the [`when()`](https://spark.apache.org/docs/3.1.2/api/python/reference/api/pyspark.sql.functions.when.html) function for PySpark  and the [`if_else()`](https://dplyr.tidyverse.org/reference/if_else.html) function from [`dplyr`](https://dplyr.tidyverse.org/) package for sparklyr.
+In a spark dataframe this is easily implemented by applying the [`when()`](https://spark.apache.org/docs/3.1.2/api/python/reference/api/pyspark.sql.functions.when.html) function for PySpark  and the [`if_else()`](https://dplyr.tidyverse.org/reference/if_else.html) (or [`case_when()`](https://dplyr.tidyverse.org/reference/case_when.html)) function from [`dplyr`](https://dplyr.tidyverse.org/) package for sparklyr.
+
+In R, the `case_when()` package is a general vectorised `if_else()` and provides a more flexible and readable way to express conditional logic statements. With `case_when()` we can apply multiple conditions in a single call, quite convenient for 3 or more conditions since `if_else()` is designed for binary conditions.
 
 ### Creating spark session and sample data
  
@@ -172,7 +174,10 @@ Let's have another look at the data:
 
 To split assign the data to 3 or more categories the same approach can be implemented as shown below.
 In this example, `age_bracket` is labeled as `young` when `age` is less than or equal to 9,
-as `old` when `age` is less than or equal to 19 and `oldest` otherwise.
+as `old` when `age` is less than or equal to 19 and `oldest` otherwise. 
+
+In the R code snippet we are using `case_when()`. By avoiding the need of nested `if_else()` statements, we are expressing multiple conditions
+in a more readable and concise way, hence an easier code to understand  and maintain.
 
 ````{tabs}
 ```{code-tab} py 
