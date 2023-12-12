@@ -136,7 +136,7 @@ width: 80%
 name: Plot of pdf in Python
 alt: Chart showing value of count for area "A" above and area "B" below. Values are represented by dots and these are joined up by a line. Some values are not joined up to the line due to missing values in between points. 
 ---
-Python
+Plot of pdf in Python split by area code "A" (top) and area code "B" (bottom).
 ```
 
 
@@ -155,7 +155,7 @@ width: 80%
 name: Plot of df in R
 alt: Chart showing value of count for area "A" above and area "B" below. Values are represented by dots and these are joined up by a line. Some values are not joined up to the line due to missing values in between points. 
 ---
-R
+Plot of df in R split by area code "A" (top) and area code "B" (bottom).
 ```
 
 
@@ -165,7 +165,7 @@ As you can see, the lines don't meet all the points becuase there are missing co
 
 The approach we will take to interpolate is to create new columns containing forward filled and backward filled counts and periods where the `count` is missing. Then use these columns in the formula above to calculate the gradient and interpolated counts.
 
-Here are the steps in more detail,
+Here are the steps in more detail:
 1. Add timestamp columns
 2. Create ordered windows for forward and backward filling
 3. Carry out the forward and backward fills on count and timestamp
@@ -216,8 +216,7 @@ sdf <- sdf %>%
 ```
 ````
 
-Next we create the `Window` functions to forward fill and backward fill the missing values in the `count` and `timestamp_with_nulls` columns.
-# this can probably be skipped for sparklyr
+Next we create the `Window` functions to forward fill and backward fill the missing values in the `count` and `timestamp_with_nulls` columns. Note that for SparklyR we can skip this step, as we can just use `group_by()` and `mutate()` in the forward and back filling step to specify our window.  
 ````{tabs}
 ```{code-tab} py
 # Create window for forward filling
@@ -238,10 +237,12 @@ window_bf = (
 ```
 ````
 
-To forward and backward fill the missing values we use the `F.last()` and `F.first()` functions respectively. These will grab the preceding and following values of a missing value within our defined windows.
+To forward and backward fill the missing values we use the `F.last()` and `F.first()` functions in PySpark, respectively. These will grab the preceding and following values of a missing value within our defined windows.
 
 Once assembled we can put them in `.withColumn()` to add the forward and backward fill columns.
-## Add notes about how this is done in sparklyr
+
+For SparklyR, there is no direct equivalent of `F.last()` and `F.first()` that will work with a Spark dataframe. Instead, this solution uses the `lead()` and `lag()` functions to replace missing values with the next or previous value in the dataset respectively. This will cause some problems where there are multiple missing values in a row, like we have in our example data for area code "A", since `lead()`/`lag()` will fill one of these NAs with the previous/next NA in the series. To get around this problem, we suggest ordering the dataframe by period and checking the maximum number of missing values there are in a row. This will give you an idea of how many times you will need to run `lead()` and `lag()` to fill all the NAs and how many steps forward or backwards you need the function to fill from. See the function documentation [here]("https://dplyr.tidyverse.org/reference/lead-lag.html") for further information. The [`coalesce()`](https://dplyr.tidyverse.org/reference/coalesce.html) function is also used here to replace NA values with values returned by the `lead()` and `lag()` functions.  
+
 ````{tabs}
 ```{code-tab} py
 # create the series containing the filled values
@@ -262,25 +263,48 @@ df = (
 df.show()
 ```
 ```{code-tab} r R
-# create the series containing the filled values - find a neater way of doing this!
+
+# This code could be adapted to find out how many consecutive NA values you have in a real Spark dataframe 
+NA_consecutive <- sdf %>%
+  group_by(area_code) %>%
+  arrange(desc(area_code), period) %>%      # make sure the dataframe is ordered in the same way it will be for forward/back filling
+  sdf_with_sequential_id("id_no") %>%       # generate sequential id numbers for rows
+  filter(is.na(count)) %>%
+  mutate(consecutive_NAs = 1) %>%           # create a column for counting consecutive NAs and initialise to 1
+  mutate(consecutive_NAs = if_else(id_no == 1 + lag(id_no, order_by = id_no), 
+                                            consecutive_NAs + 1, 
+                                            consecutive_NAs)) %>%   # add 1 to NA count if the id_nos are sequential
+  summarise(max_consecutive_NAs = max(consecutive_NAs))
+
+# Here it returns max_consecutive_NAs = 2 which tells us we need to apply lead() and lag() twice to the count and period columns
+NA_consecutive
+
+# create the series containing the filled values - apply lead() and lag() once
 sdf <- sdf %>%
   arrange(period) %>%
   group_by(area_code) %>%
   mutate(count_ff = coalesce(count, lag(count))) %>%
   mutate(count_bf = coalesce(count, lead(count))) %>%
-  mutate(count_ff = ifelse(is.na(count_ff), coalesce(count, lag(count, 2)), count_ff)) %>%
-  mutate(count_bf = ifelse(is.na(count_bf), coalesce(count, lead(count, 2)), count_bf)) %>%
   mutate(period_ff = coalesce(timestamp_with_nulls, lag(timestamp_with_nulls))) %>%
   mutate(period_bf = coalesce(timestamp_with_nulls, lead(timestamp_with_nulls))) %>%
-  mutate(period_ff = ifelse(is.na(period_ff), 
-                     coalesce(timestamp_with_nulls, lag(timestamp_with_nulls, 2)), 
-                     period_ff)) %>%
-  mutate(period_bf = ifelse(is.na(period_bf), 
-                     coalesce(timestamp_with_nulls, lead(timestamp_with_nulls, 2)), 
-                     period_bf)) %>%
   ungroup()
 
-
+# notice there are still some NAs in the "_ff" and "_bf" columns
+sdf %>% print(width = Inf, n = 16)
+  
+# apply lead() and lag() to the "_ff" and "_bf" columns again to fill values that are still NA with the value from 2 steps backwards/forwards  
+sdf <- sdf %>%
+  arrange(period) %>%
+  group_by(area_code) %>% 
+  mutate(count_ff = coalesce(count_ff, lag(count, 2))) %>%
+  mutate(count_bf = coalesce(count_bf, lead(count, 2))) %>%
+  mutate(period_ff = coalesce(period_ff, lag(timestamp_with_nulls, 2))) %>%
+  mutate(period_bf = coalesce(period_bf, lead(timestamp_with_nulls,2))) %>%
+  ungroup()
+  
+# now all the NAs have been successfully filled
+sdf %>% print(width = Inf, n = 16)
+  
 ```
 ````
 
@@ -475,7 +499,7 @@ width: 80%
 name: Plot of pdf in Python
 alt: Chart showing value of count for area "A" above and area "B" below. All values are now connected by a line. 
 ---
-Python
+Interpolated plot of pdf in Python split by area code "A" (top) and area code "B" (bottom).
 ```
 
 ````{tabs}
@@ -495,7 +519,7 @@ width: 800%
 name: Plot of df in R
 alt: Chart showing value of count for area "A" above and area "B" below. All values are now connected by a line.
 ---
-R
+Interpolated plot of df in R split by area code "A" (top) and area code "B" (bottom).
 ```
 
 
