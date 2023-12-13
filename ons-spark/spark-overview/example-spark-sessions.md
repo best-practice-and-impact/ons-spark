@@ -36,8 +36,6 @@ spark = (
 ```{code-tab} r R
 library(sparklyr)
 
-default_config <- sparklyr::spark_config()
-
 sc <- sparklyr::spark_connect(
   master = "local[2]",
   app_name = "local-session",
@@ -45,7 +43,7 @@ sc <- sparklyr::spark_connect(
 ```
 ````
 
-Note that all dependencies must also be in place to run a Spark application on your laptop, see [Setting up resources section in the Getting Started with Spark](../spark-overview/spark-start.html#setting-up-resources) article for further information.
+Note that all dependencies must also be in place to run a Spark application on your laptop, see Setting up resources section in the [Getting Started with Spark](../spark-overview/spark-start) article for further information.
 
 ### Default Session
 
