@@ -1,5 +1,5 @@
 # Reading and Writing Data in Spark
-This chapter will go into more detail about the various file formats available to use with Spark, and how Spark interacts with these file formats. [Introduction to PySpark](../pyspark-intro/pyspark-intro) and [Introduction to SparklyR](../sparklyr-intro) briefly covered CSV files and Parquet files and some basic differences between them. The final section of the page will cover the importance of managing partitions when writing data to disk, for further information on partitions see [Managing Partitions](../spark-concepts/partitions).
+This chapter will go into more detail about the various file formats available to use with Spark, and how Spark interacts with these file formats. [Introduction to PySpark](../pyspark-intro/pyspark-intro) and [Introduction to SparklyR](../sparklyr-intro/sparklyr-intro) briefly covered CSV files and Parquet files and some basic differences between them. The final section of the page will cover the importance of managing partitions when writing data to disk, for further information on partitions see [Managing Partitions](../spark-concepts/partitions).
 
 This chapter will provide more detail on parquet files, CSV files, ORC files and Avro files, the differences between them and how to read and write data using these formats.
 
@@ -701,7 +701,7 @@ Deleted file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet
 
 Spark at the ONS Articles:
 - [Introduction to PySpark](../pyspark-intro/pyspark-intro)
-- [Introduction to SparklyR](../sparklyr-intro)
+- [Introduction to SparklyR](../sparklyr-intro/sparklyr-intro)
 - [Managing Partitions](../spark-concepts/partitions)
 
 
