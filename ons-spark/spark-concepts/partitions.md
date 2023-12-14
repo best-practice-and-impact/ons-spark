@@ -1,4 +1,3 @@
----
 ## Managing Partitions
 
 DataFrames in Spark are *distributed*, so although we treat them as one object they might be split up into multiple partitions over many machines on the cluster. The benefit of having multiple partitions is that some operations can be performed on the partitions in parallel. 
@@ -595,7 +594,7 @@ We then decide we want two partitions as opposed to four so we apply `.coalesce(
 
 So the data on Partitions 1 and 2 have not been shuffled. We have just moved the data on Partitions 3 to Partition 1 and Partition 4 to Partition 2, this is sometimes referred to as a partial shuffle. The gains from this simple example would be negligible, but scale this process up to millions of rows and then it becomes significant.
 
-It's also possible to use a column name in `.repartition()` or even a number and column name, see documentation for more information.
+It's also possible to use a column name in `.repartition()` or even a number and column name, see documentation for more information. 
 
 ### Partition sizes
 A key concept in both Hadoop and Spark is that files and partitions should optimally be [around 128MB](https://spark.apache.org/docs/latest/sql-performance-tuning.html#other-configuration-options). It is however common that data are stored as many small files rather than fewer large ones. This issue can be solved by reducing the number of partitions before writing to HDFS, using [`.coalesce()`](https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrame.coalesce) or [`.repartition()`](https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrame.repartition) in PySpark and [`sdf_coalesce()`](https://spark.rstudio.com/reference/sdf_coalesce.html) or [`sdf_repartition()`](https://spark.rstudio.com/reference/sdf_repartition.html) in sparklyr.
@@ -862,6 +861,7 @@ Below are images of the task timeline for the above jobs containing the wide tra
 The main message in this set of images is that we see a clear bottleneck in the case of the join and window function, but there is no bottleneck in the group by.
 
 ```{figure} ../images/partition_skew_join.PNG
+---
 width: 100%
 name: JoinTimeline
 alt: Task timeline for skewed join showing unevenly sized tasks
@@ -1059,110 +1059,7 @@ This is where knowing your data can be useful. To help with the explanation we w
 
 If you are doing a join on a highly skewed DataFrame you might want to try a [salted join](../spark-concepts/salted-joins). If you are dealing with skew in a window function you can apply a group by and join to achieve the same result. However, these are alternative solutions when dealing with highly skewed data and in most cases a regular join or window function are more efficient and makes the code more readable. 
 
-### Partitions when writing data
 
-As previously mentioned, we can also partition by a certain column when writing to disk. The reason why this is useful is we can choose which partitions we want to read in later. This is really useful for larger data sets. 
-
-Before we demonstrate this by writing the `rescue` DataFrame as parquet files, we need to remove the `£` signs from the column names as these are not supported by the parquet format. In sparklyr they are replaced automatically when reading in the csv file, so no need for this step.
-````{tabs}
-```{code-tab} py
-for col in rescue.columns:
-    if '£' in col:
-        new_name = col.replace('(£)','GBP')
-        rescue = rescue.withColumnRenamed(col, new_name)
-```
-````
-Next let's create a file path and write the `rescue` DataFrame to disk in parquet format by partitioning the data in terms of `CalYear`
-````{tabs}
-```{code-tab} py
-repartition_path = config["checkpoint_path"] + "/rescue_by_year.parquet"
-rescue.write.mode('overwrite').partitionBy('CalYear').parquet(repartition_path)
-```
-
-```{code-tab} r R
-
-repartition_path <- paste0(config$checkpoint_path, "/rescue_by_year.parquet")
-sparklyr::spark_write_parquet(rescue, 
-                              repartition_path,
-                              mode='overwrite',
-                              partition_by='CalYear')
-
-```
-````
-This will create multiple directories in the `rescue_by_year.parquet` directory on the file system, one for each year in the data. 
-
-The easiest way to see this is by navigating to these directories using the file browser in HUE. Alternatively we can use the [`subprocess`](https://docs.python.org/3/library/subprocess.html) package to run lines of code through the terminal to return the contents of the `rescue_by_year.parquet` directory.
-````{tabs}
-```{code-tab} py
-import subprocess
-cmd = f"hdfs dfs -ls -C {repartition_path}"
-p = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, universal_newlines=True)
-print(p.stdout)
-```
-
-```{code-tab} r R
-
-cmd <- paste0("hdfs dfs -ls -C ", repartition_path)
-system(cmd)
-
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2009
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2010
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2011
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2012
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2013
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2014
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2015
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2016
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2017
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2018
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2019
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/_SUCCESS
-```
-
-```{code-tab} plaintext R Output
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2009
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2010
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2011
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2012
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2013
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2014
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2015
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2016
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2017
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2018
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2019
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/_SUCCESS
-```
-````
-On the right of the ouput above you will see there is one directory for each `CalYear`. So to import a subset of the data we can use the specific path for that year or filter the data in Spark and let Spark work out which folders to look for. 
-
-Finally, we will delete these files to clean up the file system.
-````{tabs}
-```{code-tab} py
-cmd = f"hdfs dfs -rm -r -skipTrash {repartition_path}"
-p = subprocess.run(cmd, shell=True)
-```
-
-```{code-tab} r R
-
-cmd <- paste0("hdfs dfs -rm -r -skipTrash ", repartition_path)
-system(cmd)
-
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext R Output
-Deleted file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet
-```
-````
 ### How should I partition my data?
 
 The short answer is- don't worry about it too much!
@@ -1186,6 +1083,307 @@ A more accurate answer depends on a variety of factors including: the size of th
 
 Remember, it's only worth experimenting on the *optimum* number if you have a real performance issue. 
 
+### Partitions when Unioning or Binding DataFrames
+
+You can append two DataFrames in PySpark that have the same schema with the [`.union()`](https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrame.union) operation. In sparklyr, the equivalent operation is [`sdf_bind_rows()`](https://spark.rstudio.com/reference/sdf_bind.html) and R users will often refer to appending two DataFrames as *binding*.
+
+The `.union()` function in PySpark and the `sdf_bind_rows()` function in sparklyr are both equivalent to `UNION ALL` in SQL. A regular `UNION` operation in SQL will remove duplicates, whereas `.union()` in PySpark and `sdf_bind_rows()` in sparklyr will not.
+
+Unlike joining two DataFrames, `.union()`/`sdf_bind_rows()`  does not involve a full shuffle, as the data does not move between partitions. Instead, the number of partitions in the unioned DataFrame is equal to the sum of the number of partitions in the two source DataFrames, i.e. if you union a DataFrame consisting of 100 partitions and one consisting of 50 partitions, your unioned DataFrame will have 150 partitions.
+
+To avoid excessive number of partitions, you can use [`.coalesce()`](https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrame.coalesce) or [`.repartition()`](https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrame.repartition) to reduce the number of partitions (use [`sdf_coalesce()`](https://spark.rstudio.com/reference/sdf_coalesce.html) or [`sdf_repartition()`](https://spark.rstudio.com/reference/sdf_repartition.html)
+ in sparklyr). The DataFrame will also get repartitioned when a *wide transformation* is applied to the DataFrame (also called a shuffle), e.g. with a `.groupBy()` or `.orderBy()`.
+ 
+It is also worth being aware that storing data on HDFS as many small files is inefficient, both in terms of how the data is stored and in reading it in. Unioning many DataFrames and then writing straight to HDFS can be a cause of this issue. For more information on the small file issue, see the previous section on [Partition sizes](#partition-sizes). 
+
+First we will stop the previous spark sessions and start a new Spark session which limits the number of partitions to 12, read the Animal Rescue data, group by animal and year, and then count. The grouping and aggregation will cause a shuffle, meaning that the DataFrame will have 12 partitions, as we set `spark.sql.shuffle.partitions` to `12` in the `SparkSession.builder`.
+
+````{tabs}
+```{code-tab} py
+from pyspark.sql import SparkSession, functions as F
+
+# Stop previous spark session and create new spark session
+
+spark.stop()
+
+spark = (SparkSession.builder.master("local[2]")
+         .appName("partitions")
+         .config("spark.sql.shuffle.partitions", 12)
+         .getOrCreate())
+
+
+rescue_path_csv = config["rescue_path_csv"]
+
+# # Read in and shuffle data
+rescue = (spark.read.csv(rescue_path_csv, header=True, inferSchema=True)  
+          .withColumnRenamed("IncidentNumber", "incident_number")
+          .withColumnRenamed("AnimalGroupParent", "animal_group")
+          .withColumnRenamed("CalYear", "cal_year")
+          .groupBy("animal_group", "cal_year")
+          .agg(F.count("incident_number").alias("animal_count")))
+
+rescue.limit(5).toPandas()
+```
+
+```{code-tab} r R
+
+
+# Stop previous spark session and create new spark session limiting number of partitions
+spark_disconnect(sc)
+
+small_config <- sparklyr::spark_config()
+small_config$spark.sql.shuffle.partitions <- 12
+
+sc <- sparklyr::spark_connect(
+  master = "local",
+  app_name = "partitions",
+  config = small_config)
+
+sparklyr::spark_connection_is_open(sc)
+
+# Set the data path
+config <- yaml::yaml.load_file("ons-spark/config.yaml")
+# Read in and shuffle data
+rescue <- sparklyr::spark_read_csv(sc, config$rescue_path_csv, header=TRUE, infer_schema=TRUE)
+
+rescue <- rescue %>%
+    dplyr::rename(
+        incident_number = IncidentNumber,
+        animal_group = AnimalGroupParent,
+        cal_year = CalYear) %>%
+        dplyr::group_by(animal_group,cal_year) %>%
+        dplyr::count(animal_count = count())
+
+rescue %>% head(5)
+
+```
+````
+
+````{tabs}
+
+```{code-tab} plaintext Python Output
+                       animal_group  cal_year  animal_count
+0                              Bird      2010            99
+1                           Hamster      2011             3
+2  Unknown - Domestic Animal Or Pet      2012            18
+3  Unknown - Heavy Livestock Animal      2012             4
+4                             Sheep      2012             1
+```
+
+```{code-tab} plaintext R Output
+[1] TRUE
+# Source: spark<?> [?? x 4]
+# Groups: animal_group, cal_year
+  animal_group cal_year animal_count     n
+  <chr>           <int>        <dbl> <dbl>
+1 Bird             2010           99    99
+2 Deer             2015            6     6
+3 Deer             2016           14    14
+4 Ferret           2018            1     1
+5 Fox              2017           33    33
+```
+````
+We can confirm the number of partitions of the `rescue` DataFrame using `.rdd.getNumPartitions()`:
+````{tabs}
+```{code-tab} py
+print('Rescue partitions:',rescue.rdd.getNumPartitions())
+```
+
+```{code-tab} r R
+
+print(paste0("Rescue partitions: ", sparklyr::sdf_num_partitions(rescue)))
+
+```
+````
+
+````{tabs}
+
+```{code-tab} plaintext Python Output
+Rescue partitions: 12
+```
+
+```{code-tab} plaintext R Output
+[1] "Rescue partitions: 12"
+```
+````
+Now create will create some smaller DataFrames, containing different animals, by filtering the rescue data. We will preview just the `dogs` data, as all others will be of a similar format:
+````{tabs}
+```{code-tab} py
+dogs = rescue.filter(F.col("animal_group") == "Dog")
+cats = rescue.filter(F.col("animal_group") == "Cat")
+hamsters = rescue.filter(F.col("animal_group") == "Hamster")
+
+dogs.limit(5).toPandas()
+```
+
+```{code-tab} r R
+
+dogs <- rescue %>% sparklyr::filter(animal_group == 'Dog')
+cats <- rescue %>% sparklyr::filter(animal_group == 'Cat')
+hamsters <- rescue %>% sparklyr::filter(animal_group == 'Hamster')
+
+dogs %>% head(5)
+
+```
+````
+
+````{tabs}
+
+```{code-tab} plaintext Python Output
+  animal_group  cal_year  animal_count
+0          Dog      2011           103
+1          Dog      2017            81
+2          Dog      2009           132
+3          Dog      2012           100
+4          Dog      2014            90
+```
+
+```{code-tab} plaintext R Output
+# Source: spark<?> [?? x 4]
+# Groups: animal_group, cal_year
+  animal_group cal_year animal_count     n
+  <chr>           <int>        <dbl> <dbl>
+1 Dog              2011          103   103
+2 Dog              2017           81    81
+3 Dog              2009          132   132
+4 Dog              2012          100   100
+5 Dog              2014           90    90
+```
+````
+We can check that each of these DataFrames has 12 partitions:
+````{tabs}
+```{code-tab} py
+print(' Dog partitions:', dogs.rdd.getNumPartitions(),
+      '\n Cat partitions:', cats.rdd.getNumPartitions(),
+      '\n Hamster partitions:', hamsters.rdd.getNumPartitions())
+```
+
+```{code-tab} r R
+
+print(paste0("Dogs partitions: ", sparklyr::sdf_num_partitions(dogs)))
+print(paste0("Cats partitions: ", sparklyr::sdf_num_partitions(cats)))
+print(paste0("Hamsters partitions: ", sparklyr::sdf_num_partitions(hamsters)))
+
+```
+````
+
+````{tabs}
+
+```{code-tab} plaintext Python Output
+ Dog partitions: 12 
+ Cat partitions: 12 
+ Hamster partitions: 12
+```
+
+```{code-tab} plaintext R Output
+[1] "Dogs partitions: 12"
+[1] "Cats partitions: 12"
+[1] "Hamsters partitions: 12"
+```
+````
+When we apply the union function, the number of partitions in the unioned DataFrame will be the sum of partitions in each DataFrame. In this case we will now have 12 + 12 = 24 partitions:
+````{tabs}
+```{code-tab} py
+dogs_and_cats = dogs.union(cats)
+print('Dogs and Cats union partitions:',dogs_and_cats.rdd.getNumPartitions())
+```
+
+```{code-tab} r R
+
+dogs_and_cats = sparklyr::sdf_bind_rows(dogs,cats)
+print(paste0("Dogs and Cats union partitions: ", sparklyr::sdf_num_partitions(dogs_and_cats)))
+
+```
+````
+
+````{tabs}
+
+```{code-tab} plaintext Python Output
+Dogs and Cats union partitions: 24
+```
+
+```{code-tab} plaintext R Output
+[1] "Dogs and Cats union partitions: 24"
+```
+````
+Unioning another DataFrame adds another 12 partitions to make 36 (24 + 12):
+````{tabs}
+```{code-tab} py
+dogs_cats_and_hamsters = dogs_and_cats.union(hamsters)
+print('Dogs, Cats and Hamsters union partitions:',dogs_cats_and_hamsters.rdd.getNumPartitions())
+```
+
+```{code-tab} r R
+
+dogs_cats_and_hamsters = sparklyr::sdf_bind_rows(dogs_and_cats,hamsters)
+print(paste0("Dogs, Cats and Hamsters union partitions: ", sdf_num_partitions(dogs_cats_and_hamsters)))
+
+```
+````
+
+````{tabs}
+
+```{code-tab} plaintext Python Output
+Dogs, Cats and Hamsters union partitions: 36
+```
+
+```{code-tab} plaintext R Output
+[1] "Dogs, Cats and Hamsters union partitions: 36"
+```
+````
+Although we only have 36 partitions here it is easy to see how this might get excessive with too many `.union()` statements. This can also become a bigger problem if the number of partitons is left to its default value of 200, where we would end up with 600 partitions! 
+
+A subsequent shuffle (e.g. sorting the DataFrame) will reset the number of partitions to that specified in `spark.sql.shuffle.partitions`:
+````{tabs}
+```{code-tab} py
+dogs_cats_and_hamsters.orderBy("animal_group", "cal_year").rdd.getNumPartitions()
+```
+
+```{code-tab} r R
+
+sparklyr::sdf_num_partitions(dogs_cats_and_hamsters %>% sparklyr::sdf_sort(c('animal_group','cal_year')))
+
+```
+````
+
+````{tabs}
+
+```{code-tab} plaintext Python Output
+12
+```
+
+```{code-tab} plaintext R Output
+[1] 12
+```
+````
+
+You can also use `.repartition()` or `.coalesce()`. `.repartition()` involves a shuffle of the DataFrame and puts the data into roughly equal partition sizes, whereas `.coalesce()` combines partitions without a full shuffle, and so is more efficient, although at the potential cost of less equal partition sizes and therefore potential skew in the data. For more information see the previous section on [Partition sizes](#partition-sizes).
+
+
+````{tabs}
+```{code-tab} py
+dogs_cats_and_hamsters.repartition(20).rdd.getNumPartitions()
+```
+
+```{code-tab} r R
+
+sparklyr::sdf_num_partitions(dogs_cats_and_hamsters %>% sparklyr::sdf_repartition(20))
+
+```
+````
+
+````{tabs}
+
+```{code-tab} plaintext Python Output
+20
+```
+
+```{code-tab} plaintext R Output
+[1] 20
+```
+````
+Further information on managing partitions while writing data can now be found in the [Reading and Writing Data in Spark](../spark-overview/reading-and-writing-data-spark) page. 
+
 ### Further resources
 
 Spark at the ONS Articles:
@@ -1194,7 +1392,8 @@ Spark at the ONS Articles:
 - [Guidance on Spark Sessions](../spark-overview/spark-session-guidance)
 - [Window Functions in Spark](../spark-functions/window-functions)
 - [Salted Joins](../spark-concepts/salted-joins)
-- [Checkpoint and Staging Tables](../raw-notebooks/checkpoint-staging/checkpoint-staging)
+- [Checkpoint and Staging Tables](../spark-concepts/checkpoint-staging)
+- [Reading and Writing Data in Spark](../spark-overview/reading-and-writing-data-spark)
 
 PySpark Documentation:
 - [`.coalesce()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.coalesce.html)
@@ -1204,6 +1403,7 @@ PySpark Documentation:
 - [`.coalesce()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.coalesce.html)
 - [`.rdd.mapPartitions()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.RDD.mapPartitions.html)
 - [`DataFrameWriter.partitionBy()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameWriter.partitionBy.html)
+- [`.union()`](https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrame.union)
 
 Python Documentation:
 - [`subprocess`](https://docs.python.org/3/library/subprocess.html) 
@@ -1213,8 +1413,12 @@ sparklyr and tidyverse Documentation:
 - [`sdf_repartition()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_repartition.html)
 - [`sdf_num_partitions()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_num_partitions.html)
 - [`spark_apply()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_apply.html)
+- [`sdf_bind_rows()`](https://spark.rstudio.com/reference/sdf_bind.html)
+
 
 Spark Documentation:
 - [Spark Configuration](https://spark.apache.org/docs/latest/configuration.html):
     - [Execution Behaviour](https://spark.apache.org/docs/latest/configuration.html#execution-behavior)
     - [Runtime SQL Configuration](https://spark.apache.org/docs/latest/configuration.html#runtime-sql-configuration)
+- [`round`](https://spark.apache.org/docs/latest/api/sql/index.html#round)
+- [`bround`](https://spark.apache.org/docs/latest/api/sql/index.html#bround)
