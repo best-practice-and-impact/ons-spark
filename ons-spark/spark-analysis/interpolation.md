@@ -2,7 +2,7 @@
 
 In this article, we will impute some missing values in time series data. The PySpark guidance below has been adapted from [another source](https://walkenho.github.io/interpolating-time-series-p2-spark/). 
 
-Please note that there are many imputation methods to choose from, for more information see the [Awareness in Editing and Imputation](https://learninghub.ons.gov.uk/enrol/index.php?id=574) course on the Learning Hub. Before using this code in your work please consult other team members or methodologists on the suitablility of this method for your use case. 
+Please note that there are many imputation methods to choose from, for more information see the [Awareness in Editing and Imputation](https://learninghub.ons.gov.uk/enrol/index.php?id=512) course on the Learning Hub. Before using this code in your work please consult other team members or methodologists on the suitability of this method for your use case. 
 
 We don't want to spend too much time on the methodology here, the purpose is to give you inspiration on how to solve your own PySpark/SparklyR problem and maybe learn about some new functions.
 
@@ -65,7 +65,7 @@ sc <- sparklyr::spark_connect(
 ```
 ````
 
-As mentioned previously we will create three columns, `area_code`, `period` and `count`. Note that `count` contains some missing values to impute and `period` contains some mixed frequency points to make it more interesting.
+As mentioned previously we will create three columns, `area_code`, `period` and `count`. Note that `count` contains some missing values to impute and `period` contains some mixed frequency points (points with differing time gaps between them) to make it more interesting.
 
 ````{tabs}
 ```{code-tab} py
@@ -99,7 +99,7 @@ sdf <- copy_to(sc, table)
 ```
 ````
 
-Let's take a quick look at some charts to see what this looks like
+Let's bring the dataframe into pandas/our local R session ready to make some plots:
 
 ````{tabs}
 ```{code-tab} py
@@ -115,6 +115,8 @@ df <- df %>%
  
 ```
 ````
+
+Now we can take a quick look at some charts to see what this looks like:
 
 ````{tabs}
 ```{code-tab} py
@@ -159,11 +161,11 @@ Plot of df in R split by area code "A" (top) and area code "B" (bottom).
 ```
 
 
-As you can see, the lines don't meet all the points becuase there are missing counts in between.
+As you can see, the lines don't meet all the points because there are missing counts in between.
 
 ## Interpolate
 
-The approach we will take to interpolate is to create new columns containing forward filled and backward filled counts and periods where the `count` is missing. Then use these columns in the formula above to calculate the gradient and interpolated counts.
+To carry out the interpolation, we will first create new columns containing forward filled and backward filled counts and periods where the `count` is missing. Then, we will use these columns in the formula above to calculate the gradient and interpolated counts.
 
 Here are the steps in more detail:
 1. Add timestamp columns
@@ -364,7 +366,7 @@ df = df.withColumn("count_final",
                    .otherwise(F.col("count"))
                   )
 ```
-```
+```{code-tab} r R
 # Create a gradient column
 sdf <- sdf %>%
   mutate(gradient = ifelse(impute_flag == 1, 
@@ -376,11 +378,12 @@ sdf <- sdf %>%
   mutate(count_final = ifelse(impute_flag ==1, 
                               count_ff + gradient * (timestamp_all-period_ff),
                               count))
+```
 ````
 
 ## View the results
 
-To view the results we will select the columns of interest and convert to pandas.
+To view the results we will select the columns of interest and convert to pandas, or collect into a local R dataframe.
 
 ````{tabs}
 ```{code-tab} py
@@ -495,6 +498,12 @@ Interpolated plot of df in R split by area code "A" (top) and area code "B" (bot
 
 
 ## Further resources
+Spark at the ONS articles:
+
+- [Window Functions in Spark](https://best-practice-and-impact.github.io/ons-spark/spark-functions/window-functions.html)
+- [Spark and Visualisation](https://best-practice-and-impact.github.io/ons-spark/spark-analysis/visualisation.html)
+
+Other resources:
 
 - This page has been adapted from [another source](https://walkenho.github.io/interpolating-time-series-p2-spark/). Note that the method shown in the linked page uses User Defined Functions (UDFs).
 - For more information about imputation, see the [Awareness in Editing and Imputation](https://learninghub.ons.gov.uk/enrol/index.php?id=574) course on the Learning Hub.
