@@ -71,4 +71,4 @@ tryCatch(
   }
 )
 
-rescue_raw %>% sparklyr::select(animal_type) %>% distinct() %>% print(n=27)
+rescue_raw %>% sparklyr::select(animal_type) %>% distinct() %>% dplyr::arrange(animal_type) %>% print(n=27)

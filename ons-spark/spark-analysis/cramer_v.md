@@ -477,7 +477,7 @@ rescue_raw.select('animal_type').distinct().orderBy('animal_type',ascending = Tr
 
 ```{code-tab} r R
 
-rescue_raw %>% sparklyr::select(animal_type) %>% distinct() %>% print(n=27)
+rescue_raw %>% sparklyr::select(animal_type) %>% distinct() %>% dplyr::arrange(animal_type) %>% print(n=27)
 
 ```
 ````
@@ -519,36 +519,37 @@ rescue_raw %>% sparklyr::select(animal_type) %>% distinct() %>% print(n=27)
 ```
 
 ```{code-tab} plaintext R Output
-# Source: spark<?> [?? x 1]
+# Source:     spark<?> [?? x 1]
+# Ordered by: animal_type
    animal_type                                     
    <chr>                                           
  1 Bird                                            
- 2 Fish                                            
- 3 Lizard                                          
- 4 Snake                                           
- 5 Unknown - Heavy Livestock Animal                
- 6 Lamb                                            
- 7 Unknown - Animal rescue from water - Farm animal
+ 2 Budgie                                          
+ 3 Bull                                            
+ 4 Cat                                             
+ 5 Cow                                             
+ 6 Deer                                            
+ 7 Dog                                             
  8 Ferret                                          
- 9 Horse                                           
+ 9 Fish                                            
 10 Fox                                             
-11 Unknown - Domestic Animal Or Pet                
-12 Bull                                            
-13 Hamster                                         
-14 Sheep                                           
-15 cat                                             
-16 Budgie                                          
-17 Deer                                            
-18 Cat                                             
-19 Cow                                             
-20 Dog                                             
-21 Tortoise                                        
-22 Goat                                            
-23 Squirrel                                        
-24 Unknown - Wild Animal                           
-25 Rabbit                                          
-26 Pigeon                                          
-27 Hedgehog                                        
+11 Goat                                            
+12 Hamster                                         
+13 Hedgehog                                        
+14 Horse                                           
+15 Lamb                                            
+16 Lizard                                          
+17 Pigeon                                          
+18 Rabbit                                          
+19 Sheep                                           
+20 Snake                                           
+21 Squirrel                                        
+22 Tortoise                                        
+23 Unknown - Animal rescue from water - Farm animal
+24 Unknown - Domestic Animal Or Pet                
+25 Unknown - Heavy Livestock Animal                
+26 Unknown - Wild Animal                           
+27 cat                                             
 ```
 ````
 This is something to consider when attempting to calculate Cramér's V or a $\chi^2$ statistic from a spark dataframe.
