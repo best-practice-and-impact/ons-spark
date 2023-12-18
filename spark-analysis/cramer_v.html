@@ -1,0 +1,1126 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Calculating Cramér’s V from a Spark DataFrame &#8212; Spark at the ONS</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/accessibility.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/tabs.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-95MGHSRD0S');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'spark-analysis/cramer_v';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Understanding and Handling Spark Errors" href="../testing-debugging/spark-errors.html" />
+    <link rel="prev" title="Data binning" href="bin-continuous-variable.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Spark at the ONS - Home"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="Spark at the ONS - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Introduction
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark overview</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-start.html">Getting Started with Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/when-to-use-spark.html">When To Use Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-session-guidance.html">Guidance on Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/example-spark-sessions.html">Example Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-defaults.html">Configuration Hierarchy and <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/data-types.html">Data Types in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/creating-dataframes.html">Creating DataFrames Manually</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/reading-and-writing-data-spark.html">Reading and Writing Data in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/data-storage.html">Data Storage</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to PySpark</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/pyspark-intro.html">Introduction to PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/returning-data.html">Returning Data from Cluster to Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/f-col.html">Reference columns by name: <code class="docutils literal notranslate"><span class="pre">F.col()</span></code></a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to sparklyr</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/sparklyr-intro.html">Introduction to sparklyr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">Using Spark functions in sparklyr</a></li>
+
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark functions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/union-dataframes-with-different-columns.html">Union two DataFrames with different columns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/padding.html">Add leading zeros with <code class="docutils literal notranslate"><span class="pre">lpad()</span></code></a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/sampling.html">Sampling: an overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/pivot-tables.html">Pivot tables in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/rounding.html">Rounding differences in Python, R and Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/window-functions.html">Window Functions in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/cross-joins.html">Cross Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/arrays.html">Arrays Functions in PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/writing-data.html">Writing Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/job-description-notebook.html">Set Spark Job Description</a></li>
+
+
+
+
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Understanding and Optimising Spark</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/optimisation-tips.html">Ideas for optimising Spark code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/spark-application-and-ui.html">Spark Application and UI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/shuffling.html">Shuffling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/join-concepts.html">Optimising Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/salted-joins.html">Salted Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/partitions.html">Managing Partitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/persistence.html">Persisting in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/cache.html">Caching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/checkpoint-staging.html">Checkpoints and Staging Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/garbage-collection.html">Garbage Collection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/df-order.html">Spark DataFrames Are Not Ordered</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/exercises.html">Exercises</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Analysis in Spark</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="logistic-regression.html">Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualisation.html">Spark and Visualisation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bin-continuous-variable.html">Data binning</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Calculating Cramér’s V from a Spark DataFrame</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Testing and Debugging</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../testing-debugging/spark-errors.html">Understanding and Handling Spark Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing-debugging/unit-testing.html">Unit Testing in Spark</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Ancillary Topics</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/module-imports.html">Naming Conflicts in Module Imports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/pydoop.html">Pydoop: HDFS to pandas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/creating-a-SQL-view-in-HDFS.html">Creating a SQL view in HDFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/pandas-udfs.html">Pandas UDFs</a></li>
+</ul>
+
+        </div>
+    </nav></div>
+            <div class="bd-sidebar__bottom">
+                <!-- To handle the deprecated key -->
+                
+                <div class="navbar_extra_footer">
+                <div>
+        <p>Book version 2022.6</p>
+    </div>
+    
+                </div>
+                
+            </div>
+        </div>
+        <div id="rtd-footer-container"></div>
+    </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fspark-analysis/cramer_v.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/spark-analysis/cramer_v.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Calculating Cramér’s V from a Spark DataFrame</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-cramer-s-v">What is Cramér’s V?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cramer-s-v-in-spark">Cramér’s V in Spark:</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cramer-s-v-example-1-cal-year-and-animal-type">Cramér’s V Example 1: <code class="docutils literal notranslate"><span class="pre">cal_year</span></code> and <code class="docutils literal notranslate"><span class="pre">animal_type</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cramer-s-v-example-2-postcode-district-and-animal-type">Cramér’s V Example 2: <code class="docutils literal notranslate"><span class="pre">postcode_district</span></code> and <code class="docutils literal notranslate"><span class="pre">animal_type</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#potential-issue-with-crosstab-or-sdf-crosstab">Potential Issue with <code class="docutils literal notranslate"><span class="pre">.crosstab</span></code> or <code class="docutils literal notranslate"><span class="pre">sdf_crosstab()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further resources</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="calculating-cramer-s-v-from-a-spark-dataframe">
+<h1>Calculating Cramér’s V from a Spark DataFrame<a class="headerlink" href="#calculating-cramer-s-v-from-a-spark-dataframe" title="Permalink to this heading">#</a></h1>
+<section id="what-is-cramer-s-v">
+<h2>What is Cramér’s V?<a class="headerlink" href="#what-is-cramer-s-v" title="Permalink to this heading">#</a></h2>
+<p>Cramér’s V is a statistical measure of an association between two nominal variables, giving a value between 0 and 1 inclusive. Here 0 would indicate no association and 1 indicates a strong association between the two variables. It is based on Pearson’s chi-square statistics.</p>
+<p>We calculate Cramér’s V as follows:</p>
+<div class="math notranslate nohighlight">
+\[ \text{Cramer's V} = \sqrt{\dfrac{\dfrac{\chi^2}{n}}{\min (c-1,r-1)}}, \]</div>
+<p>where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\chi^2\)</span> is the Chi-squared statistic,</p></li>
+<li><p><span class="math notranslate nohighlight">\(n\)</span> is the number of samples,</p></li>
+<li><p><span class="math notranslate nohighlight">\(r\)</span> is the number of rows,</p></li>
+<li><p><span class="math notranslate nohighlight">\(c\)</span> is the number of columns.</p></li>
+</ul>
+<p>In some literature you may see the Phi coefficient used (<span class="math notranslate nohighlight">\(\phi\)</span>), where <span class="math notranslate nohighlight">\(\phi^2 = \chi^2/n\)</span>.</p>
+</section>
+<section id="cramer-s-v-in-spark">
+<h2>Cramér’s V in Spark:<a class="headerlink" href="#cramer-s-v-in-spark" title="Permalink to this heading">#</a></h2>
+<p>Although there is not an in built method for calculating this statistic in base python, is it reasonably straightforward using <code class="docutils literal notranslate"><span class="pre">numpy</span></code> and <code class="docutils literal notranslate"><span class="pre">scipy.stats</span></code> packages. An example of this can be found <a class="reference external" href="https://www.statology.org/cramers-v-in-python/">online here</a>.
+A similar example for R is linked <a class="reference external" href="https://www.statology.org/cramers-v-in-r/">here</a>.</p>
+<p>To calculate the Cramér V statistic, we will need to first calculate the <span class="math notranslate nohighlight">\(\chi^2\)</span> statistic. In python we will utilise <code class="docutils literal notranslate"><span class="pre">scipy.stats.chi2_contingency</span></code> and <code class="docutils literal notranslate"><span class="pre">chisq.test</span></code> in R. Both these functions will take a matrix like input of a contingency table / pair-wise frequency table. Both Pyspark and SparklyR have inbuilt functions which can produce these tables (<code class="docutils literal notranslate"><span class="pre">crosstab</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_crosstab</span></code>) as we will see shortly.</p>
+<p>Due to Pyspark and SparklyR’s differences to classical python and R, we need to consider how we can calculate Cramér’s V when using Spark DataFrames.
+First we will import the needed packages, start a spark session and load the rescue data.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-0-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-0-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
+<span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="k">as</span> <span class="nn">stats</span>
+
+
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;cramer-v&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
+
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    
+
+<span class="n">rescue_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_clean_path&quot;</span><span class="p">]</span>
+<span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">)</span>
+
+<span class="n">rescue</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span><span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s1">&#39;animal_group&#39;</span><span class="p">,</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s1">&#39;postcodedistrict&#39;</span><span class="p">,</span><span class="s1">&#39;postcode_district&#39;</span><span class="p">)</span>
+          <span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+
+<span class="n">default_config</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">()</span>
+
+<span class="n">sc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
+<span class="w">    </span><span class="n">master</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;local[2]&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">app_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;cramer-v&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">default_config</span><span class="p">)</span>
+
+<span class="n">config</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">yaml</span><span class="o">::</span><span class="nf">yaml.load_file</span><span class="p">(</span><span class="s">&quot;ons-spark/config.yaml&quot;</span><span class="p">)</span>
+<span class="n">rescue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_parquet</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">rescue_clean_path</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">infer_schema</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="n">rescue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">rename</span><span class="p">(</span>
+<span class="w">                    </span><span class="n">animal_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">animal_group</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">postcode_district</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">postcodedistrict</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<p>As Cramér V is a measure of how two variables are associated, it makes sense for us to select two variables which we either believe will or will not have some level of association. For our first example we will select the <code class="docutils literal notranslate"><span class="pre">cal_year</span></code> and <code class="docutils literal notranslate"><span class="pre">animal_type</span></code> columns. following this we will compare <code class="docutils literal notranslate"><span class="pre">postcode_district</span></code> and <code class="docutils literal notranslate"><span class="pre">animal_type</span></code>.</p>
+<section id="cramer-s-v-example-1-cal-year-and-animal-type">
+<h3>Cramér’s V Example 1: <code class="docutils literal notranslate"><span class="pre">cal_year</span></code> and <code class="docutils literal notranslate"><span class="pre">animal_type</span></code><a class="headerlink" href="#cramer-s-v-example-1-cal-year-and-animal-type" title="Permalink to this heading">#</a></h3>
+<p>Using either <code class="docutils literal notranslate"><span class="pre">.crosstab()</span></code> or <code class="docutils literal notranslate"><span class="pre">sdf_crosstab()</span></code>, we can calculate a pair-wise frequency table of the <code class="docutils literal notranslate"><span class="pre">id</span></code> and <code class="docutils literal notranslate"><span class="pre">value</span></code> columns (a.k.a. contingency table). We will generate this table and convert it to a pandas DataFrame.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-1-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-1-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">freq_spark</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="s1">&#39;cal_year&#39;</span><span class="p">,</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span>
+<span class="n">freq_pandas</span> <span class="o">=</span> <span class="n">freq_spark</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+<span class="n">freq_pandas</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">freq_spark</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_crosstab</span><span class="p">(</span><span class="n">rescue</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;cal_year&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;animal_type&#39;</span><span class="p">)</span><span class="w"> </span>
+<span class="nf">glimpse</span><span class="p">(</span><span class="n">freq_spark</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-2-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-2-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>  cal_year_animal_type  Bird  Budgie  Bull  Cat  Cow  Deer  Dog  Ferret  Fish  \
+0                 2014   110       0     0  298    1     5   90       0     0   
+1                 2013    85       0     0  313    0     7   93       0     0   
+2                 2018   126       1     0  305    0    16   91       1     0   
+3                 2015   106       0     0  263    0     6   88       1     0   
+4                 2011   120       1     0  309    0     9  103       2     0   
+
+           ...            Pigeon  Rabbit  Sheep  Snake  Squirrel  Tortoise  \
+0          ...                 1       3      0      0         2         0   
+1          ...                 1       0      0      2         7         0   
+2          ...                 1       2      0      1         5         0   
+3          ...                 0       0      1      0         5         1   
+4          ...                 0       0      0      0         4         0   
+
+   Unknown - Animal Rescue From Water - Farm Animal  \
+0                                                 1   
+1                                                 0   
+2                                                 0   
+3                                                 0   
+4                                                 0   
+
+   Unknown - Domestic Animal Or Pet  Unknown - Heavy Livestock Animal  \
+0                                29                                 0   
+1                                19                                 2   
+2                                 7                                 2   
+3                                29                                 0   
+4                                13                                 8   
+
+   Unknown - Wild Animal  
+0                      7  
+1                     12  
+2                      5  
+3                      7  
+4                      0  
+
+[5 rows x 27 columns]
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Rows: ??
+Columns: 27
+Database: spark_connection
+$ cal_year_animal_type                               &lt;chr&gt; &quot;2014&quot;, &quot;2013&quot;, &quot;20…
+$ Bird                                               &lt;dbl&gt; 110, 85, 126, 106, …
+$ Budgie                                             &lt;dbl&gt; 0, 0, 1, 0, 1, 0, 0…
+$ Bull                                               &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0…
+$ Cat                                                &lt;dbl&gt; 298, 313, 305, 263,…
+$ Cow                                                &lt;dbl&gt; 1, 0, 0, 0, 0, 3, 0…
+$ Deer                                               &lt;dbl&gt; 5, 7, 16, 6, 9, 7, …
+$ Dog                                                &lt;dbl&gt; 90, 93, 91, 88, 103…
+$ Ferret                                             &lt;dbl&gt; 0, 0, 1, 1, 2, 1, 0…
+$ Fish                                               &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0…
+$ Fox                                                &lt;dbl&gt; 22, 25, 33, 21, 26,…
+$ Goat                                               &lt;dbl&gt; 1, 0, 0, 0, 0, 0, 0…
+$ Hamster                                            &lt;dbl&gt; 1, 3, 0, 0, 3, 0, 0…
+$ Hedgehog                                           &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0…
+$ Horse                                              &lt;dbl&gt; 12, 16, 12, 12, 22,…
+$ Lamb                                               &lt;dbl&gt; 0, 0, 0, 0, 0, 1, 0…
+$ Lizard                                             &lt;dbl&gt; 0, 0, 1, 0, 0, 0, 0…
+$ Pigeon                                             &lt;dbl&gt; 1, 1, 1, 0, 0, 0, 0…
+$ Rabbit                                             &lt;dbl&gt; 3, 0, 2, 0, 0, 0, 0…
+$ Sheep                                              &lt;dbl&gt; 0, 0, 0, 1, 0, 1, 0…
+$ Snake                                              &lt;dbl&gt; 0, 2, 1, 0, 0, 0, 0…
+$ Squirrel                                           &lt;dbl&gt; 2, 7, 5, 5, 4, 4, 1…
+$ Tortoise                                           &lt;dbl&gt; 0, 0, 0, 1, 0, 0, 0…
+$ `Unknown - Animal Rescue From Water - Farm Animal` &lt;dbl&gt; 1, 0, 0, 0, 0, 1, 1…
+$ `Unknown - Domestic Animal Or Pet`                 &lt;dbl&gt; 29, 19, 7, 29, 13, …
+$ `Unknown - Heavy Livestock Animal`                 &lt;dbl&gt; 0, 2, 2, 0, 8, 4, 0…
+$ `Unknown - Wild Animal`                            &lt;dbl&gt; 7, 12, 5, 7, 0, 4, …
+</pre></div>
+</div>
+</div></div>
+<p>Now that we have converted out data into a contingency table, we need to be careful about converting this into a matrix or array type variable. If we do this without considering the <code class="docutils literal notranslate"><span class="pre">CalYear_animal_type</span></code> column, we will end up with some string within our matrix. We would spot this issue when moving forward to use <code class="docutils literal notranslate"><span class="pre">.chi2_contingency()</span></code>, as we would get a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code> raised. We need to find some way of dealing with our column, such that it is not converted when changing our pandas DataFrame into a numpy array. We do this by setting the <code class="docutils literal notranslate"><span class="pre">cal_year_animal_type</span></code> column as the index of our pandas dataframe, as neither the index or column headers are converted into a numpy array, just the internal values are extracted.</p>
+<p>A type issue is also raised in R, however we will deal with this slightly differently. Instead of changing the index of our DataFrame, we will simply drop the <code class="docutils literal notranslate"><span class="pre">cal_year_animal_type</span></code> column. This allows us to pass the frequency table directly into the <code class="docutils literal notranslate"><span class="pre">chisq.test()</span></code> function.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-3-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-3-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">freq_pandas_reindexed</span> <span class="o">=</span> <span class="n">freq_pandas</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;cal_year_animal_type&#39;</span><span class="p">)</span>
+<span class="n">freq_numpy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">freq_pandas_reindexed</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">freq_r</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">freq_spark</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span>
+<span class="n">freq_r</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">subset</span><span class="p">(</span><span class="n">freq_r</span><span class="p">,</span><span class="w"> </span><span class="n">select</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">cal_year_animal_type</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<p>As we are wanting to calculate Cramér’s V for two examples, we will define a function to perform the <span class="math notranslate nohighlight">\(\chi^2\)</span> test and calculate the statistic. We only need the <span class="math notranslate nohighlight">\(\chi^2\)</span> statistic, as such we extract this from the <code class="docutils literal notranslate"><span class="pre">chi2_contingency</span></code>/<code class="docutils literal notranslate"><span class="pre">chisq.test</span></code> functions using <code class="docutils literal notranslate"><span class="pre">[0]</span></code> in python and <code class="docutils literal notranslate"><span class="pre">$statistic</span></code> in R. <code class="docutils literal notranslate"><span class="pre">chisq.test</span></code> has additional text included in the output, to remove this we cast this output as a double, keeping only the numerical value.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-4-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-4-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-4-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_cramer_v</span><span class="p">(</span><span class="n">freq_numpy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the Cramer&#39;s V Statistic for the given pair-wise frequency table</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    freq_numpy : np.array</span>
+<span class="sd">        pair-wise frequency table / contingency table as a numpy array. </span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    cramer_v_statistic :  float</span>
+<span class="sd">        the Cramer&#39;s V statistic for the given contingency table</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Chi-squared test statistic, sample size, and minimum of rows and columns</span>
+    <span class="n">chi_sqrd</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">chi2_contingency</span><span class="p">(</span><span class="n">freq_numpy</span><span class="p">,</span> <span class="n">correction</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">freq_numpy</span><span class="p">)</span>
+    <span class="n">min_dim</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">freq_numpy</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+
+    <span class="c1">#calculate Cramer&#39;s V </span>
+    <span class="n">cramer_v_statistic</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">chi_sqrd</span><span class="o">/</span><span class="n">n</span><span class="p">)</span> <span class="o">/</span> <span class="n">min_dim</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cramer_v_statistic</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">get_cramer_v</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">freq_r</span><span class="p">){</span>
+<span class="w">  </span><span class="c1"># Get cramer V statistic</span>
+<span class="w">  </span><span class="c1"># Returns the Cramer&#39;s V Statistic for the given</span>
+<span class="w">  </span><span class="c1"># pair-wise frequency table</span>
+<span class="w">  </span><span class="c1"># </span>
+<span class="w">  </span><span class="c1"># Param: </span>
+<span class="w">  </span><span class="c1"># freq_r: dataframe. pair-wise frequency / contingency table not containing strings</span>
+<span class="w">  </span><span class="c1">#</span>
+<span class="w">  </span><span class="c1"># Return:</span>
+<span class="w">  </span><span class="c1"># cramer_v_statistic: numeric. The Cramer&#39;s V statistic </span>
+<span class="w">  </span><span class="c1"># </span>
+
+<span class="w">  </span><span class="c1"># Chi-squared test statistic, sample size, and minimum of rows and columns</span>
+<span class="w">  </span><span class="n">chi_sqrd</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">chisq.test</span><span class="p">(</span><span class="n">freq_r</span><span class="p">,</span><span class="w"> </span><span class="n">correct</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="o">$</span><span class="n">statistic</span>
+<span class="w">  </span><span class="n">chi_sqrd</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.double</span><span class="p">(</span><span class="n">chi_sqrd</span><span class="p">)</span>
+<span class="w">  </span><span class="n">n</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">freq_r</span><span class="p">)</span>
+<span class="w">  </span><span class="n">min_dim</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">min</span><span class="p">(</span><span class="nf">dim</span><span class="p">(</span><span class="n">freq_r</span><span class="p">))</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1</span>
+
+<span class="w">  </span><span class="c1"># calculate Cramer&#39;s V </span>
+<span class="w">  </span><span class="n">cramer_v_statistic</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sqrt</span><span class="p">((</span><span class="n">chi_sqrd</span><span class="o">/</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">min_dim</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">return</span><span class="p">(</span><span class="n">cramer_v_statistic</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Following the preprocessing and consideration of column names, we can now apply the <code class="docutils literal notranslate"><span class="pre">get_cramer_v()</span></code> function to our arrays</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-5-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-5-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-5-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">get_cramer_v</span><span class="p">(</span><span class="n">freq_numpy</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">get_cramer_v</span><span class="p">(</span><span class="n">freq_r</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-6-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-6-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-6-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>0.086908868435997877
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-6-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] 0.08690887
+</pre></div>
+</div>
+</div></div>
+<p>We now get an Cramér V of 0.0869, telling us that there is little to no association between <code class="docutils literal notranslate"><span class="pre">cal_year</span></code> and <code class="docutils literal notranslate"><span class="pre">animal_type</span></code>.
+This example also validates both Python and R methods against each other, as we get identical outputs.</p>
+</section>
+<section id="cramer-s-v-example-2-postcode-district-and-animal-type">
+<h3>Cramér’s V Example 2: <code class="docutils literal notranslate"><span class="pre">postcode_district</span></code> and <code class="docutils literal notranslate"><span class="pre">animal_type</span></code><a class="headerlink" href="#cramer-s-v-example-2-postcode-district-and-animal-type" title="Permalink to this heading">#</a></h3>
+<p>Using the earlier defined function, just need to repeat the cross tabbing exercise before applying our function. This time we will select <code class="docutils literal notranslate"><span class="pre">postcode_district</span></code> instead of <code class="docutils literal notranslate"><span class="pre">cal_year</span></code>.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-7-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-7-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-7-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-7-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">freq_spark</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="s1">&#39;postcode_district&#39;</span><span class="p">,</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span>
+<span class="n">freq_pandas</span> <span class="o">=</span> <span class="n">freq_spark</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+<span class="n">freq_pandas_reindexed</span> <span class="o">=</span> <span class="n">freq_pandas</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;postcode_district_animal_type&#39;</span><span class="p">)</span>
+<span class="n">freq_numpy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">freq_pandas_reindexed</span><span class="p">)</span>
+<span class="n">get_cramer_v</span><span class="p">(</span><span class="n">freq_numpy</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-7-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-7-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">freq_spark</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_crosstab</span><span class="p">(</span><span class="n">rescue</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;postcode_district&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;animal_type&#39;</span><span class="p">)</span><span class="w"> </span>
+<span class="n">freq_r</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">freq_spark</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span>
+<span class="n">freq_r</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">subset</span><span class="p">(</span><span class="n">freq_r</span><span class="p">,</span><span class="w"> </span><span class="n">select</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">postcode_district_animal_type</span><span class="p">)</span>
+<span class="nf">get_cramer_v</span><span class="p">(</span><span class="n">freq_r</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-8-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-8-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-8-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-8-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>0.29083878195595769
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-8-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-8-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] 0.2908388
+</pre></div>
+</div>
+</div></div>
+<p>This time we get a cramér V value of 0.29, suggesting a slight association between <code class="docutils literal notranslate"><span class="pre">postcode_district</span></code> and <code class="docutils literal notranslate"><span class="pre">animal_type</span></code>.</p>
+</section>
+</section>
+<section id="potential-issue-with-crosstab-or-sdf-crosstab">
+<h2>Potential Issue with <code class="docutils literal notranslate"><span class="pre">.crosstab</span></code> or <code class="docutils literal notranslate"><span class="pre">sdf_crosstab()</span></code><a class="headerlink" href="#potential-issue-with-crosstab-or-sdf-crosstab" title="Permalink to this heading">#</a></h2>
+<p>During the testing for this page, we noted a few common issues which may arise when attempting to calculate Cramér’s V statistic. Specifically this issue is linked to <code class="docutils literal notranslate"><span class="pre">.crosstab</span></code> and <code class="docutils literal notranslate"><span class="pre">sdf_crosstab()</span></code> functions for data which has not been fully pre-processed.</p>
+<p>For this example we take the unprocessed rescue dataset. Here in <code class="docutils literal notranslate"><span class="pre">animal_type</span></code>, we have values for cat with both a upper and lower case first letter. Here we will use the <code class="docutils literal notranslate"><span class="pre">tryCatch()</span></code> function to handle the error message, this is similar to pythons <code class="docutils literal notranslate"><span class="pre">try:</span> <span class="pre">except:</span></code> statements (For more info see <a class="reference external" href="https://cran.r-project.org/web/packages/tryCatchLog/vignettes/tryCatchLog-intro.html"><code class="docutils literal notranslate"><span class="pre">Error</span> <span class="pre">handing</span> <span class="pre">in</span> <span class="pre">R</span></code></a> or <a class="reference external" href="https://docs.python.org/3/tutorial/errors.html"><code class="docutils literal notranslate"><span class="pre">Errors</span> <span class="pre">and</span> <span class="pre">Exceptions</span> <span class="pre">(Python)</span></code></a>).</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-9-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-9-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-9-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-9-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">traceback</span>
+
+<span class="n">rescue_path_csv</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path_csv&quot;</span><span class="p">]</span>
+<span class="n">rescue_raw</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">rescue_path_csv</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">rescue_raw</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue_raw</span><span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s1">&#39;AnimalGroupParent&#39;</span><span class="p">,</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s1">&#39;IncidentNumber&#39;</span><span class="p">,</span><span class="s1">&#39;incident_number&#39;</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s1">&#39;CalYear&#39;</span><span class="p">,</span><span class="s1">&#39;cal_year&#39;</span><span class="p">)</span>
+          <span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+      <span class="n">rescue_raw</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="s1">&#39;cal_year&#39;</span><span class="p">,</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+  <span class="nb">print</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-9-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-9-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_raw</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_csv</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">rescue_path_csv</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">infer_schema</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="n">rescue_raw</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue_raw</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">rename</span><span class="p">(</span>
+<span class="w">        </span><span class="n">incident_number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">IncidentNumber</span><span class="p">,</span>
+<span class="w">        </span><span class="n">animal_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AnimalGroupParent</span><span class="p">,</span>
+<span class="w">        </span><span class="n">cal_year</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CalYear</span><span class="p">)</span>
+
+<span class="nf">tryCatch</span><span class="p">(</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_crosstab</span><span class="p">(</span><span class="n">rescue_raw</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;cal_year&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;animal_type&#39;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">e</span><span class="p">){</span>
+<span class="w">    </span><span class="nf">message</span><span class="p">(</span><span class="s">&#39;Error message from Spark&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-10-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-10-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-10-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-10-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Traceback (most recent call last):
+  File &quot;/opt/cloudera/parcels/CDH/lib/spark/python/pyspark/sql/utils.py&quot;, line 63, in deco
+    return f(*a, **kw)
+  File &quot;/usr/local/lib/python3.6/dist-packages/py4j/protocol.py&quot;, line 328, in get_return_value
+    format(target_id, &quot;.&quot;, name), value)
+py4j.protocol.Py4JJavaError: An error occurred while calling o479.crosstab.
+: org.apache.spark.sql.AnalysisException: Reference &#39;Cat&#39; is ambiguous, could be: Cat, Cat.;
+	at org.apache.spark.sql.catalyst.expressions.package$AttributeSeq.resolve(package.scala:259)
+	at org.apache.spark.sql.catalyst.plans.logical.LogicalPlan.resolveQuoted(LogicalPlan.scala:121)
+	at org.apache.spark.sql.Dataset.resolve(Dataset.scala:221)
+	at org.apache.spark.sql.Dataset.col(Dataset.scala:1268)
+	at org.apache.spark.sql.DataFrameNaFunctions.org$apache$spark$sql$DataFrameNaFunctions$$fillCol(DataFrameNaFunctions.scala:443)
+	at org.apache.spark.sql.DataFrameNaFunctions$$anonfun$7.apply(DataFrameNaFunctions.scala:502)
+	at org.apache.spark.sql.DataFrameNaFunctions$$anonfun$7.apply(DataFrameNaFunctions.scala:492)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:234)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:234)
+	at scala.collection.IndexedSeqOptimized$class.foreach(IndexedSeqOptimized.scala:33)
+	at scala.collection.mutable.ArrayOps$ofRef.foreach(ArrayOps.scala:186)
+	at scala.collection.TraversableLike$class.map(TraversableLike.scala:234)
+	at scala.collection.mutable.ArrayOps$ofRef.map(ArrayOps.scala:186)
+	at org.apache.spark.sql.DataFrameNaFunctions.fillValue(DataFrameNaFunctions.scala:492)
+	at org.apache.spark.sql.DataFrameNaFunctions.fill(DataFrameNaFunctions.scala:179)
+	at org.apache.spark.sql.DataFrameNaFunctions.fill(DataFrameNaFunctions.scala:163)
+	at org.apache.spark.sql.DataFrameNaFunctions.fill(DataFrameNaFunctions.scala:140)
+	at org.apache.spark.sql.execution.stat.StatFunctions$.crossTabulate(StatFunctions.scala:225)
+	at org.apache.spark.sql.DataFrameStatFunctions.crosstab(DataFrameStatFunctions.scala:215)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:244)
+	at py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:357)
+	at py4j.Gateway.invoke(Gateway.java:282)
+	at py4j.commands.AbstractCommand.invokeMethod(AbstractCommand.java:132)
+	at py4j.commands.CallCommand.execute(CallCommand.java:79)
+	at py4j.GatewayConnection.run(GatewayConnection.java:238)
+	at java.lang.Thread.run(Thread.java:745)
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File &quot;&lt;ipython-input-13-6eb2220a558e&gt;&quot;, line 12, in &lt;module&gt;
+    rescue_raw.crosstab(&#39;cal_year&#39;,&#39;animal_type&#39;)
+  File &quot;/opt/cloudera/parcels/CDH/lib/spark/python/pyspark/sql/dataframe.py&quot;, line 1945, in crosstab
+    return DataFrame(self._jdf.stat().crosstab(col1, col2), self.sql_ctx)
+  File &quot;/usr/local/lib/python3.6/dist-packages/py4j/java_gateway.py&quot;, line 1257, in __call__
+    answer, self.gateway_client, self.target_id, self.name)
+  File &quot;/opt/cloudera/parcels/CDH/lib/spark/python/pyspark/sql/utils.py&quot;, line 69, in deco
+    raise AnalysisException(s.split(&#39;: &#39;, 1)[1], stackTrace)
+pyspark.sql.utils.AnalysisException: &quot;Reference &#39;Cat&#39; is ambiguous, could be: Cat, Cat.;&quot;
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-10-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-10-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>&lt;simpleError: org.apache.spark.sql.AnalysisException: Reference &#39;Cat&#39; is ambiguous, could be: Cat, Cat.;
+	at org.apache.spark.sql.catalyst.expressions.package$AttributeSeq.resolve(package.scala:259)
+	at org.apache.spark.sql.catalyst.plans.logical.LogicalPlan.resolveQuoted(LogicalPlan.scala:121)
+	at org.apache.spark.sql.Dataset.resolve(Dataset.scala:221)
+	at org.apache.spark.sql.Dataset.col(Dataset.scala:1268)
+	at org.apache.spark.sql.DataFrameNaFunctions.org$apache$spark$sql$DataFrameNaFunctions$$fillCol(DataFrameNaFunctions.scala:443)
+	at org.apache.spark.sql.DataFrameNaFunctions$$anonfun$7.apply(DataFrameNaFunctions.scala:502)
+	at org.apache.spark.sql.DataFrameNaFunctions$$anonfun$7.apply(DataFrameNaFunctions.scala:492)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:234)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:234)
+	at scala.collection.IndexedSeqOptimized$class.foreach(IndexedSeqOptimized.scala:33)
+	at scala.collection.mutable.ArrayOps$ofRef.foreach(ArrayOps.scala:186)
+	at scala.collection.TraversableLike$class.map(TraversableLike.scala:234)
+	at scala.collection.mutable.ArrayOps$ofRef.map(ArrayOps.scala:186)
+	at org.apache.spark.sql.DataFrameNaFunctions.fillValue(DataFrameNaFunctions.scala:492)
+	at org.apache.spark.sql.DataFrameNaFunctions.fill(DataFrameNaFunctions.scala:179)
+	at org.apache.spark.sql.DataFrameNaFunctions.fill(DataFrameNaFunctions.scala:163)
+	at org.apache.spark.sql.DataFrameNaFunctions.fill(DataFrameNaFunctions.scala:140)
+	at org.apache.spark.sql.execution.stat.StatFunctions$.crossTabulate(StatFunctions.scala:225)
+	at org.apache.spark.sql.DataFrameStatFunctions.crosstab(DataFrameStatFunctions.scala:215)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at sparklyr.Invoke.invoke(invoke.scala:161)
+	at sparklyr.StreamHandler$$anonfun$handleMethodCall$1.apply$mcVI$sp(stream.scala:130)
+	at sparklyr.StreamHandler$$anonfun$handleMethodCall$1.apply(stream.scala:128)
+	at sparklyr.StreamHandler$$anonfun$handleMethodCall$1.apply(stream.scala:128)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:234)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:234)
+	at scala.collection.immutable.Range.foreach(Range.scala:160)
+	at scala.collection.TraversableLike$class.map(TraversableLike.scala:234)
+	at scala.collection.AbstractTraversable.map(Traversable.scala:104)
+	at sparklyr.StreamHandler.handleMethodCall(stream.scala:128)
+	at sparklyr.StreamHandler.read(stream.scala:62)
+	at sparklyr.BackendHandler$$anonfun$channelRead0$1.apply$mcV$sp(handler.scala:60)
+	at scala.util.control.Breaks.breakable(Breaks.scala:38)
+	at sparklyr.BackendHandler.channelRead0(handler.scala:40)
+	at sparklyr.BackendHandler.channelRead0(handler.scala:14)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:105)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:374)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:360)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:352)
+	at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:102)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:374)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:360)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:352)
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:328)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:302)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:374)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:360)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:352)
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1422)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:374)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:360)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:931)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:163)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:700)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:635)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:552)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:514)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$6.run(SingleThreadEventExecutor.java:1044)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.lang.Thread.run(Thread.java:745)
+&gt;
+</pre></div>
+</div>
+</div></div>
+<p>From the error message, we can see that <code class="docutils literal notranslate"><span class="pre">Cat</span></code> is ambigious. When we look closer at the distinct values within the <code class="docutils literal notranslate"><span class="pre">animal_type</span></code> column, we will see there is both <code class="docutils literal notranslate"><span class="pre">cat</span></code> and <code class="docutils literal notranslate"><span class="pre">Cat</span></code> present. This is something to be aware of if you wish to use either crosstab function in the future.</p>
+<p><em>Note</em> the exact error message you recive may depend on the version of Pyspark or sparklyR you are using, but this still relates to values within the <code class="docutils literal notranslate"><span class="pre">animal_type</span></code> column as mentioned above.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-11-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-11-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-11-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-11-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_raw</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">distinct</span><span class="p">()</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s1">&#39;animal_type&#39;</span><span class="p">,</span><span class="n">ascending</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">27</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-11-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-11-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue_raw</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">animal_type</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="nf">distinct</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">arrange</span><span class="p">(</span><span class="n">animal_type</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="m">27</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-12-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-12-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-12-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-12-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+--------------------+
+|         animal_type|
++--------------------+
+|                Bird|
+|              Budgie|
+|                Bull|
+|                 Cat|
+|                 Cow|
+|                Deer|
+|                 Dog|
+|              Ferret|
+|                Fish|
+|                 Fox|
+|                Goat|
+|             Hamster|
+|            Hedgehog|
+|               Horse|
+|                Lamb|
+|              Lizard|
+|              Pigeon|
+|              Rabbit|
+|               Sheep|
+|               Snake|
+|            Squirrel|
+|            Tortoise|
+|Unknown - Animal ...|
+|Unknown - Domesti...|
+|Unknown - Heavy L...|
+|Unknown - Wild An...|
+|                 cat|
++--------------------+
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-12-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-12-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># Source:     spark&lt;?&gt; [?? x 1]
+# Ordered by: animal_type
+   animal_type                                     
+   &lt;chr&gt;                                           
+ 1 Bird                                            
+ 2 Budgie                                          
+ 3 Bull                                            
+ 4 Cat                                             
+ 5 Cow                                             
+ 6 Deer                                            
+ 7 Dog                                             
+ 8 Ferret                                          
+ 9 Fish                                            
+10 Fox                                             
+11 Goat                                            
+12 Hamster                                         
+13 Hedgehog                                        
+14 Horse                                           
+15 Lamb                                            
+16 Lizard                                          
+17 Pigeon                                          
+18 Rabbit                                          
+19 Sheep                                           
+20 Snake                                           
+21 Squirrel                                        
+22 Tortoise                                        
+23 Unknown - Animal rescue from water - Farm animal
+24 Unknown - Domestic Animal Or Pet                
+25 Unknown - Heavy Livestock Animal                
+26 Unknown - Wild Animal                           
+27 cat                                             
+</pre></div>
+</div>
+</div></div>
+<p>This is something to consider when attempting to calculate Cramér’s V or a <span class="math notranslate nohighlight">\(\chi^2\)</span> statistic from a spark dataframe.</p>
+</section>
+<section id="further-resources">
+<h2>Further resources<a class="headerlink" href="#further-resources" title="Permalink to this heading">#</a></h2>
+<p>PySpark Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.apache.org/docs/3.1.3/api/python/reference/api/pyspark.sql.DataFrame.crosstab.html"><code class="docutils literal notranslate"><span class="pre">.crosstab()</span></code></a></p></li>
+</ul>
+<p>Python Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.chi2_contingency.html"><code class="docutils literal notranslate"><span class="pre">chi2_contingency()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.array.html"><code class="docutils literal notranslate"><span class="pre">array()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/tutorial/errors.html"><code class="docutils literal notranslate"><span class="pre">Errors</span> <span class="pre">and</span> <span class="pre">Exceptions</span></code></a></p></li>
+</ul>
+<p>sparklyr Documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.rdocumentation.org/packages/sparklyr/versions/1.3.1/topics/sdf_crosstab"><code class="docutils literal notranslate"><span class="pre">sdf_crosstab()</span></code></a></p></li>
+</ul>
+<p>R Documention:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/chisq.test"><code class="docutils literal notranslate"><span class="pre">chisq.test()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://cran.r-project.org/web/packages/tryCatchLog/vignettes/tryCatchLog-intro.html"><code class="docutils literal notranslate"><span class="pre">Error</span> <span class="pre">handing</span> <span class="pre">in</span> <span class="pre">R</span></code></a></p></li>
+</ul>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./spark-analysis"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="bin-continuous-variable.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Data binning</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../testing-debugging/spark-errors.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Understanding and Handling Spark Errors</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-cramer-s-v">What is Cramér’s V?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cramer-s-v-in-spark">Cramér’s V in Spark:</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cramer-s-v-example-1-cal-year-and-animal-type">Cramér’s V Example 1: <code class="docutils literal notranslate"><span class="pre">cal_year</span></code> and <code class="docutils literal notranslate"><span class="pre">animal_type</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cramer-s-v-example-2-postcode-district-and-animal-type">Cramér’s V Example 2: <code class="docutils literal notranslate"><span class="pre">postcode_district</span></code> and <code class="docutils literal notranslate"><span class="pre">animal_type</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#potential-issue-with-crosstab-or-sdf-crosstab">Potential Issue with <code class="docutils literal notranslate"><span class="pre">.crosstab</span></code> or <code class="docutils literal notranslate"><span class="pre">sdf_crosstab()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further resources</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Analysis Standards and Pipelines in Quality and Improvement, Office for National Statistics
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
