@@ -38,11 +38,10 @@ spark = (SparkSession.builder.master("local[2]")
 with open("../../../config.yaml") as f:
     config = yaml.safe_load(f)
     
-# rescue_path = config["rescue_path_csv"]
+
 rescue_path = config["rescue_clean_path"]
 rescue = spark.read.parquet(rescue_path)
-# rescue_path = "../../data/animal_rescue.csv"
-# rescue = spark.read.csv(rescue_path, header=True, inferSchema=True)
+
 rescue = (rescue.withColumnRenamed('animal_group','animal_type')
                 .withColumnRenamed('postcodedistrict','postcode_district')
           )
@@ -84,7 +83,7 @@ freq_pandas.head()
 
 ```{code-tab} r R
 
-freq_spark <- sdf_crosstab(rescue, 'cal_year', 'animal_type') 
+freq_spark <- sparklyr::sdf_crosstab(rescue, 'cal_year', 'animal_type') 
 glimpse(freq_spark)
 
 ```
@@ -186,28 +185,52 @@ As we are wanting to calculate Cramér's V for two examples, we will define a fu
 ````{tabs}
 ```{code-tab} py
 def get_cramer_v(freq_numpy):
+    """
+    Returns the Cramer's V Statistic for the given pair-wise frequency table
+
+    Parameters
+    ----------
+    freq_numpy : np.array
+        pair-wise frequency table / contingency table as a numpy array. 
+
+    Returns
+    -------
+    cramer_v_statistic :  float
+        dataframe with email metadata.
+    """
     # Chi-squared test statistic, sample size, and minimum of rows and columns
-    X2 = stats.chi2_contingency(freq_numpy, correction=False)[0]
+    chi_sqrd = stats.chi2_contingency(freq_numpy, correction=False)[0]
     n = np.sum(freq_numpy)
-    minDim = min(freq_numpy.shape)-1
+    min_dim = min(freq_numpy.shape)-1
 
     #calculate Cramer's V 
-    V = np.sqrt((X2/n) / minDim)
-    return V
+    cramer_v_statistic = np.sqrt((chi_sqrd/n) / min_dim)
+    return cramer_v_statistic
 ```
 
 ```{code-tab} r R
 
 get_cramer_v <- function(freq_r){
+  # Get cramer V statistic
+  # Returns the Cramer's V Statistic for the given
+  # pair-wise frequency table
+  # 
+  # Param: 
+  # freq_r: dataframe. pair-wise frequency / contingency table not containing strings
+  #
+  # Return:
+  # cramer_v_statistic: numeric. The Cramer's V statistic 
+  # 
+
   # Chi-squared test statistic, sample size, and minimum of rows and columns
-  X2 <- chisq.test(freq_r, correct = FALSE)$statistic
-  X2 <- as.double(X2)
+  chi_sqrd <- chisq.test(freq_r, correct = FALSE)$statistic
+  chi_sqrd <- as.double(chi_sqrd)
   n <- sum(freq_r)
-  minDim <- min(dim(freq_r)) - 1
+  min_dim <- min(dim(freq_r)) - 1
 
   # calculate Cramer's V 
-  V <- sqrt((X2/n) / minDim)
-  return(V)
+  cramer_v_statistic <- sqrt((chi_sqrd/n) / min_dim)
+  return(cramer_v_statistic)
 }
 
 ```
@@ -252,7 +275,7 @@ get_cramer_v(freq_numpy)
 
 ```{code-tab} r R
 
-freq_spark <- sdf_crosstab(rescue, 'postcode_district', 'animal_type') 
+freq_spark <- sparklyr::sdf_crosstab(rescue, 'postcode_district', 'animal_type') 
 freq_r <- freq_spark %>% collect() 
 freq_r <- subset(freq_r, select = -postcode_district_animal_type)
 get_cramer_v(freq_r)
@@ -292,7 +315,7 @@ rescue_raw <- rescue_raw %>%
 
 tryCatch(
   {
-    sdf_crosstab(rescue_raw, 'cal_year', 'animal_type')
+    sparklyr::sdf_crosstab(rescue_raw, 'cal_year', 'animal_type')
   },
   error = function(e){
     message('Error message from Spark')
@@ -375,6 +398,8 @@ tryCatch(
 ```
 ````
 From the error message, we can see that `Cat` is ambigious. When we look closer at the distinct values within the `animal_type` column, we will see there is both `cat` and `Cat` present. This is something to be aware of if you wish to use `sdf_crosstab` in the future.
+
+*Note* the exact error message you recive may depend on the version of sparklyR you are using, but this still relates to values within the `animal_type` column as mentioned above.
 ````{tabs}
 
 ```{code-tab} r R
