@@ -1,5 +1,5 @@
 cell_no,execution_count,tidy_python_output,r_output
-1,1,,
+1,2,,
 4,2,"  cal_year_animal_type  Bird  Budgie  Bull  Cat  Cow  Deer  Dog  Ferret  Fish  \
 0                 2014   110       0     0  298    1     5   90       0     0   
 1                 2013    85       0     0  313    0     7   93       0     0   
@@ -75,7 +75,58 @@ $ `Unknown - Wild Animal`                            <dbl> 7, 12, 5, 7, 0, 4, â€
 16,6,"0.29083878195595769
 ","[1] 0.2908388
 "
-19,,,"<simpleError: org.apache.spark.sql.AnalysisException: Reference 'Cat' is ambiguous, could be: Cat, Cat.;
+19,13,"Traceback (most recent call last):
+  File ""/opt/cloudera/parcels/CDH/lib/spark/python/pyspark/sql/utils.py"", line 63, in deco
+    return f(*a, **kw)
+  File ""/usr/local/lib/python3.6/dist-packages/py4j/protocol.py"", line 328, in get_return_value
+    format(target_id, ""."", name), value)
+py4j.protocol.Py4JJavaError: An error occurred while calling o479.crosstab.
+: org.apache.spark.sql.AnalysisException: Reference 'Cat' is ambiguous, could be: Cat, Cat.;
+	at org.apache.spark.sql.catalyst.expressions.package$AttributeSeq.resolve(package.scala:259)
+	at org.apache.spark.sql.catalyst.plans.logical.LogicalPlan.resolveQuoted(LogicalPlan.scala:121)
+	at org.apache.spark.sql.Dataset.resolve(Dataset.scala:221)
+	at org.apache.spark.sql.Dataset.col(Dataset.scala:1268)
+	at org.apache.spark.sql.DataFrameNaFunctions.org$apache$spark$sql$DataFrameNaFunctions$$fillCol(DataFrameNaFunctions.scala:443)
+	at org.apache.spark.sql.DataFrameNaFunctions$$anonfun$7.apply(DataFrameNaFunctions.scala:502)
+	at org.apache.spark.sql.DataFrameNaFunctions$$anonfun$7.apply(DataFrameNaFunctions.scala:492)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:234)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:234)
+	at scala.collection.IndexedSeqOptimized$class.foreach(IndexedSeqOptimized.scala:33)
+	at scala.collection.mutable.ArrayOps$ofRef.foreach(ArrayOps.scala:186)
+	at scala.collection.TraversableLike$class.map(TraversableLike.scala:234)
+	at scala.collection.mutable.ArrayOps$ofRef.map(ArrayOps.scala:186)
+	at org.apache.spark.sql.DataFrameNaFunctions.fillValue(DataFrameNaFunctions.scala:492)
+	at org.apache.spark.sql.DataFrameNaFunctions.fill(DataFrameNaFunctions.scala:179)
+	at org.apache.spark.sql.DataFrameNaFunctions.fill(DataFrameNaFunctions.scala:163)
+	at org.apache.spark.sql.DataFrameNaFunctions.fill(DataFrameNaFunctions.scala:140)
+	at org.apache.spark.sql.execution.stat.StatFunctions$.crossTabulate(StatFunctions.scala:225)
+	at org.apache.spark.sql.DataFrameStatFunctions.crosstab(DataFrameStatFunctions.scala:215)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:244)
+	at py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:357)
+	at py4j.Gateway.invoke(Gateway.java:282)
+	at py4j.commands.AbstractCommand.invokeMethod(AbstractCommand.java:132)
+	at py4j.commands.CallCommand.execute(CallCommand.java:79)
+	at py4j.GatewayConnection.run(GatewayConnection.java:238)
+	at java.lang.Thread.run(Thread.java:745)
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File ""<ipython-input-13-6eb2220a558e>"", line 12, in <module>
+    rescue_raw.crosstab('cal_year','animal_type')
+  File ""/opt/cloudera/parcels/CDH/lib/spark/python/pyspark/sql/dataframe.py"", line 1945, in crosstab
+    return DataFrame(self._jdf.stat().crosstab(col1, col2), self.sql_ctx)
+  File ""/usr/local/lib/python3.6/dist-packages/py4j/java_gateway.py"", line 1257, in __call__
+    answer, self.gateway_client, self.target_id, self.name)
+  File ""/opt/cloudera/parcels/CDH/lib/spark/python/pyspark/sql/utils.py"", line 69, in deco
+    raise AnalysisException(s.split(': ', 1)[1], stackTrace)
+pyspark.sql.utils.AnalysisException: ""Reference 'Cat' is ambiguous, could be: Cat, Cat.;""
+","<simpleError: org.apache.spark.sql.AnalysisException: Reference 'Cat' is ambiguous, could be: Cat, Cat.;
 	at org.apache.spark.sql.catalyst.expressions.package$AttributeSeq.resolve(package.scala:259)
 	at org.apache.spark.sql.catalyst.plans.logical.LogicalPlan.resolveQuoted(LogicalPlan.scala:121)
 	at org.apache.spark.sql.Dataset.resolve(Dataset.scala:221)
@@ -142,7 +193,38 @@ $ `Unknown - Wild Animal`                            <dbl> 7, 12, 5, 7, 0, 4, â€
 	at java.lang.Thread.run(Thread.java:745)
 >
 "
-21,,,"# Source: spark<?> [?? x 1]
+22,19,"+--------------------+
+|         animal_type|
++--------------------+
+|                Bird|
+|              Budgie|
+|                Bull|
+|                 Cat|
+|                 Cow|
+|                Deer|
+|                 Dog|
+|              Ferret|
+|                Fish|
+|                 Fox|
+|                Goat|
+|             Hamster|
+|            Hedgehog|
+|               Horse|
+|                Lamb|
+|              Lizard|
+|              Pigeon|
+|              Rabbit|
+|               Sheep|
+|               Snake|
+|            Squirrel|
+|            Tortoise|
+|Unknown - Animal ...|
+|Unknown - Domesti...|
+|Unknown - Heavy L...|
+|Unknown - Wild An...|
+|                 cat|
++--------------------+
+","# Source: spark<?> [?? x 1]
    animal_type                                     
    <chr>                                           
  1 Bird                                            

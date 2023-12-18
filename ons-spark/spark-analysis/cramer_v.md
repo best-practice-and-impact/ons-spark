@@ -196,7 +196,7 @@ def get_cramer_v(freq_numpy):
     Returns
     -------
     cramer_v_statistic :  float
-        dataframe with email metadata.
+        the Cramer's V statistic for the given contingency table
     """
     # Chi-squared test statistic, sample size, and minimum of rows and columns
     chi_sqrd = stats.chi2_contingency(freq_numpy, correction=False)[0]
@@ -296,13 +296,29 @@ get_cramer_v(freq_r)
 ````
 This time we get a cramér V value of 0.29, suggesting a slight association between `postcode_district` and `animal_type`.
 
-### Potential Issue with `sdf_crosstab()`
-During the testing for this page, we noted a few common issues which may arise when attempting to calculate Cramér's V statistic. Specifically this issue is linked to `sdf_crosstab()` function for data which has not been fully pre processed.
+### Potential Issue with `.crosstab` or `sdf_crosstab()`
+During the testing for this page, we noted a few common issues which may arise when attempting to calculate Cramér's V statistic. Specifically this issue is linked to `.crosstab` and `sdf_crosstab()` functions for data which has not been fully pre-processed.
 
 For this example we take the unprocessed rescue dataset. Here in `animal_type`, we have values for cat with both a upper and lower case first letter. Here we will use the `tryCatch()` function to handle the error message, this is similar to pythons `try: except:` statements (For more info see [`Error handing in R`](https://cran.r-project.org/web/packages/tryCatchLog/vignettes/tryCatchLog-intro.html) or [`Errors and Exceptions (Python)`](https://docs.python.org/3/tutorial/errors.html)).
 
 
 ````{tabs}
+```{code-tab} py
+import traceback
+
+rescue_path_csv = config["rescue_path_csv"]
+rescue_raw = spark.read.csv(rescue_path_csv, header=True, inferSchema=True)
+
+rescue_raw = (rescue_raw.withColumnRenamed('AnimalGroupParent','animal_type')
+                .withColumnRenamed('IncidentNumber','incident_number')
+                .withColumnRenamed('CalYear','cal_year')
+          )
+
+try:
+      rescue_raw.crosstab('cal_year','animal_type')
+except Exception:
+  print(traceback.format_exc())
+```
 
 ```{code-tab} r R
 
@@ -327,6 +343,60 @@ tryCatch(
 ````
 
 ````{tabs}
+
+```{code-tab} plaintext Python Output
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH/lib/spark/python/pyspark/sql/utils.py", line 63, in deco
+    return f(*a, **kw)
+  File "/usr/local/lib/python3.6/dist-packages/py4j/protocol.py", line 328, in get_return_value
+    format(target_id, ".", name), value)
+py4j.protocol.Py4JJavaError: An error occurred while calling o479.crosstab.
+: org.apache.spark.sql.AnalysisException: Reference 'Cat' is ambiguous, could be: Cat, Cat.;
+	at org.apache.spark.sql.catalyst.expressions.package$AttributeSeq.resolve(package.scala:259)
+	at org.apache.spark.sql.catalyst.plans.logical.LogicalPlan.resolveQuoted(LogicalPlan.scala:121)
+	at org.apache.spark.sql.Dataset.resolve(Dataset.scala:221)
+	at org.apache.spark.sql.Dataset.col(Dataset.scala:1268)
+	at org.apache.spark.sql.DataFrameNaFunctions.org$apache$spark$sql$DataFrameNaFunctions$$fillCol(DataFrameNaFunctions.scala:443)
+	at org.apache.spark.sql.DataFrameNaFunctions$$anonfun$7.apply(DataFrameNaFunctions.scala:502)
+	at org.apache.spark.sql.DataFrameNaFunctions$$anonfun$7.apply(DataFrameNaFunctions.scala:492)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:234)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:234)
+	at scala.collection.IndexedSeqOptimized$class.foreach(IndexedSeqOptimized.scala:33)
+	at scala.collection.mutable.ArrayOps$ofRef.foreach(ArrayOps.scala:186)
+	at scala.collection.TraversableLike$class.map(TraversableLike.scala:234)
+	at scala.collection.mutable.ArrayOps$ofRef.map(ArrayOps.scala:186)
+	at org.apache.spark.sql.DataFrameNaFunctions.fillValue(DataFrameNaFunctions.scala:492)
+	at org.apache.spark.sql.DataFrameNaFunctions.fill(DataFrameNaFunctions.scala:179)
+	at org.apache.spark.sql.DataFrameNaFunctions.fill(DataFrameNaFunctions.scala:163)
+	at org.apache.spark.sql.DataFrameNaFunctions.fill(DataFrameNaFunctions.scala:140)
+	at org.apache.spark.sql.execution.stat.StatFunctions$.crossTabulate(StatFunctions.scala:225)
+	at org.apache.spark.sql.DataFrameStatFunctions.crosstab(DataFrameStatFunctions.scala:215)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:244)
+	at py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:357)
+	at py4j.Gateway.invoke(Gateway.java:282)
+	at py4j.commands.AbstractCommand.invokeMethod(AbstractCommand.java:132)
+	at py4j.commands.CallCommand.execute(CallCommand.java:79)
+	at py4j.GatewayConnection.run(GatewayConnection.java:238)
+	at java.lang.Thread.run(Thread.java:745)
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<ipython-input-13-6eb2220a558e>", line 12, in <module>
+    rescue_raw.crosstab('cal_year','animal_type')
+  File "/opt/cloudera/parcels/CDH/lib/spark/python/pyspark/sql/dataframe.py", line 1945, in crosstab
+    return DataFrame(self._jdf.stat().crosstab(col1, col2), self.sql_ctx)
+  File "/usr/local/lib/python3.6/dist-packages/py4j/java_gateway.py", line 1257, in __call__
+    answer, self.gateway_client, self.target_id, self.name)
+  File "/opt/cloudera/parcels/CDH/lib/spark/python/pyspark/sql/utils.py", line 69, in deco
+    raise AnalysisException(s.split(': ', 1)[1], stackTrace)
+pyspark.sql.utils.AnalysisException: "Reference 'Cat' is ambiguous, could be: Cat, Cat.;"
+```
 
 ```{code-tab} plaintext R Output
 <simpleError: org.apache.spark.sql.AnalysisException: Reference 'Cat' is ambiguous, could be: Cat, Cat.;
@@ -397,10 +467,13 @@ tryCatch(
 >
 ```
 ````
-From the error message, we can see that `Cat` is ambigious. When we look closer at the distinct values within the `animal_type` column, we will see there is both `cat` and `Cat` present. This is something to be aware of if you wish to use `sdf_crosstab` in the future.
+From the error message, we can see that `Cat` is ambigious. When we look closer at the distinct values within the `animal_type` column, we will see there is both `cat` and `Cat` present. This is something to be aware of if you wish to use either crosstab function in the future.
 
-*Note* the exact error message you recive may depend on the version of sparklyR you are using, but this still relates to values within the `animal_type` column as mentioned above.
+*Note* the exact error message you recive may depend on the version of Pyspark or sparklyR you are using, but this still relates to values within the `animal_type` column as mentioned above.
 ````{tabs}
+```{code-tab} py
+rescue_raw.select('animal_type').distinct().orderBy('animal_type',ascending = True).show(27)
+```
 
 ```{code-tab} r R
 
@@ -410,6 +483,40 @@ rescue_raw %>% sparklyr::select(animal_type) %>% distinct() %>% print(n=27)
 ````
 
 ````{tabs}
+
+```{code-tab} plaintext Python Output
++--------------------+
+|         animal_type|
++--------------------+
+|                Bird|
+|              Budgie|
+|                Bull|
+|                 Cat|
+|                 Cow|
+|                Deer|
+|                 Dog|
+|              Ferret|
+|                Fish|
+|                 Fox|
+|                Goat|
+|             Hamster|
+|            Hedgehog|
+|               Horse|
+|                Lamb|
+|              Lizard|
+|              Pigeon|
+|              Rabbit|
+|               Sheep|
+|               Snake|
+|            Squirrel|
+|            Tortoise|
+|Unknown - Animal ...|
+|Unknown - Domesti...|
+|Unknown - Heavy L...|
+|Unknown - Wild An...|
+|                 cat|
++--------------------+
+```
 
 ```{code-tab} plaintext R Output
 # Source: spark<?> [?? x 1]
@@ -444,7 +551,7 @@ rescue_raw %>% sparklyr::select(animal_type) %>% distinct() %>% print(n=27)
 27 Hedgehog                                        
 ```
 ````
-Python does not encounter this issue, and views the case difference between the groups separately. 
+This is something to consider when attempting to calculate Cramér's V or a $\chi^2$ statistic from a spark dataframe.
 
 ### Further resources
 
