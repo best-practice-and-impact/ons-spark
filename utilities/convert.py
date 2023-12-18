@@ -1,9 +1,9 @@
 from notebook_converter import markdown_from_notebook
 
 
-group = "spark-functions"
-folder = "spark-job-description"
-page = "job-description"
+group = "spark-analysis"
+folder = "cramer_v"
+page = "cramer_v"
 base_path = "/home/cdsw/ons-spark/ons-spark/"
 out_path = base_path + group
 
