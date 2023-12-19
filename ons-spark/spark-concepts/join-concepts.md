@@ -243,16 +243,16 @@ rescue_with_pop %>% dplyr::explain()
 
 ```{code-tab} plaintext Python Output
 == Physical Plan ==
-*(5) Project [postcode_district#770, incident_number#749, cal_year#751, animal_group#759, population#806L]
-+- SortMergeJoin [postcode_district#770], [postcode_district#805], LeftOuter
-   :- *(2) Sort [postcode_district#770 ASC NULLS FIRST], false, 0
-   :  +- Exchange hashpartitioning(postcode_district#770, 200)
-   :     +- *(1) FileScan parquet [incident_number#749,cal_year#751,animal_group#759,postcode_district#770] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/animal_rescue.parquet], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<incident_number:string,cal_year:int,animal_group:string,postcode_district:string>
-   +- *(4) Sort [postcode_district#805 ASC NULLS FIRST], false, 0
-      +- Exchange hashpartitioning(postcode_district#805, 200)
-         +- *(3) Project [postcode_district#805, population#806L]
-            +- *(3) Filter isnotnull(postcode_district#805)
-               +- *(3) FileScan parquet [postcode_district#805,population#806L] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/population.parquet], PartitionFilters: [], PushedFilters: [IsNotNull(postcode_district)], ReadSchema: struct<postcode_district:string,population:bigint>
+*(5) Project [postcode_district#21, incident_number#0, cal_year#2, animal_group#10, population#57L]
++- SortMergeJoin [postcode_district#21], [postcode_district#56], LeftOuter
+   :- *(2) Sort [postcode_district#21 ASC NULLS FIRST], false, 0
+   :  +- Exchange hashpartitioning(postcode_district#21, 200)
+   :     +- *(1) FileScan parquet [incident_number#0,cal_year#2,animal_group#10,postcode_district#21] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/animal_rescue.parquet], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<incident_number:string,cal_year:int,animal_group:string,postcode_district:string>
+   +- *(4) Sort [postcode_district#56 ASC NULLS FIRST], false, 0
+      +- Exchange hashpartitioning(postcode_district#56, 200)
+         +- *(3) Project [postcode_district#56, population#57L]
+            +- *(3) Filter isnotnull(postcode_district#56)
+               +- *(3) FileScan parquet [postcode_district#56,population#57L] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/population.parquet], PartitionFilters: [], PushedFilters: [IsNotNull(postcode_district)], ReadSchema: struct<postcode_district:string,population:bigint>
 ```
 
 ```{code-tab} plaintext R Output
@@ -261,12 +261,12 @@ SELECT
   `incident_number`,
   `cal_year`,
   `animal_group`,
-  `animal_rescue_049f1e9e_6cbe_4bd1_aefa_18231c57310c`.`postcode_district` AS `postcode_district`,
+  `animal_rescue_0aa1ada6_2508_4414_b491_97a9650bba0f`.`postcode_district` AS `postcode_district`,
   `origin_of_call`,
   `population`
-FROM `animal_rescue_049f1e9e_6cbe_4bd1_aefa_18231c57310c`
-LEFT JOIN `population_8367fcb0_007a_4c59_9870_036096f55cb8`
-  ON (`animal_rescue_049f1e9e_6cbe_4bd1_aefa_18231c57310c`.`postcode_district` = `population_8367fcb0_007a_4c59_9870_036096f55cb8`.`postcode_district`)
+FROM `animal_rescue_0aa1ada6_2508_4414_b491_97a9650bba0f`
+LEFT JOIN `population_c82f8b0d_291c_4a50_986c_5ea79e7276b9`
+  ON (`animal_rescue_0aa1ada6_2508_4414_b491_97a9650bba0f`.`postcode_district` = `population_c82f8b0d_291c_4a50_986c_5ea79e7276b9`.`postcode_district`)
 
 <PLAN>
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                plan
@@ -283,7 +283,7 @@ We can view the plan visually with the Spark UI on the SQL tab. The Spark UI for
 
 See the [Spark Application and UI](../spark-concepts/spark-application-and-ui) article for details on how to access the Spark UI, and the [Persisting](../spark-concepts/persistence) article for more details on interpreting the information in the SQL tab.
 
-```{figure} ../images/sort_merge_join_ui.png
+```{figure} ../images/sort_merge_join_ui_new.png
 ---
 width: 100%
 name: SortMergeDAG
@@ -395,13 +395,13 @@ rescue_with_pop_broadcast %>% dplyr::explain()
 
 ```{code-tab} plaintext Python Output
 == Physical Plan ==
-*(2) Project [postcode_district#770, incident_number#749, cal_year#751, animal_group#759, population#806L]
-+- *(2) BroadcastHashJoin [postcode_district#770], [postcode_district#805], LeftOuter, BuildRight
-   :- *(2) FileScan parquet [incident_number#749,cal_year#751,animal_group#759,postcode_district#770] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/animal_rescue.parquet], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<incident_number:string,cal_year:int,animal_group:string,postcode_district:string>
+*(2) Project [postcode_district#21, incident_number#0, cal_year#2, animal_group#10, population#57L]
++- *(2) BroadcastHashJoin [postcode_district#21], [postcode_district#56], LeftOuter, BuildRight
+   :- *(2) FileScan parquet [incident_number#0,cal_year#2,animal_group#10,postcode_district#21] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/animal_rescue.parquet], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<incident_number:string,cal_year:int,animal_group:string,postcode_district:string>
    +- BroadcastExchange HashedRelationBroadcastMode(List(input[0, string, true]))
-      +- *(1) Project [postcode_district#805, population#806L]
-         +- *(1) Filter isnotnull(postcode_district#805)
-            +- *(1) FileScan parquet [postcode_district#805,population#806L] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/population.parquet], PartitionFilters: [], PushedFilters: [IsNotNull(postcode_district)], ReadSchema: struct<postcode_district:string,population:bigint>
+      +- *(1) Project [postcode_district#56, population#57L]
+         +- *(1) Filter isnotnull(postcode_district#56)
+            +- *(1) FileScan parquet [postcode_district#56,population#57L] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/population.parquet], PartitionFilters: [], PushedFilters: [IsNotNull(postcode_district)], ReadSchema: struct<postcode_district:string,population:bigint>
 ```
 
 ```{code-tab} plaintext R Output
@@ -410,12 +410,12 @@ SELECT
   `incident_number`,
   `cal_year`,
   `animal_group`,
-  `animal_rescue_252df136_aed4_47ae_8527_ccb70a5ab17d`.`postcode_district` AS `postcode_district`,
+  `animal_rescue_a373f80c_0425_4880_97e9_8f1f8a9d4210`.`postcode_district` AS `postcode_district`,
   `origin_of_call`,
   `population`
-FROM `animal_rescue_252df136_aed4_47ae_8527_ccb70a5ab17d`
-LEFT JOIN `sparklyr_tmp_fdfa71f9_4d36_4627_98df_1e989df519f5`
-  ON (`animal_rescue_252df136_aed4_47ae_8527_ccb70a5ab17d`.`postcode_district` = `sparklyr_tmp_fdfa71f9_4d36_4627_98df_1e989df519f5`.`postcode_district`)
+FROM `animal_rescue_a373f80c_0425_4880_97e9_8f1f8a9d4210`
+LEFT JOIN `sparklyr_tmp_985202d7_cdae_405c_8912_7474cb8179cc`
+  ON (`animal_rescue_a373f80c_0425_4880_97e9_8f1f8a9d4210`.`postcode_district` = `sparklyr_tmp_985202d7_cdae_405c_8912_7474cb8179cc`.`postcode_district`)
 
 <PLAN>
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         plan
@@ -544,14 +544,14 @@ rescue_with_pop_auto_broadcast %>% dplyr::explain()
 
 ```{code-tab} plaintext Python Output
 == Physical Plan ==
-*(2) Project [postcode_district#892, incident_number#871, cal_year#873, animal_group#881, origin_of_call#882, population#929L]
-+- *(2) BroadcastHashJoin [postcode_district#892], [postcode_district#928], LeftOuter, BuildRight
-   :- *(2) Project [incident_number#871, cal_year#873, animal_group#881, postcode_district#892, origin_of_call#882]
-   :  +- *(2) FileScan parquet [incident_number#871,cal_year#873,animal_group#881,origin_of_call#882,postcode_district#892] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/animal_rescue.parquet], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<incident_number:string,cal_year:int,animal_group:string,origin_of_call:string,postcode_dis...
+*(2) Project [postcode_district#143, incident_number#122, cal_year#124, animal_group#132, origin_of_call#133, population#180L]
++- *(2) BroadcastHashJoin [postcode_district#143], [postcode_district#179], LeftOuter, BuildRight
+   :- *(2) Project [incident_number#122, cal_year#124, animal_group#132, postcode_district#143, origin_of_call#133]
+   :  +- *(2) FileScan parquet [incident_number#122,cal_year#124,animal_group#132,origin_of_call#133,postcode_district#143] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/animal_rescue.parquet], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<incident_number:string,cal_year:int,animal_group:string,origin_of_call:string,postcode_dis...
    +- BroadcastExchange HashedRelationBroadcastMode(List(input[0, string, true]))
-      +- *(1) Project [postcode_district#928, population#929L]
-         +- *(1) Filter isnotnull(postcode_district#928)
-            +- *(1) FileScan parquet [postcode_district#928,population#929L] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/population.parquet], PartitionFilters: [], PushedFilters: [IsNotNull(postcode_district)], ReadSchema: struct<postcode_district:string,population:bigint>
+      +- *(1) Project [postcode_district#179, population#180L]
+         +- *(1) Filter isnotnull(postcode_district#179)
+            +- *(1) FileScan parquet [postcode_district#179,population#180L] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/population.parquet], PartitionFilters: [], PushedFilters: [IsNotNull(postcode_district)], ReadSchema: struct<postcode_district:string,population:bigint>
 ```
 
 ```{code-tab} plaintext R Output
@@ -560,12 +560,12 @@ SELECT
   `incident_number`,
   `cal_year`,
   `animal_group`,
-  `animal_rescue_ab3ecfc8_bc39_4a16_9871_cc449e51fab5`.`postcode_district` AS `postcode_district`,
+  `animal_rescue_e6722629_5634_4bbc_af91_53cb04e19821`.`postcode_district` AS `postcode_district`,
   `origin_of_call`,
   `population`
-FROM `animal_rescue_ab3ecfc8_bc39_4a16_9871_cc449e51fab5`
-LEFT JOIN `population_2dd7edb5_59a8_45fe_8378_ba4844549d9e`
-  ON (`animal_rescue_ab3ecfc8_bc39_4a16_9871_cc449e51fab5`.`postcode_district` = `population_2dd7edb5_59a8_45fe_8378_ba4844549d9e`.`postcode_district`)
+FROM `animal_rescue_e6722629_5634_4bbc_af91_53cb04e19821`
+LEFT JOIN `population_aabb7ef8_412b_4049_85b2_7449e6bad7df`
+  ON (`animal_rescue_e6722629_5634_4bbc_af91_53cb04e19821`.`postcode_district` = `population_aabb7ef8_412b_4049_85b2_7449e6bad7df`.`postcode_district`)
 
 <PLAN>
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         plan
@@ -574,7 +574,7 @@ LEFT JOIN `population_2dd7edb5_59a8_45fe_8378_ba4844549d9e`
 ````
 Both ways of broadcasting give the same result. You can leave it to Spark to decide, or if you want more control over how you DataFrames are joined, turn off automatic broadcasting by setting `spark.sql.autoBroadcastJoinThreshold` to `-1`.
 
-Note that Spark will not always be able to determine the size of the data in which case it will default to a sort merge join, even when this would be significantly less efficient. Spark does have some non-instinctive behaviour when it comes to automatic broadcasting; generally, if the raw file is less than 10MB it will be broadcast regardless of file type. Large parquet files which are filtered or grouped to reduce the size should be broadcast but the same is not true of CSVs. If unsure, use `explain()` to check or manually broadcast with the broadcast hint.
+Note that Spark will not always be able to determine the size of the data in which case it will default to a sort merge join, even when this would be significantly less efficient. Spark does have some non-instinctive behaviour when it comes to automatic broadcasting; generally, if the raw file is less than 10MB it will be broadcast regardless of file type. Large parquet files which are filtered or grouped to reduce the size should be broadcast but large CSV files will not be automatically broadcast even if they are filtered/grouped to a smaller size. If unsure, use `explain()` to check or manually broadcast with the broadcast hint.
 
 ### Replacing a join with a narrow transformation
 
@@ -838,8 +838,8 @@ rescue_with_origin_when %>% dplyr::explain()
 
 ```{code-tab} plaintext Python Output
 == Physical Plan ==
-*(1) Project [incident_number#871, cal_year#873, animal_group#881, postcode_district#892, origin_of_call#882, CASE WHEN (substring(origin_of_call#882, 1, 6) = Person) THEN Member of Public WHEN origin_of_call#882 IN (Coastguard,Police,Ambulance,Other FRS) THEN Emergency Services WHEN (origin_of_call#882 = Not known) THEN null ELSE null END AS origin_type#998]
-+- *(1) FileScan parquet [incident_number#871,cal_year#873,animal_group#881,origin_of_call#882,postcode_district#892] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/animal_rescue.parquet], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<incident_number:string,cal_year:int,animal_group:string,origin_of_call:string,postcode_dis...
+*(1) Project [incident_number#122, cal_year#124, animal_group#132, postcode_district#143, origin_of_call#133, CASE WHEN (substring(origin_of_call#133, 1, 6) = Person) THEN Member of Public WHEN origin_of_call#133 IN (Coastguard,Police,Ambulance,Other FRS) THEN Emergency Services WHEN (origin_of_call#133 = Not known) THEN null ELSE null END AS origin_type#249]
++- *(1) FileScan parquet [incident_number#122,cal_year#124,animal_group#132,origin_of_call#133,postcode_district#143] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/animal_rescue.parquet], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<incident_number:string,cal_year:int,animal_group:string,origin_of_call:string,postcode_dis...
 ```
 
 ```{code-tab} plaintext R Output
@@ -856,7 +856,7 @@ WHEN (`origin_of_call` IN ("Coastguard", "Police", "Ambulance", "Other FRS")) TH
 WHEN (`origin_of_call` = "Not known") THEN NULL
 ELSE NULL
 END AS `origin_type`
-FROM `animal_rescue_282bea00_995c_4996_96c9_16dc1b4b3caf`
+FROM `animal_rescue_6014cb20_6516_4f1b_84d5_96a921f182ae`
 
 <PLAN>
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    plan
