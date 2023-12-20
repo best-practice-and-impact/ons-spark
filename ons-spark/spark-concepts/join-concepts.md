@@ -1,3 +1,4 @@
+---
 ## Optimising Joins
 
 Joining DataFrames is a common and often essential operation in Spark. However, joins are one of the more expensive operations in terms of processing time. This is because by default both source DataFrames are first sorted, which is a *wide transformation*, causing a *shuffle* (or *exchange*). As such, it is worth paying extra attention to where joins occur in the code and trying to figure out which method to use to make them more efficient.
@@ -39,7 +40,6 @@ Now that both DataFrames are ordered, it is easy to iterate over each row in the
 This diagram should help explain this visually:
 
 ```{figure} ../images/sort_merge_join.png
----
 width: 100%
 name: SortMergeDiagram
 alt: Diagram showing two partitioned DataFrames being sorted before being merged
@@ -574,7 +574,7 @@ LEFT JOIN `population_2dd7edb5_59a8_45fe_8378_ba4844549d9e`
 ````
 Both ways of broadcasting give the same result. You can leave it to Spark to decide, or if you want more control over how you DataFrames are joined, turn off automatic broadcasting by setting `spark.sql.autoBroadcastJoinThreshold` to `-1`.
 
-Note that Spark will not always be able to determine the size of the data in which case it will default to a sort merge join, even when this would be significantly less efficient. Spark does have some non-instinctive behaviour when it comes to automatic broadcasting; generally, if the raw file is less than 10MB it will be broadcast regardless of file type. Large parquet files which are filtered or grouped to reduce the size should be broadcast but the same is not true of CSVs. If unsure, use `explain()` to check or manually broadcast with the broadcast hint.
+Note that Spark will not always be able to determine the size of the data in which case it will default to a sort merge join, even when this would be significantly less efficient. Spark does have some non-instinctive behaviour when it comes to automatic broadcasting; generally, if the raw file is less than 10MB it will be broadcast regardless of file type. Large parquet files which are filtered or grouped to reduce the size should be broadcast but large CSV files will not be automatically broadcast even if they are filtered/grouped to a smaller size. If unsure, use `explain()` to check or manually broadcast with the broadcast hint.
 
 ### Replacing a join with a narrow transformation
 
