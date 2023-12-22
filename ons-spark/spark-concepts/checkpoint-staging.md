@@ -1,14 +1,16 @@
 # Checkpoints and Staging Tables
 
-## Checkpoint
-
-### Persisting to disk
+## Persisting to disk
 
 Spark uses lazy evaluation. As we build up many transformations Spark creates an execution plan for the DataFrame and the plan is executed when an action is called. This execution plan represents the DataFrame's lineage.
 
 Sometimes the DataFrame's lineage can grow long and complex, which will slow down the processing and maybe even return an error. However, we can get around this by breaking the lineage.
 
-There is more than one way of breaking the lineage, this is discussed in more detail in the [Persisting](../spark-concepts/persistence) article. In this article we cover a simple method of persisting to disk called checkpointing, which is essentially an out of the box shortcut to a write/read operation.
+There is more than one way of breaking the lineage of a DataFrame, which is discussed in more detail in the [Persisting](../spark-concepts/persistence) section.
+
+## Checkpoint
+
+In this article, we cover a simple method of persisting to disk called checkpointing, which is essentially an out of the box shortcut to a write/read operation.
 
 ### Experiment
 
@@ -599,14 +601,17 @@ ORDER BY `IncidentNumber` DESC
 ```
 ````
 Now save the DataFrame as table, using `mode("overwrite")`, which overwrites the existing table if there is one. The first time you create a staging table this option will be redundant, but on subsequent runs on the code you will get an error without this as the table will already exist.
+
+Note that we specify the database we want to save the table in. In this instance, we want to save the table in the training database. The format for saving within a specified database is `database.table_name`.
 ````{tabs}
 ```{code-tab} py
 username = os.getenv('HADOOP_USER_NAME') 
 
 table_name_plain = config['staging_table_example']
 table_name = table_name_plain+username
+database = "training"
 
-df.write.mode("overwrite").saveAsTable(table_name, format="parquet")
+df.write.mode("overwrite").saveAsTable(f"{database}.{table_name}", format="parquet")
 ```
 
 ```{code-tab} r R
@@ -836,3 +841,7 @@ Other material:
 
 ```
 ````
+
+```python
+
+```
