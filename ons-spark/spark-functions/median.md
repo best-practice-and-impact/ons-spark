@@ -246,7 +246,7 @@ pop_borough_df.groupBy("borough").agg(
         percentile_approx("population", [0.5], 100000).alias("median_postcode_population")
 ).show()
 ```
-- In PySpark 3.4.0, [`median`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.median.html#pyspark.sql.functions.median) was added to `pyspark.sql.functions`, which further simplifies the process of of computing the median within aggregations, as it does not require a parameter specifying the quantile, or an accuracy parameter. 
+- In PySpark 3.4.0, [`median`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.median.html#pyspark.sql.functions.median) was added to `pyspark.sql.functions`, which further simplifies the process of computing the median within aggregations, as it does not require a parameter specifying the quantile, or an accuracy parameter. 
 
 ``` py
 pop_borough_df.groupBy("borough").agg(
