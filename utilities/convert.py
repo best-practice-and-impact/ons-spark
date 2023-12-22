@@ -1,6 +1,5 @@
 from notebook_converter import markdown_from_notebook
 
-
 group = "spark-functions"
 folder = "median"
 page = "median"
