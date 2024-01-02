@@ -500,8 +500,8 @@ Interpolated plot of df in R split by area code "A" (top) and area code "B" (bot
 ## Further resources
 Spark at the ONS articles:
 
-- [Window Functions in Spark](https://best-practice-and-impact.github.io/ons-spark/spark-functions/window-functions.html)
-- [Spark and Visualisation](https://best-practice-and-impact.github.io/ons-spark/spark-analysis/visualisation.html)
+- [Window Functions in Spark](../spark-functions/window-functions.html)
+- [Spark and Visualisation](../spark-analysis/visualisation.html)
 
 Other resources:
 
