@@ -1,6 +1,5 @@
 from notebook_converter import markdown_from_notebook
 
-
 group = "spark-concepts"
 folder = "groups-not-loops"
 page = "groups-not-loops"
