@@ -520,7 +520,7 @@ document.write(`
 <p>Both sort merge joins and shuffle hash joins use a shuffle; the difference is in the processing stage, where the former uses a searching algorithm and the latter uses a hash table.</p>
 <section id="sort-merge-join-example">
 <h3>Sort Merge Join Example<a class="headerlink" href="#sort-merge-join-example" title="Permalink to this heading">#</a></h3>
-<p>Let us see an example of a sort merge join and then look at the plan and the Spark UI. The example uses the Animal Rescue (as CSV) and Population (as parquet) datasets, left joining on the <code class="docutils literal notranslate"><span class="pre">postcode_district</span></code>. Note that we are disabling automatic broadcast joins by setting <code class="docutils literal notranslate"><span class="pre">spark.sql.autoBroadcastJoinThreshold</span></code> to <code class="docutils literal notranslate"><span class="pre">-1</span></code>; broadcast joins are covered in the next section. First, start a Spark session, read the data and select and rename the relevant columns:</p>
+<p>Let us see an example of a sort merge join and then look at the plan and the Spark UI. The example uses the Animal Rescue (as parquet) and Population (as parquet) datasets, left joining on the <code class="docutils literal notranslate"><span class="pre">postcode_district</span></code>. Note that we are disabling automatic broadcast joins by setting <code class="docutils literal notranslate"><span class="pre">spark.sql.autoBroadcastJoinThreshold</span></code> to <code class="docutils literal notranslate"><span class="pre">-1</span></code>; broadcast joins are covered in the next section. First, start a Spark session, read the data and select and rename the relevant columns:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
@@ -536,14 +536,12 @@ document.write(`
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
     
-<span class="n">rescue_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path_csv&quot;</span><span class="p">]</span>
+<span class="n">rescue_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path&quot;</span><span class="p">]</span>
 <span class="n">population_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;population_path&quot;</span><span class="p">]</span>
 
-<span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
-    <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;IncidentNumber&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">),</span>
-    <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;CalYear&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">),</span>
-    <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;AnimalGroupParent&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">),</span>
-    <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;PostcodeDistrict&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;postcode_district&quot;</span><span class="p">))</span>
+<span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+    <span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;cal_year&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;postcode_district&quot;</span><span class="p">)</span>
 
 <span class="n">population</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">population_path</span><span class="p">)</span>
 </pre></div>
@@ -564,14 +562,14 @@ document.write(`
 
 <span class="n">config</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">yaml</span><span class="o">::</span><span class="nf">yaml.load_file</span><span class="p">(</span><span class="s">&quot;ons-spark/config.yaml&quot;</span><span class="p">)</span>
 
-<span class="n">rescue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_csv</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">rescue_path_csv</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">inferSchema</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
-<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">incident_number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">IncidentNumber</span><span class="p">,</span>
-<span class="w">                     </span><span class="n">cal_year</span><span class="o">=</span><span class="w"> </span><span class="n">CalYear</span><span class="p">,</span>
-<span class="w">                     </span><span class="n">animal_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AnimalGroupParent</span><span class="p">,</span>
-<span class="w">                     </span><span class="n">postcode_district</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PostcodeDistrict</span><span class="p">)</span>
+<span class="n">rescue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_parquet</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">rescue_path</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">incident_number</span><span class="p">,</span>
+<span class="w">                     </span><span class="n">cal_year</span><span class="p">,</span>
+<span class="w">                     </span><span class="n">animal_group</span><span class="p">,</span>
+<span class="w">                     </span><span class="n">postcode_district</span><span class="p">,</span>
+<span class="w">                     </span><span class="n">origin_of_call</span><span class="p">)</span>
 
-
-<span class="n">population</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_parquet</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">population_path</span><span class="p">)</span><span class="w">            </span>
+<span class="n">population</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_parquet</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">population_path</span><span class="p">)</span><span class="w">          </span>
 </pre></div>
 </div>
 <p>Preview both DataFrames; we can see the desired join column, <code class="docutils literal notranslate"><span class="pre">postcode_district</span></code>, is present and contains data in a standard postcode format:</p>
@@ -586,11 +584,11 @@ document.write(`
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+---------------+--------+------------+-----------------+
 |incident_number|cal_year|animal_group|postcode_district|
 +---------------+--------+------------+-----------------+
-|         139091|    2009|         Dog|             SE19|
-|         275091|    2009|         Fox|             SE25|
-|        2075091|    2009|         Dog|              SM5|
-|        2872091|    2009|       Horse|              UB9|
-|        3553091|    2009|      Rabbit|              RM3|
+|       80771131|    2013|         Cat|              IG1|
+|      141817141|    2014|       Horse|              DA5|
+|143166-22102016|    2016|        Bird|             SW20|
+|       43051141|    2014|         Cat|               E6|
+|        9393131|    2013|         Dog|              UB4|
 +---------------+--------+------------+-----------------+
 only showing top 5 rows
 
@@ -634,15 +632,15 @@ only showing top 5 rows
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+-----------------+---------------+--------+--------------------+----------+
-|postcode_district|incident_number|cal_year|        animal_group|population|
-+-----------------+---------------+--------+--------------------+----------+
-|             SE17|        6259091|    2009|Unknown - Domesti...|     32866|
-|             SE17|        6317091|    2009|                 Cat|     32866|
-|             SE17|       17297091|    2009|                 Dog|     32866|
-|             SE17|       74801101|    2010|            Squirrel|     32866|
-|             SE17|       64851111|    2011|                 Dog|     32866|
-+-----------------+---------------+--------+--------------------+----------+
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+-----------------+---------------+--------+------------+----------+
+|postcode_district|incident_number|cal_year|animal_group|population|
++-----------------+---------------+--------+------------+----------+
+|             SE17|      131625111|    2011|         Cat|     32866|
+|             SE17|       35594151|    2015|         Cat|     32866|
+|             SE17|       64851111|    2011|         Dog|     32866|
+|             SE17|141546-05102018|    2018|         Fox|     32866|
+|             SE17|       18990151|    2015|         Cat|     32866|
++-----------------+---------------+--------+------------+----------+
 only showing top 5 rows
 </pre></div>
 </div>
@@ -667,17 +665,16 @@ only showing top 5 rows
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>== Physical Plan ==
-*(5) Project [postcode_district#65, incident_number#62, cal_year#63, animal_group#64, population#71L]
-+- SortMergeJoin [postcode_district#65], [postcode_district#70], LeftOuter
-   :- *(2) Sort [postcode_district#65 ASC NULLS FIRST], false, 0
-   :  +- Exchange hashpartitioning(postcode_district#65, 200)
-   :     +- *(1) Project [IncidentNumber#10 AS incident_number#62, CalYear#12 AS cal_year#63, AnimalGroupParent#20 AS animal_group#64, PostcodeDistrict#31 AS postcode_district#65]
-   :        +- *(1) FileScan csv [IncidentNumber#10,CalYear#12,AnimalGroupParent#20,PostcodeDistrict#31] Batched: false, Format: CSV, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/animal_rescue.csv], PartitionFilters: [], PushedFilters: [], ReadSchema: struct&lt;IncidentNumber:string,CalYear:int,AnimalGroupParent:string,PostcodeDistrict:string&gt;
-   +- *(4) Sort [postcode_district#70 ASC NULLS FIRST], false, 0
-      +- Exchange hashpartitioning(postcode_district#70, 200)
-         +- *(3) Project [postcode_district#70, population#71L]
-            +- *(3) Filter isnotnull(postcode_district#70)
-               +- *(3) FileScan parquet [postcode_district#70,population#71L] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/population.parquet], PartitionFilters: [], PushedFilters: [IsNotNull(postcode_district)], ReadSchema: struct&lt;postcode_district:string,population:bigint&gt;
+*(5) Project [postcode_district#770, incident_number#749, cal_year#751, animal_group#759, population#806L]
++- SortMergeJoin [postcode_district#770], [postcode_district#805], LeftOuter
+   :- *(2) Sort [postcode_district#770 ASC NULLS FIRST], false, 0
+   :  +- Exchange hashpartitioning(postcode_district#770, 200)
+   :     +- *(1) FileScan parquet [incident_number#749,cal_year#751,animal_group#759,postcode_district#770] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/animal_rescue.parquet], PartitionFilters: [], PushedFilters: [], ReadSchema: struct&lt;incident_number:string,cal_year:int,animal_group:string,postcode_district:string&gt;
+   +- *(4) Sort [postcode_district#805 ASC NULLS FIRST], false, 0
+      +- Exchange hashpartitioning(postcode_district#805, 200)
+         +- *(3) Project [postcode_district#805, population#806L]
+            +- *(3) Filter isnotnull(postcode_district#805)
+               +- *(3) FileScan parquet [postcode_district#805,population#806L] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/population.parquet], PartitionFilters: [], PushedFilters: [IsNotNull(postcode_district)], ReadSchema: struct&lt;postcode_district:string,population:bigint&gt;
 </pre></div>
 </div>
 </div>
@@ -689,7 +686,7 @@ only showing top 5 rows
 <ul class="simple">
 <li><p>We are doing a <code class="docutils literal notranslate"><span class="pre">SortMergeJoin</span></code>, of type <code class="docutils literal notranslate"><span class="pre">LeftOuter</span></code></p></li>
 <li><p>Before that, each DataFrame is being sorted and shuffled; the name for this on the plan is an <code class="docutils literal notranslate"><span class="pre">Exchange</span></code>.</p></li>
-<li><p>The data are being read with <code class="docutils literal notranslate"><span class="pre">FileScan</span> <span class="pre">csv</span></code> and <code class="docutils literal notranslate"><span class="pre">FileScan</span> <span class="pre">parquet</span></code></p></li>
+<li><p>The data are being read with <code class="docutils literal notranslate"><span class="pre">FileScan</span> <span class="pre">parquet</span></code></p></li>
 <li><p>As this was a left join, we do not need to return any values from <code class="docutils literal notranslate"><span class="pre">population</span></code> where <code class="docutils literal notranslate"><span class="pre">OutwardCode</span></code> is <code class="docutils literal notranslate"><span class="pre">null</span></code>, so Spark is filtering these out at source with <code class="docutils literal notranslate"><span class="pre">PushedFilters:</span> <span class="pre">[IsNotNull(OutwardCode)]</span></code>.</p></li>
 </ul>
 <p>We can view the plan visually with the Spark UI on the SQL tab. The Spark UI for a local session is <a class="reference external" href="http://localhost:4040/jobs">http://localhost:4040/jobs</a>.</p>
@@ -744,11 +741,11 @@ only showing top 5 rows
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+-----------------+---------------+--------+------------+----------+
 |postcode_district|incident_number|cal_year|animal_group|population|
 +-----------------+---------------+--------+------------+----------+
-|             SE19|         139091|    2009|         Dog|     27639|
-|             SE25|         275091|    2009|         Fox|     34521|
-|              SM5|        2075091|    2009|         Dog|     38291|
-|              UB9|        2872091|    2009|       Horse|     14336|
-|              RM3|        3553091|    2009|      Rabbit|     40272|
+|              IG1|       80771131|    2013|         Cat|     63585|
+|              DA5|      141817141|    2014|       Horse|     20525|
+|             SW20|143166-22102016|    2016|        Bird|     28423|
+|               E6|       43051141|    2014|         Cat|     78955|
+|              UB4|        9393131|    2013|         Dog|     39573|
 +-----------------+---------------+--------+------------+----------+
 only showing top 5 rows
 </pre></div>
@@ -774,14 +771,13 @@ only showing top 5 rows
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>== Physical Plan ==
-*(2) Project [postcode_district#65, incident_number#62, cal_year#63, animal_group#64, population#71L]
-+- *(2) BroadcastHashJoin [postcode_district#65], [postcode_district#70], LeftOuter, BuildRight
-   :- *(2) Project [IncidentNumber#10 AS incident_number#62, CalYear#12 AS cal_year#63, AnimalGroupParent#20 AS animal_group#64, PostcodeDistrict#31 AS postcode_district#65]
-   :  +- *(2) FileScan csv [IncidentNumber#10,CalYear#12,AnimalGroupParent#20,PostcodeDistrict#31] Batched: false, Format: CSV, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/animal_rescue.csv], PartitionFilters: [], PushedFilters: [], ReadSchema: struct&lt;IncidentNumber:string,CalYear:int,AnimalGroupParent:string,PostcodeDistrict:string&gt;
+*(2) Project [postcode_district#770, incident_number#749, cal_year#751, animal_group#759, population#806L]
++- *(2) BroadcastHashJoin [postcode_district#770], [postcode_district#805], LeftOuter, BuildRight
+   :- *(2) FileScan parquet [incident_number#749,cal_year#751,animal_group#759,postcode_district#770] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/animal_rescue.parquet], PartitionFilters: [], PushedFilters: [], ReadSchema: struct&lt;incident_number:string,cal_year:int,animal_group:string,postcode_district:string&gt;
    +- BroadcastExchange HashedRelationBroadcastMode(List(input[0, string, true]))
-      +- *(1) Project [postcode_district#70, population#71L]
-         +- *(1) Filter isnotnull(postcode_district#70)
-            +- *(1) FileScan parquet [postcode_district#70,population#71L] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/population.parquet], PartitionFilters: [], PushedFilters: [IsNotNull(postcode_district)], ReadSchema: struct&lt;postcode_district:string,population:bigint&gt;
+      +- *(1) Project [postcode_district#805, population#806L]
+         +- *(1) Filter isnotnull(postcode_district#805)
+            +- *(1) FileScan parquet [postcode_district#805,population#806L] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/population.parquet], PartitionFilters: [], PushedFilters: [IsNotNull(postcode_district)], ReadSchema: struct&lt;postcode_district:string,population:bigint&gt;
 </pre></div>
 </div>
 </div>
@@ -819,26 +815,24 @@ only showing top 5 rows
 <p>As this is a new Spark session our old DataFrames no longer exist, so we need to create them again:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
-    <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;IncidentNumber&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">),</span>
-    <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;CalYear&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;cal_year&quot;</span><span class="p">),</span>
-    <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;AnimalGroupParent&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">),</span>
-    <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;PostcodeDistrict&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;postcode_district&quot;</span><span class="p">),</span>
-    <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;OriginofCall&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;origin_of_call&quot;</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">rescue_path</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+    <span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;cal_year&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;postcode_district&quot;</span><span class="p">,</span> <span class="s2">&quot;origin_of_call&quot;</span><span class="p">)</span>
 
 <span class="n">population</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">population_path</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_csv</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">rescue_path_csv</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">inferSchema</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
-<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">incident_number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">IncidentNumber</span><span class="p">,</span>
-<span class="w">                     </span><span class="n">cal_year</span><span class="o">=</span><span class="w"> </span><span class="n">CalYear</span><span class="p">,</span>
-<span class="w">                     </span><span class="n">animal_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AnimalGroupParent</span><span class="p">,</span>
-<span class="w">                     </span><span class="n">postcode_district</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PostcodeDistrict</span><span class="p">,</span>
-<span class="w">                     </span><span class="n">origin_of_call</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">OriginofCall</span><span class="p">)</span>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_parquet</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">rescue_path</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">incident_number</span><span class="p">,</span>
+<span class="w">                     </span><span class="n">cal_year</span><span class="p">,</span>
+<span class="w">                     </span><span class="n">animal_group</span><span class="p">,</span>
+<span class="w">                     </span><span class="n">postcode_district</span><span class="p">,</span>
+<span class="w">                     </span><span class="n">origin_of_call</span><span class="p">)</span>
 
-<span class="n">population</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_parquet</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">population_path</span><span class="p">)</span>
+
+<span class="n">population</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_parquet</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">population_path</span><span class="p">)</span><span class="w"> </span>
 </pre></div>
 </div>
 <p>Now try the join. Note that this is identical code to in the sort merge join example, but it will be automatically broadcast as the second DataFrame is below 10MB.</p>
@@ -859,11 +853,11 @@ only showing top 5 rows
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+-----------------+---------------+--------+------------+------------------+----------+
 |postcode_district|incident_number|cal_year|animal_group|    origin_of_call|population|
 +-----------------+---------------+--------+------------+------------------+----------+
-|             SE19|         139091|    2009|         Dog|Person (land line)|     27639|
-|             SE25|         275091|    2009|         Fox|Person (land line)|     34521|
-|              SM5|        2075091|    2009|         Dog|   Person (mobile)|     38291|
-|              UB9|        2872091|    2009|       Horse|   Person (mobile)|     14336|
-|              RM3|        3553091|    2009|      Rabbit|   Person (mobile)|     40272|
+|              IG1|       80771131|    2013|         Cat|   Person (mobile)|     63585|
+|              DA5|      141817141|    2014|       Horse|   Person (mobile)|     20525|
+|             SW20|143166-22102016|    2016|        Bird|   Person (mobile)|     28423|
+|               E6|       43051141|    2014|         Cat|Person (land line)|     78955|
+|              UB4|        9393131|    2013|         Dog|   Person (mobile)|     39573|
 +-----------------+---------------+--------+------------+------------------+----------+
 only showing top 5 rows
 </pre></div>
@@ -888,14 +882,14 @@ only showing top 5 rows
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>== Physical Plan ==
-*(2) Project [postcode_district#213, incident_number#210, cal_year#211, animal_group#212, origin_of_call#214, population#221L]
-+- *(2) BroadcastHashJoin [postcode_district#213], [postcode_district#220], LeftOuter, BuildRight
-   :- *(2) Project [IncidentNumber#158 AS incident_number#210, CalYear#160 AS cal_year#211, AnimalGroupParent#168 AS animal_group#212, PostcodeDistrict#179 AS postcode_district#213, OriginofCall#169 AS origin_of_call#214]
-   :  +- *(2) FileScan csv [IncidentNumber#158,CalYear#160,AnimalGroupParent#168,OriginofCall#169,PostcodeDistrict#179] Batched: false, Format: CSV, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/animal_rescue.csv], PartitionFilters: [], PushedFilters: [], ReadSchema: struct&lt;IncidentNumber:string,CalYear:int,AnimalGroupParent:string,OriginofCall:string,PostcodeDis...
+*(2) Project [postcode_district#892, incident_number#871, cal_year#873, animal_group#881, origin_of_call#882, population#929L]
++- *(2) BroadcastHashJoin [postcode_district#892], [postcode_district#928], LeftOuter, BuildRight
+   :- *(2) Project [incident_number#871, cal_year#873, animal_group#881, postcode_district#892, origin_of_call#882]
+   :  +- *(2) FileScan parquet [incident_number#871,cal_year#873,animal_group#881,origin_of_call#882,postcode_district#892] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/animal_rescue.parquet], PartitionFilters: [], PushedFilters: [], ReadSchema: struct&lt;incident_number:string,cal_year:int,animal_group:string,origin_of_call:string,postcode_dis...
    +- BroadcastExchange HashedRelationBroadcastMode(List(input[0, string, true]))
-      +- *(1) Project [postcode_district#220, population#221L]
-         +- *(1) Filter isnotnull(postcode_district#220)
-            +- *(1) FileScan parquet [postcode_district#220,population#221L] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/population.parquet], PartitionFilters: [], PushedFilters: [IsNotNull(postcode_district)], ReadSchema: struct&lt;postcode_district:string,population:bigint&gt;
+      +- *(1) Project [postcode_district#928, population#929L]
+         +- *(1) Filter isnotnull(postcode_district#928)
+            +- *(1) FileScan parquet [postcode_district#928,population#929L] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/population.parquet], PartitionFilters: [], PushedFilters: [IsNotNull(postcode_district)], ReadSchema: struct&lt;postcode_district:string,population:bigint&gt;
 </pre></div>
 </div>
 </div>
@@ -904,7 +898,7 @@ only showing top 5 rows
 </pre></div>
 </div>
 <p>Both ways of broadcasting give the same result. You can leave it to Spark to decide, or if you want more control over how you DataFrames are joined, turn off automatic broadcasting by setting <code class="docutils literal notranslate"><span class="pre">spark.sql.autoBroadcastJoinThreshold</span></code> to <code class="docutils literal notranslate"><span class="pre">-1</span></code>.</p>
-<p>Note that Spark will not always be able to determine the size of the data in which case it will default to a sort merge join, even when this would be significantly less efficient. Spark does have some non-instinctive behaviour when it comes to automatic broadcasting; generally, if the raw file is less than 10MB it will be broadcast regardless of file type. Large parquet files which are filtered or grouped to reduce the size should be broadcast but the same is not true of CSVs. If unsure, use <code class="docutils literal notranslate"><span class="pre">explain()</span></code> to check or manually broadcast with the broadcast hint.</p>
+<p>Note that Spark will not always be able to determine the size of the data in which case it will default to a sort merge join, even when this would be significantly less efficient. Spark does have some non-instinctive behaviour when it comes to automatic broadcasting; generally, if the raw file is less than 10MB it will be broadcast regardless of file type. Large parquet files which are filtered or grouped to reduce the size should be broadcast but large CSV files will not be automatically broadcast even if they are filtered/grouped to a smaller size. If unsure, use <code class="docutils literal notranslate"><span class="pre">explain()</span></code> to check or manually broadcast with the broadcast hint.</p>
 </section>
 </section>
 <section id="replacing-a-join-with-a-narrow-transformation">
@@ -1087,8 +1081,8 @@ only showing top 5 rows
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>== Physical Plan ==
-*(1) Project [IncidentNumber#158 AS incident_number#210, CalYear#160 AS cal_year#211, AnimalGroupParent#168 AS animal_group#212, PostcodeDistrict#179 AS postcode_district#213, OriginofCall#169 AS origin_of_call#214, CASE WHEN (substring(OriginofCall#169, 1, 6) = Person) THEN Member of Public WHEN OriginofCall#169 IN (Coastguard,Police,Ambulance,Other FRS) THEN Emergency Services WHEN (OriginofCall#169 = Not known) THEN null ELSE null END AS origin_type#301]
-+- *(1) FileScan csv [IncidentNumber#158,CalYear#160,AnimalGroupParent#168,OriginofCall#169,PostcodeDistrict#179] Batched: false, Format: CSV, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/animal_rescue.csv], PartitionFilters: [], PushedFilters: [], ReadSchema: struct&lt;IncidentNumber:string,CalYear:int,AnimalGroupParent:string,OriginofCall:string,PostcodeDis...
+*(1) Project [incident_number#871, cal_year#873, animal_group#881, postcode_district#892, origin_of_call#882, CASE WHEN (substring(origin_of_call#882, 1, 6) = Person) THEN Member of Public WHEN origin_of_call#882 IN (Coastguard,Police,Ambulance,Other FRS) THEN Emergency Services WHEN (origin_of_call#882 = Not known) THEN null ELSE null END AS origin_type#998]
++- *(1) FileScan parquet [incident_number#871,cal_year#873,animal_group#881,origin_of_call#882,postcode_district#892] Batched: true, Format: Parquet, Location: InMemoryFileIndex[file:/home/cdsw/ons-spark/ons-spark/data/animal_rescue.parquet], PartitionFilters: [], PushedFilters: [], ReadSchema: struct&lt;incident_number:string,cal_year:int,animal_group:string,origin_of_call:string,postcode_dis...
 </pre></div>
 </div>
 </div>
