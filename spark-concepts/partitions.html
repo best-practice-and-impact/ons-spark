@@ -468,6 +468,11 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#change-partitioning">Change partitioning</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#partition-sizes">Partition sizes</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#avoiding-the-small-files-issue-on-hdfs">Avoiding the small files issue on HDFS</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#more-efficient-processing-with-spark">More efficient processing with Spark</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#intermediate-partitions-in-wide-operations">Intermediate partitions in wide operations</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#set-up-the-problem">Set up the problem</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#run-the-jobs-and-investigate-ui">Run the jobs and investigate UI</a></li>
@@ -475,8 +480,8 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-does-this-mean-in-practice">What does this mean in practice?</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#partitions-when-writing-data">Partitions when writing data</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-should-i-partition-my-data">How should I partition my data?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#partitions-when-unioning-or-binding-dataframes">Partitions when Unioning or Binding DataFrames</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further resources</a></li>
 </ul>
             </nav>
@@ -984,6 +989,19 @@ Partition 2: 4, 5, 6 + (10, 11, 12)
 <p>It’s also possible to use a column name in <code class="docutils literal notranslate"><span class="pre">.repartition()</span></code> or even a number and column name, see documentation for more information.</p>
 </section>
 </section>
+<section id="partition-sizes">
+<h2>Partition sizes<a class="headerlink" href="#partition-sizes" title="Permalink to this heading">#</a></h2>
+<p>A key concept in both Hadoop and Spark is that files and partitions should optimally be <a class="reference external" href="https://spark.apache.org/docs/latest/sql-performance-tuning.html#other-configuration-options">around 128MB</a>. It is however common that data are stored as many small files rather than fewer large ones. This issue can be solved by reducing the number of partitions before writing to HDFS, using <a class="reference external" href="https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrame.coalesce"><code class="docutils literal notranslate"><span class="pre">.coalesce()</span></code></a> or <a class="reference external" href="https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrame.repartition"><code class="docutils literal notranslate"><span class="pre">.repartition()</span></code></a> in PySpark and <a class="reference external" href="https://spark.rstudio.com/reference/sdf_coalesce.html"><code class="docutils literal notranslate"><span class="pre">sdf_coalesce()</span></code></a> or <a class="reference external" href="https://spark.rstudio.com/reference/sdf_repartition.html"><code class="docutils literal notranslate"><span class="pre">sdf_repartition()</span></code></a> in sparklyr.</p>
+<p>Below are two reasons why it’s a good idea to avoid writing out many small files.</p>
+<section id="avoiding-the-small-files-issue-on-hdfs">
+<h3>Avoiding the small files issue on HDFS<a class="headerlink" href="#avoiding-the-small-files-issue-on-hdfs" title="Permalink to this heading">#</a></h3>
+<p>HDFS consists of many DataNodes, which store the files, and a single NameNode, which essentially works as an index for the file system. The small files issue occurs as every file path is loaded into the NameNode which leads to an inefficient use of the memory capacity, e.g. if a 600MB file is stored as 200 files of 3MB then the NameNode needs to load 200 file paths, instead of the 5 file paths it would have to load if stored as 5 files of 120MB each.</p>
+</section>
+<section id="more-efficient-processing-with-spark">
+<h3>More efficient processing with Spark<a class="headerlink" href="#more-efficient-processing-with-spark" title="Permalink to this heading">#</a></h3>
+<p>Spark will by default use one partition per file on disk when reading in the data. If there are many small files on disk then these will be converted to many small partitions, which leads to slower processing as proportionally more time is spent scheduling tasks and serialising data.</p>
+</section>
+</section>
 <section id="intermediate-partitions-in-wide-operations">
 <h2>Intermediate partitions in wide operations<a class="headerlink" href="#intermediate-partitions-in-wide-operations" title="Permalink to this heading">#</a></h2>
 <p>Now onto a more complex topic of intermediate partitioining.</p>
@@ -1354,94 +1372,6 @@ Number of partitions: 200
 <p>If you are doing a join on a highly skewed DataFrame you might want to try a <a class="reference internal" href="salted-joins.html"><span class="doc std std-doc">salted join</span></a>. If you are dealing with skew in a window function you can apply a group by and join to achieve the same result. However, these are alternative solutions when dealing with highly skewed data and in most cases a regular join or window function are more efficient and makes the code more readable.</p>
 </section>
 </section>
-<section id="partitions-when-writing-data">
-<h2>Partitions when writing data<a class="headerlink" href="#partitions-when-writing-data" title="Permalink to this heading">#</a></h2>
-<p>As previously mentioned, we can also partition by a certain column when writing to disk. The reason why this is useful is we can choose which partitions we want to read in later. This is really useful for larger data sets.</p>
-<p>Before we demonstrate this by writing the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame as parquet files, we need to remove the <code class="docutils literal notranslate"><span class="pre">£</span></code> signs from the column names as these are not supported by the parquet format. In sparklyr they are replaced automatically when reading in the csv file, so no need for this step.</p>
-<div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-42-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-42-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button></div><div aria-labelledby="tab-42-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-42-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">rescue</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-    <span class="k">if</span> <span class="s1">&#39;£&#39;</span> <span class="ow">in</span> <span class="n">col</span><span class="p">:</span>
-        <span class="n">new_name</span> <span class="o">=</span> <span class="n">col</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;(£)&#39;</span><span class="p">,</span><span class="s1">&#39;GBP&#39;</span><span class="p">)</span>
-        <span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">new_name</span><span class="p">)</span>
-</pre></div>
-</div>
-</div></div>
-<p>Next let’s create a file path and write the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame to disk in parquet format by partitioning the data in terms of <code class="docutils literal notranslate"><span class="pre">CalYear</span></code></p>
-<div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-43-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-43-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-43-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-43-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-43-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-43-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">repartition_path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;checkpoint_path&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;/rescue_by_year.parquet&quot;</span>
-<span class="n">rescue</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="s1">&#39;overwrite&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s1">&#39;CalYear&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">repartition_path</span><span class="p">)</span>
-</pre></div>
-</div>
-</div><div aria-labelledby="tab-43-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-43-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">repartition_path</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">paste0</span><span class="p">(</span><span class="n">config</span><span class="o">$</span><span class="n">checkpoint_path</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;/rescue_by_year.parquet&quot;</span><span class="p">)</span>
-<span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_write_parquet</span><span class="p">(</span><span class="n">rescue</span><span class="p">,</span><span class="w"> </span>
-<span class="w">                              </span><span class="n">repartition_path</span><span class="p">,</span>
-<span class="w">                              </span><span class="n">mode</span><span class="o">=</span><span class="s">&#39;overwrite&#39;</span><span class="p">,</span>
-<span class="w">                              </span><span class="n">partition_by</span><span class="o">=</span><span class="s">&#39;CalYear&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div></div>
-<p>This will create multiple directories in the <code class="docutils literal notranslate"><span class="pre">rescue_by_year.parquet</span></code> directory on the file system, one for each year in the data.</p>
-<p>The easiest way to see this is by navigating to these directories using the file browser in HUE. Alternatively we can use the <a class="reference external" href="https://docs.python.org/3/library/subprocess.html"><code class="docutils literal notranslate"><span class="pre">subprocess</span></code></a> package to run lines of code through the terminal to return the contents of the <code class="docutils literal notranslate"><span class="pre">rescue_by_year.parquet</span></code> directory.</p>
-<div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-44-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-44-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-44-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-44-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-44-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-44-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;hdfs dfs -ls -C </span><span class="si">{</span><span class="n">repartition_path</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">universal_newlines</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
-</pre></div>
-</div>
-</div><div aria-labelledby="tab-44-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-44-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">cmd</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;hdfs dfs -ls -C &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">repartition_path</span><span class="p">)</span>
-<span class="nf">system</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
-</pre></div>
-</div>
-</div></div>
-<div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-45-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-45-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-45-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-45-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-45-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-45-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2009
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2010
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2011
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2012
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2013
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2014
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2015
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2016
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2017
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2018
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2019
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/_SUCCESS
-</pre></div>
-</div>
-</div><div aria-labelledby="tab-45-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-45-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2009
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2010
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2011
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2012
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2013
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2014
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2015
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2016
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2017
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2018
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2019
-file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/_SUCCESS
-</pre></div>
-</div>
-</div></div>
-<p>On the right of the ouput above you will see there is one directory for each <code class="docutils literal notranslate"><span class="pre">CalYear</span></code>. So to import a subset of the data we can use the specific path for that year or filter the data in Spark and let Spark work out which folders to look for.</p>
-<p>Finally, we will delete these files to clean up the file system.</p>
-<div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-46-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-46-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-46-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-46-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-46-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-46-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;hdfs dfs -rm -r -skipTrash </span><span class="si">{</span><span class="n">repartition_path</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
-</div><div aria-labelledby="tab-46-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-46-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">cmd</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;hdfs dfs -rm -r -skipTrash &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">repartition_path</span><span class="p">)</span>
-<span class="nf">system</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
-</pre></div>
-</div>
-</div></div>
-<div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-47-UiBPdXRwdXQ=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-47-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="0">R Output</button></div><div aria-labelledby="tab-47-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" id="panel-47-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Deleted file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet
-</pre></div>
-</div>
-</div></div>
-</section>
 <section id="how-should-i-partition-my-data">
 <h2>How should I partition my data?<a class="headerlink" href="#how-should-i-partition-my-data" title="Permalink to this heading">#</a></h2>
 <p>The short answer is- don’t worry about it too much!</p>
@@ -1461,6 +1391,248 @@ file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/_SUCCESS
 </ul>
 <p>Remember, it’s only worth experimenting on the <em>optimum</em> number if you have a real performance issue.</p>
 </section>
+<section id="partitions-when-unioning-or-binding-dataframes">
+<h2>Partitions when Unioning or Binding DataFrames<a class="headerlink" href="#partitions-when-unioning-or-binding-dataframes" title="Permalink to this heading">#</a></h2>
+<p>You can append two DataFrames in PySpark that have the same schema with the <a class="reference external" href="https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrame.union"><code class="docutils literal notranslate"><span class="pre">.union()</span></code></a> operation. In sparklyr, the equivalent operation is <a class="reference external" href="https://spark.rstudio.com/reference/sdf_bind.html"><code class="docutils literal notranslate"><span class="pre">sdf_bind_rows()</span></code></a> and R users will often refer to appending two DataFrames as <em>binding</em>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">.union()</span></code> function in PySpark and the <code class="docutils literal notranslate"><span class="pre">sdf_bind_rows()</span></code> function in sparklyr are both equivalent to <code class="docutils literal notranslate"><span class="pre">UNION</span> <span class="pre">ALL</span></code> in SQL. A regular <code class="docutils literal notranslate"><span class="pre">UNION</span></code> operation in SQL will remove duplicates, whereas <code class="docutils literal notranslate"><span class="pre">.union()</span></code> in PySpark and <code class="docutils literal notranslate"><span class="pre">sdf_bind_rows()</span></code> in sparklyr will not.</p>
+<p>Unlike joining two DataFrames, <code class="docutils literal notranslate"><span class="pre">.union()</span></code>/<code class="docutils literal notranslate"><span class="pre">sdf_bind_rows()</span></code>  does not involve a full shuffle, as the data does not move between partitions. Instead, the number of partitions in the unioned DataFrame is equal to the sum of the number of partitions in the two source DataFrames, i.e. if you union a DataFrame consisting of 100 partitions and one consisting of 50 partitions, your unioned DataFrame will have 150 partitions.</p>
+<p>To avoid excessive number of partitions, you can use <a class="reference external" href="https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrame.coalesce"><code class="docutils literal notranslate"><span class="pre">.coalesce()</span></code></a> or <a class="reference external" href="https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrame.repartition"><code class="docutils literal notranslate"><span class="pre">.repartition()</span></code></a> to reduce the number of partitions (use <a class="reference external" href="https://spark.rstudio.com/reference/sdf_coalesce.html"><code class="docutils literal notranslate"><span class="pre">sdf_coalesce()</span></code></a> or <a class="reference external" href="https://spark.rstudio.com/reference/sdf_repartition.html"><code class="docutils literal notranslate"><span class="pre">sdf_repartition()</span></code></a>
+in sparklyr). The DataFrame will also get repartitioned when a <em>wide transformation</em> is applied to the DataFrame (also called a shuffle), e.g. with a <code class="docutils literal notranslate"><span class="pre">.groupBy()</span></code> or <code class="docutils literal notranslate"><span class="pre">.orderBy()</span></code>.</p>
+<p>It is also worth being aware that storing data on HDFS as many small files is inefficient, both in terms of how the data is stored and in reading it in. Unioning many DataFrames and then writing straight to HDFS can be a cause of this issue. For more information on the small file issue, see the previous section on <span class="xref myst">Partition sizes</span>.</p>
+<p>First we will stop the previous spark sessions and start a new Spark session which limits the number of partitions to 12, read the Animal Rescue data, group by animal and year, and then count. The grouping and aggregation will cause a shuffle, meaning that the DataFrame will have 12 partitions, as we set <code class="docutils literal notranslate"><span class="pre">spark.sql.shuffle.partitions</span></code> to <code class="docutils literal notranslate"><span class="pre">12</span></code> in the <code class="docutils literal notranslate"><span class="pre">SparkSession.builder</span></code>.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-42-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-42-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-42-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-42-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-42-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-42-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
+
+<span class="c1"># Stop previous spark session and create new spark session</span>
+
+<span class="n">spark</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;partitions&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.sql.shuffle.partitions&quot;</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
+
+
+<span class="n">rescue_path_csv</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path_csv&quot;</span><span class="p">]</span>
+
+<span class="c1"># # Read in and shuffle data</span>
+<span class="n">rescue</span> <span class="o">=</span> <span class="p">(</span><span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">rescue_path_csv</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  
+          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;IncidentNumber&quot;</span><span class="p">,</span> <span class="s2">&quot;incident_number&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;AnimalGroupParent&quot;</span><span class="p">,</span> <span class="s2">&quot;animal_group&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;CalYear&quot;</span><span class="p">,</span> <span class="s2">&quot;cal_year&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;cal_year&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;animal_count&quot;</span><span class="p">)))</span>
+
+<span class="n">rescue</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-42-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-42-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Stop previous spark session and create new spark session limiting number of partitions</span>
+<span class="nf">spark_disconnect</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+
+<span class="n">small_config</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">()</span>
+<span class="n">small_config</span><span class="o">$</span><span class="n">spark.sql.shuffle.partitions</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">12</span>
+
+<span class="n">sc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
+<span class="w">  </span><span class="n">master</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;local&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">app_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;partitions&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">small_config</span><span class="p">)</span>
+
+<span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connection_is_open</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+
+<span class="c1"># Set the data path</span>
+<span class="n">config</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">yaml</span><span class="o">::</span><span class="nf">yaml.load_file</span><span class="p">(</span><span class="s">&quot;ons-spark/config.yaml&quot;</span><span class="p">)</span>
+<span class="c1"># Read in and shuffle data</span>
+<span class="n">rescue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_csv</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">rescue_path_csv</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">infer_schema</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
+
+<span class="n">rescue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">rename</span><span class="p">(</span>
+<span class="w">        </span><span class="n">incident_number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">IncidentNumber</span><span class="p">,</span>
+<span class="w">        </span><span class="n">animal_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AnimalGroupParent</span><span class="p">,</span>
+<span class="w">        </span><span class="n">cal_year</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CalYear</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">        </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">animal_group</span><span class="p">,</span><span class="n">cal_year</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">        </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">count</span><span class="p">(</span><span class="n">animal_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">count</span><span class="p">())</span>
+
+<span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-43-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-43-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-43-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-43-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-43-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-43-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>                       animal_group  cal_year  animal_count
+0                              Bird      2010            99
+1                           Hamster      2011             3
+2  Unknown - Domestic Animal Or Pet      2012            18
+3  Unknown - Heavy Livestock Animal      2012             4
+4                             Sheep      2012             1
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-43-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-43-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] TRUE
+# Source: spark&lt;?&gt; [?? x 4]
+# Groups: animal_group, cal_year
+  animal_group cal_year animal_count     n
+  &lt;chr&gt;           &lt;int&gt;        &lt;dbl&gt; &lt;dbl&gt;
+1 Bird             2010           99    99
+2 Deer             2015            6     6
+3 Deer             2016           14    14
+4 Ferret           2018            1     1
+5 Fox              2017           33    33
+</pre></div>
+</div>
+</div></div>
+<p>We can confirm the number of partitions of the <code class="docutils literal notranslate"><span class="pre">rescue</span></code> DataFrame using <code class="docutils literal notranslate"><span class="pre">.rdd.getNumPartitions()</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-44-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-44-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-44-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-44-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-44-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-44-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Rescue partitions:&#39;</span><span class="p">,</span><span class="n">rescue</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-44-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-44-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;Rescue partitions: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_num_partitions</span><span class="p">(</span><span class="n">rescue</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-45-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-45-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-45-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-45-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-45-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-45-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Rescue partitions: 12
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-45-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-45-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] &quot;Rescue partitions: 12&quot;
+</pre></div>
+</div>
+</div></div>
+<p>Now create will create some smaller DataFrames, containing different animals, by filtering the rescue data. We will preview just the <code class="docutils literal notranslate"><span class="pre">dogs</span></code> data, as all others will be of a similar format:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-46-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-46-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-46-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-46-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-46-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-46-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">dogs</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Dog&quot;</span><span class="p">)</span>
+<span class="n">cats</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Cat&quot;</span><span class="p">)</span>
+<span class="n">hamsters</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Hamster&quot;</span><span class="p">)</span>
+
+<span class="n">dogs</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-46-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-46-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">dogs</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">animal_group</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&#39;Dog&#39;</span><span class="p">)</span>
+<span class="n">cats</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">animal_group</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&#39;Cat&#39;</span><span class="p">)</span>
+<span class="n">hamsters</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">animal_group</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&#39;Hamster&#39;</span><span class="p">)</span>
+
+<span class="n">dogs</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-47-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-47-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-47-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-47-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-47-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-47-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>  animal_group  cal_year  animal_count
+0          Dog      2011           103
+1          Dog      2017            81
+2          Dog      2009           132
+3          Dog      2012           100
+4          Dog      2014            90
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-47-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-47-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># Source: spark&lt;?&gt; [?? x 4]
+# Groups: animal_group, cal_year
+  animal_group cal_year animal_count     n
+  &lt;chr&gt;           &lt;int&gt;        &lt;dbl&gt; &lt;dbl&gt;
+1 Dog              2011          103   103
+2 Dog              2017           81    81
+3 Dog              2009          132   132
+4 Dog              2012          100   100
+5 Dog              2014           90    90
+</pre></div>
+</div>
+</div></div>
+<p>We can check that each of these DataFrames has 12 partitions:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-48-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-48-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-48-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-48-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-48-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-48-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39; Dog partitions:&#39;</span><span class="p">,</span> <span class="n">dogs</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">(),</span>
+      <span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> Cat partitions:&#39;</span><span class="p">,</span> <span class="n">cats</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">(),</span>
+      <span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> Hamster partitions:&#39;</span><span class="p">,</span> <span class="n">hamsters</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-48-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-48-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;Dogs partitions: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_num_partitions</span><span class="p">(</span><span class="n">dogs</span><span class="p">)))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;Cats partitions: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_num_partitions</span><span class="p">(</span><span class="n">cats</span><span class="p">)))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;Hamsters partitions: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_num_partitions</span><span class="p">(</span><span class="n">hamsters</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-49-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-49-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-49-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-49-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-49-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-49-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span> Dog partitions: 12 
+ Cat partitions: 12 
+ Hamster partitions: 12
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-49-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-49-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] &quot;Dogs partitions: 12&quot;
+[1] &quot;Cats partitions: 12&quot;
+[1] &quot;Hamsters partitions: 12&quot;
+</pre></div>
+</div>
+</div></div>
+<p>When we apply the union function, the number of partitions in the unioned DataFrame will be the sum of partitions in each DataFrame. In this case we will now have 12 + 12 = 24 partitions:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-50-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-50-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-50-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-50-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-50-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-50-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">dogs_and_cats</span> <span class="o">=</span> <span class="n">dogs</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">cats</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Dogs and Cats union partitions:&#39;</span><span class="p">,</span><span class="n">dogs_and_cats</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-50-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-50-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">dogs_and_cats</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_bind_rows</span><span class="p">(</span><span class="n">dogs</span><span class="p">,</span><span class="n">cats</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;Dogs and Cats union partitions: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_num_partitions</span><span class="p">(</span><span class="n">dogs_and_cats</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-51-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-51-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-51-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-51-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-51-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-51-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Dogs and Cats union partitions: 24
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-51-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-51-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] &quot;Dogs and Cats union partitions: 24&quot;
+</pre></div>
+</div>
+</div></div>
+<p>Unioning another DataFrame adds another 12 partitions to make 36 (24 + 12):</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-52-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-52-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-52-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-52-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-52-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-52-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">dogs_cats_and_hamsters</span> <span class="o">=</span> <span class="n">dogs_and_cats</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">hamsters</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Dogs, Cats and Hamsters union partitions:&#39;</span><span class="p">,</span><span class="n">dogs_cats_and_hamsters</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-52-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-52-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">dogs_cats_and_hamsters</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_bind_rows</span><span class="p">(</span><span class="n">dogs_and_cats</span><span class="p">,</span><span class="n">hamsters</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;Dogs, Cats and Hamsters union partitions: &quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">sdf_num_partitions</span><span class="p">(</span><span class="n">dogs_cats_and_hamsters</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-53-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-53-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-53-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-53-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-53-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-53-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Dogs, Cats and Hamsters union partitions: 36
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-53-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-53-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] &quot;Dogs, Cats and Hamsters union partitions: 36&quot;
+</pre></div>
+</div>
+</div></div>
+<p>Although we only have 36 partitions here it is easy to see how this might get excessive with too many <code class="docutils literal notranslate"><span class="pre">.union()</span></code> statements. This can also become a bigger problem if the number of partitons is left to its default value of 200, where we would end up with 600 partitions!</p>
+<p>A subsequent shuffle (e.g. sorting the DataFrame) will reset the number of partitions to that specified in <code class="docutils literal notranslate"><span class="pre">spark.sql.shuffle.partitions</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-54-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-54-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-54-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-54-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-54-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-54-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">dogs_cats_and_hamsters</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;animal_group&quot;</span><span class="p">,</span> <span class="s2">&quot;cal_year&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-54-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-54-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_num_partitions</span><span class="p">(</span><span class="n">dogs_cats_and_hamsters</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_sort</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&#39;animal_group&#39;</span><span class="p">,</span><span class="s">&#39;cal_year&#39;</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-55-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-55-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-55-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-55-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-55-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-55-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>12
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-55-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-55-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] 12
+</pre></div>
+</div>
+</div></div>
+<p>You can also use <code class="docutils literal notranslate"><span class="pre">.repartition()</span></code> or <code class="docutils literal notranslate"><span class="pre">.coalesce()</span></code>. <code class="docutils literal notranslate"><span class="pre">.repartition()</span></code> involves a shuffle of the DataFrame and puts the data into roughly equal partition sizes, whereas <code class="docutils literal notranslate"><span class="pre">.coalesce()</span></code> combines partitions without a full shuffle, and so is more efficient, although at the potential cost of less equal partition sizes and therefore potential skew in the data. For more information see the previous section on <span class="xref myst">Partition sizes</span>.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-56-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-56-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-56-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-56-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-56-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-56-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">dogs_cats_and_hamsters</span><span class="o">.</span><span class="n">repartition</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-56-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-56-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_num_partitions</span><span class="p">(</span><span class="n">dogs_cats_and_hamsters</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_repartition</span><span class="p">(</span><span class="m">20</span><span class="p">))</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-57-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-57-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-57-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-57-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-57-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-57-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>20
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-57-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-57-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] 20
+</pre></div>
+</div>
+</div></div>
+<p>Further information on managing partitions while writing data can now be found in the <a class="reference internal" href="../spark-overview/reading-and-writing-data-spark.html"><span class="doc std std-doc">Reading and Writing Data in Spark</span></a> page.</p>
+</section>
 <section id="further-resources">
 <h2>Further resources<a class="headerlink" href="#further-resources" title="Permalink to this heading">#</a></h2>
 <p>Spark at the ONS Articles:</p>
@@ -1470,7 +1642,8 @@ file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/_SUCCESS
 <li><p><a class="reference internal" href="../spark-overview/spark-session-guidance.html"><span class="doc std std-doc">Guidance on Spark Sessions</span></a></p></li>
 <li><p><a class="reference internal" href="../spark-functions/window-functions.html"><span class="doc std std-doc">Window Functions in Spark</span></a></p></li>
 <li><p><a class="reference internal" href="salted-joins.html"><span class="doc std std-doc">Salted Joins</span></a></p></li>
-<li><p><a class="reference internal" href="../raw-notebooks/checkpoint-staging/checkpoint-staging.html"><span class="doc std std-doc">Checkpoint and Staging Tables</span></a></p></li>
+<li><p><a class="reference internal" href="checkpoint-staging.html"><span class="doc std std-doc">Checkpoint and Staging Tables</span></a></p></li>
+<li><p><a class="reference internal" href="../spark-overview/reading-and-writing-data-spark.html"><span class="doc std std-doc">Reading and Writing Data in Spark</span></a></p></li>
 </ul>
 <p>PySpark Documentation:</p>
 <ul class="simple">
@@ -1481,6 +1654,7 @@ file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/_SUCCESS
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.coalesce.html"><code class="docutils literal notranslate"><span class="pre">.coalesce()</span></code></a></p></li>
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.RDD.mapPartitions.html"><code class="docutils literal notranslate"><span class="pre">.rdd.mapPartitions()</span></code></a></p></li>
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrameWriter.partitionBy.html"><code class="docutils literal notranslate"><span class="pre">DataFrameWriter.partitionBy()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.DataFrame.union"><code class="docutils literal notranslate"><span class="pre">.union()</span></code></a></p></li>
 </ul>
 <p>Python Documentation:</p>
 <ul class="simple">
@@ -1492,6 +1666,7 @@ file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/_SUCCESS
 <li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_repartition.html"><code class="docutils literal notranslate"><span class="pre">sdf_repartition()</span></code></a></p></li>
 <li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_num_partitions.html"><code class="docutils literal notranslate"><span class="pre">sdf_num_partitions()</span></code></a></p></li>
 <li><p><a class="reference external" href="https://spark.rstudio.com/packages/sparklyr/latest/reference/spark_apply.html"><code class="docutils literal notranslate"><span class="pre">spark_apply()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.rstudio.com/reference/sdf_bind.html"><code class="docutils literal notranslate"><span class="pre">sdf_bind_rows()</span></code></a></p></li>
 </ul>
 <p>Spark Documentation:</p>
 <ul class="simple">
@@ -1501,6 +1676,8 @@ file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/_SUCCESS
 <li><p><a class="reference external" href="https://spark.apache.org/docs/latest/configuration.html#runtime-sql-configuration">Runtime SQL Configuration</a></p></li>
 </ul>
 </li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#round"><code class="docutils literal notranslate"><span class="pre">round</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#bround"><code class="docutils literal notranslate"><span class="pre">bround</span></code></a></p></li>
 </ul>
 </section>
 </section>
@@ -1579,6 +1756,11 @@ file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/_SUCCESS
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#change-partitioning">Change partitioning</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#partition-sizes">Partition sizes</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#avoiding-the-small-files-issue-on-hdfs">Avoiding the small files issue on HDFS</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#more-efficient-processing-with-spark">More efficient processing with Spark</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#intermediate-partitions-in-wide-operations">Intermediate partitions in wide operations</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#set-up-the-problem">Set up the problem</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#run-the-jobs-and-investigate-ui">Run the jobs and investigate UI</a></li>
@@ -1586,8 +1768,8 @@ file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/_SUCCESS
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-does-this-mean-in-practice">What does this mean in practice?</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#partitions-when-writing-data">Partitions when writing data</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-should-i-partition-my-data">How should I partition my data?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#partitions-when-unioning-or-binding-dataframes">Partitions when Unioning or Binding DataFrames</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further resources</a></li>
 </ul>
   </nav></div>
