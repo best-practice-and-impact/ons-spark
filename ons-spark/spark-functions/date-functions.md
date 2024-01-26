@@ -567,7 +567,3 @@ Weeks can be used; note that there is no native PySpark function for adding week
 ### Acknowledgments
   
 Special thanks to Diogo Marques for sharing his knowledge of the `interval` function, and to Vicky Pickering for inspiring this festive tip!
-
-```python
-
-```
