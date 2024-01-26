@@ -2,7 +2,7 @@
 
 A flag is a column that indicates whether a certain condition, such as a threshold value, is met. The flag is typically a 0 or 1 depending on whether the condition has been met.
 
-Our example will show how you can create a flag for age differences greater than a threshold wihtin a given group. 
+Our example will show how you can create a flag for age differences greater than a threshold wihtin a given group. **Note**: Additional use cases for creating flags will be added to this page at a later date.
 
 ## Creating an age-difference flag
 
