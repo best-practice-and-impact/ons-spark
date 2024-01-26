@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Naming Conflicts in Module Imports &#8212; Spark at the ONS</title>
+    <title>Flags in Spark &#8212; Spark at the ONS</title>
   
   
   
@@ -71,7 +71,7 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'raw-notebooks/module-imports/module-imports';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'raw-notebooks/flags/flags';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -329,7 +329,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fraw-notebooks/module-imports/module-imports.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fraw-notebooks/flags/flags.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -359,7 +359,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="../../_sources/raw-notebooks/module-imports/module-imports.ipynb" target="_blank"
+      <li><a href="../../_sources/raw-notebooks/flags/flags.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -443,7 +443,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Naming Conflicts in Module Imports</h1>
+    <h1>Flags in Spark</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -453,14 +453,12 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#naming-variables">Naming variables</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#keywords">Keywords</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#built-in-functions-and-module-imports-in-python">Built in functions and module imports in Python</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#python-example">Python Example</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-an-age-difference-flag">Creating an age-difference flag</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-your-dummy-data">Creating your dummy data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-your-columns">Creating your columns</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further Resources</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#built-in-functions-and-package-imports-in-r">Built in functions and package imports in R</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further Resources</a></li>
 </ul>
             </nav>
         </div>
@@ -472,270 +470,177 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section id="naming-conflicts-in-module-imports">
-<h1>Naming Conflicts in Module Imports<a class="headerlink" href="#naming-conflicts-in-module-imports" title="Permalink to this heading">#</a></h1>
-<p>Importing modules in Python and R can lead to naming conflicts if a function with that name already exists. This article demonstrates why you should be careful when importing modules to ensure that these conflicts do not occur.</p>
-<p>A common example in Python is using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/functions.html"><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">pyspark.sql.functions</span> <span class="pre">import</span> <span class="pre">*</span></code></a>, which will overwrite some built-in Python functions (e.g. <code class="docutils literal notranslate"><span class="pre">sum()</span></code>). Instead, it is good practice to use <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">pyspark.sql</span> <span class="pre">import</span> <span class="pre">functions</span> <span class="pre">as</span> <span class="pre">F</span></code>, where you prefix the functions  with <code class="docutils literal notranslate"><span class="pre">F</span></code>, e.g. <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.sum.html"><code class="docutils literal notranslate"><span class="pre">F.sum()</span></code></a>.</p>
-<section id="naming-variables">
-<h2>Naming variables<a class="headerlink" href="#naming-variables" title="Permalink to this heading">#</a></h2>
-<p>When writing code, it is important to give your variables sensible names, that are informative but not too long. A good reference on this is the <a class="reference external" href="https://best-practice-and-impact.github.io/qa-of-code-guidance/core_programming.html#clean-code">Clean Code</a> section from <a class="reference external" href="https://best-practice-and-impact.github.io/qa-of-code-guidance/intro.html">QA of Code for Analysis and Research</a>. <strong>You should avoid using the names of existing built in functions for user-defined variables</strong>.</p>
-</section>
-<section id="keywords">
-<h2>Keywords<a class="headerlink" href="#keywords" title="Permalink to this heading">#</a></h2>
-<p>Some words are reserved: for instance, in Python you cannot have a variable called <code class="docutils literal notranslate"><span class="pre">def</span></code>, <code class="docutils literal notranslate"><span class="pre">False</span></code> or <code class="docutils literal notranslate"><span class="pre">lambda</span></code>. These are referred to as <em>keywords</em> and the code will not even compile if you try, raising a <code class="docutils literal notranslate"><span class="pre">SyntaxError</span></code>. You can generate a list of these with <a class="reference external" href="https://docs.python.org/3/library/keyword.html"><code class="docutils literal notranslate"><span class="pre">keyword.kwlist</span></code></a>.</p>
-<p>In R, use <code class="docutils literal notranslate"><span class="pre">?reserved</span></code> to get a list of the reserved words.</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="flags-in-spark">
+<h1>Flags in Spark<a class="headerlink" href="#flags-in-spark" title="Permalink to this heading">#</a></h1>
+<p>A flag is a column that indicates whether a certain condition, such as a threshold value, is met. The flag is typically a 0 or 1 depending on whether the condition has been met.</p>
+<p>Our example will show how you can create a flag for age differences greater than a threshold wihtin a given group. <strong>Note</strong>: Additional use cases for creating flags will be added to this page at a later date.</p>
+<section id="creating-an-age-difference-flag">
+<h2>Creating an age-difference flag<a class="headerlink" href="#creating-an-age-difference-flag" title="Permalink to this heading">#</a></h2>
+<p>Given an <code class="docutils literal notranslate"><span class="pre">group</span></code> and <code class="docutils literal notranslate"><span class="pre">age</span></code> columns, we want to highlight if the top 2 values in <code class="docutils literal notranslate"><span class="pre">age</span></code> column per <code class="docutils literal notranslate"><span class="pre">group</span></code> have difference greater than a specified threshold value.</p>
+<p>It is likely that there are <em>many</em> ways of doing this. Below is one method using the functions available from <code class="docutils literal notranslate"><span class="pre">pyspark.sql</span></code> and some dummy data.</p>
+<p>As is good practice, first import the packages you will be using and start your Spark session:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">keyword</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">keyword</span><span class="o">.</span><span class="n">kwlist</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;False&#39;, &#39;None&#39;, &#39;True&#39;, &#39;and&#39;, &#39;as&#39;, &#39;assert&#39;, &#39;break&#39;, &#39;class&#39;, &#39;continue&#39;, &#39;def&#39;, &#39;del&#39;, &#39;elif&#39;, &#39;else&#39;, &#39;except&#39;, &#39;finally&#39;, &#39;for&#39;, &#39;from&#39;, &#39;global&#39;, &#39;if&#39;, &#39;import&#39;, &#39;in&#39;, &#39;is&#39;, &#39;lambda&#39;, &#39;nonlocal&#39;, &#39;not&#39;, &#39;or&#39;, &#39;pass&#39;, &#39;raise&#39;, &#39;return&#39;, &#39;try&#39;, &#39;while&#39;, &#39;with&#39;, &#39;yield&#39;]
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyspark.sql.functions</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">Window</span>
 </pre></div>
 </div>
 </div>
 </div>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="o">?</span><span class="n">reserved</span>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
-<section id="built-in-functions-and-module-imports-in-python">
-<h2>Built in functions and module imports in Python<a class="headerlink" href="#built-in-functions-and-module-imports-in-python" title="Permalink to this heading">#</a></h2>
-<details>
-<summary><b>Python Example</b></summary>
-<p>You might notice that the Python keyword list is quite short and that some common Python functionality is not listed, for instance, <code class="docutils literal notranslate"><span class="pre">sum()</span></code> or <code class="docutils literal notranslate"><span class="pre">round()</span></code>. This means that it is possible to overwrite these; obviously this is not good practice and should be avoided.</p>
-<p>This can be surprisingly easy to do in PySpark, and can be hard to debug if you do not know the reason for the error.</p>
-<section id="python-example">
-<h3>Python Example<a class="headerlink" href="#python-example" title="Permalink to this heading">#</a></h3>
-<p>First, look at the documentation for <code class="docutils literal notranslate"><span class="pre">sum</span></code>:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="nb">sum</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Help on built-in function sum in module builtins:
-
-sum(iterable, start=0, /)
-    Return the sum of a &#39;start&#39; value (default: 0) plus an iterable of numbers
-    
-    When the iterable is empty, return the start value.
-    This function is intended specifically for use with numeric values and may
-    reject non-numeric types.
-</pre></div>
-</div>
-</div>
-</div>
-<p>Show that <code class="docutils literal notranslate"><span class="pre">sum</span></code> works with a simple example: adding three integers together:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">sum</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6
-</pre></div>
-</div>
-</div>
-</div>
-<p>Now import the modules we need to use Spark. The recommended way to do this is <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">pyspark.sql.functions</span> <span class="pre">as</span> <span class="pre">F</span></code>, which means that whenever you want to access a function from this module you prefix it with <code class="docutils literal notranslate"><span class="pre">F</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">F.sum()</span></code>. Sometimes the best way to see why something is recommended is to try a different method and show it is a bad idea, in this case, importing all the <code class="docutils literal notranslate"><span class="pre">functions</span></code> as <code class="docutils literal notranslate"><span class="pre">*</span></code>:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span>
-<span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="o">*</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>Attempting to sum the integers will now give an error:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
-    <span class="nb">sum</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
-<span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&#39;NoneType&#39; object has no attribute &#39;_jvm&#39;
-</pre></div>
-</div>
-</div>
-</div>
-<p>To see why this error exists, take another look at <code class="docutils literal notranslate"><span class="pre">help(sum)</span></code>; we can see that the documentation is different to previously.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="nb">sum</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Help on function sum in module pyspark.sql.functions:
-
-sum(col)
-    Aggregate function: returns the sum of all values in the expression.
-    
-    .. versionadded:: 1.3
-</pre></div>
-</div>
-</div>
-</div>
-<p>So by importing all the PySpark functions we have overwritten some key Python functionality. Note that this would also apply if you imported individual functions, e.g. <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">pyspark.sql.functions</span> <span class="pre">import</span> <span class="pre">sum</span></code>.</p>
-<p>You can also overwrite functions with your own variables, often unintentionally. As an example, first Start a Spark session:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
-         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;module-imports&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;flags&quot;</span><span class="p">)</span>
          <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>Create a small DataFrame:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sdf</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;double_id&quot;</span><span class="p">,</span> <span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
-<span class="n">sdf</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+---+---------+
-| id|double_id|
-+---+---------+
-|  0|        0|
-|  1|        2|
-|  2|        4|
-|  3|        6|
-|  4|        8|
-+---+---------+
-</pre></div>
-</div>
-</div>
-</div>
-<p>Loop through the columns, using <code class="docutils literal notranslate"><span class="pre">col</span></code> as the control variable. This will work, but is not a good idea as it is overwriting <code class="docutils literal notranslate"><span class="pre">col()</span></code> from <code class="docutils literal notranslate"><span class="pre">functions</span></code>:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">sdf</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-    <span class="n">sdf</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">col</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+---+
-| id|
-+---+
-|  0|
-|  1|
-|  2|
-|  3|
-|  4|
-+---+
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">default_config</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">()</span>
 
-+---------+
-|double_id|
-+---------+
-|        0|
-|        2|
-|        4|
-|        6|
-|        8|
-+---------+
+<span class="n">sc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
+<span class="w">    </span><span class="n">master</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;local[2]&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">app_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;flags&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">default_config</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-</div>
-<p>If we try adding another column with <code class="docutils literal notranslate"><span class="pre">col()</span></code> then it will not work as we have now reassigned <code class="docutils literal notranslate"><span class="pre">col</span></code> to be <code class="docutils literal notranslate"><span class="pre">double_id</span></code>:</p>
+<section id="creating-your-dummy-data">
+<h3>Creating your dummy data<a class="headerlink" href="#creating-your-dummy-data" title="Permalink to this heading">#</a></h3>
+<p>The dataframe <code class="docutils literal notranslate"><span class="pre">df</span></code> will have an <code class="docutils literal notranslate"><span class="pre">id</span></code> column from 0 to 4. To create multiple <code class="docutils literal notranslate"><span class="pre">id</span></code> entries we will do a <code class="docutils literal notranslate"><span class="pre">.CrossJoin</span></code> with the numbers from 0 to 2 and then drop the latter column. To find more information on cross joins please refer to the <a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-functions/cross-joins.html">page on cross joins</a>. Finally, we will add an <code class="docutils literal notranslate"><span class="pre">age</span></code> column with random numbers from 1 to 10.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
-    <span class="n">sdf</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;triple_id&quot;</span><span class="p">,</span> <span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span>
-<span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">((</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;group&quot;</span><span class="p">))</span>
+    <span class="o">.</span><span class="n">crossJoin</span><span class="p">(</span>
+        <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span><span class="s2">&quot;drop&quot;</span><span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;drop&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;age&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span><span class="o">*</span><span class="mi">10</span><span class="p">)))</span>
+
+<span class="n">df</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&#39;str&#39; object is not callable
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+-----+---+
+|group|age|
++-----+---+
+|    0|  7|
+|    0|  9|
+|    0| 10|
+|    1|  9|
+|    1|  5|
+|    1|  6|
+|    2|  4|
+|    2|  3|
+|    2| 10|
+|    3|  1|
+|    3|  4|
+|    3| 10|
+|    4|  8|
+|    4|  7|
+|    4|  3|
++-----+---+
 </pre></div>
 </div>
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">col</span>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">set.seed</span><span class="p">(</span><span class="m">42</span><span class="p">)</span>
+
+<span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_seq</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">4</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">rename</span><span class="p">(</span><span class="s">&quot;group&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;id&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">cross_join</span><span class="p">(</span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_seq</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">rename</span><span class="p">(</span><span class="s">&quot;drop&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;id&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">select</span><span class="p">(</span><span class="o">-</span><span class="nf">c</span><span class="p">(</span><span class="n">drop</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">mutate</span><span class="p">(</span><span class="n">age</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">ceil</span><span class="p">(</span><span class="nf">rand</span><span class="p">()</span><span class="o">*</span><span class="m">10</span><span class="p">))</span>
+<span class="w">       </span>
+<span class="nf">print</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="m">15</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&#39;double_id&#39;
-</pre></div>
-</div>
-</div>
-</div>
-<p>Importing the PySpark <code class="docutils literal notranslate"><span class="pre">functions</span></code> as <code class="docutils literal notranslate"><span class="pre">F</span></code> and using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.col.html"><code class="docutils literal notranslate"><span class="pre">F.col()</span></code></a> solves this problem:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span> 
-<span class="n">sdf</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;triple_id&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span>
-<span class="n">sdf</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+---+---------+---------+
-| id|double_id|triple_id|
-+---+---------+---------+
-|  0|        0|        0|
-|  1|        2|        3|
-|  2|        4|        6|
-|  3|        6|        9|
-|  4|        8|       12|
-+---+---------+---------+
-</pre></div>
-</div>
-</div>
-</div>
-</details>
 </section>
-</section>
-<section id="built-in-functions-and-package-imports-in-r">
-<h2>Built in functions and package imports in R<a class="headerlink" href="#built-in-functions-and-package-imports-in-r" title="Permalink to this heading">#</a></h2>
-<details>
-<summary><b>R Example</b></summary>
-<p>It is advised to use <code class="docutils literal notranslate"><span class="pre">::</span></code> to directly call a function from a package. For instance, there is a <code class="docutils literal notranslate"><span class="pre">filter</span></code> function in both <a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/filter.html"><code class="docutils literal notranslate"><span class="pre">stats</span></code></a> and <a class="reference external" href="https://dplyr.tidyverse.org/reference/filter.html"><code class="docutils literal notranslate"><span class="pre">dplyr</span></code></a>; you can specify exactly which to use with <code class="docutils literal notranslate"><span class="pre">dplyr::filter()</span></code> or <code class="docutils literal notranslate"><span class="pre">stats::filter()</span></code>.</p>
-<p>Note that despite being commonly used for an R DataFrame, <a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/Fdist.html"><code class="docutils literal notranslate"><span class="pre">df</span></code> is actually a built-in function for the F distribution</a>. As such, it is not recommended to use <code class="docutils literal notranslate"><span class="pre">df</span></code> for DataFrames.</p>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="o">?</span><span class="n">df</span>
+<section id="creating-your-columns">
+<h3>Creating your columns<a class="headerlink" href="#creating-your-columns" title="Permalink to this heading">#</a></h3>
+<p>There will be more than one way to get the desired result. Note that the method outlined here spells out the process in detail; please feel free to combine some of the steps (without sacrificing code readability of course!).</p>
+<p>Now that we have dummy data we want to create a <code class="docutils literal notranslate"><span class="pre">window</span></code> over <code class="docutils literal notranslate"><span class="pre">id</span></code> that is ordered by <code class="docutils literal notranslate"><span class="pre">age</span></code> in descending order. We then want to create the following columns:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">age_lag</span></code> showing the next highest age within an id</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">age_diff</span></code> the difference between <code class="docutils literal notranslate"><span class="pre">age</span></code> and <code class="docutils literal notranslate"><span class="pre">age_lag</span></code> columns</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">age_order</span></code> numbered oldest to youngest</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">top_two_age_diff</span></code> returns the age difference between two oldest entries within an id, 0 for other rows</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">age_diff_flag</span></code> flag to tell us if the age difference is greater than some threshold, 5 chosen here</p></li>
+</ul>
+<p>The two columns at the end are intermediary, therefore these could be dropped if no longer needed, using <code class="docutils literal notranslate"><span class="pre">.drop</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">order_window</span> <span class="o">=</span> <span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s2">&quot;group&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">desc</span><span class="p">(</span><span class="s2">&quot;age&quot;</span><span class="p">))</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;age_lag&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">lag</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;age&quot;</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">over</span><span class="p">(</span><span class="n">order_window</span><span class="p">))</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;age_diff&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;age&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;age_lag&quot;</span><span class="p">))</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;age_order&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">row_number</span><span class="p">()</span><span class="o">.</span><span class="n">over</span><span class="p">(</span><span class="n">order_window</span><span class="p">))</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;top_two_age_diff&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">when</span><span class="p">((</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;age_order&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">),</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;age_diff&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;age_diff_flag&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;top_two_age_diff&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+
+<span class="n">df</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-</details>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+-----+---+-------+--------+---------+----------------+-------------+
+|group|age|age_lag|age_diff|age_order|top_two_age_diff|age_diff_flag|
++-----+---+-------+--------+---------+----------------+-------------+
+|    0| 10|      9|       1|        1|               1|            0|
+|    0|  9|      7|       2|        2|               0|            0|
+|    0|  7|   null|    null|        3|               0|            0|
+|    1|  9|      6|       3|        1|               3|            0|
+|    1|  6|      5|       1|        2|               0|            0|
+|    1|  5|   null|    null|        3|               0|            0|
+|    3| 10|      4|       6|        1|               6|            1|
+|    3|  4|      1|       3|        2|               0|            0|
+|    3|  1|   null|    null|        3|               0|            0|
+|    2| 10|      4|       6|        1|               6|            1|
+|    2|  4|      3|       1|        2|               0|            0|
+|    2|  3|   null|    null|        3|               0|            0|
+|    4|  8|      7|       1|        1|               1|            0|
+|    4|  7|      3|       4|        2|               0|            0|
+|    4|  3|   null|    null|        3|               0|            0|
++-----+---+-------+--------+---------+----------------+-------------+
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">group_by</span><span class="p">(</span><span class="n">group</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">arrange</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">age</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">mutate</span><span class="p">(</span><span class="n">age_lag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">lag</span><span class="p">(</span><span class="n">age</span><span class="p">,</span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">-1</span><span class="p">))</span><span class="w">  </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">mutate</span><span class="p">(</span><span class="n">age_diff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">age</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">age_lag</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">group_by</span><span class="p">(</span><span class="n">group</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">mutate</span><span class="p">(</span><span class="n">age_order</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">row_number</span><span class="p">())</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">mutate</span><span class="p">(</span><span class="n">top_two_age_diff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">ifelse</span><span class="p">(</span><span class="n">age_order</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">,</span>
+<span class="w">                                  </span><span class="n">age_diff</span><span class="p">,</span>
+<span class="w">                                  </span><span class="m">0</span>
+<span class="w">                                  </span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">mutate</span><span class="p">(</span><span class="n">age_diff_flag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">ifelse</span><span class="p">(</span><span class="n">top_two_age_diff</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">5</span><span class="p">,</span>
+<span class="w">                                  </span><span class="m">1</span><span class="p">,</span>
+<span class="w">                                  </span><span class="m">0</span>
+<span class="w">                                  </span><span class="p">))</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">15</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>As you can see in the table above, a flag column has been created with the values 0 and 1. If the age difference is greater than 5 then the flag = 1, if less than 5 then the flag = 0.</p>
 </section>
 <section id="further-resources">
-<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this heading">#</a></h2>
-<p>PySpark Documentation:</p>
+<h3>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this heading">#</a></h3>
+<p>Spark at the ONS articles:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/functions.html"><code class="docutils literal notranslate"><span class="pre">pyspark.sql.functions</span></code></a></p></li>
-<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.col.html"><code class="docutils literal notranslate"><span class="pre">F.col()</span></code></a></p></li>
-<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.sum.html"><code class="docutils literal notranslate"><span class="pre">F.sum()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-functions/cross-joins.html">Cross joins</a></p></li>
+<li><p><a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-functions/window-functions.html">Window functions</a></p></li>
 </ul>
-<p>sparklyr and tidyverse Documentation:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://dplyr.tidyverse.org/reference/filter.html"><code class="docutils literal notranslate"><span class="pre">dplyr::filter()</span></code></a></p></li>
-</ul>
-<p>Python Documentation:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/keyword.html"><code class="docutils literal notranslate"><span class="pre">keyword.kwlist</span></code></a></p></li>
-</ul>
-<p>R Documentation:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/Fdist.html"><code class="docutils literal notranslate"><span class="pre">stats::df()</span></code></a></p></li>
-<li><p><a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/filter.html"><code class="docutils literal notranslate"><span class="pre">stats::filter()</span></code></a></p></li>
-</ul>
+</section>
 </section>
 </section>
 
@@ -752,7 +657,7 @@ sum(col)
         },
         kernelOptions: {
             name: "python3",
-            path: "./raw-notebooks/module-imports"
+            path: "./raw-notebooks/flags"
         },
         predefinedOutput: true
     }
@@ -784,14 +689,12 @@ sum(col)
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#naming-variables">Naming variables</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#keywords">Keywords</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#built-in-functions-and-module-imports-in-python">Built in functions and module imports in Python</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#python-example">Python Example</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-an-age-difference-flag">Creating an age-difference flag</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-your-dummy-data">Creating your dummy data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-your-columns">Creating your columns</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further Resources</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#built-in-functions-and-package-imports-in-r">Built in functions and package imports in R</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further Resources</a></li>
 </ul>
   </nav></div>
 
