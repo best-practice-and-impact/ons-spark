@@ -1,5 +1,5 @@
 # Reading and Writing Data in Spark
-This chapter will go into more detail about the various file formats available to use with Spark, and how Spark interacts with these file formats. [Introduction to PySpark](../pyspark-intro/pyspark-intro) and [Introduction to SparklyR](../sparklyr-intro) briefly covered CSV files and Parquet files and some basic differences between them.
+This chapter will go into more detail about the various file formats available to use with Spark, and how Spark interacts with these file formats. [Introduction to PySpark](../pyspark-intro/pyspark-intro) and [Introduction to SparklyR](../sparklyr-intro/sparklyr-intro) briefly covered CSV files and Parquet files and some basic differences between them. The final section of the page will cover the importance of managing partitions when writing data to disk, for further information on partitions see [Managing Partitions](../spark-concepts/partitions).
 
 This chapter will provide more detail on parquet files, CSV files, ORC files and Avro files, the differences between them and how to read and write data using these formats.
 
@@ -509,15 +509,16 @@ animal_rescue = sparkavro::spark_read_avro(sc, "animal_rescue", config$rescue_pa
 ```
 ````
 
+
 ### Writing out Avro files
 To write out an Avro file, you can use [`dataframe.write.format("avro").save()`](https://sparkbyexamples.com/spark/read-write-avro-file-spark-dataframe/) in PySpark. Note that like the method to read in Avro files, we need to specify the format and then use `save` to specify that we want to save this output.
 
 In SparklyR, we can use the `spark_write_avro()` function. This only requires two arguments: the name of the dataframe to be written to file and the output path. 
-
 ````{tabs}
 ```{code-tab} py
 animal_rescue.write.mode("overwrite").format("avro").save(config["temp_outputs"] + "animal_rescue.avro")
 ```
+
 ```{code-tab} r R
 sparkavro::spark_write_avro(animal_rescue, paste0(config$temp_outputs, "animal_rescue.avro"), mode = "overwrite")
 ```
@@ -591,15 +592,124 @@ Generally, both row-based and columnar-based formats are fine to use with Spark.
 ### Do you work primarily with databases/SQL?
 If you're primarily working with databases/tables within databases and SQL, it may be a good idea to use a Hive table. You can use any format as the underlying data format within a Hive table - so it may be worthwhile reviewing the data formats presented in this chapter to decide which format would be most appropriate for your use case.
 
+## Partitions when writing data
+
+Although we have not fully discussed dataframe partitions in this page, we should consider partitions when wrtiting data to a disk.
+As mentioned in the [Managing Partitons page](../spark-concepts/partitions) we are able to partiton data by any column when wrtitng to disk. The reason why this is useful is we can choose which partitions we want to read in later. This is really useful for larger data sets. 
+
+Before we demonstrate this by writing the `animal_rescue` DataFrame as parquet files, we need to remove the `£` signs from the column names as these are not supported by the parquet format. In sparklyr they are replaced automatically when reading in the csv file, so no need for this step.
+````{tabs}
+```{code-tab} py
+for col in animal_rescue.columns:
+    if '£' in col:
+        new_name = col.replace('(£)','GBP')
+        animal_rescue = animal_rescue.withColumnRenamed(col, new_name)
+```
+````
+Next let's create a file path and write the `animal_rescue` DataFrame to disk in parquet format by partitioning the data in terms of `CalYear`,
+````{tabs}
+```{code-tab} py
+repartition_path = config["checkpoint_path"] + "/rescue_by_year.parquet"
+animal_rescue.write.mode('overwrite').partitionBy('cal_year').parquet(repartition_path)
+```
+
+```{code-tab} r R
+
+repartition_path <- paste0(config$checkpoint_path, "/rescue_by_year.parquet")
+sparklyr::spark_write_parquet(rescue_df, 
+                              repartition_path,
+                              mode='overwrite',
+                              partition_by='cal_year')
+
+```
+````
+This will create multiple directories in the `rescue_by_year.parquet` directory on the file system, one for each year in the data. 
+
+The easiest way to see this is by navigating to these directories using the file browser in HUE. Alternatively we can use the [`subprocess`](https://docs.python.org/3/library/subprocess.html) package to run lines of code through the terminal to return the contents of the `rescue_by_year.parquet` directory.
+````{tabs}
+```{code-tab} py
+import subprocess
+cmd = f"hdfs dfs -ls -C {repartition_path}"
+p = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, universal_newlines=True)
+print(p.stdout)
+```
+
+```{code-tab} r R
+
+cmd <- paste0("hdfs dfs -ls -C ", repartition_path)
+system(cmd)
+
+```
+````
+
+````{tabs}
+
+```{code-tab} plaintext Python Output
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2009
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2010
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2011
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2012
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2013
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2014
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2015
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2016
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2017
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2018
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/CalYear=2019
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/_SUCCESS
+```
+
+```{code-tab} plaintext R Output
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/_SUCCESS
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/cal_year=2009
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/cal_year=2010
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/cal_year=2011
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/cal_year=2012
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/cal_year=2013
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/cal_year=2014
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/cal_year=2015
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/cal_year=2016
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/cal_year=2017
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/cal_year=2018
+file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet/cal_year=2019
+```
+````
+On the right of the ouput above you will see there is one directory for each `CalYear`. So to import a subset of the data we can use the specific path for that year or filter the data in Spark and let Spark work out which folders to look for. 
+
+Finally, we will delete these files to clean up the file system.
+````{tabs}
+```{code-tab} py
+cmd = f"hdfs dfs -rm -r -skipTrash {repartition_path}"
+p = subprocess.run(cmd, shell=True)
+```
+
+```{code-tab} r R
+
+cmd <- paste0("hdfs dfs -rm -r -skipTrash ", repartition_path)
+system(cmd)
+
+```
+````
+
+````{tabs}
+
+```{code-tab} plaintext R Output
+Deleted file:///home/cdsw/ons-spark/checkpoints/rescue_by_year.parquet
+```
+````
 ## Further resources
-[Generic Load/Save Functions - Spark 3.4.1 Documentation](https://spark.apache.org/docs/3.2.0/sql-data-sources-load-save-functions.html)
 
-[CSV Files - Spark 3.4.1 Documentation](https://spark.apache.org/docs/latest/sql-data-sources-csv.html)
+Spark at the ONS Articles:
+- [Introduction to PySpark](../pyspark-intro/pyspark-intro)
+- [Introduction to SparklyR](../sparklyr-intro/sparklyr-intro)
+- [Managing Partitions](../spark-concepts/partitions)
 
-[Parquet Files - Spark 3.4.1 Documentation](https://spark.apache.org/docs/latest/sql-data-sources-parquet.html)
 
-[ORC Files - Spark 3.4.1 Documentation](https://spark.apache.org/docs/latest/sql-data-sources-orc.html)
+Spark Documentation:
 
-[Hive Tables - Spark 3.4.1 Documentation](https://spark.apache.org/docs/latest/sql-data-sources-hive-tables.html)
-
-[Avro Files - Spark 3.4.1 Documentation](https://spark.apache.org/docs/latest/sql-data-sources-avro.html)
+- [Generic Load/Save Functions - Spark 3.4.1 Documentation](https://spark.apache.org/docs/3.2.0/sql-data-sources-load-save-functions.html)
+- [CSV Files - Spark 3.4.1 Documentation](https://spark.apache.org/docs/latest/sql-data-sources-csv.html)
+- [Parquet Files - Spark 3.4.1 Documentation](https://spark.apache.org/docs/latest/sql-data-sources-parquet.html)- 
+- [ORC Files - Spark 3.4.1 Documentation](https://spark.apache.org/docs/latest/sql-data-sources-orc.html)
+- [Hive Tables - Spark 3.4.1 Documentation](https://spark.apache.org/docs/latest/sql-data-sources-hive-tables.html)
+- [Avro Files - Spark 3.4.1 Documentation](https://spark.apache.org/docs/latest/sql-data-sources-avro.html)
