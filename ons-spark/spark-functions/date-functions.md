@@ -1,6 +1,6 @@
 ## Date functions
 
-Handling dates is tricky in most programming languages, and Spark is no exception. This article gives examples of a few date functions, including interval, which is not well documented in PySpark. This article was written in December and so we have decided to make our examples festive!Note that this is far from exhaustive; see the links in Further Resources for more information which explain dates in more detail. To demonstrate the date functions we first need to start a Spark session and read in the Animal Rescue data:
+Handling dates is tricky in most programming languages, and Spark is no exception. This article gives examples of a few date functions, including interval, which is not well documented in PySpark. This page was written in December and so we have decided to make our examples festive! Note that this is far from exhaustive; see the links in Further Resources for more information which explain dates in more detail. To demonstrate the date functions we first need to start a Spark session and read in the Animal Rescue data:
 
 
 ````{tabs}
@@ -137,7 +137,7 @@ print(rescue, n = 5)
 # ℹ more rows
 ```
 ````
-From the R output we can confirm that indeed `date_of_call` column is a `date` data type. For python we must print again the schema to confirm that.
+From the R output we can confirm that indeed `date_of_call` column is a `date` data type. For `PySpark` we must print the schema to confirm this.
 
 ````{tabs}
 ```{code-tab} py
@@ -541,7 +541,7 @@ orthodox_festive_rescues %>%
 ```
 ````
 ### `interval` with times and weeks
-weeks can be used; note that there is no native PySpark function for adding weeks.Time periods, e.g. hours, can also be used with interval, which may be useful when working with timestamps.As with any function, it is recommended to use unit tests when working with dates. The Pytest for PySpark repository gives some examples of how to unit test when working with PySpark.
+Weeks can be used; note that there is no native PySpark function for adding weeks. Time periods, e.g. hours, can also be used with interval, which may be useful when working with timestamps.As with any function, it is recommended to use unit tests when working with dates. The Pytest for PySpark repository gives some examples of how to unit test when working with PySpark.
 
 
 ### Documentation:
@@ -567,3 +567,7 @@ weeks can be used; note that there is no native PySpark function for adding week
 ### Acknowledgments
   
 Special thanks to Diogo Marques for sharing his knowledge of the `interval` function, and to Vicky Pickering for inspiring this festive tip!
+
+```python
+
+```
