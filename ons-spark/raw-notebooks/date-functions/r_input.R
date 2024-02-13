@@ -33,17 +33,14 @@ rescue <- rescue %>%
 
 print(rescue, n = 5)
 
-
-festive_days <- data.frame(
-  "month_day" = c("Dec-24","Dec-25","Dec-26","Jan-01"),
-  "festive_day" =c("Christmas Eve","Christmas Day","Boxing Day","New Years Day"))
-
-festive_days <- copy_to(sc,festive_days)
-
-festive_days
-
-festive_rescues <- inner_join(rescue, festive_days,by = c("call_month_day" = "month_day"))  %>% 
-  select(-c(call_month_day,call_month_day))
+festive_rescues <- rescue %>%
+  mutate(festive_day = case_when(
+      call_month_day == "Dec-24" ~  "Christmas Eve",
+      call_month_day == "Dec-25" ~   "Christmas Day",
+      call_month_day == "Dec-26" ~  "Boxing Day",
+      call_month_day == "Jan-01" ~  "New Years Day",
+    .default = NA)) %>%
+  filter(!is.na(festive_day))
 
 print(festive_rescues, n = 5 )
 
@@ -63,13 +60,15 @@ rescue <- rescue %>%
   
 print(rescue, n = 5 )
 
-rescue <- rescue %>%
-  mutate(adjusted_month_day = date_format(adjusted_date, "MMM-dd"))
+orthodox_festive_rescues <- rescue %>%
+  mutate(adjusted_month_day = date_format(adjusted_date, "MMM-dd")) %>%
 
-orthodox_festive_rescues <- inner_join(rescue, festive_days,by = c("adjusted_month_day" = "month_day"))  %>% 
-  dplyr::rename(orthodox_festive_day = festive_day)  %>%
-  filter(orthodox_festive_day != "Boxing Day") %>%
-  select(incident_number ,date_of_call ,orthodox_festive_day)
+  mutate(orthodox_festive_day = case_when(
+      adjusted_month_day == "Dec-24" ~  "Christmas Eve",
+      adjusted_month_day == "Dec-25" ~   "Christmas Day",
+      adjusted_month_day == "Jan-01" ~  "New Years Day",
+    .default = NA)) %>%
+  filter(!is.na(orthodox_festive_day))
     
 print(orthodox_festive_rescues, n = 5)
 
