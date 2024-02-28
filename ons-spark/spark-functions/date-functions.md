@@ -137,7 +137,7 @@ print(rescue, n = 5)
 # ℹ more rows
 ```
 ````
-From the R output we can confirm that indeed `date_of_call` column is a `date` data type. For `PySpark` we must print the schema to confirm this.
+From the R output we can confirm that indeed `date_of_call` column is a `date` data type. For `PySpark` we must print the schema to confirm that.
 
 ````{tabs}
 ```{code-tab} py
@@ -197,68 +197,36 @@ print(rescue, n = 5)
 ```
 ````
 If only one component of the date is required then there are specific functions: `F.year()`, `F.month()` and `F.dayofmonth()`; in theory these should be more efficient than `F.date_format()`, although less elegant to write if being combined. For `sparklyr` we can achieve the same result by applying `year()`, `month()`, `dayofmonth()` with `mutate()`.
- Now create a new DataFrame containing some festive days:
-````{tabs}
-```{code-tab} py
-festive_days = spark.createDataFrame([
-    ["Dec-24", "Christmas Eve"],
-    ["Dec-25", "Christmas Day"],
-    ["Dec-26", "Boxing Day"],
-    ["Jan-01", "New Years Day"]],
-    ["month_day", "festive_day"])
 
-festive_days.toPandas()
-```
+In this example we are aiming to analyse the incidents during festive days. There are many ways to approach this problem, ideally we want to leverage the spark narrow transformations if possible, since they are much more efficient compared to wide transformations. 
+For PySpark, we firstly create a dictionary with the festive days, and then we filter the dataframe based on the keys.  This approach is convenient since we can include the dictionary with the replacements within [`replace`](https://spark.apache.org/docs/3.1.2/api/python/reference/api/pyspark.sql.DataFrame.replace.html) function.
 
-```{code-tab} r R
-
-
-festive_days <- data.frame(
-  "month_day" = c("Dec-24","Dec-25","Dec-26","Jan-01"),
-  "festive_day" =c("Christmas Eve","Christmas Day","Boxing Day","New Years Day"))
-
-festive_days <- copy_to(sc,festive_days)
-
-festive_days
-
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-  month_day    festive_day
-0    Dec-24  Christmas Eve
-1    Dec-25  Christmas Day
-2    Dec-26     Boxing Day
-3    Jan-01  New Years Day
-```
-
-```{code-tab} plaintext R Output
-# Source: spark<festive_days> [?? x 2]
-  month_day festive_day  
-  <chr>     <chr>        
-1 Dec-24    Christmas Eve
-2 Dec-25    Christmas Day
-3 Dec-26    Boxing Day   
-4 Jan-01    New Years Day
-```
-````
-Use an inner join to return a list of rescue incidents on these festive days:
+In sparklyr we approach the same problem a little differently, we create a new column with [`case_when`](https://dplyr.tidyverse.org/reference/case_when.html) and then we filter the matched cases. 
 
 ````{tabs}
 ```{code-tab} py
-festive_rescues = (rescue
-                   .join(festive_days, on=rescue.call_month_day == festive_days.month_day, how="inner")
-                   .drop("call_month_day", "month_day"))
+festive_dates = {
+    "Dec-24": "Christmas Eve",
+    "Dec-25": "Christmas Day",
+    "Dec-26": "Boxing Day",
+    "Jan-01": "New Years Day",  
+}
+ 
+festive_rescues = rescue.filter(F.col('call_month_day').isin(list(festive_dates.keys())))
 
 festive_rescues.limit(5).toPandas()
 ```
 
 ```{code-tab} r R
 
-festive_rescues <- inner_join(rescue, festive_days,by = c("call_month_day" = "month_day"))  %>% 
-  select(-c(call_month_day,call_month_day))
+festive_rescues <- rescue %>%
+  mutate(festive_day = case_when(
+      call_month_day == "Dec-24" ~  "Christmas Eve",
+      call_month_day == "Dec-25" ~   "Christmas Day",
+      call_month_day == "Dec-26" ~  "Boxing Day",
+      call_month_day == "Jan-01" ~  "New Years Day",
+    .default = NA)) %>%
+  filter(!is.na(festive_day))
 
 print(festive_rescues, n = 5 )
 
@@ -269,23 +237,23 @@ print(festive_rescues, n = 5 )
 ````{tabs}
 
 ```{code-tab} plaintext Python Output
-   incident_number date_of_call    festive_day
-0  179370-24122018   2018-12-24  Christmas Eve
-1  179212-24122018   2018-12-24  Christmas Eve
-2  173626-24122016   2016-12-24  Christmas Eve
-3        171323141   2014-12-24  Christmas Eve
-4        171286141   2014-12-24  Christmas Eve
+  incident_number date_of_call call_month_day adjusted_date adjusted_month_day
+0          139091   2009-01-01         Jan-01    2008-12-19             Dec-19
+1          275091   2009-01-01         Jan-01    2008-12-19             Dec-19
+2       229900091   2009-12-24         Dec-24    2009-12-11             Dec-11
+3       230352091   2009-12-25         Dec-25    2009-12-12             Dec-12
+4       230868091   2009-12-26         Dec-26    2009-12-13             Dec-13
 ```
 
 ```{code-tab} plaintext R Output
-# Source: spark<?> [?? x 3]
-  incident_number date_of_call festive_day  
-  <chr>           <date>       <chr>        
-1 179370-24122018 2018-12-24   Christmas Eve
-2 179212-24122018 2018-12-24   Christmas Eve
-3 173626-24122016 2016-12-24   Christmas Eve
-4 171323141       2014-12-24   Christmas Eve
-5 171286141       2014-12-24   Christmas Eve
+# Source: spark<?> [?? x 4]
+  incident_number date_of_call call_month_day festive_day  
+  <chr>           <date>       <chr>          <chr>        
+1 139091          2009-01-01   Jan-01         New Years Day
+2 275091          2009-01-01   Jan-01         New Years Day
+3 229900091       2009-12-24   Dec-24         Christmas Eve
+4 230352091       2009-12-25   Dec-25         Christmas Day
+5 230868091       2009-12-26   Dec-26         Boxing Day   
 # ℹ more rows
 ```
 ````
@@ -293,7 +261,7 @@ We can now get the number of animal rescue incidents on each festive day:
 
 ````{tabs}
 ```{code-tab} py
-festive_rescues.groupBy("date_of_call", "festive_day").count().orderBy("date_of_call").limit(10).toPandas()
+festive_rescues.groupBy("date_of_call", "call_month_day").count().orderBy("call_month_day","date_of_call").replace(festive_dates).withColumnRenamed("call_month_day","festive_day").limit(10).toPandas()
 ```
 
 ```{code-tab} r R
@@ -311,16 +279,16 @@ festive_rescues %>%
 
 ```{code-tab} plaintext Python Output
   date_of_call    festive_day  count
-0   2009-01-01  New Years Day      2
-1   2009-12-24  Christmas Eve      1
-2   2009-12-25  Christmas Day      1
-3   2009-12-26     Boxing Day      2
-4   2010-01-01  New Years Day      2
-5   2010-12-24  Christmas Eve      3
-6   2010-12-25  Christmas Day      1
-7   2010-12-26     Boxing Day      3
-8   2011-01-01  New Years Day      2
-9   2011-12-24  Christmas Eve      2
+0   2009-12-24  Christmas Eve      1
+1   2010-12-24  Christmas Eve      3
+2   2011-12-24  Christmas Eve      2
+3   2012-12-24  Christmas Eve      1
+4   2013-12-24  Christmas Eve      1
+5   2014-12-24  Christmas Eve      3
+6   2016-12-24  Christmas Eve      1
+7   2018-12-24  Christmas Eve      2
+8   2009-12-25  Christmas Day      1
+9   2010-12-25  Christmas Day      1
 ```
 
 ```{code-tab} plaintext R Output
@@ -371,12 +339,19 @@ rescue %>%
 ````{tabs}
 
 ```{code-tab} plaintext Python Output
-   incident_number date_of_call    festive_day report_date
-0  179370-24122018   2018-12-24  Christmas Eve  2020-03-24
-1  179212-24122018   2018-12-24  Christmas Eve  2020-03-24
-2  173626-24122016   2016-12-24  Christmas Eve  2018-03-24
-3        171323141   2014-12-24  Christmas Eve  2016-03-24
-4        171286141   2014-12-24  Christmas Eve  2016-03-24
+  incident_number date_of_call call_month_day adjusted_date  \
+0          139091   2009-01-01         Jan-01    2008-12-19   
+1          275091   2009-01-01         Jan-01    2008-12-19   
+2       229900091   2009-12-24         Dec-24    2009-12-11   
+3       230352091   2009-12-25         Dec-25    2009-12-12   
+4       230868091   2009-12-26         Dec-26    2009-12-13   
+
+  adjusted_month_day report_date  
+0             Dec-19  2010-04-01  
+1             Dec-19  2010-04-01  
+2             Dec-11  2011-03-24  
+3             Dec-12  2011-03-25  
+4             Dec-13  2011-03-26  
 ```
 
 ```{code-tab} plaintext R Output
@@ -411,12 +386,12 @@ print(rescue, n = 5 )
 ````{tabs}
 
 ```{code-tab} plaintext Python Output
-  incident_number date_of_call call_month_day adjusted_date
-0          139091   2009-01-01         Jan-01    2008-12-19
-1          275091   2009-01-01         Jan-01    2008-12-19
-2         2075091   2009-01-04         Jan-04    2008-12-22
-3         2872091   2009-01-05         Jan-05    2008-12-23
-4         3553091   2009-01-06         Jan-06    2008-12-24
+  incident_number date_of_call call_month_day adjusted_date adjusted_month_day
+0          139091   2009-01-01         Jan-01    2008-12-19             Dec-19
+1          275091   2009-01-01         Jan-01    2008-12-19             Dec-19
+2         2075091   2009-01-04         Jan-04    2008-12-22             Dec-22
+3         2872091   2009-01-05         Jan-05    2008-12-23             Dec-23
+4         3553091   2009-01-06         Jan-06    2008-12-24             Dec-24
 ```
 
 ```{code-tab} plaintext R Output
@@ -434,26 +409,34 @@ print(rescue, n = 5 )
 
 ````{tabs}
 ```{code-tab} py
-rescue = rescue.withColumn("adjusted_month_day", F.date_format("adjusted_date", "MMM-dd"))
+orthodox_festive_days = {
+    "Dec-24": "Christmas Eve",
+    "Dec-25": "Christmas Day",
+    "Jan-01": "New Years Day"
+}
 
 orthodox_festive_rescues = (rescue
-                   .join(festive_days, on=rescue.adjusted_month_day == festive_days.month_day, how="inner")
-                   .withColumnRenamed("festive_day", "orthodox_festive_day")
-                   .filter(F.col("orthodox_festive_day") != "Boxing Day")
-                   .drop("call_month_day", "month_day", "adjusted_date", "adjusted_month_day"))
+                           . withColumn("adjusted_month_day", F.date_format("adjusted_date", "MMM-dd"))
+                            .filter(F.col('adjusted_month_day').isin(list(orthodox_festive_days.keys())))
+                            .replace(orthodox_festive_days)
+                            .selectExpr("incident_number","date_of_call","adjusted_month_day as orthodox_festive_day"))
+
 
 orthodox_festive_rescues.limit(5).toPandas()
+
 ```
 
 ```{code-tab} r R
 
-rescue <- rescue %>%
-  mutate(adjusted_month_day = date_format(adjusted_date, "MMM-dd"))
+orthodox_festive_rescues <- rescue %>%
+  mutate(adjusted_month_day = date_format(adjusted_date, "MMM-dd")) %>%
 
-orthodox_festive_rescues <- inner_join(rescue, festive_days,by = c("adjusted_month_day" = "month_day"))  %>% 
-  dplyr::rename(orthodox_festive_day = festive_day)  %>%
-  filter(orthodox_festive_day != "Boxing Day") %>%
-  select(incident_number ,date_of_call ,orthodox_festive_day)
+  mutate(orthodox_festive_day = case_when(
+      adjusted_month_day == "Dec-24" ~  "Christmas Eve",
+      adjusted_month_day == "Dec-25" ~   "Christmas Day",
+      adjusted_month_day == "Jan-01" ~  "New Years Day",
+    .default = NA)) %>%
+  filter(!is.na(orthodox_festive_day))
     
 print(orthodox_festive_rescues, n = 5)
 
@@ -463,24 +446,25 @@ print(orthodox_festive_rescues, n = 5)
 ````{tabs}
 
 ```{code-tab} plaintext Python Output
-   incident_number date_of_call orthodox_festive_day
-0  002638-06012019   2019-01-06        Christmas Eve
-1  002419-06012019   2019-01-06        Christmas Eve
-2  002369-06012018   2018-01-06        Christmas Eve
-3  002204-06012018   2018-01-06        Christmas Eve
-4  001927-06012016   2016-01-06        Christmas Eve
+  incident_number date_of_call orthodox_festive_day
+0         3553091   2009-01-06        Christmas Eve
+1         3742091   2009-01-06        Christmas Eve
+2         4011091   2009-01-07        Christmas Day
+3         4211091   2009-01-07        Christmas Day
+4         4306091   2009-01-07        Christmas Day
 ```
 
 ```{code-tab} plaintext R Output
-# Source: spark<?> [?? x 3]
-  incident_number date_of_call orthodox_festive_day
-  <chr>           <date>       <chr>               
-1 002638-06012019 2019-01-06   Christmas Eve       
-2 002419-06012019 2019-01-06   Christmas Eve       
-3 002369-06012018 2018-01-06   Christmas Eve       
-4 002204-06012018 2018-01-06   Christmas Eve       
-5 001927-06012016 2016-01-06   Christmas Eve       
+# Source: spark<?> [?? x 6]
+  incident_number date_of_call call_month_day adjusted_date adjusted_month_day
+  <chr>           <date>       <chr>          <date>        <chr>             
+1 3553091         2009-01-06   Jan-06         2008-12-24    Dec-24            
+2 3742091         2009-01-06   Jan-06         2008-12-24    Dec-24            
+3 4011091         2009-01-07   Jan-07         2008-12-25    Dec-25            
+4 4211091         2009-01-07   Jan-07         2008-12-25    Dec-25            
+5 4306091         2009-01-07   Jan-07         2008-12-25    Dec-25            
 # ℹ more rows
+# ℹ 1 more variable: orthodox_festive_day <chr>
 ```
 ````
 As before, we can get the counts:
@@ -541,7 +525,7 @@ orthodox_festive_rescues %>%
 ```
 ````
 ### `interval` with times and weeks
-Weeks can be used; note that there is no native PySpark function for adding weeks. Time periods, e.g. hours, can also be used with interval, which may be useful when working with timestamps.As with any function, it is recommended to use unit tests when working with dates. The Pytest for PySpark repository gives some examples of how to unit test when working with PySpark.
+Weeks can be used; note that there is no native PySpark function for adding weeks. Time periods, e.g. hours, can also be used with interval, which may be useful when working with timestamps. As with any function, it is recommended to use unit tests when working with dates. The Pytest for PySpark repository gives some examples of how to unit test when working with PySpark.
 
 
 ### Documentation:
