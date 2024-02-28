@@ -1,0 +1,1480 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Date functions &#8212; Spark at the ONS</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/accessibility.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
+  <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-95MGHSRD0S');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'raw-notebooks/date-functions/date-functions';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="Spark at the ONS - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="Spark at the ONS - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../intro.html">
+                    Introduction
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark overview</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/spark-start.html">Getting Started with Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/when-to-use-spark.html">When To Use Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/spark-session-guidance.html">Guidance on Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/example-spark-sessions.html">Example Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/spark-defaults.html">Configuration Hierarchy and <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/data-types.html">Data Types in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/creating-dataframes.html">Creating DataFrames Manually</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/reading-and-writing-data-spark.html">Reading and Writing Data in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/data-storage.html">Data Storage</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to PySpark</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../pyspark-intro/pyspark-intro.html">Introduction to PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyspark-intro/returning-data.html">Returning Data from Cluster to Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyspark-intro/f-col.html">Reference columns by name: <code class="docutils literal notranslate"><span class="pre">F.col()</span></code></a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to sparklyr</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../sparklyr-intro/sparklyr-intro.html">Introduction to sparklyr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sparklyr-intro/sparklyr-functions.html">Using Spark functions in sparklyr</a></li>
+
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark functions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/union-dataframes-with-different-columns.html">Union two DataFrames with different columns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/padding.html">Add leading zeros with <code class="docutils literal notranslate"><span class="pre">lpad()</span></code></a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/sampling.html">Sampling: an overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/pivot-tables.html">Pivot tables in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/rounding.html">Rounding differences in Python, R and Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/window-functions.html">Window Functions in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/cross-joins.html">Cross Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/arrays.html">Arrays Functions in PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/date-functions.html">Date functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/writing-data.html">Writing Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/job-description-notebook.html">Set Spark Job Description</a></li>
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/median.html">Median in Spark</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Understanding and Optimising Spark</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/optimisation-tips.html">Ideas for optimising Spark code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/spark-application-and-ui.html">Spark Application and UI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/groups-not-loops.html">Groups not Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/shuffling.html">Shuffling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/join-concepts.html">Optimising Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/salted-joins.html">Salted Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/partitions.html">Managing Partitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/persistence.html">Persisting in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/cache.html">Caching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/checkpoint-staging.html">Checkpoints and Staging Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/garbage-collection.html">Garbage Collection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/df-order.html">Spark DataFrames Are Not Ordered</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/exercises.html">Exercises</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Analysis in Spark</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../spark-analysis/interpolation.html">Interpolation in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-analysis/logistic-regression.html">Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-analysis/visualisation.html">Spark and Visualisation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-analysis/flags.html">Flags in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-analysis/bin-continuous-variable.html">Data binning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-analysis/cramer_v.html">Calculating Cramér’s V from a Spark DataFrame</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Testing and Debugging</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../testing-debugging/spark-errors.html">Understanding and Handling Spark Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../testing-debugging/unit-testing.html">Unit Testing in Spark</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Ancillary Topics</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/module-imports.html">Naming Conflicts in Module Imports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/pydoop.html">Pydoop: HDFS to pandas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/creating-a-SQL-view-in-HDFS.html">Creating a SQL view in HDFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/pandas-udfs.html">Pandas UDFs</a></li>
+</ul>
+
+        </div>
+    </nav></div>
+            <div class="bd-sidebar__bottom">
+                <!-- To handle the deprecated key -->
+                
+                <div class="navbar_extra_footer">
+                <div>
+        <p>Book version 2022.6</p>
+    </div>
+    
+                </div>
+                
+            </div>
+        </div>
+        <div id="rtd-footer-container"></div>
+    </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fraw-notebooks/date-functions/date-functions.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/raw-notebooks/date-functions/date-functions.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Date functions</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#convert-string-to-date-with-to-date">Convert string to date with <code class="docutils literal notranslate"><span class="pre">to_date()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#format-dates-with-f-date-format">Format dates with <code class="docutils literal notranslate"><span class="pre">F.date_format()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#add-and-subtract-dates-with-interval">Add and subtract dates with <code class="docutils literal notranslate"><span class="pre">interval</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interval-with-times-and-weeks"><code class="docutils literal notranslate"><span class="pre">interval</span></code> with times and weeks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation">Documentation:</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyspark">PySpark</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sparklyr">sparklyr</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other-links">Other links:</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#acknowledgments">Acknowledgments</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="date-functions">
+<h1>Date functions<a class="headerlink" href="#date-functions" title="Permalink to this heading">#</a></h1>
+<p>Handling dates is tricky in most programming languages, and Spark is no exception. This article gives examples of a few date functions, including interval, which is not well documented in PySpark. This page was written in December and so we have decided to make our examples festive! Note that this is far from exhaustive; see the links in Further Resources for more information which explain dates in more detail. To demonstrate the date functions we first need to start a Spark session and read in the Animal Rescue data:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
+
+<span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;date-functions&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
+
+<span class="n">rescue</span> <span class="o">=</span> <span class="p">(</span><span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="s2">&quot;/training/animal_rescue.csv&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;IncidentNumber&quot;</span><span class="p">,</span> <span class="s2">&quot;incident_number&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;DateTimeOfCall&quot;</span><span class="p">,</span> <span class="s2">&quot;date_time_of_call&quot;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span> <span class="s2">&quot;date_time_of_call&quot;</span><span class="p">))</span>
+
+<span class="n">rescue</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>incident_number</th>
+      <th>date_time_of_call</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>139091</td>
+      <td>01/01/2009 03:01</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>275091</td>
+      <td>01/01/2009 08:51</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2075091</td>
+      <td>04/01/2009 10:07</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2872091</td>
+      <td>05/01/2009 12:27</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>3553091</td>
+      <td>06/01/2009 15:23</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+
+<span class="n">default_config</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">()</span>
+
+<span class="n">sc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
+<span class="w">    </span><span class="n">master</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;local[2]&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">app_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;date-functions&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">default_config</span><span class="p">)</span>
+
+<span class="n">rescue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_csv</span><span class="p">(</span>
+<span class="w">    </span><span class="n">sc</span><span class="p">,</span>
+<span class="w">    </span><span class="n">path</span><span class="o">=</span><span class="s">&quot;/training/animal_rescue.csv&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">    </span><span class="n">header</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">    </span><span class="n">infer_schema</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">rename</span><span class="p">(</span>
+<span class="w">        </span><span class="n">incident_number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">IncidentNumber</span><span class="p">,</span>
+<span class="w">        </span><span class="n">date_time_of_call</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DateTimeOfCall</span><span class="p">,</span>
+<span class="w">       </span><span class="p">)</span><span class="w">  </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">select</span><span class="p">(</span><span class="n">incident_number</span><span class="p">,</span><span class="w"> </span><span class="n">date_time_of_call</span><span class="p">)</span>
+
+<span class="n">rescue</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">date_time_of_call</span></code> column contains dates and times, but is actually a string. From the R output we can check that under the column name the data type is <code class="docutils literal notranslate"><span class="pre">char</span></code>,
+which stands for <code class="docutils literal notranslate"><span class="pre">character</span></code>  and is used for storing string or character values in a variable. To get the same insights in <code class="docutils literal notranslate"><span class="pre">PySpark</span></code> we need to print the schema:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>root
+ |-- incident_number: string (nullable = true)
+ |-- date_time_of_call: string (nullable = true)
+</pre></div>
+</div>
+</div>
+</div>
+<section id="convert-string-to-date-with-to-date">
+<h2>Convert string to date with <code class="docutils literal notranslate"><span class="pre">to_date()</span></code><a class="headerlink" href="#convert-string-to-date-with-to-date" title="Permalink to this heading">#</a></h2>
+<p>Before using any date functions we want to change the <code class="docutils literal notranslate"><span class="pre">date_time_of_call</span></code> column to a <code class="docutils literal notranslate"><span class="pre">date</span></code> type, omitting the time, using <a class="reference external" href="https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.functions.to_date"><code class="docutils literal notranslate"><span class="pre">F.to_date()</span></code></a>.</p>
+<p>This has two arguments, the name of the column and the date format, <code class="docutils literal notranslate"><span class="pre">dd/MM/yyyy</span></code> in this example:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;date_of_call&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">to_date</span><span class="p">(</span><span class="s2">&quot;date_time_of_call&quot;</span><span class="p">,</span> <span class="s2">&quot;dd/MM/yyyy&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;date_time_of_call&quot;</span><span class="p">)</span>
+<span class="n">rescue</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>incident_number</th>
+      <th>date_of_call</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>139091</td>
+      <td>2009-01-01</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>275091</td>
+      <td>2009-01-01</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2075091</td>
+      <td>2009-01-04</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2872091</td>
+      <td>2009-01-05</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>3553091</td>
+      <td>2009-01-06</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">date_of_call</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">to_date</span><span class="p">(</span><span class="n">date_time_of_call</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;dd/MM/yyyy&quot;</span><span class="p">))</span><span class="w">  </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">      </span><span class="nf">select</span><span class="p">(</span><span class="o">-</span><span class="nf">c</span><span class="p">(</span><span class="n">date_time_of_call</span><span class="p">))</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="n">rescue</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>From the R output we can confirm that indeed <code class="docutils literal notranslate"><span class="pre">date_of_call</span></code> column is a <code class="docutils literal notranslate"><span class="pre">date</span></code> data type. For <code class="docutils literal notranslate"><span class="pre">PySpark</span></code> we must print the schema to confirm that.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>root
+ |-- incident_number: string (nullable = true)
+ |-- date_of_call: date (nullable = true)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="format-dates-with-f-date-format">
+<h2>Format dates with <code class="docutils literal notranslate"><span class="pre">F.date_format()</span></code><a class="headerlink" href="#format-dates-with-f-date-format" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;call_month_day&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">date_format</span><span class="p">(</span><span class="s2">&quot;date_of_call&quot;</span><span class="p">,</span> <span class="s2">&quot;MMM-dd&quot;</span><span class="p">))</span>
+
+<span class="n">rescue</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>incident_number</th>
+      <th>date_of_call</th>
+      <th>call_month_day</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>139091</td>
+      <td>2009-01-01</td>
+      <td>Jan-01</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>275091</td>
+      <td>2009-01-01</td>
+      <td>Jan-01</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2075091</td>
+      <td>2009-01-04</td>
+      <td>Jan-04</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2872091</td>
+      <td>2009-01-05</td>
+      <td>Jan-05</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>3553091</td>
+      <td>2009-01-06</td>
+      <td>Jan-06</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">call_month_day</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">date_format</span><span class="p">(</span><span class="n">date_of_call</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;MMM-dd&quot;</span><span class="p">))</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="n">rescue</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If only one component of the date is required then there are specific functions: <code class="docutils literal notranslate"><span class="pre">F.year()</span></code>, <code class="docutils literal notranslate"><span class="pre">F.month()</span></code> and <code class="docutils literal notranslate"><span class="pre">F.dayofmonth()</span></code>; in theory these should be more efficient than <code class="docutils literal notranslate"><span class="pre">F.date_format()</span></code>, although less elegant to write if being combined. For <code class="docutils literal notranslate"><span class="pre">sparklyr</span></code> we can achieve the same result by applying <code class="docutils literal notranslate"><span class="pre">year()</span></code>, <code class="docutils literal notranslate"><span class="pre">month()</span></code>, <code class="docutils literal notranslate"><span class="pre">dayofmonth()</span></code> with <code class="docutils literal notranslate"><span class="pre">mutate()</span></code>.</p>
+<p>In this example we are aiming to analyse the incidents during festive days. There are many ways to approach this problem, ideally we want to leverage the spark narrow transformations if possible, since they are much more efficient compared to wide transformations.
+For PySpark, we firstly create a dictionary with the festive days, and then we filter the dataframe based on the keys.  This approach is convenient since we can include the dictionary with the replacements within <a class="reference external" href="https://spark.apache.org/docs/3.1.2/api/python/reference/api/pyspark.sql.DataFrame.replace.html"><code class="docutils literal notranslate"><span class="pre">replace</span></code></a> function.</p>
+<p>In sparklyr we approach the same problem a little differently, we create a new column with <a class="reference external" href="https://dplyr.tidyverse.org/reference/case_when.html"><code class="docutils literal notranslate"><span class="pre">case_when</span></code></a> and then we filter the matched cases.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">festive_dates</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Dec-24&quot;</span><span class="p">:</span> <span class="s2">&quot;Christmas Eve&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Dec-25&quot;</span><span class="p">:</span> <span class="s2">&quot;Christmas Day&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Dec-26&quot;</span><span class="p">:</span> <span class="s2">&quot;Boxing Day&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Jan-01&quot;</span><span class="p">:</span> <span class="s2">&quot;New Years Day&quot;</span><span class="p">,</span>  
+<span class="p">}</span>
+ 
+<span class="n">festive_rescues</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;call_month_day&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">festive_dates</span><span class="o">.</span><span class="n">keys</span><span class="p">())))</span>
+
+<span class="n">festive_rescues</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>incident_number</th>
+      <th>date_of_call</th>
+      <th>call_month_day</th>
+      <th>adjusted_date</th>
+      <th>adjusted_month_day</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>139091</td>
+      <td>2009-01-01</td>
+      <td>Jan-01</td>
+      <td>2008-12-19</td>
+      <td>Dec-19</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>275091</td>
+      <td>2009-01-01</td>
+      <td>Jan-01</td>
+      <td>2008-12-19</td>
+      <td>Dec-19</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>229900091</td>
+      <td>2009-12-24</td>
+      <td>Dec-24</td>
+      <td>2009-12-11</td>
+      <td>Dec-11</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>230352091</td>
+      <td>2009-12-25</td>
+      <td>Dec-25</td>
+      <td>2009-12-12</td>
+      <td>Dec-12</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>230868091</td>
+      <td>2009-12-26</td>
+      <td>Dec-26</td>
+      <td>2009-12-13</td>
+      <td>Dec-13</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">festive_rescues</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">festive_day</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">case_when</span><span class="p">(</span>
+<span class="w">      </span><span class="n">call_month_day</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;Dec-24&quot;</span><span class="w"> </span><span class="o">~</span><span class="w">  </span><span class="s">&quot;Christmas Eve&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="n">call_month_day</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;Dec-25&quot;</span><span class="w"> </span><span class="o">~</span><span class="w">   </span><span class="s">&quot;Christmas Day&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="n">call_month_day</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;Dec-26&quot;</span><span class="w"> </span><span class="o">~</span><span class="w">  </span><span class="s">&quot;Boxing Day&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="n">call_month_day</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;Jan-01&quot;</span><span class="w"> </span><span class="o">~</span><span class="w">  </span><span class="s">&quot;New Years Day&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">.default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NA</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">filter</span><span class="p">(</span><span class="o">!</span><span class="nf">is.na</span><span class="p">(</span><span class="n">festive_day</span><span class="p">))</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="n">festive_rescues</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We can now get the number of animal rescue incidents on each festive day:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">festive_rescues</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;date_of_call&quot;</span><span class="p">,</span> <span class="s2">&quot;call_month_day&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;call_month_day&quot;</span><span class="p">,</span><span class="s2">&quot;date_of_call&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">festive_dates</span><span class="p">)</span><span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;call_month_day&quot;</span><span class="p">,</span><span class="s2">&quot;festive_day&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date_of_call</th>
+      <th>festive_day</th>
+      <th>count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2009-12-24</td>
+      <td>Christmas Eve</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2010-12-24</td>
+      <td>Christmas Eve</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2011-12-24</td>
+      <td>Christmas Eve</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2012-12-24</td>
+      <td>Christmas Eve</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2013-12-24</td>
+      <td>Christmas Eve</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>2014-12-24</td>
+      <td>Christmas Eve</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>2016-12-24</td>
+      <td>Christmas Eve</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>2018-12-24</td>
+      <td>Christmas Eve</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>2009-12-25</td>
+      <td>Christmas Day</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>2010-12-25</td>
+      <td>Christmas Day</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">festive_rescues</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">date_of_call</span><span class="p">,</span><span class="n">festive_day</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">summarize</span><span class="p">(</span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n</span><span class="p">())</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">  </span><span class="nf">arrange</span><span class="p">(</span><span class="n">date_of_call</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">print</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="add-and-subtract-dates-with-interval">
+<h2>Add and subtract dates with <code class="docutils literal notranslate"><span class="pre">interval</span></code><a class="headerlink" href="#add-and-subtract-dates-with-interval" title="Permalink to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">interval</span></code> function adds or subtracts days, months and years to a date. Despite being a very useful function it is unfortunately poorly documented within PySpark. <code class="docutils literal notranslate"><span class="pre">interval</span></code> is not contained in the PySpark functions module, and needs to be wrapped in <a class="reference external" href="https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.functions.expr"><code class="docutils literal notranslate"><span class="pre">F.expr()</span></code></a>. The most common format is:</p>
+<p><code class="docutils literal notranslate"><span class="pre">F.expr(&quot;column_name</span> <span class="pre">+</span> <span class="pre">interval</span> <span class="pre">y</span> <span class="pre">years</span> <span class="pre">m</span> <span class="pre">months</span> <span class="pre">d</span> <span class="pre">days&quot;)</span></code></p>
+<p>We can apply the same expression in sparklyr by leveraging the <a class="reference external" href="https://dplyr.tidyverse.org/reference/sql.html#:~:text=These%20functions%20are%20critical%20when,and%20return%20an%20sql%20object."><code class="docutils literal notranslate"><span class="pre">sql()</span></code></a> function.</p>
+<p>The PySpark functions module contains <code class="docutils literal notranslate"><span class="pre">F.date_add()</span></code>, <code class="docutils literal notranslate"><span class="pre">F.date_sub()</span></code> and <code class="docutils literal notranslate"><span class="pre">F.add_months()</span></code>. These functions are not the easiest to remember as they are inconsistently named, and there is no function for adding years; you can create your own by multiplying <code class="docutils literal notranslate"><span class="pre">F.add_months()</span></code> by <code class="docutils literal notranslate"><span class="pre">12</span></code>. <code class="docutils literal notranslate"><span class="pre">interval</span></code> is easier to use and a better choice in most circumstances.</p>
+<p>For instance, if we assume that a report has to be produced for each animal rescue incident within a year and three months, then we can use <code class="docutils literal notranslate"><span class="pre">interval</span> <span class="pre">1</span> <span class="pre">year</span> <span class="pre">3</span> <span class="pre">months</span></code>. The singular <code class="docutils literal notranslate"><span class="pre">year</span></code> is used here rather than <code class="docutils literal notranslate"><span class="pre">years</span></code>; both work correctly regardless of the integer value used.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">festive_rescues</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;report_date&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">expr</span><span class="p">(</span><span class="s2">&quot;date_of_call + interval 1 year 3 months&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>incident_number</th>
+      <th>date_of_call</th>
+      <th>call_month_day</th>
+      <th>adjusted_date</th>
+      <th>adjusted_month_day</th>
+      <th>report_date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>139091</td>
+      <td>2009-01-01</td>
+      <td>Jan-01</td>
+      <td>2008-12-19</td>
+      <td>Dec-19</td>
+      <td>2010-04-01</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>275091</td>
+      <td>2009-01-01</td>
+      <td>Jan-01</td>
+      <td>2008-12-19</td>
+      <td>Dec-19</td>
+      <td>2010-04-01</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>229900091</td>
+      <td>2009-12-24</td>
+      <td>Dec-24</td>
+      <td>2009-12-11</td>
+      <td>Dec-11</td>
+      <td>2011-03-24</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>230352091</td>
+      <td>2009-12-25</td>
+      <td>Dec-25</td>
+      <td>2009-12-12</td>
+      <td>Dec-12</td>
+      <td>2011-03-25</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>230868091</td>
+      <td>2009-12-26</td>
+      <td>Dec-26</td>
+      <td>2009-12-13</td>
+      <td>Dec-13</td>
+      <td>2011-03-26</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">report_date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sql</span><span class="p">(</span><span class="s">&quot;date_of_call + interval 1 year 3 months&quot;</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">print</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can also use negative numbers with interval. As a festive example, in some Orthodox churches in central and eastern Europe Christmas is celebrated 13 days later than in Britain, with Christmas Day on the 7th of January. To calculate how many animals were rescued on the Orthodox festive days without redefining the festive_days DataFrame we can use - interval with 13 days, then join festive days. We do not need to specify months or years as we are only using days. Boxing Day is also being filtered out as it is not widely celebrated outside of the Commonwealth.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span> <span class="o">=</span> <span class="n">rescue</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;adjusted_date&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">expr</span><span class="p">(</span><span class="s2">&quot;date_of_call - interval 13 days&quot;</span><span class="p">))</span>
+<span class="n">rescue</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>incident_number</th>
+      <th>date_of_call</th>
+      <th>call_month_day</th>
+      <th>adjusted_date</th>
+      <th>adjusted_month_day</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>139091</td>
+      <td>2009-01-01</td>
+      <td>Jan-01</td>
+      <td>2008-12-19</td>
+      <td>Dec-19</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>275091</td>
+      <td>2009-01-01</td>
+      <td>Jan-01</td>
+      <td>2008-12-19</td>
+      <td>Dec-19</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2075091</td>
+      <td>2009-01-04</td>
+      <td>Jan-04</td>
+      <td>2008-12-22</td>
+      <td>Dec-22</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2872091</td>
+      <td>2009-01-05</td>
+      <td>Jan-05</td>
+      <td>2008-12-23</td>
+      <td>Dec-23</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>3553091</td>
+      <td>2009-01-06</td>
+      <td>Jan-06</td>
+      <td>2008-12-24</td>
+      <td>Dec-24</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">adjusted_date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sql</span><span class="p">(</span><span class="s">&quot;date_of_call - interval 13 days&quot;</span><span class="p">))</span>
+<span class="w">  </span>
+<span class="nf">print</span><span class="p">(</span><span class="n">rescue</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">orthodox_festive_days</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Dec-24&quot;</span><span class="p">:</span> <span class="s2">&quot;Christmas Eve&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Dec-25&quot;</span><span class="p">:</span> <span class="s2">&quot;Christmas Day&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Jan-01&quot;</span><span class="p">:</span> <span class="s2">&quot;New Years Day&quot;</span>
+<span class="p">}</span>
+
+<span class="n">orthodox_festive_rescues</span> <span class="o">=</span> <span class="p">(</span><span class="n">rescue</span>
+                           <span class="o">.</span> <span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;adjusted_month_day&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">date_format</span><span class="p">(</span><span class="s2">&quot;adjusted_date&quot;</span><span class="p">,</span> <span class="s2">&quot;MMM-dd&quot;</span><span class="p">))</span>
+                            <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;adjusted_month_day&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">orthodox_festive_days</span><span class="o">.</span><span class="n">keys</span><span class="p">())))</span>
+                            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">orthodox_festive_days</span><span class="p">)</span>
+                            <span class="o">.</span><span class="n">selectExpr</span><span class="p">(</span><span class="s2">&quot;incident_number&quot;</span><span class="p">,</span><span class="s2">&quot;date_of_call&quot;</span><span class="p">,</span><span class="s2">&quot;adjusted_month_day as orthodox_festive_day&quot;</span><span class="p">))</span>
+
+
+<span class="n">orthodox_festive_rescues</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>incident_number</th>
+      <th>date_of_call</th>
+      <th>orthodox_festive_day</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>3553091</td>
+      <td>2009-01-06</td>
+      <td>Christmas Eve</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>3742091</td>
+      <td>2009-01-06</td>
+      <td>Christmas Eve</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>4011091</td>
+      <td>2009-01-07</td>
+      <td>Christmas Day</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4211091</td>
+      <td>2009-01-07</td>
+      <td>Christmas Day</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4306091</td>
+      <td>2009-01-07</td>
+      <td>Christmas Day</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">orthodox_festive_rescues</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">adjusted_month_day</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">date_format</span><span class="p">(</span><span class="n">adjusted_date</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;MMM-dd&quot;</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">orthodox_festive_day</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">case_when</span><span class="p">(</span>
+<span class="w">      </span><span class="n">adjusted_month_day</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;Dec-24&quot;</span><span class="w"> </span><span class="o">~</span><span class="w">  </span><span class="s">&quot;Christmas Eve&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="n">adjusted_month_day</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;Dec-25&quot;</span><span class="w"> </span><span class="o">~</span><span class="w">   </span><span class="s">&quot;Christmas Day&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="n">adjusted_month_day</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;Jan-01&quot;</span><span class="w"> </span><span class="o">~</span><span class="w">  </span><span class="s">&quot;New Years Day&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">.default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NA</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">filter</span><span class="p">(</span><span class="o">!</span><span class="nf">is.na</span><span class="p">(</span><span class="n">orthodox_festive_day</span><span class="p">))</span>
+<span class="w">    </span>
+<span class="nf">print</span><span class="p">(</span><span class="n">orthodox_festive_rescues</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>As before, we can get the counts:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">orthodox_festive_rescues</span>
+     <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;date_of_call&quot;</span><span class="p">,</span> <span class="s2">&quot;orthodox_festive_day&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">count</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;date_of_call&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">toPandas</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date_of_call</th>
+      <th>orthodox_festive_day</th>
+      <th>count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2009-01-06</td>
+      <td>Christmas Eve</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2009-01-07</td>
+      <td>Christmas Day</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2009-01-14</td>
+      <td>New Years Day</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2010-01-06</td>
+      <td>Christmas Eve</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2010-01-07</td>
+      <td>Christmas Day</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>2010-01-14</td>
+      <td>New Years Day</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>2011-01-06</td>
+      <td>Christmas Eve</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>2012-01-06</td>
+      <td>Christmas Eve</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>2012-01-07</td>
+      <td>Christmas Day</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>2012-01-14</td>
+      <td>New Years Day</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">orthodox_festive_rescues</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">date_of_call</span><span class="p">,</span><span class="n">orthodox_festive_day</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">summarize</span><span class="p">(</span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n</span><span class="p">())</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">  </span><span class="nf">arrange</span><span class="p">(</span><span class="n">date_of_call</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">print</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="interval-with-times-and-weeks">
+<h2><code class="docutils literal notranslate"><span class="pre">interval</span></code> with times and weeks<a class="headerlink" href="#interval-with-times-and-weeks" title="Permalink to this heading">#</a></h2>
+<p>Weeks can be used; note that there is no native PySpark function for adding weeks. Time periods, e.g. hours, can also be used with interval, which may be useful when working with timestamps. As with any function, it is recommended to use unit tests when working with dates. The Pytest for PySpark repository gives some examples of how to unit test when working with PySpark.</p>
+</section>
+<section id="documentation">
+<h2>Documentation:<a class="headerlink" href="#documentation" title="Permalink to this heading">#</a></h2>
+<section id="pyspark">
+<h3>PySpark<a class="headerlink" href="#pyspark" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.functions.date_format"><code class="docutils literal notranslate"><span class="pre">F.date_format()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.functions.year"><code class="docutils literal notranslate"><span class="pre">F.year()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.functions.month"><code class="docutils literal notranslate"><span class="pre">F.month()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.functions.dayofmonth"><code class="docutils literal notranslate"><span class="pre">F.dayofmonth()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.functions.expr"><code class="docutils literal notranslate"><span class="pre">F.expr()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.functions.date_add"><code class="docutils literal notranslate"><span class="pre">F.date_add()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.functions.date_sub"><code class="docutils literal notranslate"><span class="pre">F.date_sub()</span></code></a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.functions.add_months"><code class="docutils literal notranslate"><span class="pre">F.add_months()</span></code></a></p></li>
+</ul>
+</section>
+<section id="sparklyr">
+<h3>sparklyr<a class="headerlink" href="#sparklyr" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://dplyr.tidyverse.org/reference/sql.html#:~:text=These%20functions%20are%20critical%20when,and%20return%20an%20sql%20object."><code class="docutils literal notranslate"><span class="pre">sql()</span></code></a></p></li>
+<li><p><span class="xref myst">sparklyr-functions</span></p></li>
+</ul>
+</section>
+</section>
+<section id="other-links">
+<h2>Other links:<a class="headerlink" href="#other-links" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.yammer.com/ons.gov.uk/#/threads/show?threadId=934654814199808">Yammer discussion of <code class="docutils literal notranslate"><span class="pre">interval</span></code></a>: Diogo Marques gives an explanation and examples of <code class="docutils literal notranslate"><span class="pre">interval</span></code></p></li>
+<li><p><a class="reference external" href="https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html">Java <code class="docutils literal notranslate"><span class="pre">SimpleDateFormat</span></code> class</a>: details of valid date formats for <code class="docutils literal notranslate"><span class="pre">F.to_date()</span></code> and <code class="docutils literal notranslate"><span class="pre">F.date_format()</span></code>- <a class="reference external" href="https://spark.apache.org/docs/2.4.0/api/python/pyspark.sql.html#pyspark.sql.functions.to_date"><code class="docutils literal notranslate"><span class="pre">F.to_date()</span></code></a></p></li>
+</ul>
+</section>
+<section id="acknowledgments">
+<h2>Acknowledgments<a class="headerlink" href="#acknowledgments" title="Permalink to this heading">#</a></h2>
+<p>Special thanks to Diogo Marques for sharing his knowledge of the <code class="docutils literal notranslate"><span class="pre">interval</span></code> function, and to Vicky Pickering for inspiring this festive tip!</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./raw-notebooks/date-functions"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#convert-string-to-date-with-to-date">Convert string to date with <code class="docutils literal notranslate"><span class="pre">to_date()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#format-dates-with-f-date-format">Format dates with <code class="docutils literal notranslate"><span class="pre">F.date_format()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#add-and-subtract-dates-with-interval">Add and subtract dates with <code class="docutils literal notranslate"><span class="pre">interval</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interval-with-times-and-weeks"><code class="docutils literal notranslate"><span class="pre">interval</span></code> with times and weeks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation">Documentation:</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyspark">PySpark</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sparklyr">sparklyr</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other-links">Other links:</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#acknowledgments">Acknowledgments</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Analysis Standards and Pipelines in Quality and Improvement, Office for National Statistics
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
