@@ -1,4 +1,6 @@
 # **Big data workflow**
+Working with big data efficiently presents a major challenge to analysts. In particular, working with large datasets can use large amounts of computational resource, which can be very expensive. Inefficient code or working practices can unnecessarily increase the costs of running your analysis, as well as the time it takes you to run your code. However, there are good practices that can be employed to help minimise costs without sacrificing the quality of your analysis. We have produced this page as a general guide to best practice in working with big data, including tips for general workflow and managing pipeline development, working with samples and subsets of your data, and optimising analysis with Spark.
+
 
 ## **General workflow and project planning**
 
