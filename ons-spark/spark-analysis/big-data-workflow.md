@@ -3,9 +3,17 @@
 ## **General workflow and project planning**
 
 ### 1. Plan your analysis
-- A simplified version of the process of developing a new pipeline can be summarised as:
+- A simplified version of the process of developing a new pipeline might look something like this:
 
-**Insert graphic or something here**
+
+```{figure} ../images/big_data_pipeline_stages.png
+---
+width: 100%
+name: BigDataPipelineStages
+alt: Diagram showing potentials steps in the process of developing a new big data pipeline.
+---
+Big data pipeline development stages
+```
 
 - Splitting your development into clearly defined stages like this will help with applying some of the tips we have below for keeping your resource use to a minimum e.g. working with small samples or subsets of your data in the EDA phase.
 
@@ -45,6 +53,19 @@
 ### 6. Consider creating synthetic data to work on
 - Create minimal size dummy data containing edge cases to work with in the development phase.
 - Synthetic datasets can also be used for testing or peer reviewing code to help QA either code or analysis.
+
+
+The diagram below has suggestions for where taking samples, subsets or creating synthetic data may be appropriate at each stage in your pipeline development.
+
+
+```{figure} ../images/big_data_pipeline_datasize.png
+---
+width: 100%
+name: BigDataPipelineDataSize
+alt: A diagram showing rough guidelines for the size of data to use at each phase of development for your pipeline.
+---
+Using samples/subsets or synthetic data in your pipeline development
+```
 
 ### 7. Ensure that duplicates are removed early on in the pipeline
 - This can help reduce your data size early on.
