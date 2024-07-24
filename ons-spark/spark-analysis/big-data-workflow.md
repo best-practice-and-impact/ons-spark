@@ -80,11 +80,11 @@ Fig 2. Using samples/subsets or synthetic data in your pipeline development
 
 ## **Spark optimisation**
 
-The following section contains some more advanced suggestions you can consider applying to your pipeline to further optimise your code and minimise resource use. Our general tips for Spark optimisation can be found on the [Ideas for optimising Spark code](../spark-concepts/optimisation-tips) page of the book.
+The following section contains some more advanced suggestions you can consider applying to your pipeline to further optimise your code and minimise resource use. These are most likely to be useful in the 'Development' phase of working on your pipeline. Our general tips for Spark optimisation can be found on the [Ideas for optimising Spark code](../spark-concepts/optimisation-tips) page of the book.
 
 ### 9. Use Spark functions where possible
 - `Spark ML` functions ([MLlib](https://spark.apache.org/docs/latest/ml-guide.html)) contain a range of tools for processing and analysing big data efficiently.
-- You can also assemble 'Spark ML` operations into an [ML pipeline](https://spark.apache.org/docs/latest/ml-pipeline.html). These pipelines can be saved and reloaded later to re-run analysis or to apply analysis to a new set of data. 
+- You can also assemble `Spark ML` operations into an [ML pipeline](https://spark.apache.org/docs/latest/ml-pipeline.html). These pipelines can be saved and reloaded later to re-run analysis or to apply analysis to a new set of data. 
 - See the [Logistic regression](./logistic-regression) page of this book for some examples of applying `Spark ML` functions to a dataset and setting up a `Spark ML` analysis pipeline. 
 
 ### 10. Optimise joins
@@ -97,7 +97,7 @@ The following section contains some more advanced suggestions you can consider a
 - There is no set rule for how many partitions your data should have. As a general guide, the optimum size for a partition is often suggested to be 100-200MB and the number of partitions should be a multiple of the number of nodes in your [Spark session](../spark-overview/spark-session-guidance). 
 - It may be beneficial to change how your data is partitioned at various points in your pipeline. For example if your full dataset contains 200 million rows, it may be reasonable to have 200 partitions. However, if later on in your pipeline this data is aggregated so that there are now only around 2 million rows, repartitioning your data on to a smaller number of partitions could improve performance and reduce the compute resource used. 
 - Aim to make sure data is kept in roughly equal partition sizes throughout the pipeline. 
-    - This may also involve repartitioning your data at appropriate points due to [skewed data](..spark-concepts/partitions#intermediate-partitions-in-wide-operations)
+    - This may also involve repartitioning your data at appropriate points due to [skewed data](../spark-concepts/partitions#intermediate-partitions-in-wide-operations)
     - Identifying variables in your data that are skewed during the EDA phase of your pipeline development may help in avoiding or identifying this issue later in the development stage. 
 - Be aware of the difference between [*narrow* and *wide* transformations](../spark-concepts/shuffling) in Spark and how *wide* transformations can increase the number of partitions in your data. 
     - If you are using Spark 2.X, you may need to repartition after performing such operations or consider changing the `spark.sql.shuffle.partitions` from the default (200) in your [Spark config](../spark-overview/spark-defaults).
