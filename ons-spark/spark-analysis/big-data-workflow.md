@@ -1,8 +1,8 @@
-# **Big data workflow**
+# Big data workflow
 Working with big data efficiently presents a major challenge to analysts. In particular, working with large datasets can use large amounts of computational resource, which can be very expensive. Inefficient code or working practices can unnecessarily increase the costs of running your analysis, as well as the time it takes you to run your code. However, there are good practices that can be employed to help minimise costs without sacrificing the quality of your analysis. We have produced this page as a general guide to best practice in working with big data, including tips for general workflow and managing pipeline development, working with samples and subsets of your data, and optimising analysis with Spark.
 
 
-## **General workflow and project planning**
+## General workflow and project planning
 
 ### 1. Plan your analysis
 - A simplified version of the process of developing a new pipeline might look something like this:
@@ -14,10 +14,10 @@ width: 100%
 name: BigDataPipelineStages
 alt: Diagram showing potentials steps in the process of developing a new big data pipeline.
 ---
-Fig 1. Big data pipeline development stages
+Big data pipeline development stages
 ```
 
-- Splitting your development into clearly defined stages like this will help with applying some of the tips we have below for keeping your resource use to a minimum. For example, working with small samples or subsets of your data in the EDA phase.
+- Splitting your development into clearly defined stages like this will help with applying some of the tips we have below for keeping your resource use to a minimum. For example, working with small samples or subsets of your data in the EDA, detailed analysis and development phases.
 
 ### 2. [Version control](https://gitlab-app-l-01/DAP_CATS/guidance/-/wikis/Git-and-GitLab) your code using Git and apply [RAP good practice](https://best-practice-and-impact.github.io/qa-of-code-guidance/intro.html) 
 
@@ -32,16 +32,16 @@ Fig 1. Big data pipeline development stages
 
 - This also helps other members of your team understand the code in detail and can help build capability in the team. It is important to avoid situations where a single developer is relied upon to understand, write and maintain all code as this can cause major problems if that person is away or leaves the team. 
 
-## **Data exploration and quality**
+## Data exploration and quality
 
 ### 4. Be aware of the size of your dataset
 - How many rows and columns does your dataset have?
 - If the dataset is relatively small (less than a few million rows) use Python or R for analysis instead of PySpark or SparklyR.
-- Consider also switching to using Python or R at points in your pipeline where data becomes small due to filtering or aggregation to save resource.
+- Consider also switching to using Python or R at points in your pipeline where data becomes small due to filtering or aggregation to save resource. See the ['When to use Spark'](../spark-overview/when-to-us-spark) page of this book for more information.
 - Is the size of the data likely to grow over time? If this is the case you should consider how you will minimise resource use as the amount of data to process increases.
 
 ### 5. Reduce the size of your dataset to use fewer compute resources
-- Generally, it is unnecessary and not good practice to carry out the majority of the analysis stages outlined in figure 1 on a full dataset, especially if it is very large. 
+- Generally, it is unnecessary and not good practice to carry out the majority of the analysis stages outlined in the figure above on a full dataset, especially if it is very large. 
 - Keep the size of your data in the EDA, detailed analysis and development stages as small as possible to conserve resource. 
 - Consider [taking samples of your data](../spark-functions/sampling), especially in the EDA phase.
     - Use a simple [sample size calculator](https://www.calculator.net/sample-size-calculator.html) to estimate the size of the sample to take.
@@ -54,6 +54,7 @@ Fig 1. Big data pipeline development stages
 
 ### 6. Consider creating synthetic data to work on
 - Create minimal size dummy data containing edge cases to work with in the development phase.
+- The [Faker](https://faker.readthedocs.io/en/master/) package for Python and [fakeR](https://rdrr.io/cran/fakeR/src/R/fakeR.R) package for R can be used to generate synthetic data for you to use.
 - Synthetic datasets can also be used for testing or peer reviewing code to help QA either code or analysis.
 
 
@@ -66,7 +67,7 @@ width: 100%
 name: BigDataPipelineDataSize
 alt: A diagram showing rough guidelines for the size of data to use at each phase of development for your pipeline.
 ---
-Fig 2. Using samples/subsets or synthetic data in your pipeline development
+Using samples/subsets or synthetic data in your pipeline development
 ```
 
 ### 7. Ensure that duplicates are removed early on in the pipeline
@@ -78,7 +79,7 @@ Fig 2. Using samples/subsets or synthetic data in your pipeline development
 - We are not currently aware of any similar profiling packages that are compatible with SparklyR. As a result, if you are an R user, you will need to create code to examine your data quality dimensions yourself. We recommend that you consider the other tips in this guide to help minimise your resource use when doing so.
 
 
-## **Spark optimisation**
+## Spark optimisation
 
 The following section contains some more advanced suggestions you can consider applying to your pipeline to further optimise your code and minimise resource use. These are most likely to be useful in the 'Development' phase of working on your pipeline. Our general tips for Spark optimisation can be found on the [Ideas for optimising Spark code](../spark-concepts/optimisation-tips) page of the book.
 
@@ -110,7 +111,7 @@ The following section contains some more advanced suggestions you can consider a
     - Overly long execution plans can cause performance issues.
     - Consider using [checkpoints and staging tables](../spark-concepts/checkpoint-staging) at appropriate points in your code to break the lineage in these cases.
     
-    
+This is not an exhaustive list and not all of these tips will necessarily be applicable to every pipeline. But in general, having a good plan in place for your analysis, keeping data as small as possible during development, and improving your understanding of Spark can all help to minimise resource use when working with big data.
 
 
 
