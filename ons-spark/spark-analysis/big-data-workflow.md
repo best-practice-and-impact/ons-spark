@@ -37,7 +37,7 @@ Big data pipeline development stages
 ### 4. Be aware of the size of your dataset
 - How many rows and columns does your dataset have?
 - If the dataset is relatively small (less than a few million rows) use Python or R for analysis instead of PySpark or SparklyR.
-- Consider also switching to using Python or R at points in your pipeline where data becomes small due to filtering or aggregation to save resource. See the ['When to use Spark'](../spark-overview/when-to-us-spark) page of this book for more information.
+- Consider also switching to using Python or R at points in your pipeline where data becomes small due to filtering or aggregation to save resource. See the ['When to use Spark'](../spark-overview/when-to-use-spark) page of this book for more information.
 - Is the size of the data likely to grow over time? If this is the case you should consider how you will minimise resource use as the amount of data to process increases.
 
 ### 5. Reduce the size of your dataset to use fewer compute resources
