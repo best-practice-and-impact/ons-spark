@@ -1,0 +1,51 @@
+name: New page
+description: Suggest a new page to be added.
+title: "[New page]: "
+labels: ["New page"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to suggest new content for the book!
+  - type: textarea
+    id: summary-of-content
+    attributes:
+      label: Summary of Content
+      description: Feel free to add code snippets to this box, or the box at the bottom of the page!
+      placeholder: Tell about your idea for new content!
+    validations:
+      required: true
+  - type: dropdown
+    id: version
+    attributes:
+      label: Language Version
+      description: What language is this for?
+      options:
+        - 
+        - Python
+        - R 
+      default: 0
+    validations:
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: Can this suggestion be used in Pyspark and / or SparklyR (Can select multiple)
+      multiple: true
+      options:
+        - Pyspark
+        - SparklyR
+  - type: textarea
+    id: code
+    attributes:
+      label: Code snippets
+      description: Please copy and paste any example code that will help us develop this page. This will be automatically formatted into code, so no need for backticks.
+      render: shell
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://www.contributor-covenant.org/version/1/4/code-of-conduct/). 
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
