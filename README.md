@@ -2,8 +2,18 @@
 
 Spark learning materials compiled by members of the Office for National Statistics
 
-## Usage
+## Contributing
 
+Contributions are welcome, and they are greatly appreciated! Every little bit
+helps, and credit will always be given. You can contribute in the ways listed below.
+
+We have recently made use of GitHub issue forms which we hope will make suggesting content even easier!
+you want to suggest a new page, please use [this link for the issue request](https://github.com/best-practice-and-impact/ons-spark/issues/new?assignees=&labels=New+page&projects=&template=new-page-form.yml&title=%5BNew+page%5D%3A+)
+For bug issues please use [this link for the issue form](https://github.com/best-practice-and-impact/ons-spark/issues/new?assignees=&labels=bug&projects=&template=bug-report-form.yml&title=%5BBug%5D%3A+)
+
+If you wish to take an active role in developing this book please refer to the [contributing guidance](./CONTRIBUTING.md)
+
+<!-- Does this section belong in the Readme? Or should we point towards the contributing guide as above? -->
 ### Building the book
 
 If you'd like to develop and/or build the Spark at the ONS book, you should:
@@ -27,7 +37,7 @@ For GitHub and GitLab deployment specifically, the [cookiecutter-jupyter-book](h
 
 ## Contributors
 
-We welcome and recognize all contributions. You can see a list of current contributors in the [contributors tab](https://github.com/robertswh/ons-spark/graphs/contributors).
+We welcome and recognize all contributions. You can see a list of current contributors in the [contributors tab](https://github.com/best-practice-and-impact/ons-spark/graphs/contributors).
 
 ## Credits
 
