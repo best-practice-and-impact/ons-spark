@@ -3,6 +3,17 @@
 Contributions are welcome, and they are greatly appreciated! Every little bit
 helps, and credit will always be given. You can contribute in the ways listed below.
 
+| label    | description |
+| - | - |
+| Bug  | Used for general bug reports    |
+| Documentation | Improvements or additions to documentation |
+| Duplicate | This issue or pull request already exists |
+| Help wanted | External help or guidance (outside of DAPCATS) is needed |
+| Question | Further information is needed or something needs clarification |
+| New page | Suggestions for new topics and pages |
+| Update existing page | Suggestions to add information to existing pages e.g. Python or R equivalent code, additional sections etc.|
+
+
 ## Report Bugs
 
 Report bugs using GitHub issues.
