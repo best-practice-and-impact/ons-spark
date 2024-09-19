@@ -1,6 +1,7 @@
 # Spark at the ONS
 
-Spark learning materials compiled by members of the Office for National Statistics
+Spark learning materials compiled by members of the Office for National Statistics. 
+<!--Should there be more detail here about what kinds of content we have in the book? -->
 
 ## Contributing
 
@@ -14,13 +15,15 @@ To create any other type of issue, use the blank issue form and label your issue
 
 | label    | description |
 | - | - |
-| Bug  | Used for general bug reports    |
+| Bug | Used for general bug reports    |
 | Documentation | Improvements or additions to documentation |
 | Duplicate | This issue or pull request already exists |
-| Help wanted | External help or guidance (outside of DAPCATS) is needed |
+| Help wanted | External help or guidance (outside of DAPCATS) is needed before this can be implemented |
 | Question | Further information is needed or something needs clarification |
 | New page | Suggestions for new topics and pages |
-| Update existing page | Suggestions to add information to existing pages e.g. Python or R equivalent code, additional sections etc.|
+| Addition to existing page | Suggestions to add information to existing pages e.g. Python/R equivalent code, new subsection etc. |
+| Enhancement | Suggestion for change not relating to content eg. improving the usability or appearance of the book |
+| Other | An issue that is not covered by any of the other labels |
 
 If you wish to take an active role in developing this book please refer to the [contributing guidance](./CONTRIBUTING.md)
 
