@@ -1,67 +1,54 @@
 # Contributing
 
 Contributions are welcome, and they are greatly appreciated! Every little bit
-helps, and credit will always be given. You can contribute in the ways listed below.
+helps, and credit will always be given. To contribute, you will first need to raise the change you wish to make or suggest as an [Issue](https://github.com/best-practice-and-impact/ons-spark/issues).  
+
+## Raising an issue
+We have made use of GitHub issue forms which we hope will make suggesting content or changes even easier!
+you want to suggest a new page, please use [this link for the issue form](https://github.com/best-practice-and-impact/ons-spark/issues/new?assignees=&labels=New+page&projects=&template=new-page-form.yml&title=%5BNew+page%5D%3A+)
+For bug issues please use [this link for the issue form](https://github.com/best-practice-and-impact/ons-spark/issues/new?assignees=&labels=bug&projects=&template=bug-report-form.yml&title=%5BBug%5D%3A+)
+To create any other type of issue, select the [blank issue form](https://github.com/best-practice-and-impact/ons-spark/issues/new/choose) and label your issue with any of the following tags:
 
 | label    | description |
 | - | - |
-| Bug  | Used for general bug reports    |
+| Bug | Used for general bug reports |
 | Documentation | Improvements or additions to documentation |
 | Duplicate | This issue or pull request already exists |
-| Help wanted | External help or guidance (outside of DAPCATS) is needed |
+| Help wanted | External help or guidance (outside of DAPCATS) is needed before this can be implemented |
 | Question | Further information is needed or something needs clarification |
 | New page | Suggestions for new topics and pages |
-| Update existing page | Suggestions to add information to existing pages e.g. Python or R equivalent code, additional sections etc.|
+| Addition to existing page | Suggestions to add information to existing pages e.g. Python/R equivalent code, new subsection etc. |
+| Enhancement | Suggestion for change not relating to content eg. improving the usability or appearance of the book |
+| Other | An issue that is not covered by any of the other labels |
 
+## Working on an issue
+If you wish to address an outstanding issue yourself (whether that be a bug, a new page, or anything else) you should follow this process:
 
-## Report Bugs
+1. **Create a new branch from the issue page:** On the right hand side of the issue page, there should be a link to 'Create a branch' from the issue under the development section. We recommend that you do this so that branches can be easily linked to issues.
 
-Report bugs using GitHub issues.
+2. **Make your changes on the newly created branch**: We recommend that contributions to the book be made locally, by cloning the repository on your local machine. Details of how to do this are given in the [Cloning this repository](https://github.com/best-practice-and-impact/ons-spark/edit/contributing-improvements/CONTRIBUTING.md#cloning-this-repository) section below.
+  
+   You may choose to write or edit book pages in either Jupyter notebook format (.ipynb) or markdown (.md). However, we require that finalised book content is saved into the book repository in **both** formats and that raw Python and R scripts are also available. You can generate all of the required files either from a .ipynb file by running the notebook converter utility or from the .md file by running the reverse converter     utility. See the relevant sections of this guidance ([Converting .ipynb files](https://github.com/best-practice-and-impact/ons-spark/edit/contributing-improvements/CONTRIBUTING.md#converting-ipynb-files) or [Converting .md files](https://github.com/best-practice-and-impact/ons-spark/edit/contributing-improvements/CONTRIBUTING.md#converting-md-files)) for more details of how to do this. 
 
-If you are reporting a bug, please include:
+3. **Commit your changes. Check that you can build the book locally and that pages display correctly:** Check the [Building the book](https://github.com/best-practice-and-impact/ons-spark/edit/contributing-improvements/CONTRIBUTING.md#building-the-book) section for instructions on how to do this. When you are happy with your local changes, you can **push your branch to Github**.
+   
+4. **Open a pull request and request a review:** The main branch of this repository is protected, so an approving review is required before changes can be merged in. Please fill out the pull request template with as much detail as possible so that your request can be reviewed properly. 
+   
+5. **Merge in your branch and delete it once changes have been approved:** We also recommend using the 'squash commits' option to keep the main branch commit history as clean and easy to read as possible.
 
-* Your operating system name and version.
-* Any details about your local setup that might be helpful in troubleshooting.
-* Detailed steps to reproduce the bug.
+## Cloning this repository
 
-## Fix Bugs
+## Converting .ipynb files
 
-Look through the GitHub issues for bugs. Anything tagged with "bug" and "help
-wanted" is open to whoever wants to implement it.
+## Converting .md files
 
-## Implement Features
+## Building the book
 
-Look through the GitHub issues for features. Anything tagged with "enhancement"
-and "help wanted" is open to whoever wants to implement it.
-
-## Write Documentation
-
-Spark at the ONS could always use more documentation, whether as part of the
-official Spark at the ONS docs, in docstrings, or even on the web in blog posts,
-articles, and such.
-
-## Submit Feedback
-
-The best way to send feedback is to file an issue on GitHub.
-
-If you are proposing a feature:
-
-* Explain in detail how it would work.
-* Keep the scope as narrow as possible, to make it easier to implement.
-* Remember that this is a volunteer-driven project, and that contributions
-  are welcome :)
-
-## Get Started
-
-Ready to contribute? Here's how to set up `Spark at the ONS` for local development.
-
-1. Fork the repo on GitHub.
-2. Clone your fork locally.
-3. Install your local copy into a virtualenv, e.g., using `conda`.
-4. Create a branch for local development and make changes locally.
-5. Commit your changes and push your branch to GitHub.
-6. Submit a pull request through the GitHub website.
-
+1. Ensure that python is installed and you have cloned the repository as described above.
+2. Run `pip install -r requirements.txt` (it is recommended you do this within a virtual environment)
+3. Run `jupyter-book clean ons-spark/` to remove any existing builds
+4. Run `jupyter-book build ons-spark/`
+5. Check the built HTML pages are correct (these will be in ons-spark/_build/html)
 
 ## Environment Set-up
 
@@ -75,21 +62,6 @@ This repository is built using a relatively complex set of dependencies, includi
 
 other versions of Spark 2 may be compatible but have not been tested. 
 
-## Building the Book
-
-As mentioned in the README in the root of this repo. To build this book you'll need python installed. Once Python installed, then install its Python dependencies like so:
-
-```bash 
-git clone https://github.com/best-practice-and-impact/ons-spark.git
-cd ons-spark 
-pip install -r requirements.txt
-```
-
-Now all the appropriate dependencies should be installed we can now build the book locally. This is done by running the following command within the root of the repository. 
-
-```bash
-jb build ons-spark
-```
 
 ## Contributing to Notebooks to contain both Python and R code
 
