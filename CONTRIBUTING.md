@@ -40,6 +40,53 @@ If you wish to address an outstanding issue yourself (whether that be a bug, a n
 
 ## Converting .ipynb files
 
+If you choose to develop pages in jupyter notebooks, these needs to also include R code (if appropriate) and converted using the `convert.py` script found in the utilities folder.
+**Notebooks containing only Python code do not need to be converted and can be rendered into the book as .ipynb files**.
+
+### R setup
+As a quality assurance step the R code is executed during the conversion, therefore we need to have R and Spark setup in our local environment.
+Information on spark setup can be found on the [sparklyR documentation](https://spark.posit.co/get-started/). **Note** some organisations (like the ONS) will have different setup instructions and those should be followed over external guidance. 
+
+The notebook converter uses the subprocess package, as such we will need to have all the required packages installed in our R environment prior to converting. 
+
+### Converting
+To convert `ipynb` pages into a markdown page we will run the `convert.py` script.
+This can either be run using VScode and the run Python script button, or in a terminal by running `python utilities/convert.py` assuming you are in the root directory of this repo.
+
+The following code will convert the `ons-spark/raw-notebooks/groups-not-loops/groups-not-loops.ipynb` file into a markdown page named `groups-not-loops.md` located in `ons-spark/spark-concepts/` folder
+```python
+from notebook_converter import markdown_from_notebook
+# Group: Which chapter does this work belong in once converted 
+group = "spark-concepts"
+
+# What is the name of the folder the .ipynb is located in 
+folder = "groups-not-loops"
+
+# What is the name of the .ipynb folder
+page = "groups-not-loops"
+
+# The path to the folder named above (can be relative or absolute path)
+base_path = "ons-spark/"
+
+# No changes are needed below this comment 
+out_path = base_path + group
+in_path = base_path+"raw-notebooks/"+folder
+nb_maker = (markdown_from_notebook(in_path + "/" + page + ".ipynb",
+                                   out_path + "/" + page + ".md",
+                                   in_path + "/r_input.R",
+                                   in_path + "/outputs.csv",
+                                   show_warnings=False,
+                                   output_type="tabs")
+)
+
+```
+
+### Troubleshooting
+
+If you are having issues with converting `.ipynb` files, you might have been getting an error raised in python explaining `unable to find Rscript, please set the path to this in your environment variables`.
+To do this you will need to set the value `Rscript` in your windows environment variables for your account. 
+Create a new variable with `variable name` as `Rscript` and `variable value` as the path towards your `Rscript.exe`, if you are using Rstudio this can be found in `C:/My_Rstudio/<r-version>/bin/x64/Rscript.exe`. You may need to restart your terminal or device after changing your environment variables. 
+
 ## Converting .md files
 
 ## Building the book
