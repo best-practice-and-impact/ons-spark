@@ -3,7 +3,7 @@ from notebook_converter import markdown_from_notebook
 group = "spark-concepts"
 folder = "groups-not-loops"
 page = "groups-not-loops"
-base_path = "/home/cdsw/ons-spark/ons-spark/"
+base_path = "ons-spark/"
 out_path = base_path + group
 
 in_path = base_path+"raw-notebooks/"+folder

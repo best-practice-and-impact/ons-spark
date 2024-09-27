@@ -122,7 +122,7 @@ class MarkdownFromNotebook():
         except:
             try:
                 rscript_variable = os.environ["Rscript"]
-                subprocess.run([rscript_variable, "test.r"])
+                subprocess.run([rscript_variable, "test_subprocess.r"])
             except:
                 raise ValueError("unable to find Rscript, please set the path to this in your environment variables")
         
