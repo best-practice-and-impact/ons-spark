@@ -112,7 +112,6 @@ spark = (
     .config("spark.dynamicAllocation.enabled", "true")
     .config("spark.dynamicAllocation.maxExecutors", 3)
     .config("spark.sql.shuffle.partitions", 12)
-    .config("spark.shuffle.service.enabled", "true")
     .config("spark.ui.showConsoleProgress", "false")
     .enableHiveSupport()
     .getOrCreate()
@@ -127,7 +126,6 @@ small_config$spark.executor.cores <- 1
 small_config$spark.dynamicAllocation.enabled <- "true"
 small_config$spark.dynamicAllocation.maxExecutors <- 3
 small_config$spark.sql.shuffle.partitions <- 12
-small_config$spark.shuffle.service.enabled <- "true"
 
 sc <- sparklyr::spark_connect(
   master = "yarn-client",
@@ -164,7 +162,6 @@ spark = (
         .config("spark.dynamicAllocation.enabled", "true")
         .config("spark.dynamicAllocation.maxExecutors", 3)
         .config("spark.sql.shuffle.partitions", 18)
-        .config("spark.shuffle.service.enabled", "true")
         .config("spark.ui.showConsoleProgress", "false")
         .enableHiveSupport()
         .getOrCreate()
@@ -179,7 +176,6 @@ medium_config$spark.executor.cores <- 3
 medium_config$spark.dynamicAllocation.enabled <- "true"
 medium_config$spark.dynamicAllocation.maxExecutors <- 3
 medium_config$spark.sql.shuffle.partitions <- 18
-medium_config$spark.shuffle.service.enabled <- "true"
 
 sc <- sparklyr::spark_connect(
   master = "yarn-client",
@@ -218,7 +214,6 @@ spark = (
     .config("spark.dynamicAllocation.enabled", "true")
     .config("spark.dynamicAllocation.maxExecutors", 5)
     .config("spark.sql.shuffle.partitions", 200)
-    .config("spark.shuffle.service.enabled", "true")
     .config("spark.ui.showConsoleProgress", "false")
     .enableHiveSupport()
     .getOrCreate()
@@ -234,7 +229,6 @@ large_config$spark.executor.cores <- 5
 large_config$spark.dynamicAllocation.enabled <- "true"
 large_config$spark.dynamicAllocation.maxExecutors <- 5
 large_config$spark.sql.shuffle.partitions <- 200
-large_config$spark.shuffle.service.enabled <- "true"
 
 sc <- sparklyr::spark_connect(
   master = "yarn-client",
@@ -275,7 +269,6 @@ spark = (
     .config("spark.dynamicAllocation.enabled", "true")
     .config("spark.dynamicAllocation.maxExecutors", 12)
     .config("spark.sql.shuffle.partitions", 240)
-    .config("spark.shuffle.service.enabled", "true")
     .config("spark.ui.showConsoleProgress", "false")
     .enableHiveSupport()
     .getOrCreate()
@@ -291,7 +284,6 @@ xl_config$spark.executor.cores <- 5
 xl_config$spark.dynamicAllocation.enabled <- "true"
 xl_config$spark.dynamicAllocation.maxExecutors <- 12
 xl_config$spark.sql.shuffle.partitions <- 240
-xl_config$spark.shuffle.service.enabled <- "true"
 
 sc <- sparklyr::spark_connect(
   master = "yarn-client",

@@ -137,8 +137,8 @@ Also note when specifying this config, Spark will reserve the maxExecutors for y
 stop your session- even if you don't need them. See the [reserving](#reserving) section of the calculations below for more details.
 
 **Shuffle Service**  
-`.config("spark.shuffle.service.enabled", "true")`  
-This property helps with processes like switching executors off safely using dynamic allocation by making use of shuffle files.
+`.config("spark.shuffle.service.enabled", "false")`  
+This property helps with processes like switching executors off safely using dynamic allocation by making use of shuffle files. The default value of this property is false.
 
 **Hive Support**  
 `.enableHiveSupport()`  
@@ -164,7 +164,6 @@ spark = (
     .config("spark.executor.cores", 5)
     .config("spark.dynamicAllocation.enabled", "true")
     .config("spark.dynamicAllocation.maxExecutors", 5)
-    .config("spark.shuffle.service.enabled", "true")
     .config("spark.ui.showConsoleProgress", "false")
     .enableHiveSupport()
     .getOrCreate()
