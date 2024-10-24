@@ -48,7 +48,6 @@ spark.executor.cores                 1
 spark.dynamicAllocation.enabled      true
 spark.dynamicAllocation.maxExecutors 3
 spark.sql.shuffle.partitions         12
-spark.shuffle.service.enabled        true
 spark.ui.showConsoleProgress         false
 ```
 

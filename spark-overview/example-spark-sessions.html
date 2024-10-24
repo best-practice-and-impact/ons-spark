@@ -35,9 +35,9 @@
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../_static/accessibility.css" />
     <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
@@ -56,7 +56,6 @@
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
-    <script src="../_static/tabs.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../_static/design-tabs.js"></script>
     <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
@@ -72,6 +71,7 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script src="../_static/tabs.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'spark-overview/example-spark-sessions';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -589,7 +589,6 @@ document.write(`
     <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.dynamicAllocation.enabled&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
     <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.dynamicAllocation.maxExecutors&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
     <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.sql.shuffle.partitions&quot;</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.shuffle.service.enabled&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
     <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.ui.showConsoleProgress&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">)</span>
     <span class="o">.</span><span class="n">enableHiveSupport</span><span class="p">()</span>
     <span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
@@ -604,7 +603,6 @@ document.write(`
 <span class="n">small_config</span><span class="o">$</span><span class="n">spark.dynamicAllocation.enabled</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
 <span class="n">small_config</span><span class="o">$</span><span class="n">spark.dynamicAllocation.maxExecutors</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">3</span>
 <span class="n">small_config</span><span class="o">$</span><span class="n">spark.sql.shuffle.partitions</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">12</span>
-<span class="n">small_config</span><span class="o">$</span><span class="n">spark.shuffle.service.enabled</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
 
 <span class="n">sc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
 <span class="w">  </span><span class="n">master</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;yarn-client&quot;</span><span class="p">,</span>
@@ -644,7 +642,6 @@ document.write(`
         <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.dynamicAllocation.enabled&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
         <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.dynamicAllocation.maxExecutors&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
         <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.sql.shuffle.partitions&quot;</span><span class="p">,</span> <span class="mi">18</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.shuffle.service.enabled&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
         <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.ui.showConsoleProgress&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">)</span>
         <span class="o">.</span><span class="n">enableHiveSupport</span><span class="p">()</span>
         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
@@ -659,7 +656,6 @@ document.write(`
 <span class="n">medium_config</span><span class="o">$</span><span class="n">spark.dynamicAllocation.enabled</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
 <span class="n">medium_config</span><span class="o">$</span><span class="n">spark.dynamicAllocation.maxExecutors</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">3</span>
 <span class="n">medium_config</span><span class="o">$</span><span class="n">spark.sql.shuffle.partitions</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">18</span>
-<span class="n">medium_config</span><span class="o">$</span><span class="n">spark.shuffle.service.enabled</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
 
 <span class="n">sc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
 <span class="w"> </span><span class="n">master</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;yarn-client&quot;</span><span class="p">,</span>
@@ -700,7 +696,6 @@ document.write(`
     <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.dynamicAllocation.enabled&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
     <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.dynamicAllocation.maxExecutors&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
     <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.sql.shuffle.partitions&quot;</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.shuffle.service.enabled&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
     <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.ui.showConsoleProgress&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">)</span>
     <span class="o">.</span><span class="n">enableHiveSupport</span><span class="p">()</span>
     <span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
@@ -716,7 +711,6 @@ document.write(`
 <span class="n">large_config</span><span class="o">$</span><span class="n">spark.dynamicAllocation.enabled</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
 <span class="n">large_config</span><span class="o">$</span><span class="n">spark.dynamicAllocation.maxExecutors</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">5</span>
 <span class="n">large_config</span><span class="o">$</span><span class="n">spark.sql.shuffle.partitions</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">200</span>
-<span class="n">large_config</span><span class="o">$</span><span class="n">spark.shuffle.service.enabled</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
 
 <span class="n">sc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
 <span class="w">  </span><span class="n">master</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;yarn-client&quot;</span><span class="p">,</span>
@@ -758,7 +752,6 @@ document.write(`
     <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.dynamicAllocation.enabled&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
     <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.dynamicAllocation.maxExecutors&quot;</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
     <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.sql.shuffle.partitions&quot;</span><span class="p">,</span> <span class="mi">240</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.shuffle.service.enabled&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
     <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.ui.showConsoleProgress&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">)</span>
     <span class="o">.</span><span class="n">enableHiveSupport</span><span class="p">()</span>
     <span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
@@ -774,7 +767,6 @@ document.write(`
 <span class="n">xl_config</span><span class="o">$</span><span class="n">spark.dynamicAllocation.enabled</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
 <span class="n">xl_config</span><span class="o">$</span><span class="n">spark.dynamicAllocation.maxExecutors</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">12</span>
 <span class="n">xl_config</span><span class="o">$</span><span class="n">spark.sql.shuffle.partitions</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">240</span>
-<span class="n">xl_config</span><span class="o">$</span><span class="n">spark.shuffle.service.enabled</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
 
 <span class="n">sc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
 <span class="w">  </span><span class="n">master</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;yarn-client&quot;</span><span class="p">,</span>
