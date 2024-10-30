@@ -1,6 +1,6 @@
 # Spark at the ONS
 
-Spark learning materials compiled by members of the Office for National Statistics. 
+Spark learning materials compiled by members of the Office for National Statistics (ONS). The materials in the book are intended as general resources on using Spark and should also be applicable to users outside of ONS. Please note that for internal ONS users, the guidance in this book is not intended to be specific to any particular platform where Spark can be run. As a result, you may find it useful to consult internal sources of guidance (such as DAPCATS training materials) if you need support with your platform specific setup.  
 <!--Should there be more detail here about what kinds of content we have in the book? -->
 
 ## Contributing
