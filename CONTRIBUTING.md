@@ -195,22 +195,39 @@ pip install -r requirements.txt
 ### Releasing
 
 To create a new release, use the command line tool `bump2version`, which will be installed with the dev dependencies.
-The version number references the current `year` and an incremental `build` count.
+We use a year.build version tag for the release of the book, so the first release of 2024 would be `2024.0`.
 
-For a the first release of a year, provide the `year` as the command argument, otherwise provide `build`.
+For a the first release of a year, use the following bump version command.
+Note you should be on the main branch when creating new versions.
+```
+ bump2version year
+```
+
+For any subsequent releases during the year, please bump the version with following command:
 
 ```
 bump2version build
 ```
 
-`bumpversion` will create a new Git `tag` and `commit`.
-If you're happy with the version increase, `push` these to the remote to trigger the publication, by running both:
+`bump2version` will create a new Git `tag` and `commit`. 
+These are only created locally, and will need to be pushed.
 
 ```
 git push
 git push --tags
 ```
 
+If you wish to view the current tags on a repo, run `git tag`.
+If a tag has been produced a new tag/version by accident, you can delete this locally by running:
+```
+git tag --delete tagname
+```
+
+If this has already been pushed you can delete this from the remote repository by 
+adding an additional origin and push to the above line as shown below:
+```
+git push --delete origin tagname
+```
 
 
 ## Code of Conduct
