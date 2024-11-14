@@ -28,7 +28,7 @@ If you wish to address an outstanding issue yourself (whether that be a bug, a n
 
 1. **Create a new branch from the issue page:** On the right hand side of the issue page, there should be a link to 'Create a branch' from the issue under the development section. We recommend that you do this so that branches can be easily linked to issues.
 
-2. **Make your changes on the newly created branch**: We recommend that contributions to the book be made locally, by cloning the repository on your local machine. Details of how to do this are given in the [Cloning this repository](CONTRIBUTING.md#cloning-this-repository) section below.
+2. **Make your changes on the newly created branch**: We recommend that contributions to the book be made locally, by cloning the repository on your local machine.
   
    You may choose to write or edit book pages in either Jupyter notebook format (.ipynb) or markdown (.md). However, we require that finalised book content is saved into the book repository in **both** formats and that raw Python and R scripts are also available. You can generate all of the required files either from a .ipynb file by running the notebook converter utility or from the .md file by running the reverse converter     utility. See the relevant sections of this guidance ([Converting .ipynb files](CONTRIBUTING.md#converting-ipynb-files) or [Converting .md files](CONTRIBUTING.md#converting-md-files)) for more details of how to do this. 
 
@@ -44,7 +44,7 @@ If you wish to address an outstanding issue yourself (whether that be a bug, a n
 
 2. **Create a new branch using the correct naming convention:** You will not have a copy of the repository issues in your new fork, so it is important that when you create your new branch, you name it clearly so it can be easily matched back to an issue. The preferred naming convention for this repository is to use <issue_number>-<title>-<of>-<issue>. So for example if you wanted to work on issue number 1 and it was titled "Contributing Guidance Needs Testing" in the issues list, your new branch would be called 1-contributing-guidance-needs-testing.
 
-3. **Make your changes on the newly created branch**: We recommend that contributions to the book be made locally, by cloning the repository on your local machine. Details of how to do this are given in the [Cloning this repository](CONTRIBUTING.md#cloning-this-repository) section below.
+3. **Make your changes on the newly created branch**: We recommend that contributions to the book be made locally, by cloning the repository on your local machine.
   
    You may choose to write or edit book pages in either Jupyter notebook format (.ipynb) or markdown (.md). However, we require that finalised book content is saved into the book repository in **both** formats and that raw Python and R scripts are also available. You can generate all of the required files either from a .ipynb file by running the notebook converter utility or from the .md file by running the reverse converter     utility. See the relevant sections of this guidance ([Converting .ipynb files](CONTRIBUTING.md#converting-ipynb-files) or [Converting .md files](CONTRIBUTING.md#converting-md-files)) for more details of how to do this. 
 
@@ -54,9 +54,7 @@ If you wish to address an outstanding issue yourself (whether that be a bug, a n
 
     Please keep an eye on your pull request as we may ask for additional changes to be made before your changes are suitable for merging in. Once they are approved, a DAPCATS team member will merge your branch in. You may delete the branch on your forked repo after this is complete if you wish. 
 
-## Cloning this repository
-
-## Converting .ipynb files
+## Converting `.ipynb` files
 
 If you choose to develop pages in jupyter notebooks, these needs to also include R code (if appropriate) and converted using the `convert.py` script found in the utilities folder.
 **Notebooks containing only Python code do not need to be converted and can be rendered into the book as .ipynb files**.
@@ -105,7 +103,35 @@ If you are having issues with converting `.ipynb` files, you might have been get
 To do this you will need to set the value `Rscript` in your windows environment variables for your account. 
 Create a new variable with `variable name` as `Rscript` and `variable value` as the path towards your `Rscript.exe`, if you are using Rstudio this can be found in `C:/My_Rstudio/<r-version>/bin/x64/Rscript.exe`. You may need to restart your terminal or device after changing your environment variables. 
 
-## Converting .md files
+## Converting `.md` files
+
+If you prefer, you can write up your contribution directly using markdown. You might choose to do this if you are simply editing text (rather than code) in the book. If the edits you make to the text are significant (e.g. some information was previously incorrect, you have added a lot of text etc.), you should follow this guide to convert your `.md` files to updated `.ipynb` and `.R` scripts to make sure the information is up to date in the notebook as well. 
+
+You might also choose to use markdown if you are developing Python and/or R code as well as writing text. In this case, you should be aware that we use tabbed code chunks to write our pages, so you will need to match this formatting in your file. An example of how to do this can be found below:
+
+``` 
+        ````{tabs}
+        ```{code-tab} py
+        # Write your python code here
+        ```
+        ```{code-tab} r R 
+        # Write your R code here
+        ```
+        ````
+```
+
+If you are still unsure, you can check another markdown file for a book page in this repository. Most book pages contain both Python and R code in this format, so you should be able to find example of the formatting to copy. 
+
+### Converting
+
+To convert `.md` pages into a `.ipynb` file and a `.R` file, we will run the `reverse_convert.py` script.
+
+Before running the conversion, make sure you edit lines 14 and 17 in the code to specify the name of the page you are adding (`bpname`) and the relevant book folder or section your page belongs in (`fname`). You may need to edit the `base_path` in line 11 if you are external to ONS. The `base_path` variable should point to the `ons-spark` folder in the root of this repo.
+
+The script can then either be run using VScode and the run Python script button, or in a terminal by running `python utilities/reverse_convert.py` assuming you are in the root directory of this repo.
+
+The `reverse_convert.py` script does not run the `.R` or `.ipynb` files outputted automatically on conversion. We suggest that you run these files individually to check the functionality of the outputted scripts. The outputs can be found by navigating to the `ons-spark/raw-notebooks/<your_page_name>/` folder from the root of this repo.
+
 
 ## Building the book
 
