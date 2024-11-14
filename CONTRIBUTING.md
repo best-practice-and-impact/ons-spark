@@ -75,7 +75,7 @@ The Spark at the ONS book is split into sections to help users more easily find 
 
 To add your new page into one of these sections, please make sure the `.md` file for the page is saved into the folder named as your chosen section. You can either do this by developing directly in markdown and saving your file to this folder, or by setting the appropriate folder name when running the `.ipynb` converter script as described in the [converting `.ipynb` files](CONTRIBUTING.md#converting-ipynb-files) section.
 
-You will also need to add your new page to the table of contents file `toc.yml`, found in the `ons-spark` folder in the root of this repo. To add your page to the appropriate section, add `- file: <section_folder>/<page-name>` under the `chapters` heading for your chosen section.
+You will also need to add your new page to the table of contents file `toc.yml`, found in the `ons-spark` folder in the root of this repo. To add your page to the appropriate section, add `- file: <section_folder>/<page-name>` under the `chapters` heading for your chosen section. To learn a little more about Table of Contents in JupyterBooks see the Jupyter documentation [here](https://jupyterbook.org/en/stable/structure/toc.html). 
 
 ## Converting `.ipynb` files
 
@@ -175,77 +175,6 @@ This repository is built using a relatively complex set of dependencies, includi
 - sparklyr >= 1.7.5
 
 other versions of Spark 2 may be compatible but have not been tested. 
-
-
-## Contributing to Notebooks to contain both Python and R code
-
-The conversion of notebook files into markdown files that have code tabs to display both Python and R code requires the use of some of the functionality contained in the utilities folder of this repo. 
-`notebook_converter.py` contains the function markdown_from_notebook that (as the name suggests) will:
-
-- convert a Jupyter Notebook into a Markdown file with appropriate code tabs
-- extract and run the R code
-- store both python and R outputs and put them in appropriate tabs in the notebook. 
-
-This function takes as an argument the notebook that is to be converted and the output location of where you would like the resulting markdown file. 
-
-
-N.B. it is not neccessary to convert ALL notebooks, only ones that you would like to show code examples of both Python and R code. For example notebooks in the PySpark specific section (i.e. not relevant to Sparklyr and therefore not containing any R code) can remain as notebooks and JupyterBook will include them in the book without any issue. 
-
-Pages that contain code examples in both Python and R have been converted using the above mentioned function in the utilities folder of this repo. And as a result the notebooks must be correctly formatted in order for the converter to work correctly. For any code that you wish to include in both languages, place the Python code in a code cell in the notebook as normal. Place the R code in a markdown cell directly below the Python code cell contained between `` ```r and ``` ``.  The notebook converter function uses these symbols as a marker to produce the R code tabs and R output tabs.
-
-For example, if you like the code to start a local spark session to be displayed in both Python and R, you would place the following in a code cell of a jupyter notebook:
-```python 
-from pyspark.sql import SparkSession
-
-spark = (SparkSession.builder.master("local[2]")
-         .getOrCreate())
-
-```
-An in a markdown cell right below you would have the following code:
-
-~~~
-```r
-library(sparklyr)
-library(dplyr)
-
-sc <- sparklyr::spark_connect(
-    master = "local[2]",
-    config = sparklyr::spark_config())
-``` 
-~~~
-
-
-
-
-Once you have correctly formatted the notebook it can then be converted into a markdown file by the converter. 
-
-An example of the Python code required to accomplish this conversion can be seen in [convert](ons-spark\utilities\convert.py) but will be shown here. 
-
-In this example we would like to convert `checkpoint-staging.ipynb`. 
-
-```python
-group = "spark-concepts"
-folder = "checkpoint-staging"
-page = "checkpoint-staging"
-base_path = "/home/cdsw/ons-spark/ons-spark/"
-out_path = base_path + group
-
-in_path = base_path+"raw-notebooks/"+folder
-
-nb_maker = (markdown_from_notebook(in_path + "/" + page + ".ipynb",
-                                   out_path + "/" + page + ".md",
-                                   in_path + "/r_input.R",
-                                   in_path + "/outputs.csv",
-                                   show_warnings=False,
-                                   output_type="tabs")
-)
-
-```
-
-Once you have converted the notebook and the resulting files are stored in the right locations, you can now build the book with your new changes. 
-
-In the case that you are adding R code to a page in the book that is currently a Jupyter Notebook you will need to change the table of contents to point to the markdown file created by the conversion. To do this, inside the ons-spark folder modify the ```_toc.yml``` file such that the newly modified markdown file is included correctly. To learn a little more about Table of Contents in JupyterBooks see the Jupyter documentation [here](https://jupyterbook.org/en/stable/structure/toc.html). 
-
 
 ## Publishing changes
 
