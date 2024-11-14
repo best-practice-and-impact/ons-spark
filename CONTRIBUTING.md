@@ -30,29 +30,52 @@ If you wish to address an outstanding issue yourself (whether that be a bug, a n
 
 2. **Make your changes on the newly created branch**: We recommend that contributions to the book be made locally, by cloning the repository on your local machine.
   
-   You may choose to write or edit book pages in either Jupyter notebook format (.ipynb) or markdown (.md). However, we require that finalised book content is saved into the book repository in **both** formats and that raw Python and R scripts are also available. You can generate all of the required files either from a .ipynb file by running the notebook converter utility or from the .md file by running the reverse converter     utility. See the relevant sections of this guidance ([Converting .ipynb files](CONTRIBUTING.md#converting-ipynb-files) or [Converting .md files](CONTRIBUTING.md#converting-md-files)) for more details of how to do this. 
+   You may choose to write or edit book pages in either Jupyter notebook format (.ipynb) or markdown (.md). However, we require that finalised book content is saved into the book repository in **both** formats and that raw Python and R scripts are also available. You can generate all of the required files either from a .ipynb file by running the notebook converter utility or from the .md file by running the reverse converter     utility. See the relevant sections of this guidance ([Converting .ipynb files](CONTRIBUTING.md#converting-ipynb-files) or [Converting .md files](CONTRIBUTING.md#converting-md-files)) for more details of how to do this.
 
-3. **Commit your changes. Check that you can build the book locally and that pages display correctly:** Check the [Building the book](CONTRIBUTING.md#building-the-book) section for instructions on how to do this. When you are happy with your local changes, you can **push your branch to Github**.
+   If you are creating an entirely new page, don't forget to select an appropriate section of the book to host your page and to update the table of contents file (`ons-spark/toc.yml`) accordingly so your page will display in the book navigation bar. More details on sections of the book and how to update the table of contents can be found in the [table of contents](CONTRIBUTING.md#table-of-contents) section.
+
+4. **Commit your changes. Check that you can build the book locally and that pages display correctly:** Check the [Building the book](CONTRIBUTING.md#building-the-book) section for instructions on how to do this. When you are happy with your local changes, you can **push your branch to Github**.
    
-4. **Open a pull request and request a review:** The main branch of this repository is protected, so an approving review is required before changes can be merged in. Please fill out the pull request template with as much detail as possible so that your request can be reviewed properly. 
+5. **Open a pull request and request a review:** The main branch of this repository is protected, so an approving review is required before changes can be merged in. Please fill out the pull request template with as much detail as possible so that your request can be reviewed properly. 
    
-5. **Merge in your branch and delete it once changes have been approved:** We also recommend using the 'squash commits' option to keep the main branch commit history as clean and easy to read as possible.
+6. **Merge in your branch and delete it once changes have been approved:** We also recommend using the 'squash commits' option to keep the main branch commit history as clean and easy to read as possible.
 
 ### External contributors
 
 1. **Fork this repository:** Since you will not have permissions to create a new branch to work on in this repository, you will first need to fork your own copy the repo. Click the 'Fork' button near the top of the page on the front page of this repository and make sure you select 'Copy the main branch only'.
 
-2. **Create a new branch using the correct naming convention:** You will not have a copy of the repository issues in your new fork, so it is important that when you create your new branch, you name it clearly so it can be easily matched back to an issue. The preferred naming convention for this repository is to use <issue_number>-<title>-<of>-<issue>. So for example if you wanted to work on issue number 1 and it was titled "Contributing Guidance Needs Testing" in the issues list, your new branch would be called 1-contributing-guidance-needs-testing.
+2. **Create a new branch using the correct naming convention:** You will not have a copy of the repository issues in your new fork, so it is important that when you create your new branch, you name it clearly so it can be easily matched back to an issue. The preferred naming convention for this repository is to use <issue_number>-title-of-issue. So for example, if you wanted to work on issue number 1 and it was titled "Contributing Guidance Needs Testing" in the issues list, your new branch would be called 1-contributing-guidance-needs-testing.
 
 3. **Make your changes on the newly created branch**: We recommend that contributions to the book be made locally, by cloning the repository on your local machine.
   
-   You may choose to write or edit book pages in either Jupyter notebook format (.ipynb) or markdown (.md). However, we require that finalised book content is saved into the book repository in **both** formats and that raw Python and R scripts are also available. You can generate all of the required files either from a .ipynb file by running the notebook converter utility or from the .md file by running the reverse converter     utility. See the relevant sections of this guidance ([Converting .ipynb files](CONTRIBUTING.md#converting-ipynb-files) or [Converting .md files](CONTRIBUTING.md#converting-md-files)) for more details of how to do this. 
+   You may choose to write or edit book pages in either Jupyter notebook format (.ipynb) or markdown (.md). However, we require that finalised book content is saved into the book repository in **both** formats and that raw Python and R scripts are also available. You can generate all of the required files either from a .ipynb file by running the notebook converter utility or from the .md file by running the reverse converter     utility. See the relevant sections of this guidance ([Converting .ipynb files](CONTRIBUTING.md#converting-ipynb-files) or [Converting .md files](CONTRIBUTING.md#converting-md-files)) for more details of how to do this.
 
-4. **Commit your changes. Check that you can build the book locally and that pages display correctly:** Check the [Building the book](CONTRIBUTING.md#building-the-book) section for instructions on how to do this. When you are happy with your local changes, you can **push your branch to Github**.
+   If you are creating an entirely new page, don't forget to select an appropriate section of the book to host your page and to update the table of contents file (`ons-spark/toc.yml`) accordingly so your page will display in the book navigation bar. More details on sections of the book and how to update the table of contents can be found in the [table of contents](CONTRIBUTING.md#table-of-contents) section.
 
-5. **Open a pull request for your forked branch and request a review:** The main branch of this repository is protected, approving review from a DAPCATS team member is required before changes can be merged in. Please fill out the pull request template with as much detail as possible so that your request can be reviewed properly. It would be best to assign a reviewer to your pull request (it doesn't matter who, you can just use the suggested person Github recommends) so that we will receive an email alert that the is a pull request waiting for review.
+5. **Commit your changes. Check that you can build the book locally and that pages display correctly:** Check the [Building the book](CONTRIBUTING.md#building-the-book) section for instructions on how to do this. When you are happy with your local changes, you can **push your branch to Github**.
 
-    Please keep an eye on your pull request as we may ask for additional changes to be made before your changes are suitable for merging in. Once they are approved, a DAPCATS team member will merge your branch in. You may delete the branch on your forked repo after this is complete if you wish. 
+6. **Open a pull request for your forked branch and request a review:** The main branch of this repository is protected, approving review from a DAPCATS team member is required before changes can be merged in. Please fill out the pull request template with as much detail as possible so that your request can be reviewed properly. It would be best to assign a reviewer to your pull request (it doesn't matter who, you can just use the suggested person Github recommends) so that we will receive an email alert that the is a pull request waiting for review.
+
+    Please keep an eye on your pull request as we may ask for additional changes to be made before your changes are suitable for merging in. Once they are approved, a DAPCATS team member will merge your branch in. You may delete the branch on your forked repo after this is complete if you wish.
+
+### Table of Contents
+
+The Spark at the ONS book is split into sections to help users more easily find the content they are looking for. If you wish to add a completely new page to the book, we ask that you consider which of the following sections is most appropriate for your page:
+
+| Section name    | Description |
+| - | - |
+| Spark overview | Introduction to general concepts and basic information needed to get started in PySpark and SparklyR |
+| Introduction to PySpark | Some basic worked examples to help users new to PySpark |
+| Introduction to SparklyR| Some basic worked examples to help users new to SparklyR |
+| Spark functions | Guidance for performing more complex operations such as pivoting, joining, sampling etc. using PySpark and SparklyR functions |
+| Understanding and Optimising Spark | Tips and guidance for improving the performance of your PySpark/SparklyR code |
+| Analysis in Spark | Guidance on performing statistical analysis on data in PySpark/SparklyR |
+| Testing and debugging | Guidance on unit testing and debugging your PySpark/SparklyR code |
+| Ancillary topics | Section for other useful information that doesn't fit into any of the other sections |
+
+To add your new page into one of these sections, please make sure the `.md` file for the page is saved into the folder named as your chosen section. You can either do this by developing directly in markdown and saving your file to this folder, or by setting the appropriate folder name when running the `.ipynb` converter script as described in the [converting `.ipynb` files](CONTRIBUTING.md#converting-ipynb-files) section.
+
+You will also need to add your new page to the table of contents file `toc.yml`, found in the `ons-spark` folder in the root of this repo. To add your page to the appropriate section, add `- file: <section_folder>/<page-name>` under the `chapters` heading for your chosen section.
 
 ## Converting `.ipynb` files
 
@@ -65,7 +88,7 @@ Information on spark setup can be found on the [sparklyR documentation](https://
 
 The notebook converter uses the subprocess package, as such we will need to have all the required packages installed in our R environment prior to converting. 
 
-### Converting
+### Running the `convert.py` script
 To convert `ipynb` pages into a markdown page we will run the `convert.py` script.
 This can either be run using VScode and the run Python script button, or in a terminal by running `python utilities/convert.py` assuming you are in the root directory of this repo.
 
@@ -122,7 +145,7 @@ You might also choose to use markdown if you are developing Python and/or R code
 
 If you are still unsure, you can check another markdown file for a book page in this repository. Most book pages contain both Python and R code in this format, so you should be able to find example of the formatting to copy. 
 
-### Converting
+### Running the `reverse_convert.py` script
 
 To convert `.md` pages into a `.ipynb` file and a `.R` file, we will run the `reverse_convert.py` script.
 
