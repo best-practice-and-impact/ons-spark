@@ -212,7 +212,7 @@ pip install -r requirements.txt
 
 ### Releasing
 
-To create a new release, use the command line tool `bump2version`, which will be installed with the dev dependencies.
+To create a new release, use the command line tool [bump2version](https://pypi.org/project/bump2version/), which will be installed with the dev dependencies.
 We use a year.build version tag for the release of the book, so the first release of 2024 would be `2024.0`.
 
 For a the first release of a year, use the following bump version command.
