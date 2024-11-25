@@ -27,22 +27,6 @@ We have recently made use of GitHub issue forms which we hope will make suggesti
 
 If you wish to take an active role in developing this book please refer to the [contributing guidance](./CONTRIBUTING.md).
 
-<!-- Does this section belong in the Readme? Or should we point towards the contributing guide as above? -->
-### Building the book
-
-If you'd like to develop and/or build the Spark at the ONS book, you should:
-
-1. Clone this repository
-2. Run `pip install -r requirements.txt` (it is recommended you do this within a virtual environment)
-3. (Optional) Edit the books source files located in the `ons-spark/` directory
-4. Run `jupyter-book clean ons-spark/` to remove any existing builds
-5. Run `jupyter-book build ons-spark/`
-6. Check the built HTML pages are correct (these will be in ons-spark/_build/html)
-7. Once you are happy, to deploy the book online run `ghp-import -n -p -f ons-spark/_build/html`.
-8. Note you may need to do `pip install ghp-import` if you do not already have this installed.
-
-A fully-rendered HTML version of the book will be built in `ons-spark/_build/html/`.
-
 ### Hosting the book
 
 Please see the [Jupyter Book documentation](https://jupyterbook.org/publish/web.html) to discover options for deploying a book online using services such as GitHub, GitLab, or Netlify.
