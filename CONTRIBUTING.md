@@ -4,10 +4,10 @@ Contributions are welcome, and they are greatly appreciated! Every little bit
 helps, and credit will always be given. To contribute, you will first need to raise the change you wish to make or suggest as an [Issue](https://github.com/best-practice-and-impact/ons-spark/issues).  
 
 ## Raising an issue
-We have made use of GitHub issue forms which we hope will make suggesting content or changes even easier!
-you want to suggest a new page, please use [this link for the issue form](https://github.com/best-practice-and-impact/ons-spark/issues/new?assignees=&labels=New+page&projects=&template=new-page-form.yml&title=%5BNew+page%5D%3A+)
-For bug issues please use [this link for the issue form](https://github.com/best-practice-and-impact/ons-spark/issues/new?assignees=&labels=bug&projects=&template=bug-report-form.yml&title=%5BBug%5D%3A+)
-To create any other type of issue, select the [blank issue form](https://github.com/best-practice-and-impact/ons-spark/issues/new/choose) and label your issue with any of the following tags:
+We have made use of GitHub issue forms which we hope will make suggesting content or changes even easier!  
+- If you want to suggest a new page, please use [this link for the issue form](https://github.com/best-practice-and-impact/ons-spark/issues/new?assignees=&labels=New+page&projects=&template=new-page-form.yml&title=%5BNew+page%5D%3A+).  
+- For bug issues please use [this link for the issue form](https://github.com/best-practice-and-impact/ons-spark/issues/new?assignees=&labels=bug&projects=&template=bug-report-form.yml&title=%5BBug%5D%3A+).  
+- To create any other type of issue, select the [blank issue form](https://github.com/best-practice-and-impact/ons-spark/issues/new/choose) and label your issue with any of the following tags:
 
 | label    | description |
 | - | - |
@@ -26,11 +26,11 @@ If you wish to address an outstanding issue yourself (whether that be a bug, a n
 
 ### Internal contributors
 
-1. **Create a new branch from the issue page:** On the right hand side of the issue page, there should be a link to 'Create a branch' from the issue under the development section. We recommend that you do this so that branches can be easily linked to issues.
+1. **Create a new branch from the issue page:** On the right hand side of the issue page, select 'Create a branch' from the issue under the development section. We recommend that you do this so that branches can be easily linked to issues.
 
 2. **Make your changes on the newly created branch**: We recommend that contributions to the book be made locally, by cloning the repository on your local machine.
   
-   You may choose to write or edit book pages in either Jupyter notebook format (.ipynb) or markdown (.md). However, we require that finalised book content is saved into the book repository in **both** formats and that raw Python and R scripts are also available. You can generate all of the required files either from a .ipynb file by running the notebook converter utility or from the .md file by running the reverse converter     utility. See the relevant sections of this guidance ([Converting .ipynb files](CONTRIBUTING.md#converting-ipynb-files) or [Converting .md files](CONTRIBUTING.md#converting-md-files)) for more details of how to do this.
+   You may choose to write or edit book pages in either Jupyter notebook format (.ipynb) or markdown (.md). However, we require that finalised book content is saved into the book repository in **both** formats and that raw Python and R scripts are also available. You can generate all of the required files either from a .ipynb file by running the notebook converter utility, or from the .md file by running the reverse converter     utility. See the relevant sections of this guidance ([Converting .ipynb files](CONTRIBUTING.md#converting-ipynb-files) or [Converting .md files](CONTRIBUTING.md#converting-md-files)) for more details of how to do this.
 
    If you are creating an entirely new page, don't forget to select an appropriate section of the book to host your page and to update the table of contents file (`ons-spark/toc.yml`) accordingly so your page will display in the book navigation bar. More details on sections of the book and how to update the table of contents can be found in the [table of contents](CONTRIBUTING.md#table-of-contents) section.
 
@@ -143,7 +143,7 @@ You might also choose to use markdown if you are developing Python and/or R code
         ````
 ```
 
-If you are still unsure, you can check another markdown file for a book page in this repository. Most book pages contain both Python and R code in this format, so you should be able to find example of the formatting to copy. 
+If you are still unsure, you can check another markdown file for a book page in this repository. Most of the `.md` files for book pages contain both Python and R code in this format, so you should be able to find example of the formatting to copy. 
 
 ### Running the `reverse_convert.py` script
 
