@@ -8,10 +8,10 @@ Spark learning materials compiled by members of the Office for National Statisti
 Contributions are welcome, and they are greatly appreciated! Every little bit
 helps, and credit will always be given. You can contribute in the ways listed below.
 
-We have recently made use of GitHub issue forms which we hope will make suggesting content even easier!
-you want to suggest a new page, please use [this link for the issue form](https://github.com/best-practice-and-impact/ons-spark/issues/new?assignees=&labels=New+page&projects=&template=new-page-form.yml&title=%5BNew+page%5D%3A+)
-For bug issues please use [this link for the issue form](https://github.com/best-practice-and-impact/ons-spark/issues/new?assignees=&labels=bug&projects=&template=bug-report-form.yml&title=%5BBug%5D%3A+)
-To create any other type of issue, use the blank issue form and label your issue with any of the following tags:
+We have recently made use of GitHub issue forms which we hope will make suggesting content even easier!  
+- If you want to suggest a new page, please use [this link for the issue form](https://github.com/best-practice-and-impact/ons-spark/issues/new?assignees=&labels=New+page&projects=&template=new-page-form.yml&title=%5BNew+page%5D%3A+).  
+- For bugs, please use [this link for the issue form](https://github.com/best-practice-and-impact/ons-spark/issues/new?assignees=&labels=bug&projects=&template=bug-report-form.yml&title=%5BBug%5D%3A+).  
+- To create any other type of issue, use the blank issue form and label your issue with any of the following tags:
 
 | label    | description |
 | - | - |
@@ -25,7 +25,7 @@ To create any other type of issue, use the blank issue form and label your issue
 | Enhancement | Suggestion for change not relating to content eg. improving the usability or appearance of the book |
 | Other | An issue that is not covered by any of the other labels |
 
-If you wish to take an active role in developing this book please refer to the [contributing guidance](./CONTRIBUTING.md)
+If you wish to take an active role in developing this book please refer to the [contributing guidance](./CONTRIBUTING.md).
 
 <!-- Does this section belong in the Readme? Or should we point towards the contributing guide as above? -->
 ### Building the book
