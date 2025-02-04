@@ -1,5 +1,6 @@
 import pytest
 from pyspark.sql import SparkSession
+import findspark
 
 @pytest.fixture(scope="session")
 def spark():
@@ -17,7 +18,10 @@ def spark():
     Generally, "session" will be chosen as the fixture only needs
         to be set up once and this will make the tests run faster
     """
+
+    findspark.init()
+
     return (SparkSession.builder
-      .master("local[2]")
+      .master("local")
       .appName("local-pytest")
       .getOrCreate())
