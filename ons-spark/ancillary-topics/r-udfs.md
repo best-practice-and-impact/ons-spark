@@ -17,17 +17,18 @@ This example represents a simple UDF just to demonstrate how `spark_apply()` can
 
 The example UDF below will make use of the `mutate()` function from he `dplyr` package. In order for Spark to run our UDF, we need to make sure that the packages we need are installed on each worker node in our Spark cluster once we have set up our session. To do this, we need to pass the location of our R package library to the Spark cluster by including the `spark.r.libpaths` setting as shown below:
 
-```
+```{code-tab} R
 library(dplyr)
 library(sparklyr)
 # Load the 'arrow' library - omit if you are unable to use Apache Arrow
 library(arrow)
 
 # Set up our Spark configuration - including our library path
-default_config() <- spark_config()
+default_config <- spark_config()
 default_config["spark.r.libpaths"] <- .libPaths()[1]
 
 sc <- spark_connect(
+  master = "local[2]",
   app_name = "r-udfs",
   config = default_config)
 
@@ -37,7 +38,8 @@ You can replace `.libPaths()[1]` with the full path to your R package library in
 
 We have told Spark where to look for R packages, but they are not yet installed on the worker nodes. The first time we run `spark_apply()` in our Spark session, any packages found in the specified library path will be copied over to the Spark cluster. As a result, the most efficient way to load packages onto the cluster is to run a 'dummy' UDF on a small dataset before running our actual function. This ensures that the packages are loaded and ready for use before Spark attempts to perform more complex operations on our data. We can define and run our dummy UDF as shown:
 
-```
+````{tabs}
+```{code-tab} R
 # Define dummy UDF 'libload' which loads our required function libraries
 # You could just define an empty function here, but this forces Spark to output 
 # a list of libraries loaded on the cluster so we can see it has worked 
@@ -53,6 +55,21 @@ sdf_len(sc, 1) |> sparklyr::spark_apply(f = libload,
                 packages = FALSE)
 
 ```
+``` plaintext
+# Source:   table<`sparklyr_tmp__78b5fc02_a3fa_40b2_98d8_a156efa9cf69`> [8 x 1]
+# Database: spark_connection
+  result   
+  <chr>    
+1 dplyr    
+2 stats    
+3 graphics 
+4 grDevices
+5 utils    
+6 datasets 
+7 methods  
+8 base
+```
+````    
 
 Confusingly, to load packages using this method, note that we have had to set the `packages` argument in `spark_apply()` to `FALSE`. This is because there is another method to load packages on to the cluster, using [`spark_apply_bundle()`](https://www.rdocumentation.org/packages/sparklyr/versions/1.8.5/topics/spark_apply_bundle). This function is designed to bundle all packages into a .tar file ready to pass to the Spark cluster. Setting the `packages` argument to `TRUE` prompts Spark to search for this .tar file and extract the relevant packages. However, this method is not easily generalisable to different system setups and may not always be possible using a given configuration (e.g. it does not seem to work with S3 bucket storage). For this reason, this guide demonstrates using the alternative approach outlined above to use packages with `spark_apply()`.  
 
