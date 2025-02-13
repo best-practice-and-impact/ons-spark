@@ -178,7 +178,9 @@ class MarkdownFromNotebook():
         Run tidy_python_cell_output for every Python cell
         """
         python_cells = [cell for cell in self.nb["cells"]
-                        if cell["cell_type"] == "code"]
+                        if ((cell["cell_type"] == "code") & 
+                            (cell["metadata"] != {'tags': ['remove-cell']})
+                        )]
         
         for cell in python_cells:
             cell["tidy_python_output"] = self.tidy_python_cell_output(cell)
@@ -187,9 +189,15 @@ class MarkdownFromNotebook():
         """
         Translates Jupyter notebook cells to Markdown
         """
+        # If cell metadata contains remove-cell, we don't want it in the markdown doc,
+        # so we end the func if it appears
+        if (cell["metadata"] == {'tags': ['remove-cell']}):
+            return ""
+            print("Skipped cell with tag 'remove-cell'")
+
         # Set return_python to False if no Python output exists
         if return_python == True and "outputs" in cell.keys():
-            if len(cell["outputs"]) > 0:
+            if (len(cell["outputs"]) > 0):
                 return_python = True
             else:
                 return_python = False
@@ -218,7 +226,7 @@ class MarkdownFromNotebook():
             r_output_open = "\n```plaintext\n"
             
             
-        if "r_output" in cell or cell["cell_type"] == "code":
+        if "r_output" in cell or (cell["cell_type"] == "code"):
             # Create code tab
             output = ["\n````{tabs}\n"]
             
@@ -301,7 +309,7 @@ class MarkdownFromNotebook():
         """
         Write out results to output_file_path
         """
-        with open(output_file_path, "w") as f:
+        with open(output_file_path, "w", encoding="utf-8") as f:
             f.write("".join(self.md_output))
     
     def cell_outputs(self):
@@ -309,7 +317,7 @@ class MarkdownFromNotebook():
         Return a pandas DF of Python and R outputs
         """
         code_cells = deepcopy([cell for cell in self.nb["cells"] 
-                        if cell["cell_type"] == "code" or
+                        if (cell["cell_type"] == "code") & (cell["metadata"] != {'tags': ['remove-cell']}) or
                         "r_code" in cell])
 
         [cell.setdefault("r_output", "") for cell in code_cells]
