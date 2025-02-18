@@ -1,4 +1,4 @@
-# Median in Spark
+## Median in Spark
 
 ### Introduction
 
@@ -11,11 +11,13 @@ First we will set-up a Spark session and read in the config file.
 from pyspark.sql import SparkSession, functions as F
 import yaml
 
-spark = (SparkSession.builder.master("local[2]")
-         .appName("ons-spark")
-         .getOrCreate())
+spark = (
+    SparkSession.builder.master("local")
+    .appName("ons-spark")
+    .getOrCreate()
+)
 
-with open("../../../config.yaml") as f:
+with open("config.yaml") as f:
     config = yaml.safe_load(f)
 ```
 
@@ -23,14 +25,15 @@ with open("../../../config.yaml") as f:
 
 library(sparklyr)
 library(dplyr)
+library(knitr) # For pretty printing of tables
 
 sc <- sparklyr::spark_connect(
-  master = "local[2]",
+  master = "local",
   app_name = "ons-spark",
   config = sparklyr::spark_config(),
   )
 
-config <- yaml::yaml.load_file("ons-spark/config.yaml")
+config <- yaml::yaml.load_file("config.yaml")
 
 ```
 ````
@@ -45,7 +48,7 @@ pop_df.printSchema()
 ```{code-tab} r R
 
 pop_df <- sparklyr::spark_read_parquet(sc, path = config$population_path)
-                                     
+   
 sparklyr::sdf_schema(pop_df)
 
 ```
@@ -60,22 +63,22 @@ root
 ```
 
 ```{code-tab} plaintext R Output
-$postcode_district
-$postcode_district$name
-[1] "postcode_district"
-
-$postcode_district$type
-[1] "StringType"
-
-
-$population
-$population$name
-[1] "population"
-
-$population$type
-[1] "LongType"
-
-
+$postcode_district
+$postcode_district$name
+[1] "postcode_district"
+
+$postcode_district$type
+[1] "StringType"
+
+
+$population
+$population$name
+[1] "population"
+
+$population$type
+[1] "LongType"
+
+
 ```
 ````
 ### Computing the median for a Spark DataFrame
@@ -104,8 +107,8 @@ sdf_quantile(pop_df, "population", probabilities = 0.5, relative.error = 0)
 ```
 
 ```{code-tab} plaintext R Output
-  50% 
-22331 
+  50% 
+22331 
 ```
 ````
 In the next example, we will compute the 1st, 2nd, and 3rd quartiles of the `population` column, which we will do by passing an array containing the numeric values of the three quartiles as our second argument (0.25, 0.5 and 0.75, respectively). We will assume that computing three quantiles exactly would be too computationally expensive given our available resources, so we will increase the relative error parameter to reduce the accuracy of our estimates in return for decreased computation cost. We will increase the relative error parameter to 0.01, or 1%.
@@ -124,12 +127,12 @@ sdf_quantile(pop_df, "population", probabilities = c(0.25, 0.5, 0.75), relative.
 ````{tabs}
 
 ```{code-tab} plaintext Python Output
-[12051.0, 22059.0, 33495.0]
+[12051.0, 22106.0, 33443.0]
 ```
 
 ```{code-tab} plaintext R Output
-  25%   50%   75% 
-12051 22334 33495 
+  25%   50%   75% 
+11861 22118 33493 
 ```
 ````
 What is the relationship between the relative error parameter and the accuracy of the estimated result?
@@ -154,11 +157,11 @@ print(round((exact-estimate)/exact, 3))
 ````{tabs}
 
 ```{code-tab} plaintext Python Output
-0.012
+0.01
 ```
 
 ```{code-tab} plaintext R Output
-[1] 0.012
+[1] 0.01
 ```
 ````
 By specificying a relative error of 1%, we can see that the difference between the estimated median for the `population` column and the exact median is approximately 1%.
@@ -170,7 +173,10 @@ Usually when performing data analysis you will want to find the median of aggreg
 ```{code-tab} py
 borough_df = spark.read.parquet(config["rescue_clean_path"])
 
-borough_df = borough_df.select("borough", F.upper(F.col("postcodedistrict")).alias("postcode_district"))
+borough_df = borough_df.select(
+    "borough", 
+    F.upper(F.col("postcodedistrict")).alias("postcode_district")
+)
 
 pop_borough_df = borough_df.join(
     pop_df,
@@ -193,7 +199,7 @@ pop_borough_df <- borough_df %>%
     left_join(pop_df, by = "postcode_district") %>%
     filter(!is.na(borough))
     
-print(pop_borough_df)
+knitr::kable(collect(pop_borough_df, n=10))
 
 ```
 ````
@@ -219,57 +225,102 @@ only showing top 10 rows
 ```
 
 ```{code-tab} plaintext R Output
-# Source: spark<?> [?? x 3]
-   borough              postcode_district population
-   <chr>                <chr>                  <dbl>
- 1 Croydon              SE19                   27639
- 2 Croydon              SE25                   34521
- 3 Sutton               SM5                    38291
- 4 Hillingdon           UB9                    14336
- 5 Havering             RM3                    40272
- 6 Barking And Dagenham RM10                   38157
- 7 Waltham Forest       E11                    55128
- 8 Redbridge            E12                    41869
- 9 Croydon              CR0                   153812
-10 Hackney              E5                     47669
-# ℹ more rows
+
+
+borough                postcode_district    population
+---------------------  ------------------  -----------
+Croydon                SE19                      27639
+Croydon                SE25                      34521
+Sutton                 SM5                       38291
+Hillingdon             UB9                       14336
+Havering               RM3                       40272
+Barking And Dagenham   RM10                      38157
+Waltham Forest         E11                       55128
+Redbridge              E12                       41869
+Croydon                CR0                      153812
+Hackney                E5                        47669
 ```
 ````
 Next, we will aggregate the population data across boroughs in the combined `pop_borough_df` and find the median postcode population for each borough.
 
-The DAP environment is currently limited to using PySpark version 2.4.0, but there are two functions present in later versions that are useful for calculating quantiles/medians.
-
-- In PySpark 3.1.0, [`percentile_approx`](https://spark.apache.org/docs/3.1.1/api/python/reference/api/pyspark.sql.functions.percentile_approx.html) was added to [`pyspark.sql.functions`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/functions.html#), which allows you to calculate quantiles on aggregatations. The parameters required in `percentile_approx` are similar to that of `approxQuantile`, with the difference being that you must provide the accuracy instead of relative error, where accuracy is defined as $ \frac{1}{relative\ error} $
-
-``` py
+In Spark 3.1.0, [`percentile_approx`](https://spark.apache.org/docs/3.1.1/api/python/reference/api/pyspark.sql.functions.percentile_approx.html) was added to [`pyspark.sql.functions`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/functions.html#), which allows you to calculate quantiles on aggregatations. The parameters required in `percentile_approx` are similar to that of `approxQuantile`, with the difference being that you must provide the accuracy instead of relative error, where accuracy is defined as $ \frac{1}{relative\ error} $
+````{tabs}
+```{code-tab} py
 pop_borough_df.groupBy("borough").agg(
-        percentile_approx("population", [0.5], 100000).alias("median_postcode_population")
-).show()
+        F.percentile_approx("population", [0.5], 100000)
+        .alias("median_postcode_population")
+).show(10)
 ```
-- In PySpark 3.4.0, [`median`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.median.html#pyspark.sql.functions.median) was added to `pyspark.sql.functions`, which further simplifies the process of computing the median within aggregations, as it does not require a parameter specifying the quantile, or an accuracy parameter. 
+````
 
-``` py
+````{tabs}
+
+```{code-tab} plaintext Python Output
++--------------------+--------------------------+
+|             borough|median_postcode_population|
++--------------------+--------------------------+
+|       Epping Forest|                   [23599]|
+|             Croydon|                   [48428]|
+|          Wandsworth|                   [64566]|
+|              Bexley|                   [34767]|
+|Kingston Upon Thames|                   [31384]|
+|             Lambeth|                   [43845]|
+|Kensington And Ch...|                   [22381]|
+|              Camden|                   [60910]|
+|           Brentwood|                   [24715]|
+|           Greenwich|                   [63082]|
++--------------------+--------------------------+
+only showing top 10 rows
+```
+````
+In Spark 3.4.0, [`median`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.median.html#pyspark.sql.functions.median) was added to `pyspark.sql.functions`, which further simplifies the process of computing the median within aggregations, as it does not require a parameter specifying the quantile, or an accuracy parameter. 
+````{tabs}
+```{code-tab} py
 pop_borough_df.groupBy("borough").agg(
-        median("population").alias("median_postcode_population")
-).show()
+        F.median("population")
+        .alias("median_postcode_population")
+).show(10)
 ```
+````
 
-In PySpark 2.4.0, to calculate quantiles inside aggregations we can use the built-in Spark SQL [`approx_percentile`](https://spark.apache.org/docs/latest/api/sql/index.html#approx_percentile) function by passing SQL code to the PySpark API as a string inside of an `expr`. The parameters of the SQL function are identical to the PySpark `percentile_approx` function, however we must give the list of quantiles we wish to calculate inside of a SQL `array()`.
+````{tabs}
+
+```{code-tab} plaintext Python Output
++--------------------+--------------------------+
+|             borough|median_postcode_population|
++--------------------+--------------------------+
+|       Epping Forest|                   23599.0|
+|             Croydon|                   48428.0|
+|          Wandsworth|                   64566.0|
+|              Bexley|                   34767.0|
+|Kingston Upon Thames|                   31384.0|
+|             Lambeth|                   43845.0|
+|Kensington And Ch...|                   22381.0|
+|              Camden|                   60910.0|
+|           Brentwood|                   24715.0|
+|           Greenwich|                   63082.0|
++--------------------+--------------------------+
+only showing top 10 rows
+```
+````
+In Spark 2.4.0, to calculate quantiles inside aggregations we can use the built-in Spark SQL [`approx_percentile`](https://spark.apache.org/docs/latest/api/sql/index.html#approx_percentile) function by passing SQL code to the PySpark API as a string inside of an `expr`. The parameters of the SQL function are identical to the PySpark `percentile_approx` function, however we must give the list of quantiles we wish to calculate inside of a SQL `array()`.
 
 In SparklyR, we are able to apply the `percentile_approx` function to an aggregation, inside of a `summarise` function. The arguments passed to `percentile_approx` in SparklyR are identical to the PySpark implementation of `percentile_approx`.
 ````{tabs}
 ```{code-tab} py
 pop_borough_df.groupBy("borough").agg(
-        F.expr('approx_percentile(population, array(0.5), 100000)').alias("median_postcode_population")
-).show()
+        F.expr('approx_percentile(population, array(0.5), 100000)')
+        .alias("median_postcode_population")
+).show(10)
 ```
 
 ```{code-tab} r R
 
-pop_borough_df %>%
+pop_borough_grouped_df <- pop_borough_df %>%
     group_by(borough) %>%
-    summarise(median_postcode_population = percentile_approx(population, c(0.5), 100000)) %>%
-    print()
+    summarise(median_postcode_population = percentile_approx(population, c(0.5), as.integer(100000)))
+
+knitr::kable(collect(pop_borough_grouped_df, n=10))
 
 ```
 ````
@@ -290,35 +341,25 @@ pop_borough_df %>%
 |              Camden|                   [60910]|
 |           Brentwood|                   [24715]|
 |           Greenwich|                   [63082]|
-|Barking And Dagenham|                   [38157]|
-|              Newham|                   [52244]|
-|       Tower Hamlets|                   [69523]|
-|              Barnet|                   [29882]|
-|            Hounslow|                   [36147]|
-|              Harrow|                   [44781]|
-|      City Of London|                      [39]|
-|           Islington|                   [47204]|
-|               Brent|                   [67621]|
-|            Haringey|                   [43025]|
 +--------------------+--------------------------+
-only showing top 20 rows
+only showing top 10 rows
 ```
 
 ```{code-tab} plaintext R Output
-# Source: spark<?> [?? x 2]
-   borough              median_postcode_population
-   <chr>                                     <dbl>
- 1 Redbridge                                 35543
- 2 Newham                                    52244
- 3 Epping Forest                             23599
- 4 Broxbourne                                21884
- 5 Waltham Forest                            60262
- 6 Haringey                                  43025
- 7 Ealing                                    45703
- 8 City Of London                               39
- 9 Barking And Dagenham                      38157
-10 Brent                                     67621
-# ℹ more rows
+
+
+borough                   median_postcode_population
+-----------------------  ---------------------------
+Redbridge                                      35543
+Lewisham                                       33687
+Newham                                         52244
+Epping Forest                                  23599
+Hillingdon                                     36152
+Broxbourne                                     21884
+Waltham Forest                                 60262
+Haringey                                       43025
+Kensington And Chelsea                         22381
+Hackney                                        47669
 ```
 ````
 Close the Spark session to prevent any hanging processes.

@@ -1,17 +1,18 @@
-options(warn = -1)
+options(warn = -1, knitr.table.format = 'simple')
 library(sparklyr)
 library(dplyr)
+library(knitr) # For pretty printing of tables
 
 sc <- sparklyr::spark_connect(
-  master = "local[2]",
+  master = "local",
   app_name = "ons-spark",
   config = sparklyr::spark_config(),
   )
 
-config <- yaml::yaml.load_file("ons-spark/config.yaml")
+config <- yaml::yaml.load_file("config.yaml")
 
 pop_df <- sparklyr::spark_read_parquet(sc, path = config$population_path)
-                                     
+   
 sparklyr::sdf_schema(pop_df)
 
 sdf_quantile(pop_df, "population", probabilities = 0.5, relative.error = 0)
@@ -33,11 +34,12 @@ pop_borough_df <- borough_df %>%
     left_join(pop_df, by = "postcode_district") %>%
     filter(!is.na(borough))
     
-print(pop_borough_df)
+knitr::kable(collect(pop_borough_df, n=10))
 
-pop_borough_df %>%
+pop_borough_grouped_df <- pop_borough_df %>%
     group_by(borough) %>%
-    summarise(median_postcode_population = percentile_approx(population, c(0.5), 100000)) %>%
-    print()
+    summarise(median_postcode_population = percentile_approx(population, c(0.5), as.integer(100000)))
+
+knitr::kable(collect(pop_borough_grouped_df, n=10))
 
 sparklyr::spark_disconnect(sc)

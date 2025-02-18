@@ -118,7 +118,7 @@ class MarkdownFromNotebook():
         
         # Suppress warnings when running R code if required
         if show_warnings == False:
-            r_code = "options(warn = -1)"
+            r_code = "options(warn = -1, knitr.table.format = 'simple')"
             with open(r_path, "a") as f:
                     f.write("".join(r_code))
             stderr = subprocess.DEVNULL
