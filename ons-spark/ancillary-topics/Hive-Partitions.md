@@ -21,7 +21,15 @@ For example, say I want to partion the `animal_rescue` table within our dapcats 
 
 From here I can look at the stats and see the current number of files the data is stored on, which in this case is only 1.
 
-[unpartitioned animal_rescue table](../images/hive_partitions/hive_unpartitioned_rescue.png)
+```{figure} ../images/hive_partitions/hive_unpartitioned_rescue.png
+---
+width: 100%
+name: hive_unpartitioned
+alt: Unpartitioned animal rescue Hive table showing table existing on 1 partition.
+---
+Unpartitioned animal rescue table
+```
+
 
 If I want to partition the table by year (`calyear`), I can save as new table with this partitioning scheme and then insert my data into it. 
 
@@ -88,17 +96,49 @@ animal_rescue %>%
 
 You can then go to S3 and see that the table partitioned_rescue is stored in 11 files - one for each year. Also note, that there is a key symbol next to the column(s) which partitioning is applied to.
 
-[partitioned rescue dataframe](../images/hive_partitions/hive_partitioned_rescue.png)
+```{figure} ../images/hive_partitions/hive_partitioned_rescue.png
+---
+width: 100%
+name: hive_partitioned
+alt: Partitioned animal rescue Hive table showing table existing on 11 partition.
+---
+Partitioned animal rescue table
+```
+
 
 You can view the records stored in each partition by clicking directly on the partition value:
 
-[partition for 2019](../images/hive_partitions/rescue_2019_partition.png)
 
-[records in partition 2019](../images/hive_partitions/rescue_2019_records.png)
+```{figure} ../images/hive_partitions/rescue_2019_partition.png
+---
+width: 100%
+name: rescue_2019_partition
+alt: Image showing inside the partioned table with 2019 selected.
+---
+Partition for 2019
+```
+
+```{figure} ../images/hive_partitions/rescue_2019_records.png
+---
+width: 100%
+name: rescue_2019_partition
+alt: Image showing inside the partioned table, showing records inside partition 2019.
+---
+Records for 2019
+```
 
 You can also run the `SHOW PARTITIONS <table>` command to view how the table is partitioned:
 
-[display Hive partitions in Hive editor](../images/hive_partitions/show_hive_partitions.png)
+```{figure} ../images/hive_partitions/show_hive_partitions.png
+---
+width: 100%
+name: show_hive_partitions
+alt: SQL query in Hive Query editor showing partitions of the rescue table.
+---
+SQL query to show partitions in Hive query editor
+```
+
+
 
 
 ## Hive Buckets
@@ -107,7 +147,16 @@ Similiar to partitioning, bucketing can be used as a way to optimize data by seg
 
 In the below diagram, we have a small dataset containing rescue data from the years 2022 to 2024. We have first partioned on year as it is a low cardinality column (only has 3 values), thus creating 3 partitions. We have then created 3 buckets on incidentnumber which is high cardinality as it contains many unique values. This means 3 buckets are created on each of the partitions. Records are assigned to each bucket based on their hash. For simple illustration purposes a single number has been used to represent the hash, but in reality this would be a long string of random characters. 
 
-[partitioning and bucketing diagram](../images/hive_partitions/partitioning_bucketing_diagram.png)
+```{figure} ../images/hive_partitions/partitioning_bucketing_diagram.png
+---
+width: 100%
+name: partitioning_bucketing_diagram
+alt: Daigram to show how partitioning and bucketing works in Hive tables. Example shows rescue table over 3 partitions based on a subset of calyear, with 3 buckets based on incidentnumber in each partition.  
+---
+Diagram of Hive table partitioning and bucketing
+```
+
+
 
 ### When to use
 
@@ -157,13 +206,36 @@ animal_rescue = spark.sql('select * from dapcats.rescue_lite')
 
 Unfortunately sparklyr currently doesn't support bucketing, so if you are working in this language it is advised to use the Hive query editor and to create your table in SQL before inserting data into it.
 
-[Bucketed animal rescue](../images/hive_partitions/hive_bucketed_rescue.png)
+```{figure} ../images/hive_partitions/hive_bucketed_rescue.png
+---
+width: 100%
+name: hive_bucketed_rescue
+alt: Diagram to show rescue table with 5 buckets in each partition. 
+---
+Diagram of bucketed rescue table
+```
+
 
 You can now go into each partition of the table to view the buckets (by clicking on "Files" on the left of the partition number). We can see the 5 buckets for the year 2019:
 
-[buckets for year 2019](../images/hive_partitions/rescue_buckets2.png)
+```{figure} ../images/hive_partitions/hive_partitions/rescue_buckets2.png
+---
+width: 100%
+name: rescue_buckets2
+alt: Inside folder for partitioned and bucketed rescue table. Year 2019 is selected. 
+---
+Inside bucketed table
+```
 
-[animal rescue buckets for year 2019](../images/hive_partitions/rescue_buckets.png)
+
+```{figure} ../images/hive_partitions/hive_partitions/rescue_buckets.png
+---
+width: 100%
+name: rescue_buckets
+alt: Inside partition 2019 showing 5 sub-folders for the buckets. 
+---
+Inside partition 2019 showing 5 buckets
+```
 
 
 ## Spark Partitions
