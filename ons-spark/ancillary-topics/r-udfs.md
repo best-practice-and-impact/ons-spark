@@ -145,13 +145,11 @@ spark_disconnect(sc)
 
 Note that we have included a `columns` argument in the above example to enable us to specify a schema for the dataframe. It is a good idea to do this where possible as it speeds up the running of the UDF. If no schema is specified, Spark will need to identify it before applying the UDF which can slow things down somewhat. 
 
-The above example can easily be adapted for any R function which takes a single argument (the dataframe). However, most functions will require additional arguments to be passed in. We will look at how to do this with the next couple of examples using the `context` argument of `spark_apply`. 
+The above example can easily be adapted for any R function which takes a single argument (the dataframe). However, most functions will require additional arguments to be passed in. We will look at how to do this with the next example using the `context` argument of [`spark_apply`](https://search.r-project.org/CRAN/refmans/sparklyr/html/spark_apply.html). 
 
-Example 2 covers how to pass **one** extra argument (in addition to the dataframe) to a UDF. The syntax for passing multiple additional arguments is a little bit trickier and is covered in example 3.
+### Example 2: Passing additional arguments to a UDF
 
-### Example 2: Passing an argument to a UDF
-
-Firstly, we need to set up our Spark connection and load any required packages onto the cluster. Please note that if you don't already have these packages installed you will need to install them **before** setting up your Spark connection so they can be found in your library and copied over to the cluster.
+First, we need to set up our Spark connection and load any required packages onto the cluster. Please note that if you don't already have these packages installed you will need to install them **before** setting up your Spark connection so they can be found in your library and copied over to the cluster.
 
 ````{tabs}
 ```{code-tab} R
@@ -197,6 +195,87 @@ sdf_len(sc, 1) |> sparklyr::spark_apply(f = libload,
 10 base 
 ```
 ````
+
+Next, we will generate a Spark dataframe to test our function on and define a more complex version of our rounding UDF from example 1. In this example, we've assumed we want to pass in two extra values to the function; `col`, which will be the name of the column we want to apply the rounding to, and `precision`, which is the number of decimal places we want to round to. However, all of the arguments you need to pass to your UDF need to be included in the `spark_apply` `context`. As a result, we need to define our UDF as having just two arguments; the dataframe, and the context, which is passed as a `list` of all the required UDF arguments. Then we can split our additional arguments out of the list and into individual objects inside the function definition as shown below.
+
+Note that this time, when defining the function we are using both `mutate` from the `dplyr` package and `sym` from `rlang`, so we have specified both of the package names in our function definition. The `!!rlang::sym(col)` converts the column name (which is passed into the function as a string) to a column object inside the function.
+
+```{code-tab} R
+# Set up a dummy Spark dataframe
+sdf <- sparklyr:::sdf_seq(sc, -7, 8, 2) |>
+       sparklyr::mutate(half_id = id / 2) |>
+       sparklyr::select(half_id)
+       
+# Define our UDF to take multiple arguments passed into a list named `context`
+multi_arg_udf <- function(df, context) {
+
+   col <- context$col               # Split out the `col` argument from the list of arguments in `context`
+   precision <- context$precision   # Split out the `precision` argument from the list of arguments in `context`
+   
+   x <- df |>
+        dplyr::mutate(rounded_col = round(!!rlang::sym(col), precision)) #need to specify both rlang and dplyr packages
+    return(x)
+}
+
+```
+
+Now we can run the UDF on our Spark dataframe as before, passing values to the `col` and `precision` arguments inside the `multi_arg_udf` function from the `context` list as shown below. We'll run it a couple of times, passing a different value to `precision` just to confirm it works as expected.
+
+
+````{tabs}
+```{code-tab} R
+
+# Run the function on our data using spark_apply and passing the `col` and `precision` arguments as a list using 'context'
+multi0 <- sparklyr::spark_apply(sdf, multi_arg_udf, context = list(col = "half_id",
+                                                             precision = 0), packages = FALSE)
+                                                             
+
+# Run the function on our data again using spark_apply, this time with a different `precision` using 'context'         
+multi1 <- sparklyr::spark_apply(sdf, multi_arg_udf, context = list(col = "half_id",
+                                                             precision = 1), packages = FALSE)               
+
+# View the result with `col` = "half_id" and precision = 0
+multi0
+
+# View the result with `col` = "half_id" and precision = 1
+multi1
+
+```
+``` plaintext
+# Source:   table<`sparklyr_tmp__dbf96333_18ac_472a_8177_97299e5b1a18`> [8 x 2]
+# Database: spark_connection
+  half_id rounded_col
+    <dbl>       <dbl>
+1    -3.5          -4
+2    -2.5          -2
+3    -1.5          -2
+4    -0.5           0
+5     0.5           0
+6     1.5           2
+7     2.5           2
+8     3.5           4
+
+# Source:   table<`sparklyr_tmp__cec23e14_8a06_49e1_9104_c9574d0d5a97`> [8 x 2]
+# Database: spark_connection
+  half_id rounded_col
+    <dbl>       <dbl>
+1    -3.5        -3.5
+2    -2.5        -2.5
+3    -1.5        -1.5
+4    -0.5        -0.5
+5     0.5         0.5
+6     1.5         1.5
+7     2.5         2.5
+8     3.5         3.5
+
+```
+````
+
+Note that even if you only have one additional argument to pass into your UDF, you will still need to pass this in via the `context` argument as a list, but with only a single element (i.e. `context = list(arg1 = value1)`). You can define any number of additional arguments this way, provided you remember to split each one out of the context list inside your UDF. 
+
+The first two examples have been very basic and are clearly not ordinarily a good use for an R UDF. The next example represents a more realistic use for a UDF, where will be using a statistical function that does not have an equivalent in `sparklyr`. We will also show how the `group_by` argument can be used to control partioning when running a UDF. 
+
+### Example 3: Using the `group_by` argument
 
 
 
