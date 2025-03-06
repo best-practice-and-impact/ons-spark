@@ -123,6 +123,9 @@ rounded <- sparklyr::spark_apply(sdf,
 # View the resulting Spark dataframe
 rounded
 
+# disconnect the Spark session
+spark_disconnect(sc)
+
 ```
 ``` plaintext
 # Source:   table<`sparklyr_tmp__de87c853_8f23_434d_892e_6e9c99858e58`> [8 x 2]
@@ -142,5 +145,58 @@ rounded
 
 Note that we have included a `columns` argument in the above example to enable us to specify a schema for the dataframe. It is a good idea to do this where possible as it speeds up the running of the UDF. If no schema is specified, Spark will need to identify it before applying the UDF which can slow things down somewhat. 
 
-### Example 2: Passing additional arguments to a UDF
+The above example can easily be adapted for any R function which takes a single argument (the dataframe). However, most functions will require additional arguments to be passed in. We will look at how to do this with the next couple of examples using the `context` argument of `spark_apply`. 
+
+Example 2 covers how to pass **one** extra argument (in addition to the dataframe) to a UDF. The syntax for passing multiple additional arguments is a little bit trickier and is covered in example 3.
+
+### Example 2: Passing an argument to a UDF
+
+Firstly, we need to set up our Spark connection and load any required packages onto the cluster. Please note that if you don't already have these packages installed you will need to install them **before** setting up your Spark connection so they can be found in your library and copied over to the cluster.
+
+````{tabs}
+```{code-tab} R
+# Set up our Spark configuration - including our library path
+default_config <- spark_config()
+default_config["spark.r.libpaths"] <- .libPaths()[1]
+
+sc <- spark_connect(
+  master = "local[2]",
+  app_name = "r-udfs",
+  config = default_config)
+
+
+# Define the libload function to load our required packages onto the cluster
+libload <- function() {
+  library(dplyr)
+  library(janitor)
+  library(rlang)
+
+}
+
+# All packages will be loaded on to worker nodes during first call to spark_apply in session
+# so it is more efficient to do this 'on' a minimal sdf (of length 1) first
+
+sdf_len(sc, 1) |> sparklyr::spark_apply(f = libload,
+                packages = FALSE)
+                
+```
+``` plaintext
+# Source:   table<`sparklyr_tmp__dee5d73a_9102_4c57_be2a_d9c2a4d5f12e`> [10 x 1]
+# Database: spark_connection
+   result   
+   <chr>    
+ 1 rlang    
+ 2 janitor  
+ 3 dplyr    
+ 4 stats    
+ 5 graphics 
+ 6 grDevices
+ 7 utils    
+ 8 datasets 
+ 9 methods  
+10 base 
+```
+````
+
+
 
