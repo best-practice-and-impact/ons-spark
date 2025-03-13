@@ -6,7 +6,7 @@ This guide with cover partitioning and bucketing in Hive. How Hive partitions di
 
 ## Hive Partitions
 
-Hive partitions are static in nature and tied to a table schema, and optimized for running SQL queries on. Hive tables can be split into multiple partitions to make storage of data more efficient. This means that Hive internally divides the data based on a partition key, with data for each key being stored in a sub-directory in the underlying Hive parquet file on S3. Hive partitions function differently from [Spark partitions](#spark-partitions).
+Hive partitions are static in nature, are tied to a table schema and are optimized for running SQL queries on. Hive tables can be split into multiple partitions to make storage of data more efficient. This means that Hive internally divides the data based on a partition key, with data for each key being stored in a sub-directory in the underlying Hive parquet file on S3. Hive partitions function differently from [Spark partitions](#spark-partitions).
 
 ### When to use
 
@@ -17,7 +17,7 @@ You can read in Hive partitions individually, allowing you to perform operations
 
 However, unlike Spark where partitioning can be applied dynamically to dataframes, you can't apply new partitioning to an existing Hive table - you have to create a new one. 
 
-For example, say I want to partion the `animal_rescue` table within our dapcats database. I can check the current partitioning by going into Hue, navigating to the dapcats database and right clicking the animal_rescue table and selecting "show in browser".
+For example, say I want to partition the `animal_rescue` table within our dapcats database. I can check the current partitioning by going into Hue, navigating to the dapcats database and right clicking the animal_rescue table and selecting "show in browser".
 
 From here I can look at the stats and see the current number of files the data is stored on, which in this case is only 1.
 
@@ -31,11 +31,11 @@ Unpartitioned animal rescue table
 ```
 
 
-If I want to partition the table by year (`calyear`), I can save as new table with this partitioning scheme and then insert my data into it. 
+If I want to partition the table by year (`calyear`), I can save a new table with this partitioning scheme and then insert my data into it. 
 
-To ensure Hive partitioning is enabled when using the Hive Query Editor (this does not need to be done if using PySpark/SparklyR), the settings `hive.exec.dynamic.partition` needs to be set to "true" and `hive.exec.dynamic.partition.mode` needs to be set to "nonstrict" to allow multiple partitions to be added at once.
+To ensure Hive partitioning is enabled when using the Hive Query Editor (this does not need to be done if using PySpark/SparklyR), the setting `hive.exec.dynamic.partition` needs to be set to "true" and `hive.exec.dynamic.partition.mode` needs to be set to "nonstrict". These settings will allow multiple partitions to be added at once.
 
-This can be done directly within the Hive query editor as such:
+This can be done directly within the Hive Query Editor as such:
 
 ```sql
 DROP TABLE IF EXISTS dapcats.partitioned_rescue;
@@ -135,7 +135,7 @@ width: 100%
 name: show_hive_partitions
 alt: SQL query in Hive Query editor showing partitions of the rescue table.
 ---
-SQL query to show partitions in Hive query editor
+SQL query to show partitions in Hive Query Editor
 ```
 
 
@@ -143,7 +143,7 @@ SQL query to show partitions in Hive query editor
 
 ## Hive Buckets
 
-Similiar to partitioning, bucketing can be used as a way to optimize data by segregating it into different files and hence preventing the shuffle operation. With bucketing, data is split into a fixed number of buckets according to a hash function performed on the bucketing column. The result is then used to determine which bucket the row should go into.
+Similiar to partitioning, bucketing can be used as a way to optimize data by segregating it into different files and hence preventing the shuffle operation (for more information on shuffling please see the section on [Shuffling](https://best-practice-and-impact.github.io/ons-spark/spark-concepts/shuffling.html)). With bucketing, data is split into a fixed number of buckets according to a hash function performed on the bucketing column. The result is then used to determine which bucket the row should go into.
 
 In the below diagram, we have a small dataset containing rescue data from the years 2022 to 2024. We have first partioned on year as it is a low cardinality column (only has 3 values), thus creating 3 partitions. We have then created 3 buckets on incidentnumber which is high cardinality as it contains many unique values. This means 3 buckets are created on each of the partitions. Records are assigned to each bucket based on their hash. For simple illustration purposes a single number has been used to represent the hash, but in reality this would be a long string of random characters. 
 
@@ -204,7 +204,7 @@ animal_rescue = spark.sql('select * from dapcats.rescue_lite')
     .saveAsTable("dapcats.bucketed_rescue"))
 ```
 
-Unfortunately sparklyr currently doesn't support bucketing, so if you are working in this language it is advised to use the Hive query editor and to create your table in SQL before inserting data into it.
+Unfortunately sparklyR currently doesn't support bucketing, so if you are working in this language it is advised to use the Hive Query Editor and to create your table in SQL before inserting data into it.
 
 ```{figure} ../images/hive_partitions/hive_bucketed_rescue.png
 ---
@@ -218,7 +218,7 @@ Diagram of bucketed rescue table
 
 You can now go into each partition of the table to view the buckets (by clicking on "Files" on the left of the partition number). We can see the 5 buckets for the year 2019:
 
-```{figure} ../images/hive_partitions/hive_partitions/rescue_buckets2.png
+```{figure} ../images/hive_partitions/rescue_buckets2.png
 ---
 width: 100%
 name: rescue_buckets2
@@ -228,7 +228,7 @@ Inside bucketed table
 ```
 
 
-```{figure} ../images/hive_partitions/hive_partitions/rescue_buckets.png
+```{figure} ../images/hive_partitions/rescue_buckets.png
 ---
 width: 100%
 name: rescue_buckets
