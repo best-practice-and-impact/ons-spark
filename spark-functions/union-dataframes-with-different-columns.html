@@ -475,8 +475,8 @@ document.write(`
 <p>Here’s how we can use PySpark to mimic the behaviour of the <code class="docutils literal notranslate"><span class="pre">sdf_bind_rows()</span></code> function in sparklyr.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyspark.sql.functions</span> <span class="k">as</span> <span class="nn">F</span>
-<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyspark.sql.functions</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparkSession</span>
 </pre></div>
 </div>
 </div>
@@ -748,7 +748,7 @@ document.write(`
 <p>Next we’ll create a function that checks to see if a DataFrame has all the columns we need for the union. If the DataFrame is missing a column we’ll add an empty column with that name, and give it the correct type using <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.cast.html"><code class="docutils literal notranslate"><span class="pre">.cast()</span></code></a>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add_empty_columns</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">col_dict</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">add_empty_columns</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">col_dict</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">col_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">lit</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">col_dict</span><span class="p">[</span><span class="n">col</span><span class="p">]))</span>

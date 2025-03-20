@@ -528,8 +528,8 @@ document.write(`
 <p>The second is the <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/functions.html"><code class="docutils literal notranslate"><span class="pre">pyspark.sql.functions</span></code></a> module, which contain functions that can be applied to Spark DataFrames, or columns within the DataFrames. The standard method is to <a class="reference internal" href="../ancillary-topics/module-imports.html"><span class="doc std std-doc">import the <code class="docutils literal notranslate"><span class="pre">functions</span></code> module with the alias <code class="docutils literal notranslate"><span class="pre">F</span></code></span></a>, which means whenever we want to call a function from this module we write <code class="docutils literal notranslate"><span class="pre">F.function_name()</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span>
-<span class="kn">import</span> <span class="nn">pyspark.sql.functions</span> <span class="k">as</span> <span class="nn">F</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparkSession</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyspark.sql.functions</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
 </pre></div>
 </div>
 </div>
@@ -537,8 +537,8 @@ document.write(`
 <p>We will also want to import the <a class="reference external" href="https://pandas.pydata.org/"><code class="docutils literal notranslate"><span class="pre">pandas</span></code></a> module as <code class="docutils literal notranslate"><span class="pre">pd</span></code> as it makes viewing data much easier and neater, and <code class="docutils literal notranslate"><span class="pre">yaml</span></code> for reading the config file, which contains the file path of the source data.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">yaml</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
 
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
@@ -1721,7 +1721,7 @@ only showing top 10 rows
 <p>Spark has no native way of removing files, so either use the standard Python methods, or delete them manually through a file browser. If on a local file system, use <a class="reference external" href="https://docs.python.org/3/library/os.html#os.remove"><code class="docutils literal notranslate"><span class="pre">os.remove()</span></code></a> to delete a file and <a class="reference external" href="https://docs.python.org/3/library/shutil.html#shutil.rmtree"><code class="docutils literal notranslate"><span class="pre">shutil.rmtree()</span></code></a> to remove a directory. If using HDFS or similar, then use <a class="reference external" href="https://docs.python.org/3/library/subprocess.html#subprocess.run"><code class="docutils literal notranslate"><span class="pre">subprocess.run()</span></code></a>. Be careful when using the <code class="docutils literal notranslate"><span class="pre">subprocess</span></code> module as you will not get a warning when deleting files.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">subprocess</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
 <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="p">[</span><span class="n">output_path_parquet</span><span class="p">,</span> <span class="n">output_path_csv</span><span class="p">]:</span>
     <span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;hdfs dfs -rm -r -skipTrash </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>

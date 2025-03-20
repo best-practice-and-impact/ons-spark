@@ -482,9 +482,9 @@ document.write(`
 <p>First, import all the modules needed and create a Spark session:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
-<span class="kn">from</span> <span class="nn">pyspark.sql.window</span> <span class="kn">import</span> <span class="n">Window</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql.window</span><span class="w"> </span><span class="kn">import</span> <span class="n">Window</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
          <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;groups-not-loops&quot;</span><span class="p">)</span>
@@ -696,7 +696,7 @@ document.write(`
 
 <span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">()</span>
 
-<span class="nf">for </span><span class="p">(</span><span class="n">animal</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">animals</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">animal</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="n">animals</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">count</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span>
 <span class="w">      </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">AnimalGroup</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">animal</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
 <span class="w">      </span><span class="nf">count</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
@@ -790,7 +790,7 @@ document.write(`
 <p>Let’s get the three most expensive cats, dogs, hamsters and deer to rescue. We can write a function which does this, and then call it within a loop:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_expensive_incidents</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">animal</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_expensive_incidents</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">animal</span><span class="p">):</span>
     <span class="k">return</span><span class="p">(</span><span class="n">df</span>
         <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;AnimalGroup&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">animal</span><span class="p">)</span>
         <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;IncidentNumber&quot;</span><span class="p">,</span> <span class="s2">&quot;CalYear&quot;</span><span class="p">,</span> <span class="s2">&quot;TotalCost&quot;</span><span class="p">,</span> <span class="s2">&quot;Description&quot;</span><span class="p">)</span>
@@ -801,7 +801,7 @@ document.write(`
 </div>
 </div>
 </div>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">get_expensive_incidents</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">animal</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">get_expensive_incidents</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">animal</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="n">df</span><span class="w"> </span><span class="o">%&gt;%</span>
 <span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">AnimalGroup</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">animal</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
 <span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">IncidentNumber</span><span class="p">,</span><span class="w"> </span><span class="n">CalYear</span><span class="p">,</span><span class="w"> </span><span class="n">TotalCost</span><span class="p">,</span><span class="w"> </span><span class="n">Description</span><span class="p">,</span><span class="w"> </span><span class="n">AnimalGroup</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
@@ -966,7 +966,7 @@ document.write(`
 </div>
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">result</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">()</span><span class="w"> </span><span class="c1">#create an empty list to store out results from the loop</span>
 
-<span class="nf">for </span><span class="p">(</span><span class="n">animal</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">animals</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">animal</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="n">animals</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="n">expensive_animal</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">get_expensive_incidents</span><span class="p">(</span><span class="n">rescue</span><span class="p">,</span><span class="w"> </span><span class="n">animal</span><span class="p">)</span><span class="w"> </span><span class="c1">#apply our function to each animal</span>
 <span class="w">  </span><span class="n">expensive_animal</span><span class="o">$</span><span class="n">AnimalGroup</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">animal</span>
 <span class="w">  </span><span class="n">result</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">append</span><span class="p">(</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">expensive_animal</span><span class="p">))</span><span class="w"> </span><span class="c1">#add result to list</span>
@@ -983,7 +983,7 @@ document.write(`
 <p>Like in the previous example, this is calling four actions. To re-write this, we can use a window function. The comments in the function should help explain the process, but for a full understanding please look at <a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-functions/window-functions.html#using-window-functions-for-ranking">Using Window Functions for Ranking</a>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_expensive_incidents_grouped</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">animals</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_expensive_incidents_grouped</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">animals</span><span class="p">):</span>
     <span class="k">return</span><span class="p">(</span><span class="n">df</span>
         <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;AnimalGroup&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">animals</span><span class="p">))</span> <span class="c1"># Only include specified animals</span>
         <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;IncidentNumber&quot;</span><span class="p">,</span> <span class="s2">&quot;CalYear&quot;</span><span class="p">,</span> <span class="s2">&quot;TotalCost&quot;</span><span class="p">,</span> <span class="s2">&quot;Description&quot;</span><span class="p">,</span> <span class="s2">&quot;AnimalGroup&quot;</span><span class="p">)</span> <span class="c1"># Add AnimalGroup to the select</span>
@@ -1128,7 +1128,7 @@ document.write(`
 </table>
 </div></div></div>
 </div>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">get_expensive_incidents_grouped</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">animals</span><span class="p">){</span>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">get_expensive_incidents_grouped</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">animals</span><span class="p">){</span>
 <span class="w">  </span><span class="n">df</span><span class="w"> </span><span class="o">%&gt;%</span>
 <span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">AnimalGroup</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="n">animals</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
 <span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">IncidentNumber</span><span class="p">,</span><span class="w"> </span><span class="n">CalYear</span><span class="p">,</span><span class="w"> </span><span class="n">TotalCost</span><span class="p">,</span><span class="w"> </span><span class="n">Description</span><span class="p">,</span><span class="w"> </span><span class="n">AnimalGroup</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
@@ -1255,7 +1255,7 @@ document.write(`
 </table>
 </div></div></div>
 </div>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">for </span><span class="p">(</span><span class="n">animal</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">animals</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">animal</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="n">animals</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="n">rescue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span>
 <span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="o">!!</span><span class="n">animal</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">ifelse</span><span class="p">(</span>
 <span class="w">      </span><span class="n">AnimalGroup</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">animal</span><span class="p">,</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">))</span>

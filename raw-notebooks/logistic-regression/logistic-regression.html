@@ -471,10 +471,10 @@ document.write(`
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span> 
 <span class="c1">#import packages</span>
 
-<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span>
-<span class="kn">import</span> <span class="nn">pyspark.sql.functions</span> <span class="k">as</span> <span class="nn">F</span>
-<span class="kn">import</span> <span class="nn">yaml</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparkSession</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyspark.sql.functions</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="c1">#local session </span>
 <span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;logistic-regression&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
@@ -800,7 +800,7 @@ document.write(`
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Importing the required libraries - replace OneHotEncoderEstimator with OneHotEncoder if using Spark &gt;= 3.0</span>
-<span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">VectorAssembler</span><span class="p">,</span> <span class="n">StringIndexer</span><span class="p">,</span> <span class="n">OneHotEncoderEstimator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.ml.feature</span><span class="w"> </span><span class="kn">import</span> <span class="n">VectorAssembler</span><span class="p">,</span> <span class="n">StringIndexer</span><span class="p">,</span> <span class="n">OneHotEncoderEstimator</span>
 
 <span class="c1">## First we call the StringIndexer separately for each categorical variable</span>
 
@@ -904,7 +904,7 @@ only showing top 10 rows
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import GeneralizedLinearRegression</span>
-<span class="kn">from</span> <span class="nn">pyspark.ml.regression</span> <span class="kn">import</span> <span class="n">GeneralizedLinearRegression</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.ml.regression</span><span class="w"> </span><span class="kn">import</span> <span class="n">GeneralizedLinearRegression</span>
 
 <span class="c1"># Define model - specify family and link as shown for logistic regression</span>
 <span class="n">glr</span> <span class="o">=</span> <span class="n">GeneralizedLinearRegression</span><span class="p">(</span><span class="n">family</span><span class="o">=</span><span class="s2">&quot;binomial&quot;</span><span class="p">,</span> <span class="n">link</span><span class="o">=</span><span class="s2">&quot;logit&quot;</span><span class="p">)</span>
@@ -1452,7 +1452,7 @@ IllegalArgumentException: &#39;requirement failed: The input column incidentInde
 
 <span class="nn">/opt/cloudera/parcels/CDH/lib/spark/python/pyspark/ml/regression.py</span> in <span class="ni">__repr__</span><span class="nt">(self)</span>
 <span class="g g-Whitespace">   </span><span class="mi">1842</span> 
-<span class="g g-Whitespace">   </span><span class="mi">1843</span>     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="g g-Whitespace">   </span><span class="mi">1843</span>     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="ne">-&gt; </span><span class="mi">1844</span>         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_java</span><span class="p">(</span><span class="s2">&quot;toString&quot;</span><span class="p">)</span>
 <span class="g g-Whitespace">   </span><span class="mi">1845</span> 
 <span class="g g-Whitespace">   </span><span class="mi">1846</span> 
@@ -1472,7 +1472,7 @@ IllegalArgumentException: &#39;requirement failed: The input column incidentInde
 <span class="g g-Whitespace">   </span><span class="mi">1259</span>         <span class="k">for</span> <span class="n">temp_arg</span> <span class="ow">in</span> <span class="n">temp_args</span><span class="p">:</span>
 
 <span class="nn">/opt/cloudera/parcels/CDH/lib/spark/python/pyspark/sql/utils.py</span> in <span class="ni">deco</span><span class="nt">(*a, **kw)</span>
-<span class="g g-Whitespace">     </span><span class="mi">61</span>     <span class="k">def</span> <span class="nf">deco</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+<span class="g g-Whitespace">     </span><span class="mi">61</span>     <span class="k">def</span><span class="w"> </span><span class="nf">deco</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
 <span class="g g-Whitespace">     </span><span class="mi">62</span>         <span class="k">try</span><span class="p">:</span>
 <span class="ne">---&gt; </span><span class="mi">63</span>             <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
 <span class="g g-Whitespace">     </span><span class="mi">64</span>         <span class="k">except</span> <span class="n">py4j</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">Py4JJavaError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -1657,7 +1657,7 @@ AIC: 7574.9047
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.stat</span> <span class="kn">import</span> <span class="n">Correlation</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.ml.stat</span><span class="w"> </span><span class="kn">import</span> <span class="n">Correlation</span>
 
 <span class="c1"># Select feature column vector</span>
 <span class="n">features_vector</span> <span class="o">=</span> <span class="n">rescue_cat_final</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;features&quot;</span><span class="p">)</span>
@@ -2358,7 +2358,7 @@ AIC: 7574.9047
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml</span> <span class="kn">import</span> <span class="n">Pipeline</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.ml</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span>
 
 <span class="c1"># Rename &quot;is_cat&quot; to &quot;label&quot; before setting up pipeline stages</span>
 <span class="n">rescue_cat_reindex</span> <span class="o">=</span> <span class="n">rescue_cat_reindex</span><span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s2">&quot;is_cat&quot;</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span class="p">)</span>

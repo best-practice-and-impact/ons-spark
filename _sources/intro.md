@@ -8,7 +8,7 @@ This Government Analysis Function guidance is produced by the Data Access Platfo
 
 This book has been written to fill the gap between Spark text books, official documentation and online examples as the go-to guide for analysts, data scientists and data engineers using PySpark and sparklyr.
 
-The material is a living document, so will be updated over time. We are keen to hear your thoughts and feedback on the book, you can get in touch via [GitHub Issues](https://github.com/best-practice-and-impact/ons-spark/issues). This book is also open to contributions from anyone across UK Government and beyond.
+The material is a living document, so will be updated over time. We are keen to hear your thoughts and feedback on the book, you can get in touch via [GitHub Issues](https://github.com/best-practice-and-impact/ons-spark/issues). This book is also open to [contributions](https://github.com/best-practice-and-impact/ons-spark/blob/contributing-improvements/CONTRIBUTING.md) from anyone across UK Government and beyond.
 
 ONS staff should also look at our GitLab pages for organisation and platform-specific information.
 

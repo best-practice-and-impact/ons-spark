@@ -535,12 +535,12 @@ document.write(`
 <p>Firstly, we need to import packages and set up a Spark session for PyArrow optimisation and compatibility with Spark 2.4. Then read the data, rename and add columns and if necessary remove nulls:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span>
-<span class="kn">import</span> <span class="nn">pyspark.sql.functions</span> <span class="k">as</span> <span class="nn">F</span>
-<span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">pandas_udf</span>
-<span class="kn">import</span> <span class="nn">pyspark.sql.types</span> <span class="k">as</span> <span class="nn">T</span>
-<span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">lit</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparkSession</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyspark.sql.functions</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql.functions</span><span class="w"> </span><span class="kn">import</span> <span class="n">pandas_udf</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyspark.sql.types</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">T</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql.functions</span><span class="w"> </span><span class="kn">import</span> <span class="n">lit</span>
 
 <span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
          <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;pandas_udfs&quot;</span><span class="p">)</span>
@@ -550,7 +550,7 @@ document.write(`
          <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s1">&#39;spark.workerEnv.ARROW_PRE_0_15_IPC_FORMAT&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
          <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
 
-<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
      <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
@@ -706,7 +706,7 @@ document.write(`
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@pandas_udf</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">DoubleType</span><span class="p">(),</span> <span class="n">F</span><span class="o">.</span><span class="n">PandasUDFType</span><span class="o">.</span><span class="n">SCALAR</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">distance_to_incident</span><span class="p">(</span><span class="n">easting_rounded</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">lfb_easting</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">northing_rounded</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">lfb_northing</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">distance_to_incident</span><span class="p">(</span><span class="n">easting_rounded</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">lfb_easting</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">northing_rounded</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">lfb_northing</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
     <span class="n">distance</span> <span class="o">=</span> <span class="p">((</span><span class="n">easting_rounded</span> <span class="o">-</span> <span class="n">lfb_easting</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">northing_rounded</span> <span class="o">-</span> <span class="n">lfb_northing</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
     <span class="n">distance_km</span> <span class="o">=</span> <span class="n">distance</span><span class="o">/</span><span class="mi">1000</span>
     <span class="k">return</span> <span class="n">distance_km</span>
@@ -812,7 +812,7 @@ document.write(`
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@pandas_udf</span><span class="p">(</span><span class="n">lfb_distance</span><span class="o">.</span><span class="n">schema</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">PandasUDFType</span><span class="o">.</span><span class="n">GROUPED_MAP</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">dist_animal</span><span class="p">(</span><span class="n">pdf</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dist_animal</span><span class="p">(</span><span class="n">pdf</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
     <span class="n">distance</span> <span class="o">=</span> <span class="n">pdf</span><span class="o">.</span><span class="n">distance</span>
     <span class="k">return</span> <span class="n">pdf</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">distance</span><span class="o">=</span><span class="p">((</span><span class="n">distance</span> <span class="o">-</span> <span class="n">distance</span><span class="o">.</span><span class="n">mean</span><span class="p">()))</span><span class="o">/</span> <span class="n">distance</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
 
@@ -967,7 +967,7 @@ document.write(`
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@pandas_udf</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">DoubleType</span><span class="p">(),</span> <span class="n">F</span><span class="o">.</span><span class="n">PandasUDFType</span><span class="o">.</span><span class="n">GROUPED_AGG</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">mean_distance</span><span class="p">(</span><span class="n">distance</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="o">.</span><span class="n">DoubleType</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">mean_distance</span><span class="p">(</span><span class="n">distance</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="o">.</span><span class="n">DoubleType</span><span class="p">():</span>
     <span class="k">return</span> <span class="n">distance</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 
 <span class="n">mean_distance_travelled</span> <span class="o">=</span> <span class="p">(</span><span class="n">lfb_distance</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s1">&#39;animal_group&#39;</span><span class="p">)</span>
@@ -1063,7 +1063,7 @@ document.write(`
 <p>The grouped aggregate Pandas UDF can also be used with the PySpark window functions. Each <code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code> in the input represents a group or window. In Spark 2.4, the grouped aggregate UDF does not support partial aggregations with only an unbounded window supported. Here is an example:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.window</span> <span class="kn">import</span> <span class="n">Window</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql.window</span><span class="w"> </span><span class="kn">import</span> <span class="n">Window</span>
 
 <span class="n">w</span> <span class="o">=</span> <span class="p">(</span><span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s1">&#39;animal_group&#39;</span><span class="p">)</span>
            <span class="o">.</span><span class="n">rowsBetween</span><span class="p">(</span><span class="n">Window</span><span class="o">.</span><span class="n">unboundedPreceding</span><span class="p">,</span> <span class="n">Window</span><span class="o">.</span><span class="n">unboundedFollowing</span><span class="p">))</span>

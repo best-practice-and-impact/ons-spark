@@ -501,10 +501,10 @@ A similar example for R is linked <a class="reference external" href="https://ww
 First we will import the needed packages, start a spark session and load the rescue data.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">yaml</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
-<span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="k">as</span> <span class="nn">stats</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">stats</span>
 
 
 <span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
@@ -744,7 +744,7 @@ First we will import the needed packages, start a spark session and load the res
 <p>As we are wanting to calculate Cramér’s V for two examples, we will define a function to perform the <span class="math notranslate nohighlight">\(\chi^2\)</span> test and calculate the statistic. We only need the <span class="math notranslate nohighlight">\(\chi^2\)</span> statistic, as such we extract this from the <code class="docutils literal notranslate"><span class="pre">chi2_contingency</span></code>/<code class="docutils literal notranslate"><span class="pre">chisq.test</span></code> functions using <code class="docutils literal notranslate"><span class="pre">[0]</span></code> in python and <code class="docutils literal notranslate"><span class="pre">$statistic</span></code> in R. <code class="docutils literal notranslate"><span class="pre">chisq.test</span></code> has additional text included in the output, to remove this we cast this output as a double, keeping only the numerical value.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_cramer_v</span><span class="p">(</span><span class="n">freq_numpy</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_cramer_v</span><span class="p">(</span><span class="n">freq_numpy</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the Cramer&#39;s V Statistic for the given pair-wise frequency table</span>
 
@@ -770,7 +770,7 @@ First we will import the needed packages, start a spark session and load the res
 </div>
 </div>
 </div>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">get_cramer_v</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">freq_r</span><span class="p">){</span>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">get_cramer_v</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">freq_r</span><span class="p">){</span>
 <span class="w">  </span><span class="c1"># Get cramer V statistic</span>
 <span class="w">  </span><span class="c1"># Returns the Cramer&#39;s V Statistic for the given</span>
 <span class="w">  </span><span class="c1"># pair-wise frequency table</span>
@@ -790,7 +790,7 @@ First we will import the needed packages, start a spark session and load the res
 
 <span class="w">  </span><span class="c1"># calculate Cramer&#39;s V </span>
 <span class="w">  </span><span class="n">cramer_v_statistic</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sqrt</span><span class="p">((</span><span class="n">chi_sqrd</span><span class="o">/</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">min_dim</span><span class="p">)</span>
-<span class="w">  </span><span class="nf">return</span><span class="p">(</span><span class="n">cramer_v_statistic</span><span class="p">)</span>
+<span class="w">  </span><span class="kr">return</span><span class="p">(</span><span class="n">cramer_v_statistic</span><span class="p">)</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -847,7 +847,7 @@ This example also validates both Python and R methods against each other, as we 
 <p>For this example we take the unprocessed rescue dataset. Here in <code class="docutils literal notranslate"><span class="pre">animal_type</span></code>, we have values for cat with both a upper and lower case first letter. Here we will use the <code class="docutils literal notranslate"><span class="pre">tryCatch()</span></code> function to handle the error message, this is similar to pythons <code class="docutils literal notranslate"><span class="pre">try:</span> <span class="pre">except:</span></code> statements (For more info see <a class="reference external" href="https://cran.r-project.org/web/packages/tryCatchLog/vignettes/tryCatchLog-intro.html"><code class="docutils literal notranslate"><span class="pre">Error</span> <span class="pre">handing</span> <span class="pre">in</span> <span class="pre">R</span></code></a> or <a class="reference external" href="https://docs.python.org/3/tutorial/errors.html"><code class="docutils literal notranslate"><span class="pre">Errors</span> <span class="pre">and</span> <span class="pre">Exceptions</span> <span class="pre">(Python)</span></code></a>).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">traceback</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">traceback</span>
 
 <span class="n">rescue_path_csv</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;rescue_path_csv&quot;</span><span class="p">]</span>
 <span class="n">rescue_raw</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">rescue_path_csv</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -931,7 +931,7 @@ pyspark.sql.utils.AnalysisException: &quot;Reference &#39;Cat&#39; is ambiguous,
 <span class="w">  </span><span class="p">{</span>
 <span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_crosstab</span><span class="p">(</span><span class="n">rescue_raw</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;cal_year&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;animal_type&#39;</span><span class="p">)</span>
 <span class="w">  </span><span class="p">},</span>
-<span class="w">  </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">e</span><span class="p">){</span>
+<span class="w">  </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">e</span><span class="p">){</span>
 <span class="w">    </span><span class="nf">message</span><span class="p">(</span><span class="s">&#39;Error message from Spark&#39;</span><span class="p">)</span>
 <span class="w">    </span><span class="nf">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 <span class="w">  </span><span class="p">}</span>

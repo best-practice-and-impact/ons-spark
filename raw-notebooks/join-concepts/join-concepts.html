@@ -525,9 +525,9 @@ document.write(`
 <p>Let us see an example of a sort merge join and then look at the plan and the Spark UI. The example uses the Animal Rescue (as parquet) and Population (as parquet) datasets, left joining on the <code class="docutils literal notranslate"><span class="pre">postcode_district</span></code>. Note that we are disabling automatic broadcast joins by setting <code class="docutils literal notranslate"><span class="pre">spark.sql.autoBroadcastJoinThreshold</span></code> to <code class="docutils literal notranslate"><span class="pre">-1</span></code>; broadcast joins are covered in the next section. First, start a Spark session, read the data and select and rename the relevant columns:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">yaml</span>
-<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
 
 <span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span>
          <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;joins&quot;</span><span class="p">)</span>
