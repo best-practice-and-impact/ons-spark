@@ -116,6 +116,16 @@ class MarkdownFromNotebook():
         r_cells = [cell for cell in self.nb["cells"]
                         if "r_code" in cell]
         
+        try: 
+            rscript_variable = "Rscript"
+            subprocess.run([rscript_variable, "test_subprocess.R"])
+        except:
+            try:
+                rscript_variable = os.environ["Rscript"]
+                subprocess.run([rscript_variable, "test_subprocess.r"])
+            except:
+                raise ValueError("unable to find Rscript, please set the path to this in your environment variables")
+        
         # Suppress warnings when running R code if required
         if show_warnings == False:
             r_code = "options(warn = -1)"
@@ -134,7 +144,7 @@ class MarkdownFromNotebook():
             
             # Run additional R code if needed
             if extra_r_path:
-                subprocess.check_output(f"Rscript {extra_r_path}",
+                subprocess.check_output(f"{rscript_variable} {extra_r_path}",
                                         shell=True,
                                         stderr=stderr)
             
@@ -142,7 +152,7 @@ class MarkdownFromNotebook():
             r_code = cell["r_code"]
             with open(r_path, "a") as f:
                 f.write("".join(r_code))
-            raw_r_output = subprocess.check_output(f"Rscript {r_path}",
+            raw_r_output = subprocess.check_output(f"{rscript_variable} {r_path}",
                                                    shell=True,
                                                    stderr=stderr)
             cell["raw_r_output"] = raw_r_output.decode()
