@@ -273,9 +273,110 @@ multi1
 
 Note that even if you only have one additional argument to pass into your UDF, you will still need to pass this in via the `context` argument as a list, but with only a single element (i.e. `context = list(arg1 = value1)`). You can define any number of additional arguments this way, provided you remember to split each one out of the context list inside your UDF. 
 
-The first two examples have been very basic and are clearly not ordinarily a good use for an R UDF. The next example represents a more realistic use for a UDF, where will be using a statistical function that does not have an equivalent in `sparklyr`. We will also show how the `group_by` argument can be used to control partioning when running a UDF. 
+These first two examples are very simple and we have not been paying any attention to partitioning in our data. However, for real, large, partitioned datasets we need to think carefully about how to partition our data, since `spark_apply()` receives each partition (rather than the whole dataset) and then applies the function on each one. The example in the next section shows how care must be taken with partioning data in order to get reliable results from `spark_apply()`.
 
-### Example 3: Using the `group_by` argument
+### Example 3: Partitions and the `group_by` argument
+
+In this example, we will read in some partitioned data and use `spark_apply()` to perform an operation on it. We can set up our session and add packages to the cluster in the exact same way as we did before:
+
+````{tabs}
+```{code-tab} R
+library(sparklyr)
+library(dplyr)
+
+# Set up our Spark configuration - including our library path
+default_config <- spark_config()
+default_config["spark.r.libpaths"] <- .libPaths()[1]
+
+# open a spark connection
+sc <- spark_connect(
+  master = "local[2]",
+  app_name = "r-udfs",
+  config = default_config)
 
 
+# Define the libload function to load our required packages onto the cluster
+libload <- function() {
+  library(dplyr)
+  library(janitor)
+  library(rlang)
+
+}
+
+# pre-load packages onto the cluster using a dummy spark dataframe and function
+sdf_len(sc, 1) |> sparklyr::spark_apply(f = libload,
+                packages = FALSE)
+
+
+
+```
+``` plaintext
+
+# Source:   table<`sparklyr_tmp__52c88102_dd5c_4c0a_a335_ff45d4301987`> [10 x 1]
+# Database: spark_connection
+   result   
+   <chr>    
+ 1 rlang    
+ 2 janitor  
+ 3 dplyr    
+ 4 stats    
+ 5 graphics 
+ 6 grDevices
+ 7 utils    
+ 8 datasets 
+ 9 methods  
+10 base   
+
+```
+
+````
+
+Next, we can read in the data we want to analyse. The `repartition` argument has been set to 10 just to ensure there are multiple partitions in the data.
+
+```` {tabs}
+```{code-tab} R
+config <- yaml::yaml.load_file("ons-spark/config.yaml")
+
+# read in data
+rescue <- sparklyr::spark_read_parquet(sc, config$rescue_clean_path)
+
+# preview data
+dplyr::glimpse(rescue)
+
+```
+
+``` plaintext
+Rows: ??
+Columns: 21
+Database: spark_connection
+$ incident_number            <chr> "047943-18042017", "150426131", "51596131",…
+$ datetimeofcall             <chr> "18/04/2017 14:33", "30/10/2013 14:04", "25…
+$ cal_year                   <chr> "2017", "2013", "2013", "2012", "2013", "20…
+$ finyear                    <chr> "2017/18", "2013/14", "2013/14", "2012/13",…
+$ typeofincident             <chr> "Special Service", "Special Service", "Spec…
+$ engine_count               <chr> "1.0", "1.0", "1.0", "1.0", "1.0", "1.0", "…
+$ job_hours                  <chr> "1.0", "1.0", "1.0", "1.0", "1.0", "1.0", "…
+$ hourly_cost                <chr> "328", "290", "290", "260", "290", "333", "…
+$ total_cost                 <chr> "328.0", "290.0", "290.0", "260.0", "290.0"…
+$ finaldescription           <chr> "Bird Trapped In Chimney", "Cat Trapped Bet…
+$ animal_group               <chr> "Bird", "Cat", "Dog", "Bird", "Unknown - Do…
+$ originofcall               <chr> "Person (land Line)", "Person (land Line)",…
+$ propertytype               <chr> "House - Single Occupancy ", "Private Garde…
+$ propertycategory           <chr> "Dwelling", "Non Residential", "Dwelling", …
+$ specialservicetypecategory <chr> "Animal Rescue From Below Ground", "Other A…
+$ specialservicetype         <chr> "Animal Rescue From Below Ground - Bird", "…
+$ ward                       <chr> "College Park And Old Oak", "Abbey Wood", "…
+$ borough                    <chr> "Hammersmith And Fulham", "Greenwich", "Wes…
+$ stngroundname              <chr> "Acton", "Plumstead", "Soho", "Mill Hill", …
+$ postcodedistrict           <chr> "W12", "Se2", "W1f", "Ha8", "N1", "En3", "N…
+$ incident_duration          <chr> "1.0", "1.0", "1.0", "1.0", "1.0", "1.0", "…
+
+```
+````
+
+- Simplify dataset and convert necessary types
+- Set up UDF
+- Run UDF and show how output is influenced by partitioning
+
+- Next example of using 'group_by' to group and partition
 
