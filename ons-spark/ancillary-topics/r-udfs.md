@@ -234,12 +234,18 @@ Now we can run the UDF on our Spark dataframe as before, passing values to the `
 
 # Run the function on our data using spark_apply and passing the `col` and `precision` arguments as a list using 'context'
 multi0 <- sparklyr::spark_apply(sdf, multi_arg_udf, context = list(col = "half_id",
-                                                             precision = 0), packages = FALSE)
+                                                             precision = 0), 
+                                                             columns = c(half_id = "double",
+               rounded_col = "double"),
+               packages = FALSE)
                                                              
 
 # Run the function on our data again using spark_apply, this time with a different `precision` using 'context'         
 multi1 <- sparklyr::spark_apply(sdf, multi_arg_udf, context = list(col = "half_id",
-                                                             precision = 1), packages = FALSE)               
+                                                             precision = 1), 
+                                                             columns = c(half_id = "double",
+               rounded_col = "double"),
+               packages = FALSE)               
 
 # View the result with `col` = "half_id" and precision = 0
 multi0
@@ -546,6 +552,8 @@ hackney_cats <- sparklyr::spark_apply(rescue_tidy,
                           year_cost, 
                           context = list(animal_group = "Cat", 
                                          borough = "Hackney"),
+                          columns = c(cal_year = "double", 
+                                      total_yearly_cost_for_group = "double"),
                           packages = FALSE)
 
 # Total cost by year for Cats in Hackney
@@ -617,7 +625,7 @@ hackney_cats |>
 ```
 ````
 
-Something has clearly gone a bit wrong here! Instead of returning an 11 row table, with one total cost for each year, we instead have 55 rows, with 5 total costs per year. This is a result of the arbitrary partitioning applied to the data when we read it in. Since `spark_apply` only receives data from individual partitions and applies the UDF on each one separately, the output has not been recombined as if the function has been applied to the entire dataset. Instead, we have a total cost per year for each of the 5 partitions!
+Something has clearly gone a bit wrong here! Instead of returning an 11 row table, with one total cost for each year, we instead have 55 rows, with 5 total costs per year. This is a result of the arbitrary partitioning applied to the data when we read it in. Since `spark_apply` only receives data from individual partitions and applies the UDF on each one separately, the output has not been recombined as if the function has been applied to the entire dataset. Instead, we have a total cost per year for **each** of the 5 partitions!
 
 A better approach to running this as a UDF would be to use the [`group_by`](https://spark.posit.co/packages/sparklyr/latest/reference/spark_apply.html) argument in `spark_apply` to both group the data by `cal_year` and partition it accordingly. We will need to also adjust our UDF as there is no need to include `group_by(cal_year)` there as well. Making these changes produces the following output:
 
@@ -641,6 +649,8 @@ hackney_cats_year <- sparklyr::spark_apply(rescue_tidy,
                           year_cost_no_group, 
                           context = list(animal_group = "Cat", 
                                          borough = "Hackney"),
+                          columns = c(cal_year = "double", 
+                                      total_yearly_cost_for_group = "double"),
                           packages = FALSE)
 
 
