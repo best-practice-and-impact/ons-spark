@@ -331,14 +331,14 @@ sdf_len(sc, 1) |> sparklyr::spark_apply(f = libload,
 
 ````
 
-Next, we can read in the data we want to analyse. The `repartition` argument has been set to 10 just to ensure there are multiple partitions in the data.
+Next, we can read in the data we want to analyse. The `repartition` argument in `spark_read_parquet` has been set to 5 just to ensure there are multiple partitions in the data.
 
 ```` {tabs}
 ```{code-tab} R
 config <- yaml::yaml.load_file("ons-spark/config.yaml")
 
-# read in data
-rescue <- sparklyr::spark_read_parquet(sc, config$rescue_clean_path)
+# read in and partition data
+rescue <- sparklyr::spark_read_parquet(sc, config$rescue_clean_path, repartition = 5)
 
 # preview data
 dplyr::glimpse(rescue)
@@ -373,10 +373,304 @@ $ incident_duration          <chr> "1.0", "1.0", "1.0", "1.0", "1.0", "1.0", "�
 
 ```
 ````
+We can simplify this dataset a bit for our example and convert values that have the incorrect datatype listed:
 
-- Simplify dataset and convert necessary types
-- Set up UDF
-- Run UDF and show how output is influenced by partitioning
+````{tabs}
+```{code-tab} R
+rescue_tidy <- rescue |>
+  dplyr::select(incident_number, cal_year, total_cost, animal_group, borough) |>
+  dplyr::mutate(across(c(cal_year, total_cost),
+                ~as.numeric(.)))
 
-- Next example of using 'group_by' to group and partition
+glimpse(rescue_tidy)
+
+```
+``` plaintext
+Rows: ??
+Columns: 5
+Database: spark_connection
+$ incident_number <chr> "025074-28022018", "047943-18042017", "089899-06072017…
+$ cal_year        <dbl> 2018, 2017, 2017, 2013, 2011, 2013, 2013, 2012, 2009, …
+$ total_cost      <dbl> 656, 328, 328, 290, 260, 290, 260, 260, 260, 290, 652,…
+$ animal_group    <chr> "Dog", "Bird", "Fox", "Cat", "Cat", "Dog", "Dog", "Bir…
+$ borough         <chr> "Redbridge", "Hammersmith And Fulham", "Hammersmith An…
+```
+````
+If we check how this data has been partitioned, we can see that Spark has just taken arbitrary cuts of the data and split it across the partitions accordingly. There is no commonality between the data that is on one partition compared withthe next (for example, we don't have all of one type of animal or one calendar year on one partition and the rest on another).
+
+````{tabs}
+```{code-tab} R
+# check number of partitions
+num_part <- sdf_num_partitions(rescue_tidy)
+
+num_part
+
+# Loop over partitions and view the top few rows of each 
+# Remember that partitions are numbered from zero so we need to loop over 0 to `num_part-1`
+for(i in 0:num_part-1) {
+  rescue_tidy |>
+    filter(spark_partition_id() == i) |>
+    print(head(10))
+}
+
+```
+``` plaintext
+num_part
+[1] 5
+
+# Source:   SQL [0 x 5]
+# Database: spark_connection
+# ℹ 5 variables: incident_number <chr>, cal_year <dbl>, total_cost <dbl>,
+#   animal_group <chr>, borough <chr>
+# Source:   SQL [?? x 5]
+# Database: spark_connection
+   incident_number cal_year total_cost animal_group                     borough 
+   <chr>              <dbl>      <dbl> <chr>                            <chr>   
+ 1 025074-28022018     2018        656 Dog                              Redbrid…
+ 2 047943-18042017     2017        328 Bird                             Hammers…
+ 3 089899-06072017     2017        328 Fox                              Hammers…
+ 4 150426131           2013        290 Cat                              Greenwi…
+ 5 21535111            2011        260 Cat                              Lambeth 
+ 6 51596131            2013        290 Dog                              Westmin…
+ 7 20695131            2013        260 Dog                              Waltham…
+ 8 157207121           2012        260 Bird                             Barnet  
+ 9 171757091           2009        260 Dog                              Brent   
+10 174592131           2013        290 Unknown - Domestic Animal Or Pet Islingt…
+# ℹ more rows
+# ℹ Use `print(n = ...)` to see more rows
+# Source:   SQL [?? x 5]
+# Database: spark_connection
+   incident_number cal_year total_cost animal_group          borough            
+   <chr>              <dbl>      <dbl> <chr>                 <chr>              
+ 1 45633131            2013        290 Unknown - Wild Animal Ealing             
+ 2 60136101            2010        260 Cat                   Brent              
+ 3 2815151             2015        295 Cat                   Richmond Upon Tham…
+ 4 108909151           2015        298 Bird                  Sutton             
+ 5 098557-29072016     2016        326 Cat                   Southwark          
+ 6 34886101            2010        260 Dog                   Hammersmith And Fu…
+ 7 76500141            2014        295 Fox                   Croydon            
+ 8 39175101            2010        260 Cat                   Lewisham           
+ 9 64733101            2010        260 Bird                  Brent              
+10 120553151           2015        298 Bird                  Ealing             
+# ℹ more rows
+# ℹ Use `print(n = ...)` to see more rows
+# Source:   SQL [?? x 5]
+# Database: spark_connection
+   incident_number cal_year total_cost animal_group                     borough 
+   <chr>              <dbl>      <dbl> <chr>                            <chr>   
+ 1 065106-29052016     2016        326 Bird                             Merton  
+ 2 051231-24042017     2017        328 Cat                              Tower H…
+ 3 91465121            2012        260 Cat                              Islingt…
+ 4 160750-18112015     2015        298 Fox                              City Of…
+ 5 89323101            2010        260 Cat                              Tower H…
+ 6 70683141            2014        295 Unknown - Domestic Animal Or Pet Hackney 
+ 7 145674101           2010        260 Bird                             Camden  
+ 8 132003141           2014        295 Cat                              Havering
+ 9 117151141           2014        295 Cat                              Bromley 
+10 130721101           2010        260 Cat                              Lewisham
+# ℹ more rows
+# ℹ Use `print(n = ...)` to see more rows
+# Source:   SQL [?? x 5]
+# Database: spark_connection
+   incident_number cal_year total_cost animal_group borough             
+   <chr>              <dbl>      <dbl> <chr>        <chr>               
+ 1 28706141            2014        290 Cat          Lambeth             
+ 2 55883141            2014        295 Bird         Redbridge           
+ 3 103661-08082016     2016        326 Deer         Waltham Forest      
+ 4 5489151             2015        295 Cat          Southwark           
+ 5 111131111           2011        260 Cat          Barnet              
+ 6 133497111           2011        260 Fox          Southwark           
+ 7 36795131            2013        260 Dog          Waltham Forest      
+ 8 024137-26022017     2017        326 Cat          Richmond Upon Thames
+ 9 197524111           2011        520 Bird         Southwark           
+10 93925091            2009        260 Bird         Barnet              
+# ℹ more rows
+# ℹ Use `print(n = ...)` to see more rows
+# Source:   SQL [?? x 5]
+# Database: spark_connection
+   incident_number cal_year total_cost animal_group borough             
+   <chr>              <dbl>      <dbl> <chr>        <chr>               
+ 1 63301141            2014        295 Bird         Tower Hamlets       
+ 2 067744-29052018     2018        333 Cat          Richmond Upon Thames
+ 3 16711111            2011        260 Dog          Islington           
+ 4 095023-14072017     2017        328 Bird         Hackney             
+ 5 72228101            2010        780 Lamb         Enfield             
+ 6 149174101           2010        260 Bird         Kingston Upon Thames
+ 7 013770-04022016     2016        596 Cat          Barnet              
+ 8 17302141            2014        290 Cat          Enfield             
+ 9 141747131           2013        290 Cat          Bromley             
+10 74900151            2015        298 Fox          Croydon             
+# ℹ more rows
+# ℹ Use `print(n = ...)` to see more rows
+
+```
+````
+Let us now try running a UDF on this data. Again, this example is not a good use case for a UDF as the code run could easily be run in `sparklyr` instead, but will serve to illustrate how partioning and grouping works using R UDFs.
+
+We will write a UDF that will allow us to aggregate the data based on user input for a particular `animal_group` and `borough`, to generate a summary table of the total cost by `cal_year` of a particular animal type in a given area. 
+
+````{tabs} 
+```{code-tab} R
+year_cost <- function(df, context) {
+
+  # Split out the arguments from `context`
+  animal <- context$animal_group
+  borough <- context$borough
+  
+  x <- df |>
+    dplyr::filter(animal_group == animal,
+                 borough == borough) |>
+    dplyr::group_by(cal_year) |>
+    dplyr::summarise(total_yearly_cost_for_group = sum(total_cost, na.rm = TRUE))
+  
+  return(x)
+  
+}
+```
+````
+
+Now, we can try running it using `spark_apply` on our data. Let us say that we want to know the total cost by calendar year of rescuing cats in Hackney:
+
+````{tabs}
+```{code-tab} R
+# Apply our UDF
+hackney_cats <- sparklyr::spark_apply(rescue_tidy,
+                          year_cost, 
+                          context = list(animal_group = "Cat", 
+                                         borough = "Hackney"),
+                          packages = FALSE)
+
+# Total cost by year for Cats in Hackney
+hackney_cats |> 
+  arrange(cal_year) |> 
+  print(n = 55)
+```
+``` plaintext
+# Source:     SQL [55 x 2]
+# Database:   spark_connection
+# Ordered by: cal_year
+   cal_year total_yearly_cost_for_group
+      <dbl>                       <dbl>
+ 1     2009                       17360
+ 2     2009                       14525
+ 3     2009                       15525
+ 4     2009                       14510
+ 5     2009                       15025
+ 6     2010                       22100
+ 7     2010                       16380
+ 8     2010                       17160
+ 9     2010                       16120
+10     2010                       17160
+11     2011                       20020
+12     2011                       15860
+13     2011                       16120
+14     2011                       21060
+15     2011                       16380
+16     2012                       15340
+17     2012                       17940
+18     2012                       18200
+19     2012                       17160
+20     2012                       17680
+21     2013                       18520
+22     2013                       21010
+23     2013                       22400
+24     2013                       16460
+25     2013                       19390
+26     2014                       25590
+27     2014                       17065
+28     2014                       17685
+29     2014                       20255
+30     2014                       19705
+31     2015                       19939
+32     2015                       20240
+33     2015                       13094
+34     2015                       16667
+35     2015                       16634
+36     2016                       25930
+37     2016                       15396
+38     2016                       21534
+39     2016                       22978
+40     2016                       27048
+41     2017                       22924
+42     2017                       19336
+43     2017                       17032
+44     2017                       18662
+45     2017                       20944
+46     2018                       24915
+47     2018                       19612
+48     2018                       21580
+49     2018                       20919
+50     2018                       25581
+51     2019                         666
+52     2019                        2331
+53     2019                        1332
+54     2019                         999
+55     2019                         666
+```
+````
+
+Something has clearly gone a bit wrong here! Instead of returning an 11 row table, with one total cost for each year, we instead have 55 rows, with 5 total costs per year. This is a result of the arbitrary partitioning applied to the data when we read it in. Since `spark_apply` only receives data from individual partitions and applies the UDF on each one separately, the output has not been recombined as if the function has been applied to the entire dataset. Instead, we have a total cost per year for each of the 5 partitions!
+
+A better approach to running this as a UDF would be to use the [`group_by`](https://spark.posit.co/packages/sparklyr/latest/reference/spark_apply.html) argument in `spark_apply` to both group the data by `cal_year` and partition it accordingly. We will need to also adjust our UDF as there is no need to include `group_by(cal_year)` there as well. Making these changes produces the following output:
+
+````{tabs}
+```{code-tab} R
+year_cost_no_group <- function(df, context) {
+  animal <- context$animal_group
+  borough <- context$borough
+  
+  x <- df |>
+    dplyr::filter(animal_group == animal,
+                 borough == borough) |>
+    dplyr::summarise(total_yearly_cost_for_group = sum(total_cost, na.rm = TRUE))
+  
+  return(x)
+  
+}
+
+hackney_cats_year <- sparklyr::spark_apply(rescue_tidy,
+                          group_by = "cal_year",
+                          year_cost_no_group, 
+                          context = list(animal_group = "Cat", 
+                                         borough = "Hackney"),
+
+                          packages = FALSE)
+
+
+hackney_cats_year |> 
+  arrange(cal_year) |> 
+  print(n = 11)
+```
+
+``` plaintext
+# Source:     SQL [11 x 2]
+# Database:   spark_connection
+# Ordered by: cal_year
+   cal_year total_yearly_cost_for_group
+      <dbl>                       <dbl>
+ 1     2009                       76945
+ 2     2010                       88920
+ 3     2011                       89440
+ 4     2012                       86320
+ 5     2013                       97780
+ 6     2014                      100300
+ 7     2015                       86574
+ 8     2016                      112886
+ 9     2017                       98898
+10     2018                      112607
+11     2019                        5994
+```
+````
+
+This is much better! We now have the output we expected. 
+
+Note that if we check the number of partitions of this output dataset (using `sdf_num_partitions(hackney_cats_year)`) the number returned will be the `spark.sql.shuffle.partitions` default value (in my case, 64). It is a good idea to [check and manage partitions](../spark-concepts/partitions) after running a UDF for this reason, as you may need to repartition to optimise your code.
+
+## Further resources
+- [`spark_apply`](https://spark.posit.co/packages/sparklyr/latest/reference/spark_apply.html)
+- [Additional guidance on using `spark_apply` from Chapter 11 of Mastering Spark with R](https://therinspark.com/distributed.html)
+- [`arrow` R package](https://arrow.apache.org/docs/16.0/r/index.html)
+- [Speeding up R and Apache Spark using Apache Arrow](https://arrow.apache.org/blog/2019/01/25/r-spark-improvements/)
+
+
 
