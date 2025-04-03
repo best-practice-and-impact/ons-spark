@@ -1,4 +1,4 @@
-## R UDFs
+# R UDFs
 
 When coding with Spark, you will generally want to try and use sparklyr or Spark SQL functions wherever possible. However, there are instances where there may not be a Spark function available to do what you need. In cases such as this, one option is to use an R user-defined function (UDF).
 
@@ -11,7 +11,7 @@ Although only one of these is required to make use of `spark_apply()`, in practi
 
 It is sometimes not possible to avoid using a UDF. For example, if we want to use a specialised statistical R package on our data that has no Spark equivalent. The examples below demonstrate how to use `spark_apply()`. They are written assuming that the user does not have Apache Arrow available, but if your configuration enables the use of Arrow the examples can be adapted by making sure you have the `arrow` package installed (`install.packages("arrow")`) and simply loading the `arrow` library (`library(arrow)`) before establishing the spark connection.
 
-### Example 1: Simple UDF and loading packages onto worker nodes
+## Example 1: Simple UDF and loading packages onto worker nodes
 
 This example represents a simple UDF just to demonstrate how `spark_apply()` can be used. In practice, it is far too simple to necessitate using a UDF - we could definitely do this with sparklyr code instead of R code!
 
@@ -147,7 +147,7 @@ Note that we have included a `columns` argument in the above example to enable u
 
 The above example can easily be adapted for any R function which takes a single argument (the dataframe). However, most functions will require additional arguments to be passed in. We will look at how to do this with the next example using the `context` argument of [`spark_apply`](https://search.r-project.org/CRAN/refmans/sparklyr/html/spark_apply.html). 
 
-### Example 2: Passing additional arguments to a UDF
+## Example 2: Passing additional arguments to a UDF
 
 First, we need to set up our Spark connection and load any required packages onto the cluster. Please note that if you don't already have these packages installed you will need to install them **before** setting up your Spark connection so they can be found in your library and copied over to the cluster.
 
@@ -275,7 +275,7 @@ Note that even if you only have one additional argument to pass into your UDF, y
 
 These first two examples are very simple and we have not been paying any attention to partitioning in our data. However, for real, large, partitioned datasets we need to think carefully about how to partition our data, since `spark_apply()` receives each partition (rather than the whole dataset) and then applies the function on each one. The example in the next section shows how care must be taken with partioning data in order to get reliable results from `spark_apply()`.
 
-### Example 3: Partitions and the `group_by` argument
+## Example 3: Partitions and the `group_by` argument
 
 In this example, we will read in some partitioned data and use `spark_apply()` to perform an operation on it. We can set up our session and add packages to the cluster in the exact same way as we did before:
 
