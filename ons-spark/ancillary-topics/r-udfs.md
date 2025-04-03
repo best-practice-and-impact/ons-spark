@@ -236,16 +236,16 @@ Now we can run the UDF on our Spark dataframe as before, passing values to the `
 multi0 <- sparklyr::spark_apply(sdf, multi_arg_udf, context = list(col = "half_id",
                                                              precision = 0), 
                                                              columns = c(half_id = "double",
-               rounded_col = "double"),
-               packages = FALSE)
+                                                                         rounded_col = "double"),
+                                                             packages = FALSE)     
                                                              
 
 # Run the function on our data again using spark_apply, this time with a different `precision` using 'context'         
 multi1 <- sparklyr::spark_apply(sdf, multi_arg_udf, context = list(col = "half_id",
                                                              precision = 1), 
-                                                             columns = c(half_id = "double",
-               rounded_col = "double"),
-               packages = FALSE)               
+                                                    columns = c(half_id = "double",
+                                                                rounded_col = "double"),
+                                                    packages = FALSE)               
 
 # View the result with `col` = "half_id" and precision = 0
 multi0
