@@ -240,6 +240,7 @@ multi0
 # View the result with `col` = "half_id" and precision = 1
 multi1
 
+spark_disconnect(sc)
 ```
 ```{code-tab} plaintext R output
 # Source:   table<`sparklyr_tmp__dbf96333_18ac_472a_8177_97299e5b1a18`> [8 x 2]
@@ -377,6 +378,7 @@ We can simplify this dataset a bit for our example and convert values that have 
 
 ````{tabs}
 ```{code-tab} r R
+# Drop unwanted columns and convert cal_year and total_cost to numeric
 rescue_tidy <- rescue |>
   dplyr::select(incident_number, cal_year, total_cost, animal_group, borough) |>
   dplyr::mutate(across(c(cal_year, total_cost),
@@ -396,7 +398,7 @@ $ animal_group    <chr> "Dog", "Bird", "Fox", "Cat", "Cat", "Dog", "Dog", "Birâ€
 $ borough         <chr> "Redbridge", "Hammersmith And Fulham", "Hammersmith Anâ€¦
 ```
 ````
-If we check how this data has been partitioned, we can see that Spark has just taken arbitrary cuts of the data and split it across the partitions accordingly. There is no commonality between the data that is on one partition compared withthe next (for example, we don't have all of one type of animal or one calendar year on one partition and the rest on another).
+If we check how this data has been partitioned, we can see that Spark has just taken arbitrary cuts of the data and split it across the partitions accordingly. As we would expect, here is no commonality between the data that is on one partition compared with the next and we have a mixture of years, animals and boroughs in each partition.
 
 ````{tabs}
 ```{code-tab} r R
@@ -633,7 +635,6 @@ hackney_cats_year <- sparklyr::spark_apply(rescue_tidy,
                           year_cost_no_group, 
                           context = list(animal_group = "Cat", 
                                          borough = "Hackney"),
-
                           packages = FALSE)
 
 
@@ -664,7 +665,7 @@ hackney_cats_year |>
 
 This is much better! We now have the output we expected. 
 
-Note that if we check the number of partitions of this output dataset (using `sdf_num_partitions(hackney_cats_year)`) the number returned will be the `spark.sql.shuffle.partitions` default value (in my case, 64). It is a good idea to [check and manage partitions](../spark-concepts/partitions) after running a UDF for this reason, as you may need to repartition to optimise your code.
+Note that if we check the number of partitions of this output dataset (using `sdf_num_partitions(hackney_cats_year)`) the number returned will be the `spark.sql.shuffle.partitions` default value as we have performed a [wide transformation](../spark-concepts/shuffling) on the data. It is a good idea to [check and manage your partitions](../spark-concepts/partitions) after running a UDF for this reason, as you may need to repartition to optimise your code.
 
 ## Further resources
 - [`spark_apply`](https://spark.posit.co/packages/sparklyr/latest/reference/spark_apply.html)
