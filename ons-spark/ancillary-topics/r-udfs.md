@@ -17,7 +17,7 @@ This example represents a simple UDF just to demonstrate how `spark_apply()` can
 
 The example UDF below will make use of the `mutate()` function from he `dplyr` package. In order for Spark to run our UDF, we need to make sure that the packages we need are installed on each worker node in our Spark cluster once we have set up our session. To do this, we need to pass the location of our R package library to the Spark cluster by including the `spark.r.libpaths` setting as shown below:
 
-```{code-tab} R
+```{code-tab} r R
 library(dplyr)
 library(sparklyr)
 
@@ -37,7 +37,7 @@ You can replace `.libPaths()[1]` with the full path to your main R package libra
 We have told Spark where to look for R packages, but they are not yet installed on the worker nodes. The first time we run `spark_apply()` in our Spark session, any packages found in the specified library path will be copied over to the Spark cluster. As a result, the most efficient way to load packages onto the cluster is to run a 'dummy' UDF on a small dataset before running our actual function. This ensures that the packages are loaded and ready for use before Spark attempts to perform more complex operations on our data. We can define and run our dummy UDF as shown:
 
 ````{tabs}
-```{code-tab} R
+```{code-tab} r R
 # Define dummy UDF 'libload' which loads our required function libraries
 # You could just define an empty function here, but this forces Spark to output 
 # a list of libraries loaded on the cluster so we can see it has worked 
@@ -74,7 +74,7 @@ Confusingly, to load packages using this method, note that we have had to set th
 Now we have loaded our R packages on to the cluster, we can set up and run our UDF. For this example we can define a dummy Spark dataframe to work with:
 
 ````{tabs}
-```{code-tab} R
+```{code-tab} r R
 # Set up a dummy Spark dataframe
 sdf <- sparklyr:::sdf_seq(sc, -7, 8, 2) |>
        sparklyr::mutate(half_id = id / 2) |>
@@ -101,7 +101,7 @@ sdf |>
 
 Now we need to set up our UDF. R UDFs are defined using the same syntax as regular R functions. However, you may need to ensure that any calls to functions from loaded R packages are written as `<package_name>::<package_function>` to ensure that Spark can find the specified function (e.g. `dplyr::mutate()` in the example below):
 
-```{code-tab} R
+```{code-tab} r R
 round_udf <- function(df) {
     x <- df |>
         dplyr::mutate(rounded_col = round(half_id)) # need to specify dplyr package
@@ -112,7 +112,7 @@ round_udf <- function(df) {
 This defines a simple function to create a new column `rounded_col` by rounding the `half_id` column in our Spark dataframe. Of course in reality, we would never need to use a UDF for something so simple as this can be fully done in Spark, but this serves as a simplified example of how R UDFs can be used. We are now ready to use `spark_apply` to apply the `round_udf()` function to our dataframe:
 
 ````{tabs}
-```{code-tab} R
+```{code-tab} r R
 rounded <- sparklyr::spark_apply(sdf,
    f = round_udf,
    # Specify schema - works faster if you specify a schema
@@ -152,7 +152,7 @@ The above example can easily be adapted for any R function which takes a single 
 First, we need to set up our Spark connection and load any required packages onto the cluster. Please note that if you don't already have these packages installed you will need to install them **before** setting up your Spark connection so they can be found in your library and copied over to the cluster.
 
 ````{tabs}
-```{code-tab} R
+```{code-tab} r R
 # Set up our Spark configuration - including our library path
 default_config <- spark_config()
 default_config["spark.r.libpaths"] <- .libPaths()[1]
@@ -200,7 +200,7 @@ Next, we will generate a Spark dataframe to test our function on and define a mo
 
 Note that this time, when defining the function we are using both `mutate` from the `dplyr` package and `sym` from `rlang`, so we have specified both of the package names in our function definition. The `!!rlang::sym(col)` converts the column name (which is passed into the function as a string) to a column object inside the function.
 
-```{code-tab} R
+```{code-tab} r R
 # Set up a dummy Spark dataframe
 sdf <- sparklyr:::sdf_seq(sc, -7, 8, 2) |>
        sparklyr::mutate(half_id = id / 2) |>
@@ -223,7 +223,7 @@ Now we can run the UDF on our Spark dataframe as before, passing values to the `
 
 
 ````{tabs}
-```{code-tab} R
+```{code-tab} r R
 
 # Run the function on our data using spark_apply and passing the `col` and `precision` arguments as a list using 'context'
 multi0 <- sparklyr::spark_apply(sdf, multi_arg_udf, context = list(col = "half_id",
@@ -280,7 +280,7 @@ These first two examples are very simple and we have not been paying any attenti
 In this example, we will read in some partitioned data and use `spark_apply()` to perform an operation on it. We can set up our session and add packages to the cluster in the exact same way as we did before:
 
 ````{tabs}
-```{code-tab} R
+```{code-tab} r R
 library(sparklyr)
 library(dplyr)
 
@@ -334,7 +334,7 @@ sdf_len(sc, 1) |> sparklyr::spark_apply(f = libload,
 Next, we can read in the data we want to analyse. The `repartition` argument in `spark_read_parquet` has been set to 5 just to ensure there are multiple partitions in the data.
 
 ```` {tabs}
-```{code-tab} R
+```{code-tab} r R
 config <- yaml::yaml.load_file("ons-spark/config.yaml")
 
 # read in and partition data
@@ -376,7 +376,7 @@ $ incident_duration          <chr> "1.0", "1.0", "1.0", "1.0", "1.0", "1.0", "â€
 We can simplify this dataset a bit for our example and convert values that have the incorrect datatype listed:
 
 ````{tabs}
-```{code-tab} R
+```{code-tab} r R
 rescue_tidy <- rescue |>
   dplyr::select(incident_number, cal_year, total_cost, animal_group, borough) |>
   dplyr::mutate(across(c(cal_year, total_cost),
@@ -399,7 +399,7 @@ $ borough         <chr> "Redbridge", "Hammersmith And Fulham", "Hammersmith Anâ€
 If we check how this data has been partitioned, we can see that Spark has just taken arbitrary cuts of the data and split it across the partitions accordingly. There is no commonality between the data that is on one partition compared withthe next (for example, we don't have all of one type of animal or one calendar year on one partition and the rest on another).
 
 ````{tabs}
-```{code-tab} R
+```{code-tab} r R
 # check number of partitions
 num_part <- sdf_num_partitions(rescue_tidy)
 
@@ -510,7 +510,7 @@ Let us now try running a UDF on this data. Again, this example is not a good use
 We will write a UDF that will allow us to aggregate the data based on user input for a particular `animal_group` and `borough`, to generate a summary table of the total cost by `cal_year` of a particular animal type in a given area. 
 
 ````{tabs} 
-```{code-tab} R
+```{code-tab} r R
 year_cost <- function(df, context) {
 
   # Split out the arguments from `context`
@@ -532,7 +532,7 @@ year_cost <- function(df, context) {
 Now, we can try running it using `spark_apply` on our data. Let us say that we want to know the total cost by calendar year of rescuing cats in Hackney:
 
 ````{tabs}
-```{code-tab} R
+```{code-tab} r R
 # Apply our UDF
 hackney_cats <- sparklyr::spark_apply(rescue_tidy,
                           year_cost, 
@@ -614,7 +614,7 @@ Something has clearly gone a bit wrong here! Instead of returning an 11 row tabl
 A better approach to running this as a UDF would be to use the [`group_by`](https://spark.posit.co/packages/sparklyr/latest/reference/spark_apply.html) argument in `spark_apply` to both group the data by `cal_year` and partition it accordingly. We will need to also adjust our UDF as there is no need to include `group_by(cal_year)` there as well. Making these changes produces the following output:
 
 ````{tabs}
-```{code-tab} R
+```{code-tab} r R
 year_cost_no_group <- function(df, context) {
   animal <- context$animal_group
   borough <- context$borough
