@@ -11,10 +11,10 @@ import nbformat
 base_path = "/home/cdsw/ons-spark/ons-spark/"
 
 # Book page name
-bpname = "logistic-regression"
+bpname = "r-udfs"
 
 # Book folder name
-fname = "spark-analysis"
+fname = "ancillary-topics"
 
 # Path for markdown file
 path_md = base_path + fname + "/" + bpname + ".md"
