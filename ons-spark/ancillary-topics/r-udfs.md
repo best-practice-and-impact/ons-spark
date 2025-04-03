@@ -53,7 +53,7 @@ sdf_len(sc, 1) |> sparklyr::spark_apply(f = libload,
                 packages = FALSE)
 
 ```
-``` plaintext
+```{code-tab} plaintext R output
 # Source:   table<`sparklyr_tmp__78b5fc02_a3fa_40b2_98d8_a156efa9cf69`> [8 x 1]
 # Database: spark_connection
   result   
@@ -85,7 +85,7 @@ sdf |>
     sparklyr::collect() |>
     print()
 ```
-``` plaintext
+```{code-tab} plaintext R output
 # A tibble: 8 × 1
   half_id
     <dbl>
@@ -127,7 +127,7 @@ rounded
 spark_disconnect(sc)
 
 ```
-``` plaintext
+```{code-tab} plaintext R output
 # Source:   table<`sparklyr_tmp__de87c853_8f23_434d_892e_6e9c99858e58`> [8 x 2]
 # Database: spark_connection
   half_id rounded_col
@@ -172,13 +172,13 @@ libload <- function() {
 }
 
 # All packages will be loaded on to worker nodes during first call to spark_apply in session
-# so it is more efficient to do this 'on' a minimal sdf (of length 1) first
+# so it is more efficient to do this on a minimal sdf (of length 1) first
 
 sdf_len(sc, 1) |> sparklyr::spark_apply(f = libload,
                 packages = FALSE)
                 
 ```
-``` plaintext
+```{code-tab} plaintext R output
 # Source:   table<`sparklyr_tmp__dee5d73a_9102_4c57_be2a_d9c2a4d5f12e`> [10 x 1]
 # Database: spark_connection
    result   
@@ -241,7 +241,7 @@ multi0
 multi1
 
 ```
-``` plaintext
+```{code-tab} plaintext R output
 # Source:   table<`sparklyr_tmp__dbf96333_18ac_472a_8177_97299e5b1a18`> [8 x 2]
 # Database: spark_connection
   half_id rounded_col
@@ -310,7 +310,7 @@ sdf_len(sc, 1) |> sparklyr::spark_apply(f = libload,
 
 
 ```
-``` plaintext
+```{code-tab} plaintext R output
 
 # Source:   table<`sparklyr_tmp__52c88102_dd5c_4c0a_a335_ff45d4301987`> [10 x 1]
 # Database: spark_connection
@@ -345,7 +345,7 @@ dplyr::glimpse(rescue)
 
 ```
 
-``` plaintext
+```{code-tab} plaintext R output
 Rows: ??
 Columns: 21
 Database: spark_connection
@@ -385,7 +385,7 @@ rescue_tidy <- rescue |>
 glimpse(rescue_tidy)
 
 ```
-``` plaintext
+```{code-tab} plaintext R output
 Rows: ??
 Columns: 5
 Database: spark_connection
@@ -414,7 +414,7 @@ for(i in 0:num_part-1) {
 }
 
 ```
-``` plaintext
+```{code-tab} plaintext R output
 num_part
 [1] 5
 
@@ -545,7 +545,7 @@ hackney_cats |>
   arrange(cal_year) |> 
   print(n = 55)
 ```
-``` plaintext
+```{code-tab} plaintext R output
 # Source:     SQL [55 x 2]
 # Database:   spark_connection
 # Ordered by: cal_year
@@ -642,7 +642,7 @@ hackney_cats_year |>
   print(n = 11)
 ```
 
-``` plaintext
+```{code-tab} plaintext R output
 # Source:     SQL [11 x 2]
 # Database:   spark_connection
 # Ordered by: cal_year
