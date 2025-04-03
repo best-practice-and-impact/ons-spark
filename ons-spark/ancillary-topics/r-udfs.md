@@ -98,6 +98,7 @@ sdf |>
 7     2.5
 8     3.5
 ```
+````
 
 Now we need to set up our UDF. R UDFs are defined using the same syntax as regular R functions. However, you may need to ensure that any calls to functions from loaded R packages are written as `<package_name>::<package_function>` to ensure that Spark can find the specified function (e.g. `dplyr::mutate()` in the example below):
 
