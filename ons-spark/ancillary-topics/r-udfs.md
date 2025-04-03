@@ -17,6 +17,7 @@ This example represents a simple UDF just to demonstrate how `spark_apply()` can
 
 The example UDF below will make use of the `mutate()` function from he `dplyr` package. In order for Spark to run our UDF, we need to make sure that the packages we need are installed on each worker node in our Spark cluster once we have set up our session. To do this, we need to pass the location of our R package library to the Spark cluster by including the `spark.r.libpaths` setting as shown below:
 
+````{tabs}
 ```{code-tab} r R
 library(dplyr)
 library(sparklyr)
@@ -31,6 +32,7 @@ sc <- spark_connect(
   config = default_config)
   
 ```
+````
 
 You can replace `.libPaths()[1]` with the full path to your main R package library in quotation marks if you need to. If you are unsure where this is, running `.libPaths()` in your session console will show you a list of library locations that R searches for installed packages.
 
@@ -102,6 +104,7 @@ sdf |>
 
 Now we need to set up our UDF. R UDFs are defined using the same syntax as regular R functions. However, you may need to ensure that any calls to functions from loaded R packages are written as `<package_name>::<package_function>` to ensure that Spark can find the specified function (e.g. `dplyr::mutate()` in the example below):
 
+````{tabs}
 ```{code-tab} r R
 round_udf <- function(df) {
     x <- df |>
@@ -109,6 +112,7 @@ round_udf <- function(df) {
     return(x)
 }
 ```
+````
 
 This defines a simple function to create a new column `rounded_col` by rounding the `half_id` column in our Spark dataframe. Of course in reality, we would never need to use a UDF for something so simple as this can be fully done in Spark, but this serves as a simplified example of how R UDFs can be used. We are now ready to use `spark_apply` to apply the `round_udf()` function to our dataframe:
 
@@ -201,6 +205,7 @@ Next, we will generate a Spark dataframe to test our function on and define a mo
 
 Note that this time, when defining the function we are using both `mutate` from the `dplyr` package and `sym` from `rlang`, so we have specified both of the package names in our function definition. The `!!rlang::sym(col)` converts the column name (which is passed into the function as a string) to a column object inside the function.
 
+````{tabs}
 ```{code-tab} r R
 # Set up a dummy Spark dataframe
 sdf <- sparklyr:::sdf_seq(sc, -7, 8, 2) |>
@@ -219,6 +224,7 @@ multi_arg_udf <- function(df, context) {
 }
 
 ```
+````
 
 Now we can run the UDF on our Spark dataframe as before, passing values to the `col` and `precision` arguments inside the `multi_arg_udf` function from the `context` list as shown below. We'll run it a couple of times, passing a different value to `precision` just to confirm it works as expected.
 
@@ -329,7 +335,6 @@ sdf_len(sc, 1) |> sparklyr::spark_apply(f = libload,
 10 base   
 
 ```
-
 ````
 
 Next, we can read in the data we want to analyse. The `repartition` argument in `spark_read_parquet` has been set to 5 just to ensure there are multiple partitions in the data.
