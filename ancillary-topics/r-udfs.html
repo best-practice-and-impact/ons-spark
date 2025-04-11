@@ -1,0 +1,1220 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>R UDFs &#8212; Spark at the ONS</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/accessibility.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-95MGHSRD0S');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script src="../_static/tabs.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'ancillary-topics/r-udfs';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Pandas UDFs" href="pandas-udfs.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Spark at the ONS - Home"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="Spark at the ONS - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Introduction
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark overview</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-start.html">Getting Started with Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/when-to-use-spark.html">When To Use Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-session-guidance.html">Guidance on Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/example-spark-sessions.html">Example Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-defaults.html">Configuration Hierarchy and <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/data-types.html">Data Types in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/creating-dataframes.html">Creating DataFrames Manually</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/reading-and-writing-data-spark.html">Reading and Writing Data in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/data-storage.html">Data Storage</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to PySpark</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/pyspark-intro.html">Introduction to PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/returning-data.html">Returning Data from Cluster to Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/f-col.html">Reference columns by name: <code class="docutils literal notranslate"><span class="pre">F.col()</span></code></a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to sparklyr</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/sparklyr-intro.html">Introduction to sparklyr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">Using Spark functions in sparklyr</a></li>
+
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark functions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/union-dataframes-with-different-columns.html">Union two DataFrames with different columns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/padding.html">Add leading zeros with <code class="docutils literal notranslate"><span class="pre">lpad()</span></code></a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/sampling.html">Sampling: an overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/pivot-tables.html">Pivot tables in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/rounding.html">Rounding differences in Python, R and Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/window-functions.html">Window Functions in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/cross-joins.html">Cross Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/arrays.html">Arrays Functions in PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/date-functions.html">Date functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/writing-data.html">Writing Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/job-description-notebook.html">Set Spark Job Description</a></li>
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/median.html">Median in Spark</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Understanding and Optimising Spark</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/optimisation-tips.html">Ideas for optimising Spark code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/spark-application-and-ui.html">Spark Application and UI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/groups-not-loops.html">Groups not Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/shuffling.html">Shuffling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/join-concepts.html">Optimising Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/salted-joins.html">Salted Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/partitions.html">Managing Partitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/persistence.html">Persisting in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/cache.html">Caching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/checkpoint-staging.html">Checkpoints and Staging Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/garbage-collection.html">Garbage Collection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/df-order.html">Spark DataFrames Are Not Ordered</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/exercises.html">Exercises</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Analysis in Spark</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../spark-analysis/big-data-workflow.html">Big data workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-analysis/interpolation.html">Interpolation in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-analysis/logistic-regression.html">Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-analysis/visualisation.html">Spark and Visualisation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-analysis/flags.html">Flags in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-analysis/bin-continuous-variable.html">Data binning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-analysis/cramer_v.html">Calculating Cramér’s V from a Spark DataFrame</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Testing and Debugging</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../testing-debugging/spark-errors.html">Understanding and Handling Spark Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing-debugging/unit-testing.html">Unit Testing in Spark</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Ancillary Topics</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="module-imports.html">Naming Conflicts in Module Imports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pydoop.html">Pydoop: HDFS to pandas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="creating-a-SQL-view-in-HDFS.html">Creating a SQL view in HDFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pandas-udfs.html">Pandas UDFs</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">R UDFs</a></li>
+</ul>
+
+        </div>
+    </nav></div>
+            <div class="bd-sidebar__bottom">
+                <!-- To handle the deprecated key -->
+                
+                <div class="navbar_extra_footer">
+                <div>
+        <p>Book version 2022.6</p>
+    </div>
+    
+                </div>
+                
+            </div>
+        </div>
+        <div id="rtd-footer-container"></div>
+    </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fancillary-topics/r-udfs.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/ancillary-topics/r-udfs.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>R UDFs</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1-simple-udf-and-loading-packages-onto-worker-nodes">Example 1: Simple UDF and loading packages onto worker nodes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2-passing-additional-arguments-to-a-udf">Example 2: Passing additional arguments to a UDF</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-3-partitions-and-the-group-by-argument">Example 3: Partitions and the <code class="docutils literal notranslate"><span class="pre">group_by</span></code> argument</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further resources</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="r-udfs">
+<h1>R UDFs<a class="headerlink" href="#r-udfs" title="Permalink to this heading">#</a></h1>
+<p>When coding with Spark, you will generally want to try and use sparklyr or Spark SQL functions wherever possible. However, there are instances where there may not be a Spark function available to do what you need. In cases such as this, one option is to use an R user-defined function (UDF).</p>
+<p>The sparklyr package comes with the <code class="docutils literal notranslate"><span class="pre">spark_apply()</span></code> function, which is designed for this purpose. It allows you to apply a function written in R to a Spark object (e.g. a Spark DataFrame). In order for this to work, you need to ensure that your cluster administrator, cloud provider, or you (in the case of running Spark locally) has configured your cluster by installing either:</p>
+<ul class="simple">
+<li><p>R on every node</p></li>
+<li><p>Apache Arrow on every node (requires Spark 2.3 or later)</p></li>
+</ul>
+<p>Although only one of these is required to make use of <code class="docutils literal notranslate"><span class="pre">spark_apply()</span></code>, in practice, it is recommended to use <code class="docutils literal notranslate"><span class="pre">spark_apply()</span></code> with Apache Arrow, as it provides significant performance improvements. In general, R UDFs should be considered a ‘last resort’, where there is no equivalent functionality compatible with Spark and an R function needs to be run on a large Spark DataFrame. They are generally very inefficient due to the need to serialise and deserialise the data between Spark and R. Apache Arrow speeds this up and allows data to be transferred more efficiently between Spark and R, but even with these improvements <code class="docutils literal notranslate"><span class="pre">spark_apply()</span></code> is still best avoided if an alternative can be found. For a detailed explanation of why <code class="docutils literal notranslate"><span class="pre">spark_apply()</span></code> is more efficient with Apache Arrow, see the <a class="reference external" href="https://therinspark.com/distributed.html#cluster-requirements">Distributed R chapter of Mastering Spark with R</a>.</p>
+<p>It is sometimes not possible to avoid using a UDF. For example, if we want to use a specialised statistical R package on our data that has no Spark equivalent. The examples below demonstrate how to use <code class="docutils literal notranslate"><span class="pre">spark_apply()</span></code>. They are written assuming that the user does not have Apache Arrow available, but if your configuration enables the use of Arrow the examples can be adapted by making sure you have the <code class="docutils literal notranslate"><span class="pre">arrow</span></code> package installed (<code class="docutils literal notranslate"><span class="pre">install.packages(&quot;arrow&quot;)</span></code>) and simply loading the <code class="docutils literal notranslate"><span class="pre">arrow</span></code> library (<code class="docutils literal notranslate"><span class="pre">library(arrow)</span></code>) before establishing the spark connection.</p>
+<section id="example-1-simple-udf-and-loading-packages-onto-worker-nodes">
+<h2>Example 1: Simple UDF and loading packages onto worker nodes<a class="headerlink" href="#example-1-simple-udf-and-loading-packages-onto-worker-nodes" title="Permalink to this heading">#</a></h2>
+<p>This example represents a simple UDF just to demonstrate how <code class="docutils literal notranslate"><span class="pre">spark_apply()</span></code> can be used. In practice, it is far too simple to necessitate using a UDF - we could definitely do this with sparklyr code instead of R code!</p>
+<p>The example UDF below will make use of the <code class="docutils literal notranslate"><span class="pre">mutate()</span></code> function from he <code class="docutils literal notranslate"><span class="pre">dplyr</span></code> package. In order for Spark to run our UDF, we need to make sure that the packages we need are installed on each worker node in our Spark cluster once we have set up our session. To do this, we need to pass the location of our R package library to the Spark cluster by including the <code class="docutils literal notranslate"><span class="pre">spark.r.libpaths</span></code> setting as shown below:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-0-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
+
+<span class="c1"># Set up our Spark configuration - including our library path</span>
+<span class="n">default_config</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">spark_config</span><span class="p">()</span>
+<span class="n">default_config</span><span class="p">[</span><span class="s">&quot;spark.r.libpaths&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">.libPaths</span><span class="p">()[</span><span class="m">1</span><span class="p">]</span>
+
+<span class="n">sc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">spark_connect</span><span class="p">(</span>
+<span class="w">  </span><span class="n">master</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;local[2]&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">app_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;r-udfs&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">default_config</span><span class="p">)</span>
+<span class="w">  </span>
+</pre></div>
+</div>
+</div></div>
+<p>You can replace <code class="docutils literal notranslate"><span class="pre">.libPaths()[1]</span></code> with the full path to your main R package library in quotation marks if you need to. If you are unsure where this is, running <code class="docutils literal notranslate"><span class="pre">.libPaths()</span></code> in your session console will show you a list of library locations that R searches for installed packages.</p>
+<p>We have told Spark where to look for R packages, but they are not yet installed on the worker nodes. The first time we run <code class="docutils literal notranslate"><span class="pre">spark_apply()</span></code> in our Spark session, any packages found in the specified library path will be copied over to the Spark cluster. As a result, the most efficient way to load packages onto the cluster is to run a ‘dummy’ UDF on a small dataset before running our actual function. This ensures that the packages are loaded and ready for use before Spark attempts to perform more complex operations on our data. We can define and run our dummy UDF as shown:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-Ug==" name="Ug==" role="tab" tabindex="0">R</button><button aria-controls="panel-1-UiBvdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-UiBvdXRwdXQ=" name="UiBvdXRwdXQ=" role="tab" tabindex="-1">R output</button></div><div aria-labelledby="tab-1-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define dummy UDF &#39;libload&#39; which loads our required function libraries</span>
+<span class="c1"># You could just define an empty function here, but this forces Spark to output </span>
+<span class="c1"># a list of libraries loaded on the cluster so we can see it has worked </span>
+
+<span class="n">libload</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1"># All packages will be loaded on to worker nodes during first call to spark_apply in session</span>
+<span class="c1"># so it is more efficient to do this &#39;on&#39; a minimal sdf (of length 1) first</span>
+
+<span class="nf">sdf_len</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_apply</span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">libload</span><span class="p">,</span>
+<span class="w">                </span><span class="n">packages</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-UiBvdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-UiBvdXRwdXQ=" name="UiBvdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># Source:   table&lt;`sparklyr_tmp__78b5fc02_a3fa_40b2_98d8_a156efa9cf69`&gt; [8 x 1]
+# Database: spark_connection
+  result   
+  &lt;chr&gt;    
+1 dplyr    
+2 stats    
+3 graphics 
+4 grDevices
+5 utils    
+6 datasets 
+7 methods  
+8 base
+</pre></div>
+</div>
+</div></div>
+<p>Confusingly, to load packages using this method, note that we have had to set the <code class="docutils literal notranslate"><span class="pre">packages</span></code> argument in <code class="docutils literal notranslate"><span class="pre">spark_apply()</span></code> to <code class="docutils literal notranslate"><span class="pre">FALSE</span></code>. This is because there is another method to load packages on to the cluster, using <a class="reference external" href="https://www.rdocumentation.org/packages/sparklyr/versions/1.8.5/topics/spark_apply_bundle"><code class="docutils literal notranslate"><span class="pre">spark_apply_bundle()</span></code></a>. This function is designed to bundle all packages into a .tar file ready to pass to the Spark cluster. Setting the <code class="docutils literal notranslate"><span class="pre">packages</span></code> argument to <code class="docutils literal notranslate"><span class="pre">TRUE</span></code> prompts Spark to search for this .tar file and extract the relevant packages. However, this method is not easily generalisable to different system setups and may not always be possible using a given configuration (e.g. it does not seem to work with S3 bucket storage). For this reason, this guide demonstrates using the alternative approach outlined above to use packages with <code class="docutils literal notranslate"><span class="pre">spark_apply()</span></code>.</p>
+<p>Now we have loaded our R packages on to the cluster, we can set up and run our UDF. For this example we can define a dummy Spark dataframe to work with:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-Ug==" name="Ug==" role="tab" tabindex="0">R</button><button aria-controls="panel-2-UiBvdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-UiBvdXRwdXQ=" name="UiBvdXRwdXQ=" role="tab" tabindex="-1">R output</button></div><div aria-labelledby="tab-2-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set up a dummy Spark dataframe</span>
+<span class="n">sdf</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">:::</span><span class="nf">sdf_seq</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="m">-7</span><span class="p">,</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">       </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">half_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">       </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">half_id</span><span class="p">)</span>
+
+<span class="c1"># View the data    </span>
+<span class="n">sdf</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-UiBvdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-UiBvdXRwdXQ=" name="UiBvdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># A tibble: 8 × 1
+  half_id
+    &lt;dbl&gt;
+1    -3.5
+2    -2.5
+3    -1.5
+4    -0.5
+5     0.5
+6     1.5
+7     2.5
+8     3.5
+</pre></div>
+</div>
+</div></div>
+<p>Now we need to set up our UDF. R UDFs are defined using the same syntax as regular R functions. However, you may need to ensure that any calls to functions from loaded R packages are written as <code class="docutils literal notranslate"><span class="pre">&lt;package_name&gt;::&lt;package_function&gt;</span></code> to ensure that Spark can find the specified function (e.g. <code class="docutils literal notranslate"><span class="pre">dplyr::mutate()</span></code> in the example below):</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-3-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">round_udf</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">        </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">rounded_col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="n">half_id</span><span class="p">))</span><span class="w"> </span><span class="c1"># need to specify dplyr package</span>
+<span class="w">    </span><span class="kr">return</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>This defines a simple function to create a new column <code class="docutils literal notranslate"><span class="pre">rounded_col</span></code> by rounding the <code class="docutils literal notranslate"><span class="pre">half_id</span></code> column in our Spark dataframe. Of course in reality, we would never need to use a UDF for something so simple as this can be fully done in Spark, but this serves as a simplified example of how R UDFs can be used. We are now ready to use <code class="docutils literal notranslate"><span class="pre">spark_apply</span></code> to apply the <code class="docutils literal notranslate"><span class="pre">round_udf()</span></code> function to our dataframe:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-4-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-Ug==" name="Ug==" role="tab" tabindex="0">R</button><button aria-controls="panel-4-UiBvdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-UiBvdXRwdXQ=" name="UiBvdXRwdXQ=" role="tab" tabindex="-1">R output</button></div><div aria-labelledby="tab-4-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rounded</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_apply</span><span class="p">(</span><span class="n">sdf</span><span class="p">,</span>
+<span class="w">   </span><span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">round_udf</span><span class="p">,</span>
+<span class="w">   </span><span class="c1"># Specify schema - works faster if you specify a schema</span>
+<span class="w">   </span><span class="n">columns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">half_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;double&quot;</span><span class="p">,</span>
+<span class="w">               </span><span class="n">rounded_col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;double&quot;</span><span class="p">),</span>
+<span class="w">   </span><span class="n">packages</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span>
+
+<span class="c1"># View the resulting Spark dataframe</span>
+<span class="n">rounded</span>
+
+<span class="c1"># disconnect the Spark session</span>
+<span class="nf">spark_disconnect</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-UiBvdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-UiBvdXRwdXQ=" name="UiBvdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># Source:   table&lt;`sparklyr_tmp__de87c853_8f23_434d_892e_6e9c99858e58`&gt; [8 x 2]
+# Database: spark_connection
+  half_id rounded_col
+    &lt;dbl&gt;       &lt;dbl&gt;
+1    -3.5          -4
+2    -2.5          -2
+3    -1.5          -2
+4    -0.5           0
+5     0.5           0
+6     1.5           2
+7     2.5           2
+8     3.5           4
+</pre></div>
+</div>
+</div></div>
+<p>Note that we have included a <code class="docutils literal notranslate"><span class="pre">columns</span></code> argument in the above example to enable us to specify a schema for the dataframe. It is a good idea to do this where possible as it speeds up the running of the UDF. If no schema is specified, Spark will need to identify it before applying the UDF which can slow things down somewhat.</p>
+<p>The above example can easily be adapted for any R function which takes a single argument (the dataframe). However, most functions will require additional arguments to be passed in. We will look at how to do this with the next example using the <code class="docutils literal notranslate"><span class="pre">context</span></code> argument of <a class="reference external" href="https://search.r-project.org/CRAN/refmans/sparklyr/html/spark_apply.html"><code class="docutils literal notranslate"><span class="pre">spark_apply</span></code></a>.</p>
+</section>
+<section id="example-2-passing-additional-arguments-to-a-udf">
+<h2>Example 2: Passing additional arguments to a UDF<a class="headerlink" href="#example-2-passing-additional-arguments-to-a-udf" title="Permalink to this heading">#</a></h2>
+<p>First, we need to set up our Spark connection and load any required packages onto the cluster. Please note that if you don’t already have these packages installed you will need to install them <strong>before</strong> setting up your Spark connection so they can be found in your library and copied over to the cluster.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-5-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-Ug==" name="Ug==" role="tab" tabindex="0">R</button><button aria-controls="panel-5-UiBvdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-UiBvdXRwdXQ=" name="UiBvdXRwdXQ=" role="tab" tabindex="-1">R output</button></div><div aria-labelledby="tab-5-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set up our Spark configuration - including our library path</span>
+<span class="n">default_config</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">spark_config</span><span class="p">()</span>
+<span class="n">default_config</span><span class="p">[</span><span class="s">&quot;spark.r.libpaths&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">.libPaths</span><span class="p">()[</span><span class="m">1</span><span class="p">]</span>
+
+<span class="n">sc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">spark_connect</span><span class="p">(</span>
+<span class="w">  </span><span class="n">master</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;local[2]&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">app_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;r-udfs&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">default_config</span><span class="p">)</span>
+
+
+<span class="c1"># Define the libload function to load our required packages onto the cluster</span>
+<span class="n">libload</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">library</span><span class="p">(</span><span class="n">janitor</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">library</span><span class="p">(</span><span class="n">rlang</span><span class="p">)</span>
+
+<span class="p">}</span>
+
+<span class="c1"># All packages will be loaded on to worker nodes during first call to spark_apply in session</span>
+<span class="c1"># so it is more efficient to do this on a minimal sdf (of length 1) first</span>
+
+<span class="nf">sdf_len</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_apply</span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">libload</span><span class="p">,</span>
+<span class="w">                </span><span class="n">packages</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span>
+<span class="w">                </span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-UiBvdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-UiBvdXRwdXQ=" name="UiBvdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># Source:   table&lt;`sparklyr_tmp__dee5d73a_9102_4c57_be2a_d9c2a4d5f12e`&gt; [10 x 1]
+# Database: spark_connection
+   result   
+   &lt;chr&gt;    
+ 1 rlang    
+ 2 janitor  
+ 3 dplyr    
+ 4 stats    
+ 5 graphics 
+ 6 grDevices
+ 7 utils    
+ 8 datasets 
+ 9 methods  
+10 base 
+</pre></div>
+</div>
+</div></div>
+<p>Next, we will generate a Spark dataframe to test our function on and define a more complex version of our rounding UDF from example 1. In this example, we’ve assumed we want to pass in two extra values to the function; <code class="docutils literal notranslate"><span class="pre">col</span></code>, which will be the name of the column we want to apply the rounding to, and <code class="docutils literal notranslate"><span class="pre">precision</span></code>, which is the number of decimal places we want to round to. However, all of the arguments you need to pass to your UDF need to be included in the <code class="docutils literal notranslate"><span class="pre">spark_apply</span></code> <code class="docutils literal notranslate"><span class="pre">context</span></code>. As a result, we need to define our UDF as having just two arguments; the dataframe, and the context, which is passed as a <code class="docutils literal notranslate"><span class="pre">list</span></code> of all the required UDF arguments. Then we can split our additional arguments out of the list and into individual objects inside the function definition as shown below.</p>
+<p>Note that this time, when defining the function we are using both <code class="docutils literal notranslate"><span class="pre">mutate</span></code> from the <code class="docutils literal notranslate"><span class="pre">dplyr</span></code> package and <code class="docutils literal notranslate"><span class="pre">sym</span></code> from <code class="docutils literal notranslate"><span class="pre">rlang</span></code>, so we have specified both of the package names in our function definition. The <code class="docutils literal notranslate"><span class="pre">!!rlang::sym(col)</span></code> converts the column name (which is passed into the function as a string) to a column object inside the function.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-6-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-6-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set up a dummy Spark dataframe</span>
+<span class="n">sdf</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">:::</span><span class="nf">sdf_seq</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="m">-7</span><span class="p">,</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">       </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">half_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">       </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">half_id</span><span class="p">)</span>
+<span class="w">       </span>
+<span class="c1"># Define our UDF to take multiple arguments passed into a list named `context`</span>
+<span class="n">multi_arg_udf</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">   </span><span class="n">col</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">context</span><span class="o">$</span><span class="n">col</span><span class="w">               </span><span class="c1"># Split out the `col` argument from the list of arguments in `context`</span>
+<span class="w">   </span><span class="n">precision</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">context</span><span class="o">$</span><span class="n">precision</span><span class="w">   </span><span class="c1"># Split out the `precision` argument from the list of arguments in `context`</span>
+<span class="w">   </span>
+<span class="w">   </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">        </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">rounded_col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="o">!!</span><span class="n">rlang</span><span class="o">::</span><span class="nf">sym</span><span class="p">(</span><span class="n">col</span><span class="p">),</span><span class="w"> </span><span class="n">precision</span><span class="p">))</span><span class="w"> </span><span class="c1">#need to specify both rlang and dplyr packages</span>
+<span class="w">    </span><span class="kr">return</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Now we can run the UDF on our Spark dataframe as before, passing values to the <code class="docutils literal notranslate"><span class="pre">col</span></code> and <code class="docutils literal notranslate"><span class="pre">precision</span></code> arguments inside the <code class="docutils literal notranslate"><span class="pre">multi_arg_udf</span></code> function from the <code class="docutils literal notranslate"><span class="pre">context</span></code> list as shown below. We’ll run it a couple of times, passing a different value to <code class="docutils literal notranslate"><span class="pre">precision</span></code> just to confirm it works as expected.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-7-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-Ug==" name="Ug==" role="tab" tabindex="0">R</button><button aria-controls="panel-7-UiBvdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-UiBvdXRwdXQ=" name="UiBvdXRwdXQ=" role="tab" tabindex="-1">R output</button></div><div aria-labelledby="tab-7-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-7-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run the function on our data using spark_apply and passing the `col` and `precision` arguments as a list using &#39;context&#39;</span>
+<span class="n">multi0</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_apply</span><span class="p">(</span><span class="n">sdf</span><span class="p">,</span><span class="w"> </span><span class="n">multi_arg_udf</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;half_id&quot;</span><span class="p">,</span>
+<span class="w">                                                             </span><span class="n">precision</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">),</span><span class="w"> </span>
+<span class="w">                                                             </span><span class="n">columns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">half_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;double&quot;</span><span class="p">,</span>
+<span class="w">                                                                         </span><span class="n">rounded_col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;double&quot;</span><span class="p">),</span>
+<span class="w">                                                             </span><span class="n">packages</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w">     </span>
+<span class="w">                                                             </span>
+
+<span class="c1"># Run the function on our data again using spark_apply, this time with a different `precision` using &#39;context&#39;         </span>
+<span class="n">multi1</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_apply</span><span class="p">(</span><span class="n">sdf</span><span class="p">,</span><span class="w"> </span><span class="n">multi_arg_udf</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;half_id&quot;</span><span class="p">,</span>
+<span class="w">                                                             </span><span class="n">precision</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">),</span><span class="w"> </span>
+<span class="w">                                                    </span><span class="n">columns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">half_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;double&quot;</span><span class="p">,</span>
+<span class="w">                                                                </span><span class="n">rounded_col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;double&quot;</span><span class="p">),</span>
+<span class="w">                                                    </span><span class="n">packages</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w">               </span>
+
+<span class="c1"># View the result with `col` = &quot;half_id&quot; and precision = 0</span>
+<span class="n">multi0</span>
+
+<span class="c1"># View the result with `col` = &quot;half_id&quot; and precision = 1</span>
+<span class="n">multi1</span>
+
+<span class="nf">spark_disconnect</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-7-UiBvdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-7-UiBvdXRwdXQ=" name="UiBvdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># Source:   table&lt;`sparklyr_tmp__dbf96333_18ac_472a_8177_97299e5b1a18`&gt; [8 x 2]
+# Database: spark_connection
+  half_id rounded_col
+    &lt;dbl&gt;       &lt;dbl&gt;
+1    -3.5          -4
+2    -2.5          -2
+3    -1.5          -2
+4    -0.5           0
+5     0.5           0
+6     1.5           2
+7     2.5           2
+8     3.5           4
+
+# Source:   table&lt;`sparklyr_tmp__cec23e14_8a06_49e1_9104_c9574d0d5a97`&gt; [8 x 2]
+# Database: spark_connection
+  half_id rounded_col
+    &lt;dbl&gt;       &lt;dbl&gt;
+1    -3.5        -3.5
+2    -2.5        -2.5
+3    -1.5        -1.5
+4    -0.5        -0.5
+5     0.5         0.5
+6     1.5         1.5
+7     2.5         2.5
+8     3.5         3.5
+</pre></div>
+</div>
+</div></div>
+<p>Note that even if you only have one additional argument to pass into your UDF, you will still need to pass this in via the <code class="docutils literal notranslate"><span class="pre">context</span></code> argument as a list, but with only a single element (i.e. <code class="docutils literal notranslate"><span class="pre">context</span> <span class="pre">=</span> <span class="pre">list(arg1</span> <span class="pre">=</span> <span class="pre">value1)</span></code>). You can define any number of additional arguments this way, provided you remember to split each one out of the context list inside your UDF.</p>
+<p>These first two examples are very simple and we have not been paying any attention to partitioning in our data. However, for real, large, partitioned datasets we need to think carefully about how to partition our data, since <code class="docutils literal notranslate"><span class="pre">spark_apply()</span></code> receives each partition (rather than the whole dataset) and then applies the function on each one. The example in the next section shows how care must be taken with partioning data in order to get reliable results from <code class="docutils literal notranslate"><span class="pre">spark_apply()</span></code>.</p>
+</section>
+<section id="example-3-partitions-and-the-group-by-argument">
+<h2>Example 3: Partitions and the <code class="docutils literal notranslate"><span class="pre">group_by</span></code> argument<a class="headerlink" href="#example-3-partitions-and-the-group-by-argument" title="Permalink to this heading">#</a></h2>
+<p>In this example, we will read in some partitioned data and use <code class="docutils literal notranslate"><span class="pre">spark_apply()</span></code> to perform an operation on it. We can set up our session and add packages to the cluster in the exact same way as we did before:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-8-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-Ug==" name="Ug==" role="tab" tabindex="0">R</button><button aria-controls="panel-8-UiBvdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-UiBvdXRwdXQ=" name="UiBvdXRwdXQ=" role="tab" tabindex="-1">R output</button></div><div aria-labelledby="tab-8-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-8-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+
+<span class="c1"># Set up our Spark configuration - including our library path</span>
+<span class="n">default_config</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">spark_config</span><span class="p">()</span>
+<span class="n">default_config</span><span class="p">[</span><span class="s">&quot;spark.r.libpaths&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">.libPaths</span><span class="p">()[</span><span class="m">1</span><span class="p">]</span>
+
+<span class="c1"># open a spark connection</span>
+<span class="n">sc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">spark_connect</span><span class="p">(</span>
+<span class="w">  </span><span class="n">master</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;local[2]&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">app_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;r-udfs&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">default_config</span><span class="p">)</span>
+
+
+<span class="c1"># Define the libload function to load our required packages onto the cluster</span>
+<span class="n">libload</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">library</span><span class="p">(</span><span class="n">janitor</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">library</span><span class="p">(</span><span class="n">rlang</span><span class="p">)</span>
+
+<span class="p">}</span>
+
+<span class="c1"># pre-load packages onto the cluster using a dummy spark dataframe and function</span>
+<span class="nf">sdf_len</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_apply</span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">libload</span><span class="p">,</span>
+<span class="w">                </span><span class="n">packages</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-8-UiBvdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-8-UiBvdXRwdXQ=" name="UiBvdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># Source:   table&lt;`sparklyr_tmp__52c88102_dd5c_4c0a_a335_ff45d4301987`&gt; [10 x 1]
+# Database: spark_connection
+   result   
+   &lt;chr&gt;    
+ 1 rlang    
+ 2 janitor  
+ 3 dplyr    
+ 4 stats    
+ 5 graphics 
+ 6 grDevices
+ 7 utils    
+ 8 datasets 
+ 9 methods  
+10 base   
+</pre></div>
+</div>
+</div></div>
+<p>Next, we can read in the data we want to analyse. The <code class="docutils literal notranslate"><span class="pre">repartition</span></code> argument in <code class="docutils literal notranslate"><span class="pre">spark_read_parquet</span></code> has been set to 5 just to ensure there are multiple partitions in the data.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-9-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-Ug==" name="Ug==" role="tab" tabindex="0">R</button><button aria-controls="panel-9-UiBvdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-UiBvdXRwdXQ=" name="UiBvdXRwdXQ=" role="tab" tabindex="-1">R output</button></div><div aria-labelledby="tab-9-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-9-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">config</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">yaml</span><span class="o">::</span><span class="nf">yaml.load_file</span><span class="p">(</span><span class="s">&quot;ons-spark/config.yaml&quot;</span><span class="p">)</span>
+
+<span class="c1"># read in and partition data</span>
+<span class="n">rescue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_parquet</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">rescue_clean_path</span><span class="p">,</span><span class="w"> </span><span class="n">repartition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5</span><span class="p">)</span>
+
+<span class="c1"># preview data</span>
+<span class="n">dplyr</span><span class="o">::</span><span class="nf">glimpse</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-9-UiBvdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-9-UiBvdXRwdXQ=" name="UiBvdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Rows: ??
+Columns: 21
+Database: spark_connection
+$ incident_number            &lt;chr&gt; &quot;047943-18042017&quot;, &quot;150426131&quot;, &quot;51596131&quot;,…
+$ datetimeofcall             &lt;chr&gt; &quot;18/04/2017 14:33&quot;, &quot;30/10/2013 14:04&quot;, &quot;25…
+$ cal_year                   &lt;chr&gt; &quot;2017&quot;, &quot;2013&quot;, &quot;2013&quot;, &quot;2012&quot;, &quot;2013&quot;, &quot;20…
+$ finyear                    &lt;chr&gt; &quot;2017/18&quot;, &quot;2013/14&quot;, &quot;2013/14&quot;, &quot;2012/13&quot;,…
+$ typeofincident             &lt;chr&gt; &quot;Special Service&quot;, &quot;Special Service&quot;, &quot;Spec…
+$ engine_count               &lt;chr&gt; &quot;1.0&quot;, &quot;1.0&quot;, &quot;1.0&quot;, &quot;1.0&quot;, &quot;1.0&quot;, &quot;1.0&quot;, &quot;…
+$ job_hours                  &lt;chr&gt; &quot;1.0&quot;, &quot;1.0&quot;, &quot;1.0&quot;, &quot;1.0&quot;, &quot;1.0&quot;, &quot;1.0&quot;, &quot;…
+$ hourly_cost                &lt;chr&gt; &quot;328&quot;, &quot;290&quot;, &quot;290&quot;, &quot;260&quot;, &quot;290&quot;, &quot;333&quot;, &quot;…
+$ total_cost                 &lt;chr&gt; &quot;328.0&quot;, &quot;290.0&quot;, &quot;290.0&quot;, &quot;260.0&quot;, &quot;290.0&quot;…
+$ finaldescription           &lt;chr&gt; &quot;Bird Trapped In Chimney&quot;, &quot;Cat Trapped Bet…
+$ animal_group               &lt;chr&gt; &quot;Bird&quot;, &quot;Cat&quot;, &quot;Dog&quot;, &quot;Bird&quot;, &quot;Unknown - Do…
+$ originofcall               &lt;chr&gt; &quot;Person (land Line)&quot;, &quot;Person (land Line)&quot;,…
+$ propertytype               &lt;chr&gt; &quot;House - Single Occupancy &quot;, &quot;Private Garde…
+$ propertycategory           &lt;chr&gt; &quot;Dwelling&quot;, &quot;Non Residential&quot;, &quot;Dwelling&quot;, …
+$ specialservicetypecategory &lt;chr&gt; &quot;Animal Rescue From Below Ground&quot;, &quot;Other A…
+$ specialservicetype         &lt;chr&gt; &quot;Animal Rescue From Below Ground - Bird&quot;, &quot;…
+$ ward                       &lt;chr&gt; &quot;College Park And Old Oak&quot;, &quot;Abbey Wood&quot;, &quot;…
+$ borough                    &lt;chr&gt; &quot;Hammersmith And Fulham&quot;, &quot;Greenwich&quot;, &quot;Wes…
+$ stngroundname              &lt;chr&gt; &quot;Acton&quot;, &quot;Plumstead&quot;, &quot;Soho&quot;, &quot;Mill Hill&quot;, …
+$ postcodedistrict           &lt;chr&gt; &quot;W12&quot;, &quot;Se2&quot;, &quot;W1f&quot;, &quot;Ha8&quot;, &quot;N1&quot;, &quot;En3&quot;, &quot;N…
+$ incident_duration          &lt;chr&gt; &quot;1.0&quot;, &quot;1.0&quot;, &quot;1.0&quot;, &quot;1.0&quot;, &quot;1.0&quot;, &quot;1.0&quot;, &quot;…
+</pre></div>
+</div>
+</div></div>
+<p>We can simplify this dataset a bit for our example and convert values that have the incorrect datatype listed:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-10-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-Ug==" name="Ug==" role="tab" tabindex="0">R</button><button aria-controls="panel-10-UiBvdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-UiBvdXRwdXQ=" name="UiBvdXRwdXQ=" role="tab" tabindex="-1">R output</button></div><div aria-labelledby="tab-10-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-10-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Drop unwanted columns and convert cal_year and total_cost to numeric</span>
+<span class="n">rescue_tidy</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">incident_number</span><span class="p">,</span><span class="w"> </span><span class="n">cal_year</span><span class="p">,</span><span class="w"> </span><span class="n">total_cost</span><span class="p">,</span><span class="w"> </span><span class="n">animal_group</span><span class="p">,</span><span class="w"> </span><span class="n">borough</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="nf">across</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="n">cal_year</span><span class="p">,</span><span class="w"> </span><span class="n">total_cost</span><span class="p">),</span>
+<span class="w">                </span><span class="o">~</span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">.</span><span class="p">)))</span>
+
+<span class="nf">glimpse</span><span class="p">(</span><span class="n">rescue_tidy</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-10-UiBvdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-10-UiBvdXRwdXQ=" name="UiBvdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Rows: ??
+Columns: 5
+Database: spark_connection
+$ incident_number &lt;chr&gt; &quot;025074-28022018&quot;, &quot;047943-18042017&quot;, &quot;089899-06072017…
+$ cal_year        &lt;dbl&gt; 2018, 2017, 2017, 2013, 2011, 2013, 2013, 2012, 2009, …
+$ total_cost      &lt;dbl&gt; 656, 328, 328, 290, 260, 290, 260, 260, 260, 290, 652,…
+$ animal_group    &lt;chr&gt; &quot;Dog&quot;, &quot;Bird&quot;, &quot;Fox&quot;, &quot;Cat&quot;, &quot;Cat&quot;, &quot;Dog&quot;, &quot;Dog&quot;, &quot;Bir…
+$ borough         &lt;chr&gt; &quot;Redbridge&quot;, &quot;Hammersmith And Fulham&quot;, &quot;Hammersmith An…
+</pre></div>
+</div>
+</div></div>
+<p>If we check how this data has been partitioned, we can see that Spark has just taken arbitrary cuts of the data and split it across the partitions accordingly. As we would expect, here is no commonality between the data that is on one partition compared with the next and we have a mixture of years, animals and boroughs in each partition.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-11-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-Ug==" name="Ug==" role="tab" tabindex="0">R</button><button aria-controls="panel-11-UiBvdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-UiBvdXRwdXQ=" name="UiBvdXRwdXQ=" role="tab" tabindex="-1">R output</button></div><div aria-labelledby="tab-11-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-11-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># check number of partitions</span>
+<span class="n">num_part</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sdf_num_partitions</span><span class="p">(</span><span class="n">rescue_tidy</span><span class="p">)</span>
+
+<span class="n">num_part</span>
+
+<span class="c1"># Loop over partitions and view the top few rows of each </span>
+<span class="c1"># Remember that partitions are numbered from zero so we need to loop over 0 to `num_part-1`</span>
+<span class="kr">for</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="m">0</span><span class="o">:</span><span class="n">num_part</span><span class="m">-1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">rescue_tidy</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">    </span><span class="nf">filter</span><span class="p">(</span><span class="nf">spark_partition_id</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">(</span><span class="nf">head</span><span class="p">(</span><span class="m">10</span><span class="p">))</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-11-UiBvdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-11-UiBvdXRwdXQ=" name="UiBvdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>num_part
+[1] 5
+
+# Source:   SQL [0 x 5]
+# Database: spark_connection
+# ℹ 5 variables: incident_number &lt;chr&gt;, cal_year &lt;dbl&gt;, total_cost &lt;dbl&gt;,
+#   animal_group &lt;chr&gt;, borough &lt;chr&gt;
+# Source:   SQL [?? x 5]
+# Database: spark_connection
+   incident_number cal_year total_cost animal_group                     borough 
+   &lt;chr&gt;              &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;                            &lt;chr&gt;   
+ 1 025074-28022018     2018        656 Dog                              Redbrid…
+ 2 047943-18042017     2017        328 Bird                             Hammers…
+ 3 089899-06072017     2017        328 Fox                              Hammers…
+ 4 150426131           2013        290 Cat                              Greenwi…
+ 5 21535111            2011        260 Cat                              Lambeth 
+ 6 51596131            2013        290 Dog                              Westmin…
+ 7 20695131            2013        260 Dog                              Waltham…
+ 8 157207121           2012        260 Bird                             Barnet  
+ 9 171757091           2009        260 Dog                              Brent   
+10 174592131           2013        290 Unknown - Domestic Animal Or Pet Islingt…
+# ℹ more rows
+# ℹ Use `print(n = ...)` to see more rows
+# Source:   SQL [?? x 5]
+# Database: spark_connection
+   incident_number cal_year total_cost animal_group          borough            
+   &lt;chr&gt;              &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;                 &lt;chr&gt;              
+ 1 45633131            2013        290 Unknown - Wild Animal Ealing             
+ 2 60136101            2010        260 Cat                   Brent              
+ 3 2815151             2015        295 Cat                   Richmond Upon Tham…
+ 4 108909151           2015        298 Bird                  Sutton             
+ 5 098557-29072016     2016        326 Cat                   Southwark          
+ 6 34886101            2010        260 Dog                   Hammersmith And Fu…
+ 7 76500141            2014        295 Fox                   Croydon            
+ 8 39175101            2010        260 Cat                   Lewisham           
+ 9 64733101            2010        260 Bird                  Brent              
+10 120553151           2015        298 Bird                  Ealing             
+# ℹ more rows
+# ℹ Use `print(n = ...)` to see more rows
+# Source:   SQL [?? x 5]
+# Database: spark_connection
+   incident_number cal_year total_cost animal_group                     borough 
+   &lt;chr&gt;              &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;                            &lt;chr&gt;   
+ 1 065106-29052016     2016        326 Bird                             Merton  
+ 2 051231-24042017     2017        328 Cat                              Tower H…
+ 3 91465121            2012        260 Cat                              Islingt…
+ 4 160750-18112015     2015        298 Fox                              City Of…
+ 5 89323101            2010        260 Cat                              Tower H…
+ 6 70683141            2014        295 Unknown - Domestic Animal Or Pet Hackney 
+ 7 145674101           2010        260 Bird                             Camden  
+ 8 132003141           2014        295 Cat                              Havering
+ 9 117151141           2014        295 Cat                              Bromley 
+10 130721101           2010        260 Cat                              Lewisham
+# ℹ more rows
+# ℹ Use `print(n = ...)` to see more rows
+# Source:   SQL [?? x 5]
+# Database: spark_connection
+   incident_number cal_year total_cost animal_group borough             
+   &lt;chr&gt;              &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;        &lt;chr&gt;               
+ 1 28706141            2014        290 Cat          Lambeth             
+ 2 55883141            2014        295 Bird         Redbridge           
+ 3 103661-08082016     2016        326 Deer         Waltham Forest      
+ 4 5489151             2015        295 Cat          Southwark           
+ 5 111131111           2011        260 Cat          Barnet              
+ 6 133497111           2011        260 Fox          Southwark           
+ 7 36795131            2013        260 Dog          Waltham Forest      
+ 8 024137-26022017     2017        326 Cat          Richmond Upon Thames
+ 9 197524111           2011        520 Bird         Southwark           
+10 93925091            2009        260 Bird         Barnet              
+# ℹ more rows
+# ℹ Use `print(n = ...)` to see more rows
+# Source:   SQL [?? x 5]
+# Database: spark_connection
+   incident_number cal_year total_cost animal_group borough             
+   &lt;chr&gt;              &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;        &lt;chr&gt;               
+ 1 63301141            2014        295 Bird         Tower Hamlets       
+ 2 067744-29052018     2018        333 Cat          Richmond Upon Thames
+ 3 16711111            2011        260 Dog          Islington           
+ 4 095023-14072017     2017        328 Bird         Hackney             
+ 5 72228101            2010        780 Lamb         Enfield             
+ 6 149174101           2010        260 Bird         Kingston Upon Thames
+ 7 013770-04022016     2016        596 Cat          Barnet              
+ 8 17302141            2014        290 Cat          Enfield             
+ 9 141747131           2013        290 Cat          Bromley             
+10 74900151            2015        298 Fox          Croydon             
+# ℹ more rows
+# ℹ Use `print(n = ...)` to see more rows
+</pre></div>
+</div>
+</div></div>
+<p>Let us now try running a UDF on this data. Again, this example is not a good use case for a UDF as the code run could easily be run in <code class="docutils literal notranslate"><span class="pre">sparklyr</span></code> instead, but will serve to illustrate how partioning and grouping works using R UDFs.</p>
+<p>We will write a UDF that will allow us to aggregate the data based on user input for a particular <code class="docutils literal notranslate"><span class="pre">animal_group</span></code> and <code class="docutils literal notranslate"><span class="pre">borough</span></code>, to generate a summary table of the total cost by <code class="docutils literal notranslate"><span class="pre">cal_year</span></code> of a particular animal type in a given area.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-12-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-Ug==" name="Ug==" role="tab" tabindex="0">R</button></div><div aria-labelledby="tab-12-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-12-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">year_cost</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="c1"># Split out the arguments from `context`</span>
+<span class="w">  </span><span class="n">animal</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">context</span><span class="o">$</span><span class="n">animal_group</span>
+<span class="w">  </span><span class="n">borough</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">context</span><span class="o">$</span><span class="n">borough</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">animal_group</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">animal</span><span class="p">,</span>
+<span class="w">                 </span><span class="n">borough</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">borough</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">cal_year</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">summarise</span><span class="p">(</span><span class="n">total_yearly_cost_for_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">total_cost</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="kr">return</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="w">  </span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>Now, we can try running it using <code class="docutils literal notranslate"><span class="pre">spark_apply</span></code> on our data. Let us say that we want to know the total cost by calendar year of rescuing cats in Hackney:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-13-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-Ug==" name="Ug==" role="tab" tabindex="0">R</button><button aria-controls="panel-13-UiBvdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-UiBvdXRwdXQ=" name="UiBvdXRwdXQ=" role="tab" tabindex="-1">R output</button></div><div aria-labelledby="tab-13-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-13-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Apply our UDF</span>
+<span class="n">hackney_cats</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_apply</span><span class="p">(</span><span class="n">rescue_tidy</span><span class="p">,</span>
+<span class="w">                          </span><span class="n">year_cost</span><span class="p">,</span><span class="w"> </span>
+<span class="w">                          </span><span class="n">context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">animal_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Cat&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">                                         </span><span class="n">borough</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Hackney&quot;</span><span class="p">),</span>
+<span class="w">                          </span><span class="n">columns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">cal_year</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;double&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">                                      </span><span class="n">total_yearly_cost_for_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;double&quot;</span><span class="p">),</span>
+<span class="w">                          </span><span class="n">packages</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span>
+
+<span class="c1"># Total cost by year for Cats in Hackney</span>
+<span class="n">hackney_cats</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span>
+<span class="w">  </span><span class="nf">arrange</span><span class="p">(</span><span class="n">cal_year</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span>
+<span class="w">  </span><span class="nf">print</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">55</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-13-UiBvdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-13-UiBvdXRwdXQ=" name="UiBvdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># Source:     SQL [55 x 2]
+# Database:   spark_connection
+# Ordered by: cal_year
+   cal_year total_yearly_cost_for_group
+      &lt;dbl&gt;                       &lt;dbl&gt;
+ 1     2009                       17360
+ 2     2009                       14525
+ 3     2009                       15525
+ 4     2009                       14510
+ 5     2009                       15025
+ 6     2010                       22100
+ 7     2010                       16380
+ 8     2010                       17160
+ 9     2010                       16120
+10     2010                       17160
+11     2011                       20020
+12     2011                       15860
+13     2011                       16120
+14     2011                       21060
+15     2011                       16380
+16     2012                       15340
+17     2012                       17940
+18     2012                       18200
+19     2012                       17160
+20     2012                       17680
+21     2013                       18520
+22     2013                       21010
+23     2013                       22400
+24     2013                       16460
+25     2013                       19390
+26     2014                       25590
+27     2014                       17065
+28     2014                       17685
+29     2014                       20255
+30     2014                       19705
+31     2015                       19939
+32     2015                       20240
+33     2015                       13094
+34     2015                       16667
+35     2015                       16634
+36     2016                       25930
+37     2016                       15396
+38     2016                       21534
+39     2016                       22978
+40     2016                       27048
+41     2017                       22924
+42     2017                       19336
+43     2017                       17032
+44     2017                       18662
+45     2017                       20944
+46     2018                       24915
+47     2018                       19612
+48     2018                       21580
+49     2018                       20919
+50     2018                       25581
+51     2019                         666
+52     2019                        2331
+53     2019                        1332
+54     2019                         999
+55     2019                         666
+</pre></div>
+</div>
+</div></div>
+<p>Something has clearly gone a bit wrong here! Instead of returning an 11 row table, with one total cost for each year, we instead have 55 rows, with 5 total costs per year. This is a result of the arbitrary partitioning applied to the data when we read it in. Since <code class="docutils literal notranslate"><span class="pre">spark_apply</span></code> only receives data from individual partitions and applies the UDF on each one separately, the output has not been recombined as if the function has been applied to the entire dataset. Instead, we have a total cost per year for <strong>each</strong> of the 5 partitions!</p>
+<p>A better approach to running this as a UDF would be to use the <a class="reference external" href="https://spark.posit.co/packages/sparklyr/latest/reference/spark_apply.html"><code class="docutils literal notranslate"><span class="pre">group_by</span></code></a> argument in <code class="docutils literal notranslate"><span class="pre">spark_apply</span></code> to both group the data by <code class="docutils literal notranslate"><span class="pre">cal_year</span></code> and partition it accordingly. We will need to also adjust our UDF as there is no need to include <code class="docutils literal notranslate"><span class="pre">group_by(cal_year)</span></code> there as well. Making these changes produces the following output:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-14-Ug==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-14-Ug==" name="Ug==" role="tab" tabindex="0">R</button><button aria-controls="panel-14-UiBvdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-14-UiBvdXRwdXQ=" name="UiBvdXRwdXQ=" role="tab" tabindex="-1">R output</button></div><div aria-labelledby="tab-14-Ug==" class="sphinx-tabs-panel code-tab group-tab" id="panel-14-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">year_cost_no_group</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">animal</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">context</span><span class="o">$</span><span class="n">animal_group</span>
+<span class="w">  </span><span class="n">borough</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">context</span><span class="o">$</span><span class="n">borough</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">animal_group</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">animal</span><span class="p">,</span>
+<span class="w">                 </span><span class="n">borough</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">borough</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">summarise</span><span class="p">(</span><span class="n">total_yearly_cost_for_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">total_cost</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="kr">return</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="w">  </span>
+<span class="p">}</span>
+
+<span class="n">hackney_cats_year</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_apply</span><span class="p">(</span><span class="n">rescue_tidy</span><span class="p">,</span>
+<span class="w">                          </span><span class="n">group_by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;cal_year&quot;</span><span class="p">,</span>
+<span class="w">                          </span><span class="n">year_cost_no_group</span><span class="p">,</span><span class="w"> </span>
+<span class="w">                          </span><span class="n">context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">animal_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Cat&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">                                         </span><span class="n">borough</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Hackney&quot;</span><span class="p">),</span>
+<span class="w">                          </span><span class="n">columns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">cal_year</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;double&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">                                      </span><span class="n">total_yearly_cost_for_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;double&quot;</span><span class="p">),</span>
+<span class="w">                          </span><span class="n">packages</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span>
+
+
+<span class="n">hackney_cats_year</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span>
+<span class="w">  </span><span class="nf">arrange</span><span class="p">(</span><span class="n">cal_year</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span>
+<span class="w">  </span><span class="nf">print</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">11</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-14-UiBvdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-14-UiBvdXRwdXQ=" name="UiBvdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># Source:     SQL [11 x 2]
+# Database:   spark_connection
+# Ordered by: cal_year
+   cal_year total_yearly_cost_for_group
+      &lt;dbl&gt;                       &lt;dbl&gt;
+ 1     2009                       76945
+ 2     2010                       88920
+ 3     2011                       89440
+ 4     2012                       86320
+ 5     2013                       97780
+ 6     2014                      100300
+ 7     2015                       86574
+ 8     2016                      112886
+ 9     2017                       98898
+10     2018                      112607
+11     2019                        5994
+</pre></div>
+</div>
+</div></div>
+<p>This is much better! We now have the output we expected.</p>
+<p>Note that if we check the number of partitions of this output dataset (using <code class="docutils literal notranslate"><span class="pre">sdf_num_partitions(hackney_cats_year)</span></code>) the number returned will be the <code class="docutils literal notranslate"><span class="pre">spark.sql.shuffle.partitions</span></code> default value as we have performed a <a class="reference internal" href="../spark-concepts/shuffling.html"><span class="doc std std-doc">wide transformation</span></a> on the data. It is a good idea to <a class="reference internal" href="../spark-concepts/partitions.html"><span class="doc std std-doc">check and manage your partitions</span></a> after running a UDF for this reason, as you may need to repartition to optimise your code.</p>
+</section>
+<section id="further-resources">
+<h2>Further resources<a class="headerlink" href="#further-resources" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://spark.posit.co/packages/sparklyr/latest/reference/spark_apply.html"><code class="docutils literal notranslate"><span class="pre">spark_apply</span></code></a></p></li>
+<li><p><a class="reference external" href="https://therinspark.com/distributed.html">Additional guidance on using <code class="docutils literal notranslate"><span class="pre">spark_apply</span></code> from Chapter 11 of Mastering Spark with R</a></p></li>
+<li><p><a class="reference external" href="https://arrow.apache.org/docs/16.0/r/index.html"><code class="docutils literal notranslate"><span class="pre">arrow</span></code> R package</a></p></li>
+<li><p><a class="reference external" href="https://arrow.apache.org/blog/2019/01/25/r-spark-improvements/">Speeding up R and Apache Spark using Apache Arrow</a></p></li>
+</ul>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./ancillary-topics"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="pandas-udfs.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Pandas UDFs</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1-simple-udf-and-loading-packages-onto-worker-nodes">Example 1: Simple UDF and loading packages onto worker nodes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2-passing-additional-arguments-to-a-udf">Example 2: Passing additional arguments to a UDF</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-3-partitions-and-the-group-by-argument">Example 3: Partitions and the <code class="docutils literal notranslate"><span class="pre">group_by</span></code> argument</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further resources</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Analysis Standards and Pipelines in Quality and Improvement, Office for National Statistics
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

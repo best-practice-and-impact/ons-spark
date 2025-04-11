@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Using Spark functions in sparklyr &#8212; Spark at the ONS</title>
+    <title>&lt;no title&gt; &#8212; Spark at the ONS</title>
   
   
   
@@ -70,7 +70,7 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'raw-notebooks/sparklyr-functions/sparklyr-functions';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'raw-notebooks/r-udfs/r-udfs';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -331,7 +331,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fraw-notebooks/sparklyr-functions/sparklyr-functions.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fraw-notebooks/r-udfs/r-udfs.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -361,7 +361,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="../../_sources/raw-notebooks/sparklyr-functions/sparklyr-functions.ipynb" target="_blank"
+      <li><a href="../../_sources/raw-notebooks/r-udfs/r-udfs.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -445,7 +445,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Using Spark functions in sparklyr</h1>
+    <h1><no title></h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -454,17 +454,7 @@ document.write(`
                 <h2> Contents </h2>
             </div>
             <nav aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Using Spark functions in sparklyr</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#selected-practical-examples">Selected practical examples</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cast-to-date-to-date">Cast to date: <code class="docutils literal notranslate"><span class="pre">to_date()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#capitalise-first-letter-of-each-word-initcap">Capitalise first letter of each word: <code class="docutils literal notranslate"><span class="pre">initcap()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#concat-ws-a-spark-version-of-paste"><code class="docutils literal notranslate"><span class="pre">concat_ws()</span></code>: a Spark version of <code class="docutils literal notranslate"><span class="pre">paste()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further Resources</a></li>
+                <ul class="simple visible nav section-nav flex-column">
 </ul>
 
             </nav>
@@ -477,95 +467,7 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section id="using-spark-functions-in-sparklyr">
-<h1>Using Spark functions in sparklyr<a class="headerlink" href="#using-spark-functions-in-sparklyr" title="Permalink to this heading">#</a></h1>
-<p>The sparklyr package allows you to use the dplyr style functions when working on the cluster with sparklyr DataFrames. The key difference to working with tibbles or base R DataFrames is that the Spark cluster will be used for processing, rather than the CDSW session. This means that you can handle much larger data.</p>
-<p>You can also make use of <a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html">Spark functions</a> directly when using sparklyr. For instance, you can use Spark functions to <span class="xref myst">change data types</span> Examples of Spark functions are <a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#to_date"><code class="docutils literal notranslate"><span class="pre">to_date()</span></code></a>. To do this, wrap them in a relevant <code class="docutils literal notranslate"><span class="pre">dplyr</span></code> command, for instance, <a class="reference external" href="https://dplyr.tidyverse.org/reference/mutate.html"><code class="docutils literal notranslate"><span class="pre">mutate()</span></code></a> or <a class="reference external" href="https://dplyr.tidyverse.org/reference/filter.html"><code class="docutils literal notranslate"><span class="pre">filter()</span></code></a>. Note that these functions are not part of an actual R package and so you can’t prefix them with the package name with <code class="docutils literal notranslate"><span class="pre">::</span></code>.</p>
-<p>There are a large number of Spark functions and the authors of this article have not verified them all; versioning and implementation differences mean that not all might be available.</p>
-<p>Remember: you can’t use these functions on a tibble or base R DataFrame as R cannot interpret them. They can only be processed on the Spark cluster.</p>
-<section id="selected-practical-examples">
-<h2>Selected practical examples<a class="headerlink" href="#selected-practical-examples" title="Permalink to this heading">#</a></h2>
-<p>Set up a Spark session and read the Animal Rescue data:</p>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
-<span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
-
-<span class="n">sc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
-<span class="w">    </span><span class="n">master</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;local[2]&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="n">app_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;sparklyr-functions&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">())</span>
-<span class="w">        </span>
-<span class="n">config</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">yaml</span><span class="o">::</span><span class="nf">yaml.load_file</span><span class="p">(</span><span class="s">&quot;ons-spark/config.yaml&quot;</span><span class="p">)</span>
-
-<span class="n">rescue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_parquet</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">rescue_path</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
-<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">date_time_of_call</span><span class="p">,</span><span class="w"> </span><span class="n">animal_group</span><span class="p">,</span><span class="w"> </span><span class="n">property_category</span><span class="p">)</span>
-<span class="w">    </span>
-<span class="n">pillar</span><span class="o">::</span><span class="nf">glimpse</span><span class="p">(</span><span class="n">rescue</span><span class="p">)</span>
-</pre></div>
-</div>
-<section id="cast-to-date-to-date">
-<h3>Cast to date: <code class="docutils literal notranslate"><span class="pre">to_date()</span></code><a class="headerlink" href="#cast-to-date-to-date" title="Permalink to this heading">#</a></h3>
-<p><a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#to_date"><code class="docutils literal notranslate"><span class="pre">to_date()</span></code></a> changes the column type to date with the chosen format. This must be wrapped in a valid <code class="docutils literal notranslate"><span class="pre">dplyr</span></code> command, such as <code class="docutils literal notranslate"><span class="pre">mutate()</span></code>:</p>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
-<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">date_of_call</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">to_date</span><span class="p">(</span><span class="n">date_time_of_call</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;dd/MM/yyyy&quot;</span><span class="p">))</span>
-
-<span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span>
-<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">date_time_of_call</span><span class="p">,</span><span class="w"> </span><span class="n">date_of_call</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
-<span class="w">    </span><span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
-<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span>
-</pre></div>
-</div>
-</section>
-<section id="capitalise-first-letter-of-each-word-initcap">
-<h3>Capitalise first letter of each word: <code class="docutils literal notranslate"><span class="pre">initcap()</span></code><a class="headerlink" href="#capitalise-first-letter-of-each-word-initcap" title="Permalink to this heading">#</a></h3>
-<p><a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#initcap"><code class="docutils literal notranslate"><span class="pre">initcap()</span></code></a> capitalises the first letter of each word, and can be useful when data cleansing.</p>
-<p>In the Animal Rescue data the values in the <code class="docutils literal notranslate"><span class="pre">animal_group</span></code> column do not always begin with a capital letter. In this example, <code class="docutils literal notranslate"><span class="pre">initcap()</span></code> can be combined with <code class="docutils literal notranslate"><span class="pre">filter()</span></code> to return all cats, regardless of case:</p>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">cats</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="nf">initcap</span><span class="p">(</span><span class="n">animal_group</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;Cat&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Show that both <code class="docutils literal notranslate"><span class="pre">&quot;cat&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;Cat&quot;</span></code> are included in this DataFrame:</p>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">cats</span><span class="w"> </span><span class="o">%&gt;%</span>
-<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">animal_group</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
-<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">summarise</span><span class="p">(</span><span class="nf">n</span><span class="p">())</span>
-</pre></div>
-</div>
-</section>
-<section id="concat-ws-a-spark-version-of-paste">
-<h3><code class="docutils literal notranslate"><span class="pre">concat_ws()</span></code>: a Spark version of <code class="docutils literal notranslate"><span class="pre">paste()</span></code><a class="headerlink" href="#concat-ws-a-spark-version-of-paste" title="Permalink to this heading">#</a></h3>
-<p><a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#concat_ws"><code class="docutils literal notranslate"><span class="pre">concat_ws()</span></code></a> works in a similar way to the base R function <a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/paste.html"><code class="docutils literal notranslate"><span class="pre">paste()</span></code></a>; the separator is the first argument:</p>
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">rescue</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">animal_property</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">concat_ws</span><span class="p">(</span><span class="s">&quot;: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">animal_group</span><span class="p">,</span><span class="w"> </span><span class="n">property_category</span><span class="p">))</span>
-
-<span class="n">rescue</span><span class="w"> </span><span class="o">%&gt;%</span>
-<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">animal_group</span><span class="p">,</span><span class="w"> </span><span class="n">property_category</span><span class="p">,</span><span class="w"> </span><span class="n">animal_property</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
-<span class="w">    </span><span class="nf">head</span><span class="p">(</span><span class="m">5</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
-<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">collect</span><span class="p">()</span>
-</pre></div>
-</div>
-</section>
-</section>
-</section>
-<section id="further-resources">
-<h1>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this heading">#</a></h1>
-<p>Spark at the ONS Articles:</p>
-<ul class="simple">
-<li><p><span class="xref myst">Data Types in Spark</span>: A common use case for using Spark functions in sparklyr</p></li>
-</ul>
-<p>sparklyr and tidyverse Documentation:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://dplyr.tidyverse.org/reference/mutate.html"><code class="docutils literal notranslate"><span class="pre">mutate()</span></code></a></p></li>
-<li><p><a class="reference external" href="https://dplyr.tidyverse.org/reference/filter.html"><code class="docutils literal notranslate"><span class="pre">filter()</span></code></a></p></li>
-</ul>
-<p>R Documentation:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/paste.html"><code class="docutils literal notranslate"><span class="pre">paste()</span></code></a></p></li>
-</ul>
-<p>Spark SQL Documentation:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#to_date"><code class="docutils literal notranslate"><span class="pre">to_date</span></code></a></p></li>
-<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#initcap"><code class="docutils literal notranslate"><span class="pre">initcap</span></code></a></p></li>
-<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/sql/index.html#concat_ws"><code class="docutils literal notranslate"><span class="pre">concat_ws</span></code></a></p></li>
-</ul>
-</section>
-
+  
     <script type="text/x-thebe-config">
     {
         requestKernel: true,
@@ -579,7 +481,7 @@ document.write(`
         },
         kernelOptions: {
             name: "python3",
-            path: "./raw-notebooks/sparklyr-functions"
+            path: "./raw-notebooks/r-udfs"
         },
         predefinedOutput: true
     }
@@ -610,17 +512,7 @@ document.write(`
     <i class="fa-solid fa-list"></i> Contents
   </div>
   <nav class="bd-toc-nav page-toc">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Using Spark functions in sparklyr</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#selected-practical-examples">Selected practical examples</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cast-to-date-to-date">Cast to date: <code class="docutils literal notranslate"><span class="pre">to_date()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#capitalise-first-letter-of-each-word-initcap">Capitalise first letter of each word: <code class="docutils literal notranslate"><span class="pre">initcap()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#concat-ws-a-spark-version-of-paste"><code class="docutils literal notranslate"><span class="pre">concat_ws()</span></code>: a Spark version of <code class="docutils literal notranslate"><span class="pre">paste()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further Resources</a></li>
+    <ul class="simple visible nav section-nav flex-column">
 </ul>
 
   </nav></div>
