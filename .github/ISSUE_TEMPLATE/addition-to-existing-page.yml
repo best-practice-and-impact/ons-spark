@@ -1,13 +1,21 @@
-name: New page
-description: Suggest a new page to be added.
-title: "[New page]: "
-labels: ["new page"]
+name: Addition to existing page
+description: Suggest content to be added to an existing page.
+title: "[addition to existing page]: "
+labels: ["addition to existing page"]
 
 body:
   - type: markdown
     attributes:
       value: |
         Thanks for taking the time to suggest new content for the book!
+  - type: textarea
+    id: name-of-existing-page
+    attributes:
+      label: Name of existing page
+      description: Please tell us the name (and section of page if needed) of the existing page which your suggestiong is for
+      placeholder: Name of the existing page
+    validations:
+      required: true
   - type: textarea
     id: summary-of-content
     attributes:
@@ -28,13 +36,16 @@ body:
       default: 0
     validations:
   - type: dropdown
-    id: browsers
+    id: spark3
     attributes:
-      label: Can this suggestion be used in Pyspark and / or SparklyR (Can select multiple)
-      multiple: true
+      label: Spark 3
+      description: Is this suggestion related to the move to using Spark 3
       options:
-        - Pyspark
-        - SparklyR
+        - 
+        - 'Yes'
+        - 'No'
+      default: 0
+    validations:
   - type: textarea
     id: code
     attributes:
