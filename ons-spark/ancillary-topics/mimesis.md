@@ -1,8 +1,8 @@
-## Generating Synthetic/Dummy Data Using Mimesis
+## Mimesis: Synthetic Data in Python
 
 ### 1. Introduction to Mimesis
 
-Mimesis is a Python library used to generate fake, random, or synthetic data for various purposes such as testing, model validation, or training datasets. It allows users to generate a wide range of data types, including personal information, addresses, financial data, dates, and more.
+Mimesis is a Python library used to generate fake, random, or synthetic data for various purposes such as testing, model validation, or training datasets. It allows users to generate a wide range of data types, including personal information, addresses, financial data, dates, and more. It is similar to [`Faker`](../ancillary-topics/faker.html)
 
 ### 2. Install required libraries
 To start, we will need the `mimesis` library to generate the dummy data. Additionally, we will use PySpark for working with Spark DataFrames in Python, and sparklyr for R users.
@@ -1167,7 +1167,7 @@ is_in_venv: True | Spark DataFrame to be created from: Pandas DataFrame -> CSV -
 only showing top 20 rows
 ```
 ````
-## 8. Conclusion
+### 8. Conclusion
 
 In this notebook, we explored how to generate synthetic data using the `mimesis` library. We covered various classes, including `Person`, `Datetime`, `Finance`, `Address`, and `Transport`. These classes offer a rich set of features to generate realistic data for testing machine learning models or simulating real-world datasets. 
 
@@ -1177,9 +1177,11 @@ Additionally, we demonstrated how to integrate `mimesis` with PySpark to handle 
 
 Feel free to explore and modify the code to suit your data generation needs. This notebook can be expanded with additional classes, more detailed data generation examples, and use cases, depending on the specific needs of the users.
 
-## References
+### References
 
 
-1. [Mimesis API](https://mimesis.name/v12.1.1/api.html)
-2. [Medium](https://medium.com/@tubelwj/mimesis-a-python-library-for-generating-test-sample-data-7809d894cbd9)
-3. [Getting Started with Mimesis: A Modern Approach to Synthetic Data Generation](https://www.statology.org/getting-started-mimesis-modern-approach-synthetic-data-generation/)
+* [Mimesis API](https://mimesis.name/v12.1.1/api.html)
+* [Medium Blog on Mimesis](https://medium.com/@tubelwj/mimesis-a-python-library-for-generating-test-sample-data-7809d894cbd9)
+* [Getting Started with Mimesis: A Modern Approach to Synthetic Data Generation](https://www.statology.org/getting-started-mimesis-modern-approach-synthetic-data-generation/)
+* [Synthpop: Syntheic Data in `R`](../ancillary-topics/synthpop_with_r)
+* [Faker: Synthetic Data in Python](../ancillary-topics/faker)

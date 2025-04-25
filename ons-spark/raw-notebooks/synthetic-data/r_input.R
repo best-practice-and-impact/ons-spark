@@ -1,4 +1,4 @@
-
+options(warn = -1)
 # Load the R packages
 rm(list = ls()) 
 library(dplyr)
@@ -81,13 +81,6 @@ library(psych)
 library(magrittr)
 library(data.table)
 
-help(package = synthpop)
-
-?synthpop
-?syn
-
-help(SD2011)
-
 dim(SD2011)
 
 codebook.syn(SD2011)$tab
@@ -97,13 +90,12 @@ mydata <- SD2011[, c(1, 3, 6, 8, 11, 17, 18, 19, 20, 10)]
 
 # Inspect the SD2011 dataset
 head(mydata)
+
+# Inspect the SD2011 dataset
 tail(mydata)
 
 # Get a summary of the dataset
 summary(mydata)
-
-# Get summary information about the selected variables
-codebook.syn(mydata)$tab
 
 # Get the distributional distribution of the variables
 describe(mydata)
@@ -121,11 +113,8 @@ summary(mysyn)
 # Compare the synthetic data with the original data
 compare(mysyn, mydata, stat = "counts")
 
-# Export synthetic data to SPSS format
-write.syn(mysyn, filename = "mysyn_SD2001.sav", filetype = "SPSS")
-
 # Export synthetic data to CSV format
-write.syn(mysyn, filename = "mysyn_SD2001.csv", filetype = "csv")
+write.syn(mysyn, filename = "mysyn_SD2001", filetype = "csv")
 
 names(mysyn)
 
@@ -158,8 +147,7 @@ synthetic_census_teaching_data <- synthpop::syn(data = small_census_teaching_dat
 # Check the class of the synthetic data object
 class(synthetic_census_teaching_data)
 
-# Access the synthetic dataframe
-synthetic_census_teaching_data$syn
+summary(synthetic_census_teaching_data)
 
 # Compare synthetic data with real data
 synthpop::compare(object = synthetic_census_teaching_data,

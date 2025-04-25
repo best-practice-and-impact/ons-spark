@@ -1,8 +1,8 @@
-## **Generating Synthetic/Dummy Data Using Faker**
+## Faker: Synthetic Data in Python
 
 ### 1. Introduction to Faker
 
-`Faker` is a Python package that generates fake data such as names, addresses, emails, dates, credit card numbers, and more.
+`Faker` is a Python package that generates fake data such as names, addresses, emails, dates, credit card numbers, and more. It is similar to [`Mimesis`](../ancillary-topics/mimesis.html)
 
 **Key Features:** Randomised generation, locale support, wide range of data types.
 
@@ -20,10 +20,16 @@ pip install Faker
 
 ```{code-tab} plaintext Python Output
 Looking in indexes: https://njobud:****@onsart-01.ons.statistics.gov.uk/artifactory/api/pypi/yr-python/simple
-Requirement already satisfied: Faker in /home/cdsw/ons-spark/.venv/lib/python3.10/site-packages (33.3.1)
-Requirement already satisfied: python-dateutil>=2.4 in /runtime-addons/cmladdon-2.0.46-b210/opt/cmladdons/python/site-packages (from Faker) (2.8.2)
-Requirement already satisfied: typing-extensions in /runtime-addons/cmladdon-2.0.46-b210/opt/cmladdons/python/site-packages (from Faker) (4.10.0)
-Requirement already satisfied: six>=1.5 in /runtime-addons/cmladdon-2.0.46-b210/opt/cmladdons/python/site-packages (from python-dateutil>=2.4->Faker) (1.16.0)
+/usr/share/python-wheels/urllib3-1.25.8-py2.py3-none-any.whl/urllib3/connectionpool.py:1004: InsecureRequestWarning: Unverified HTTPS request is being made to host 'onsart-01.ons.statistics.gov.uk'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+Collecting Faker
+/usr/share/python-wheels/urllib3-1.25.8-py2.py3-none-any.whl/urllib3/connectionpool.py:1004: InsecureRequestWarning: Unverified HTTPS request is being made to host 'onsart-01.ons.statistics.gov.uk'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  Downloading https://onsart-01.ons.statistics.gov.uk/artifactory/api/pypi/yr-python/packages/packages/96/18/f70c67c9d3a71f1749faa027dad3cd626c728df5682458091d73c69ed9a9/Faker-35.2.2-py3-none-any.whl (1.9 MB)
+[K     |████████████████████████████████| 1.9 MB 5.7 MB/s eta 0:00:01
+[?25hRequirement already satisfied: python-dateutil>=2.4 in /runtime-addons/cmladdon-2.0.47-b365/opt/cmladdons/python/site-packages (from Faker) (2.9.0.post0)
+Requirement already satisfied: typing-extensions in /runtime-addons/cmladdon-2.0.47-b365/opt/cmladdons/python/site-packages (from Faker) (4.10.0)
+Requirement already satisfied: six>=1.5 in /runtime-addons/cmladdon-2.0.47-b365/opt/cmladdons/python/site-packages (from python-dateutil>=2.4->Faker) (1.17.0)
+Installing collected packages: Faker
+Successfully installed Faker-35.2.2
 Note: you may need to restart the kernel to use updated packages.
 ```
 ````
@@ -41,7 +47,7 @@ print(f"faker_version: {faker_version}")
 ````{tabs}
 
 ```{code-tab} plaintext Python Output
-faker_version: 33.3.1
+faker_version: 35.2.2
 ```
 ````
 **Set up a global random seed for reproducibility**
@@ -54,7 +60,7 @@ fake = Faker()
 fake.seed_instance(42)
 ```
 ````
-### 3. Generate a first fake dData
+### 3. Generate a first fake data
 ````{tabs}
 ```{code-tab} py
 # Generate sample personal data
@@ -69,11 +75,11 @@ print("Birthday:", fake.date_of_birth(minimum_age=18, maximum_age=90))
 ````{tabs}
 
 ```{code-tab} plaintext Python Output
-Name: Austin Johnson
-Email: chad34@example.net
-Address: 997 Kristen Valley, Leeville, TN 56999
-Phone: (566)970-1065x133
-Birthday: 1944-04-30
+Name: Allison Hill
+Email: donaldgarcia@example.net
+Address: 600 Jeffery Parkways, New Jamesside, MT 29394
+Phone: 394.802.6542x351
+Birthday: 1941-05-13
 ```
 ````
 ### 4. International data generation
@@ -98,10 +104,10 @@ print("Japan:", fake_jp.address().replace("\n", ", "))
 ````{tabs}
 
 ```{code-tab} plaintext Python Output
-US: 76732 Ruben Freeway Suite 946, New Mark, MT 67139
-UK: Flat 16, Keith wall, Evansmouth, SO68 4QW
-France: 21, chemin Christophe Leclerc, 88971 Girauddan
-Japan: 熊本県川崎市幸区浅草橋11丁目8番10号 シャルム京橋241
+US: 737 Christopher Springs Suite 170, South Lisa, NM 20713
+UK: Studio 8, Thomas ports, Coopertown, M56 9QR
+France: 5, rue Alves, 54783 Fournier
+Japan: 静岡県袖ケ浦市麹町4丁目7番20号
 ```
 ````
 Notice the differences in address formats:
@@ -134,31 +140,31 @@ for provider in fake.providers:
 
 ```{code-tab} plaintext Python Output
 Available Faker Providers:
-- <faker.providers.user_agent.Provider object at 0x7fd6f0ee6b60>
-- <faker.providers.ssn.en_GB.Provider object at 0x7fd6f0ee72b0>
-- <faker.providers.sbn.Provider object at 0x7fd6f0ee7310>
-- <faker.providers.python.Provider object at 0x7fd6f0ee7370>
-- <faker.providers.profile.Provider object at 0x7fd6f0ee7070>
-- <faker.providers.phone_number.en_GB.Provider object at 0x7fd6f0ee6b00>
-- <faker.providers.person.en_GB.Provider object at 0x7fd6f0ee7340>
-- <faker.providers.passport.en_US.Provider object at 0x7fd6f0ee73d0>
-- <faker.providers.misc.en_US.Provider object at 0x7fd6f0ee7d60>
-- <faker.providers.lorem.la.Provider object at 0x7fd6f1ecf550>
-- <faker.providers.job.en_US.Provider object at 0x7fd6f1ecf880>
-- <faker.providers.isbn.en_US.Provider object at 0x7fd6f1ecd2a0>
-- <faker.providers.internet.en_GB.Provider object at 0x7fd6f1ecee60>
-- <faker.providers.geo.en_US.Provider object at 0x7fd6f1ecc1f0>
-- <faker.providers.file.Provider object at 0x7fd6f1ecf850>
-- <faker.providers.emoji.Provider object at 0x7fd6f1ecc0d0>
-- <faker.providers.date_time.en_US.Provider object at 0x7fd6f1ecf490>
-- <faker.providers.currency.en_US.Provider object at 0x7fd6f1eceec0>
-- <faker.providers.credit_card.en_US.Provider object at 0x7fd6f0f46c50>
-- <faker.providers.company.en_US.Provider object at 0x7fd6f0f47040>
-- <faker.providers.color.en_US.Provider object at 0x7fd6f0f477c0>
-- <faker.providers.barcode.en_US.Provider object at 0x7fd6f0ee9840>
-- <faker.providers.bank.en_GB.Provider object at 0x7fd6f0ee9150>
-- <faker.providers.automotive.en_GB.Provider object at 0x7fd6f0ee93c0>
-- <faker.providers.address.en_GB.Provider object at 0x7fd6f0ee82b0>
+- <faker.providers.user_agent.Provider object at 0x7f8357bb7c40>
+- <faker.providers.ssn.en_GB.Provider object at 0x7f8357bb7be0>
+- <faker.providers.sbn.Provider object at 0x7f8357bb7b80>
+- <faker.providers.python.Provider object at 0x7f8357bb7b20>
+- <faker.providers.profile.Provider object at 0x7f8357bb7ac0>
+- <faker.providers.phone_number.en_GB.Provider object at 0x7f8357bb7a60>
+- <faker.providers.person.en_GB.Provider object at 0x7f8357bb7940>
+- <faker.providers.passport.en_US.Provider object at 0x7f8357bb79a0>
+- <faker.providers.misc.en_US.Provider object at 0x7f8357bb7880>
+- <faker.providers.lorem.la.Provider object at 0x7f8357bb77f0>
+- <faker.providers.job.en_US.Provider object at 0x7f8357bb78b0>
+- <faker.providers.isbn.en_US.Provider object at 0x7f8357bb76d0>
+- <faker.providers.internet.en_GB.Provider object at 0x7f8357bb77c0>
+- <faker.providers.geo.en_US.Provider object at 0x7f8357bb7760>
+- <faker.providers.file.Provider object at 0x7f8357bb7730>
+- <faker.providers.emoji.Provider object at 0x7f8357bb7610>
+- <faker.providers.date_time.en_US.Provider object at 0x7f836c1b0bb0>
+- <faker.providers.currency.en_US.Provider object at 0x7f836c1b0e20>
+- <faker.providers.credit_card.en_US.Provider object at 0x7f836c1b0e80>
+- <faker.providers.company.en_US.Provider object at 0x7f836c1b0e50>
+- <faker.providers.color.en_US.Provider object at 0x7f836c1a3dc0>
+- <faker.providers.barcode.en_US.Provider object at 0x7f836c1e4d00>
+- <faker.providers.bank.en_GB.Provider object at 0x7f836c1a32e0>
+- <faker.providers.automotive.en_GB.Provider object at 0x7f836c1a3a30>
+- <faker.providers.address.en_GB.Provider object at 0x7f836c1a3af0>
 ```
 ````
 Each item in the list corresponds to a specific provider, such as:
@@ -280,9 +286,9 @@ df_pandas = pd.DataFrame(data, columns=["Name", "Address", "Email"])
 df_pandas['Address'] = df_pandas['Address'].str.replace("\n", ", ")
 
 #I'm having problems when using spark.createDataFrame with virtual environment, hence, I have to create a csv file and read it
-df_pandas.to_csv('temp.csv', index=False)
+df_pandas.to_csv('temp_01.csv', index=False)
 
-df_spark = spark.read.csv('temp.csv', header=True, inferSchema=True)
+df_spark = spark.read.csv('temp_01.csv', header=True, inferSchema=True)
 
 df_spark.show(5)
 ```
@@ -440,6 +446,8 @@ only showing top 5 rows
 Generating synthetic data is a crucial tool for testing algorithms, saving resources, and maintaining privacy. Faker offers various providers to generate synthetic data on Python and big data frameworks like `PySpark`  can help handle large datasets efficiently.
 
 
-### References and Further Reading
-* [Faker Documentation (Python)](synthetic-data-branch)
+### References and further reading
+* [Faker Documentation (Python)](https://faker.readthedocs.io/en/master/)
 * [PySpark Documentation](https://spark.apache.org/docs/latest/api/python/index.html)
+* [Synthpop: Syntheic Data in `R`](../ancillary-topics/synthpop_with_r)
+* [Mimesis: Synthetic Data in Python](../ancillary-topics/mimesis)
