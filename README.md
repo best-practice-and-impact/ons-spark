@@ -1,23 +1,31 @@
 # Spark at the ONS
 
-Spark learning materials compiled by members of the Office for National Statistics
+Spark learning materials compiled by members of the Office for National Statistics (ONS). The materials in the book are intended as general resources on using Spark and should also be applicable to users outside of ONS. Please note that for internal ONS users, the guidance in this book is not intended to be specific to any particular platform where Spark can be run. As a result, you may find it useful to consult internal sources of guidance (such as DAPCATS training materials) if you need support with your platform specific setup.  
+<!--Should there be more detail here about what kinds of content we have in the book? -->
 
-## Usage
+## Contributing
 
-### Building the book
+Contributions are welcome, and they are greatly appreciated! Every little bit
+helps, and credit will always be given. You can contribute in the ways listed below.
 
-If you'd like to develop and/or build the Spark at the ONS book, you should:
+We have recently made use of GitHub issue forms which we hope will make suggesting content even easier!  
+- If you want to suggest a new page, please use [this link for the issue form](https://github.com/best-practice-and-impact/ons-spark/issues/new?assignees=&labels=New+page&projects=&template=new-page-form.yml&title=%5BNew+page%5D%3A+).  
+- For bugs, please use [this link for the issue form](https://github.com/best-practice-and-impact/ons-spark/issues/new?assignees=&labels=bug&projects=&template=bug-report-form.yml&title=%5BBug%5D%3A+).  
+- To create any other type of issue, use the blank issue form and label your issue with any of the following tags:
 
-1. Clone this repository
-2. Run `pip install -r requirements.txt` (it is recommended you do this within a virtual environment)
-3. (Optional) Edit the books source files located in the `ons-spark/` directory
-4. Run `jupyter-book clean ons-spark/` to remove any existing builds
-5. Run `jupyter-book build ons-spark/`
-6. Check the built HTML pages are correct (these will be in ons-spark/_build/html)
-7. Once you are happy, to deploy the book online run `ghp-import -n -p -f ons-spark/_build/html`.
-8. Note you may need to do `pip install ghp-import` if you do not already have this installed.
+| label    | description |
+| - | - |
+| Bug | Used for general bug reports    |
+| Documentation | Improvements or additions to documentation |
+| Duplicate | This issue or pull request already exists |
+| Help wanted | External help or guidance (outside of DAPCATS) is needed before this can be implemented |
+| Question | Further information is needed or something needs clarification |
+| New page | Suggestions for new topics and pages |
+| Addition to existing page | Suggestions to add information to existing pages e.g. Python/R equivalent code, new subsection etc. |
+| Enhancement | Suggestion for change not relating to content eg. improving the usability or appearance of the book |
+| Other | An issue that is not covered by any of the other labels |
 
-A fully-rendered HTML version of the book will be built in `ons-spark/_build/html/`.
+If you wish to take an active role in developing this book please refer to the [contributing guidance](./CONTRIBUTING.md).
 
 ### Hosting the book
 
@@ -27,7 +35,7 @@ For GitHub and GitLab deployment specifically, the [cookiecutter-jupyter-book](h
 
 ## Contributors
 
-We welcome and recognize all contributions. You can see a list of current contributors in the [contributors tab](https://github.com/robertswh/ons-spark/graphs/contributors).
+We welcome and recognize all contributions. You can see a list of current contributors in the [contributors tab](https://github.com/best-practice-and-impact/ons-spark/graphs/contributors).
 
 ## Credits
 
