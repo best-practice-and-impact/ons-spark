@@ -1,4 +1,4 @@
-options(warn = -1)
+
 # Load the R packages
 rm(list = ls()) 
 library(dplyr)
@@ -77,28 +77,21 @@ library(synthpop)
 library(dplyr)
 library(readr)
 library(janitor)
-library(psych)
 library(magrittr)
 library(data.table)
 
-dim(SD2011)
+# This will give you the dimensions (rows, columns) of the SD2011 dataset
+dim(SD2011)  # Output: 5000 rows, 35 variables
 
-codebook.syn(SD2011)$tab
+# Show summary information for a subset of variables; here we show only the first five variables for brevity.
+codebook.syn(SD2011[, 1:5])$tab
 
-# Select a subset of variables from SD2011 to reduce demo runtimes
-mydata <- SD2011[, c(1, 3, 6, 8, 11, 17, 18, 19, 20, 10)]
-
-# Inspect the SD2011 dataset
+# Select a smaller subset of variables for demonstration
+mydata <- SD2011[, c(1, 2, 3, 6, 8, 10, 11)]
+# Preview the first few rows of the dataset
 head(mydata)
-
-# Inspect the SD2011 dataset
-tail(mydata)
-
 # Get a summary of the dataset
 summary(mydata)
-
-# Get the distributional distribution of the variables
-describe(mydata)
 
 # Check for negative income values
 table(mydata$income[mydata$income < 0], useNA = "ifany")
@@ -129,10 +122,9 @@ multi.compare(mysyn, mydata, var = "marital", by = "sex")
 multi.compare(mysyn, mydata, var = "income", by = "agegr")
 multi.compare(mysyn, mydata, var = "income", by = "edu", cont.type = "boxplot")
 
-#config <- yaml::yaml.load_file("../../../config.yaml")
+# Load the configuration and set the path to the census teaching data
 config <- yaml::yaml.load_file("/home/cdsw/ons-spark/config.yaml")
 census_2011_path = config$census_2011_teaching_data_path_csv
-
 census_teaching_data <- data.table::fread(census_2011_path, skip = 1) %>%
                         janitor::clean_names()
 
@@ -153,7 +145,6 @@ summary(synthetic_census_teaching_data)
 synthpop::compare(object = synthetic_census_teaching_data,
                   data = small_census_teaching_data)
 
-#config <- yaml::yaml.load_file("../../../config.yaml")
 config <- yaml::yaml.load_file("/home/cdsw/ons-spark/config.yaml")
 census_relationship_path = config$census_relationship_file_path_csv
 

@@ -2,53 +2,24 @@
 
 ### 1. Introduction to Mimesis
 
-Mimesis is a Python library used to generate fake, random, or synthetic data for various purposes such as testing, model validation, or training datasets. It allows users to generate a wide range of data types, including personal information, addresses, financial data, dates, and more. It is similar to [`Faker`](../ancillary-topics/faker.html)
+Synthetic data is artificially generated information that mimics real-world data. It is commonly used for testing, model validation, training machine learning models, and protecting sensitive information, as it allows users to work with realistic datasets without exposing actual personal or confidential data.
 
-### 2. Install required libraries
-To start, we will need the `mimesis` library to generate the dummy data. Additionally, we will use PySpark for working with Spark DataFrames in Python, and sparklyr for R users.
+Mimesis is a Python library used to generate fake, random, or synthetic data for various purposes as listed above. It allows users to generate a wide range of data types, including personal information, addresses, financial data, dates, and more. It is similar to [`Faker`](../ancillary-topics/faker.html), an alternative Python package used for generating synthetic data.
 
-For Python, use:
+### 2. Install and initialise Mimesis
+To start, we will need the `mimesis` library to generate the dummy data. Later on, we will use PySpark for working with Spark DataFrames in Python.
 ````{tabs}
 ```{code-tab} py
-pip install mimesis
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-Looking in indexes: https://njobud:****@onsart-01/artifactory/api/pypi/yr-python/simple
-Requirement already satisfied: mimesis in d:\github\ons-spark\.venv\lib\site-packages (18.0.0)
-Note: you may need to restart the kernel to use updated packages.
-
-[notice] A new release of pip is available: 23.0.1 -> 25.0.1
-[notice] To update, run: python.exe -m pip install --upgrade pip
-```
-````
-**Check the version of the `mimesis` package installed in your environment**
-````{tabs}
-```{code-tab} py
+# Install Mimesis and check the installed version
+%pip install mimesis
 import mimesis
 print(mimesis.__version__)
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-18.0.0
-```
-````
-
-````{tabs}
-```{code-tab} py
 from mimesis import Generic
-from mimesis.locales import Locale
 ```
 ````
-**Set up a global random seed for reproducibility**
+**Set up a global random seed**
 
-You can set a global seed for all data providers and use it without explicitly passing it to each provider:
+You can set a global seed for all data providers and use it without explicitly passing it to each provider. Setting this seed allows us to generate the exact same synthetic data as will be shown in our examples. This is especially helpful when we are debugging or creating tests that require consistent data.
 ````{tabs}
 ```{code-tab} py
 from mimesis import random
@@ -56,26 +27,30 @@ from mimesis import random
 random.global_seed = 42
 ```
 ````
-**Initialise the generic provider with the seed and locale**
-````{tabs}
-```{code-tab} py
-generic = Generic(locale=Locale.EN_GB, seed=42)
-```
-````
-Setting this seed allows us to generate the exact same synthetic data as will be shown in our examples. This is especially helpful when we are debugging or creating tests that require consistent data.
-
 ### 3. How Mimesis works
 
 
 Mimesis, inspired by the ancient Greek concept of `"mimesis"` (which means to imitate or replicate), is designed to create realistic synthetic data rather than just random values. Its goal is to generate contextually appropriate data that mimics real-world information. This is achieved through a structured provider system and built-in support for different locales, ensuring that the generated data is both varied and meaningful.
 
-Let us walk through how to generate basic synthetic data using a seeded instance of Mimesis. We will then generate and display basic personal and financial information.
+Let us walk through how to generate basic synthetic data using a seeded instance of Mimesis. We will then generate and display basic personal and financial information. Note that the `Loacale` and `Provider` which are integral part how mimesis work are introduced here but will  explained in the next sections.
+
+### 3. How Mimesis works
+
+Mimesis is a Python library for generating realistic synthetic data that mimics real-world information. It uses a system of providers and locale support to create varied, contextually appropriate data for testing and development.
+
+
+**What are providers and locales?**   
+A `provider` in Mimesis is a class that generates a specific type of data, such as names, addresses, or dates. A `locale` specifies the regional or language settings that influence the format and style of the generated data (for example, UK vs. US address formats).
+
+
+
+Below, we walk through how to generate basic synthetic data using a seeded instance of Mimesis. This example demonstrates how to create and display basic personal and financial information. The concepts of *Provider* and *Locale* are introduced here and will be explained in more detail in the following sections.
 ````{tabs}
 ```{code-tab} py
+# The following example demonstrates how to generate basic personal and financial data using the UK locale (en_GB) and a fixed seed for reproducibility.
 from mimesis import Person, Address, Finance
 from mimesis.locales import Locale
 
-# Initialise the providers with the selected locale and a fixed seed for reproducibility
 person = Person(locale=Locale.EN_GB, seed=42)
 address = Address(locale=Locale.EN_GB, seed=42)
 finance = Finance(locale=Locale.EN_GB, seed=42)
@@ -88,17 +63,14 @@ print("Company:", finance.company())
 ```
 ````
 
-````{tabs}
-
-```{code-tab} plaintext Python Output
+```plaintext
 Name: Anthony Reilly
 Email: holds1871@live.com
 Address: 1310 Blaney Avenue
 Job: Choreographer
 Company: Centrica
 ```
-````
-Let's take a closer look at what makes this output interesting. Each piece of data showcases Mimesis's capability to produce realistic and varied information that mirrors real-world patterns. The name adheres to common naming conventions, while the email address illustrates Mimesis's ability to generate authentic usernames along with known email providers. The address follows typical street numbering and naming structures, and the occupation "Choreographer" demonstrates how Mimesis can generate a broad range of job titles, not just corporate ones. Lastly, the company name "Centrica" follows a typical style a business will be named. This makes it especially useful for generating test data across diverse business sectors.
+The outputs produced by Mimesis appear realistic and reflect real-world naming and formatting conventions.
 
 ### 4. Mimesis provider system
 
@@ -118,9 +90,7 @@ for attribute in dir(generic):
 ```
 ````
 
-````{tabs}
-
-```{code-tab} plaintext Python Output
+```plaintext
 Providers available through Generic:
 address
 binaryfile
@@ -142,73 +112,14 @@ science
 text
 transport
 ```
-````
 ### 5. Locale support for international applications
 
-A key feature of Mimesis is its ability to handle different locales. When generating test data for global applications, It is essential that the data reflects not only different languages but also the cultural and formatting norms of various regions. Mimesis achieves this through its robust locale system.
+A key feature of Mimesis is its ability to handle different locales. When generating test data for global applications, it is essential that the data reflects not only different languages but also the cultural and formatting norms of various regions. Mimesis achieves this through its robust locale system.
 
-Now, let us see how Mimesis adjusts its data generation based on different locale settings. We will begin by exploring the available locales:
-````{tabs}
-```{code-tab} py
-from mimesis.locales import Locale
+Now, let us see how Mimesis adjusts its data generation based on different locale settings. For a full list of supported locales, please refer to the [official Mimesis documentation](https://mimesis.name/v12.1.1/locales.html).
 
-print("Available Locales:")
-for locale in Locale:
-    print(f"- {locale}: {locale.value}")
-```
-````
 
-````{tabs}
-
-```{code-tab} plaintext Python Output
-Available Locales:
-- Locale.AR_AE: ar-ae
-- Locale.AR_DZ: ar-dz
-- Locale.AR_EG: ar-eg
-- Locale.AR_JO: ar-jo
-- Locale.AR_OM: ar-om
-- Locale.AR_SY: ar-sy
-- Locale.AR_YE: ar-ye
-- Locale.CS: cs
-- Locale.DA: da
-- Locale.DE: de
-- Locale.DE_AT: de-at
-- Locale.DE_CH: de-ch
-- Locale.EL: el
-- Locale.EN: en
-- Locale.EN_AU: en-au
-- Locale.EN_CA: en-ca
-- Locale.EN_GB: en-gb
-- Locale.ES: es
-- Locale.ES_MX: es-mx
-- Locale.ET: et
-- Locale.FA: fa
-- Locale.FI: fi
-- Locale.FR: fr
-- Locale.HU: hu
-- Locale.HR: hr
-- Locale.IS: is
-- Locale.IT: it
-- Locale.JA: ja
-- Locale.KK: kk
-- Locale.KO: ko
-- Locale.NL: nl
-- Locale.NL_BE: nl-be
-- Locale.NO: no
-- Locale.PL: pl
-- Locale.PT: pt
-- Locale.PT_BR: pt-br
-- Locale.RU: ru
-- Locale.SK: sk
-- Locale.SV: sv
-- Locale.TR: tr
-- Locale.UK: uk
-- Locale.ZH: zh
-```
-````
-In this example, we are listing all the locales supported by Mimesis, allowing you to see which regions are available for generating region-specific data.
-
-To demonstrate how locales influence data generation, let us create a simple example that generates person and address data for various regions. We will use a fixed seed to ensure consistent results.
+To demonstrate how locales influence data generation, let us create a simple example that generates person and address data for various regions. We will use a fixed seed to ensure consistent results. Note that Mimesis also supports language-specific data generation; for example, outputs for AR-EG and JA locales are written in the respective languages.
 ````{tabs}
 ```{code-tab} py
 from mimesis import Person
@@ -236,9 +147,7 @@ for locale, data in examples.items():
 ```
 ````
 
-````{tabs}
-
-```{code-tab} plaintext Python Output
+```plaintext
 
 EN-GB Examples:
 Full Name: Anthony Reilly
@@ -270,466 +179,19 @@ Phone: 0611755002
 Email: water2079@duck.com
 Job: مهندس تنظيف
 ```
-````
-### 6. Generic provider to generate UK data
+### 6. Common Mimesis providers
 
-#### 6.1. Class: mimesis.Person
+Mimesis offers a wide range of providers for generating different types of data. Some of the most commonly used providers include:
 
-The `mimesis.Person` class is designed to generate personal information such as names, genders, emails, phone numbers, and more. This class can be particularly useful for generating synthetic user data, such as for testing user-related models or systems.
+- **Person**: Generates names, genders, emails, phone numbers, and other personal information.
+- **Address**: Produces realistic street addresses, cities, postcodes, and regions.
+- **Finance**: Generates financial data such as bank names, company names, currency codes, and prices.
+- **Datetime**: Produces random dates, times, and timestamps.
+- **Text**: Generates random sentences, words, and quotes.
 
-**Key methods in `mimesis.Person`**
+There are many additional providers available in Mimesis for generating data such as transport, science, food, and more. For a full list and detailed breakdowns, please refer to the [official Mimesis documentation](https://mimesis.name/v12.1.1/providers.html).
 
-1. **`full_name(gender=None)`**: Generates a random full name. Optionally, you can specify a gender using the `Gender` enum (`Gender.MALE`, `Gender.FEMALE`).  
-````{tabs}
-```{code-tab} py
-generic = Generic(locale=Locale.EN_GB, seed=42)
-from mimesis.enums import Gender
-
-# Generate male and female names
-male_name = generic.person.full_name(gender=Gender.MALE)
-female_name = generic.person.full_name(gender=Gender.FEMALE)
-
-print(f"male_name: {male_name}, female_name: {female_name}")
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-male_name: Cornelius Avila, female_name: Krystin Downs
-```
-````
-2. **`first_name(gender=None)`**: Generates a random first name. You can specify the gender.
-````{tabs}
-```{code-tab} py
-male_first_name = generic.person.first_name(gender=Gender.MALE)
-female_first_name = generic.person.first_name(gender=Gender.FEMALE)
-
-print(f"male_first_name: {male_first_name}, female_first_name: {female_first_name}")
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-male_first_name: Garry, female_first_name: Edelmira
-```
-````
-3. **`last_name()`**: Generates a random last name (no gender specification needed). It has an alias, `surname()`
-````{tabs}
-```{code-tab} py
-last_name = generic.person.last_name()
-surname = generic.person.surname()
-
-print(f"last_name: {last_name}, surname: {surname}")
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-last_name: Raymond, surname: Brock
-```
-````
-4. **`email()`**: Generates a random email address.
-````{tabs}
-```{code-tab} py
-email = generic.person.email()
-print(f"email: {email}")
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-email: chapel1816@example.org
-```
-````
-**`phone_number()`**: Generates a random phone number. It follows the format of UK phone numbers.
-````{tabs}
-```{code-tab} py
-phone_number = generic.person.telephone()
-print(f"phone_number: {phone_number}")
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-phone_number: 01250 165258
-```
-````
-We can modify the `phone_number()` method to support a custom `mask` and a `placeholder` parameter. The `placeholder` will be used to replace the masked characters (e.g., `#`), allowing for even more flexibility in formatting the phone number.
-````{tabs}
-```{code-tab} py
-phone_number = generic.person.telephone(mask='+44-(###)-###-####')
-mobile_number = generic.person.telephone(mask='07### ######')
-custom_phone_number =  generic.person.telephone(mask='+44-(###)-###-####', placeholder='X')
-
-print(f"phone_number: {phone_number}")
-print(f"mobile_number: {mobile_number}")
-print(f"custom_phone_number: {custom_phone_number}")
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-phone_number: +44-(086)-319-3008
-mobile_number: 07687 593586
-custom_phone_number: +44-(###)-###-####
-```
-````
-6. **`username(mask=None)`**: Generates a random username. You can provide a mask to specify the structure of the username (e.g., lowercase letters, uppercase letters, digits).
-````{tabs}
-```{code-tab} py
-username = generic.person.username(mask="l_d_U-C")
-print(username)  # Format: l = lowercase, d = digit, U = uppercase, c = Captialise
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-organ_1835_GRANDE-Carroll
-```
-````
-7. **Weighted choice**
-
-You may want to generate data with a specific probability of occurrence.
-
-For example, let's say you want to generate random full names for both males and females, but with a higher probability of generating female names.
-
-Here’s one way to achieve this:
-````{tabs}
-```{code-tab} py
-from mimesis import Person, Locale, Gender
-
-person = Person(Locale.EN_GB)
-
-#person.reseed('ok')
-
-for _ in range(10):
-    full_name = person.full_name(
-        gender=person.random.weighted_choice(
-            choices={
-                Gender.MALE: 0.9,
-                Gender.FEMALE: 0.1,
-            }
-        ),
-    )
-    print(full_name)
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-Anthony Reilly
-Garry Cardenas
-Tom Boyd
-Armand Baker
-Gilberto Lane
-Vern Cortez
-Tom Hogan
-Zachariah Fields
-Alan Robbins
-Neville Gomez
-```
-````
-#### 6.2. Class: mimesis.Datetime
-
-The `mimesis.Datetime` class allows us to generate random dates, times, and even future or past dates, which is useful for time-based simulations, datasets, and models. For the list of all the methods within this class visit the [mimesis.Datetime Page](https://mimesis.name/v12.1.1/api.html#mimesis.Person.phone_number). Next, we will show some key methods.
-
-**Key methods in `mimesis.Datetime`**
-
-1. **`date()`**: Generates a random date. You can specify the range (e.g., past or future) using `start` and `end` parameters.
-````{tabs}
-```{code-tab} py
-random_date = generic.datetime.date(start=2010, end=2025) 
-print(random_date)
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-2013-01-24
-```
-````
-2. **`time()`**: Generates a random time.
-````{tabs}
-```{code-tab} py
-random_time = generic.datetime.time()
-print(random_time)
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-08:15:14.146316
-```
-````
-3. **`datetime()`**: Generates a random datetime (combination of date and time).
-````{tabs}
-```{code-tab} py
-random_datetime = generic.datetime.datetime(start=2010, end=2025)
-print(random_datetime)
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-2013-11-24 17:05:37.442417
-```
-````
-There is an option to specify a timezone, using the `pytz` library.
-````{tabs}
-```{code-tab} py
-pip install pytz
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-Looking in indexes: https://njobud:****@onsart-01/artifactory/api/pypi/yr-python/simpleNote: you may need to restart the kernel to use updated packages.
-
-[notice] A new release of pip is available: 23.0.1 -> 25.0.1
-[notice] To update, run: python.exe -m pip install --upgrade pip
-
-Requirement already satisfied: pytz in d:\github\ons-spark\.venv\lib\site-packages (2025.1)
-```
-````
-
-````{tabs}
-```{code-tab} py
-import pytz
-# Generate a random datetime with a specific timezone
-random_datetime_warsaw = generic.datetime.datetime(start=2010, end=2025, timezone= 'Europe/Warsaw')
-
-print(random_datetime_warsaw)
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-2011-01-03 06:14:32.631262+01:00
-```
-````
-4. **`timestamp()`**: Generates a random timestamp in given format. Support formats are: POSIX, RfC_3339, ISO_8601).
-````{tabs}
-```{code-tab} py
-from mimesis.enums import TimestampFormat
-time_stamp_format_posix = generic.datetime.timestamp(TimestampFormat.POSIX)
-time_stamp_format_rfc_3339 = generic.datetime.timestamp(TimestampFormat.RFC_3339)
-time_stamp_format_iso_8601 = generic.datetime.timestamp(TimestampFormat.ISO_8601)
-
-print(f"time_stamp_format_posix: {time_stamp_format_posix}")
-print(f"time_stamp_format_rfc_3339: {time_stamp_format_rfc_3339}")
-print(f"time_stamp_format_iso_8601: {time_stamp_format_iso_8601}")
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-time_stamp_format_posix: 1735884872
-time_stamp_format_rfc_3339: 2025-09-07T22:41:44Z
-time_stamp_format_iso_8601: 2025-04-15T18:17:51.911527
-```
-````
-### 6.3. Class: mimesis.Finance
-
-The `mimesis.Finance` class is used to generate financial data, such as amounts, currency values, and financial transactions. This class is particularly useful for generating test data for financial systems, accounting models, or other financial applications.
-
-**Key methods in `mimesis.Finance`**
-
-1. **`currency()`**: Generates a random currency code (e.g., GBP, USD, EUR).
-
-````{tabs}
-```{code-tab} py
-currency_code = generic.finance.currency_symbol()
-print(currency_code)
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-£
-```
-````
-2. **`bank()`**: Generates a random bank name.
-````{tabs}
-```{code-tab} py
-bank_name = generic.finance.bank()
-print(bank_name)
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-Paragon Banking Group plc
-```
-````
-3. **`company()`**: Generates a random company name. `company_type()`: Generates a random type of business entity.
-````{tabs}
-```{code-tab} py
-company_name = generic.finance.company()
-print(company_name)
-
-company_registered_type = generic.finance.company_type(abbr=True)
-print(company_registered_type)
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-Centrica
-Corp.
-```
-````
-### 6.4. Class: mimesis.Address
-
-The `mimesis.Address` class generates fake address-related information, such as street names, city names, zip/post codes, and more. This is helpful when generating addresses for test data in location-based applications or geospatial data models.
-
-**Key methods in `mimesis.Address`**
-
-1. **`address()`**: Generates a random address. **`street_name()`**: Generates a random street name. **`street_suffix()`**: Generate a random street suffix
-
-````{tabs}
-```{code-tab} py
-address = generic.address.address()
-print(address)
-
-street_name = generic.address.street_name()
-print(street_name)
-
-street_suffix = generic.address.street_suffix()
-print(street_suffix)
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-1310 Blaney Avenue
-Covehill
-Hill
-```
-````
-2. **`post_code()`**: Generates a random postcode (specific to the UK format).
-````{tabs}
-```{code-tab} py
-postcode = generic.address.postal_code()
-print(postcode)
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-FT6X 0KA
-```
-````
-3. **`city()`**: Generates a random city name.
-````{tabs}
-```{code-tab} py
-city = generic.address.city()
-print(city)
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-Horwich
-```
-````
-4. **`region()`**: Generates a random region name.
-````{tabs}
-```{code-tab} py
-region = generic.address.region()
-print(region)
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-Gwent
-```
-````
-4. **`coordinates(dms=False)`**: Generates random goe coordinates.
-
-````{tabs}
-```{code-tab} py
-geo_cordinates = generic.address.coordinates(dms=False)
-print(geo_cordinates)
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-{'longitude': 1.927904, 'latitude': -85.223525}
-```
-````
-### 6.5. Class: mimesis.Transport
-
-The `mimesis.Transport` class generates random transportation-related data, such as vehicle makes, models, license plates, and more. This is useful for applications dealing with logistics, traffic analysis, or fleet management.
-
-**Key methods in `mimesis.Transport`**
-
-1. **`car()`**: Generates a random car make.
-````{tabs}
-```{code-tab} py
-car_make = generic.transport.car()
-print(car_make)
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-Peugeot 605
-```
-````
-2. **`manufacturer()`**: Generatres a random car manufacturer.
-````{tabs}
-```{code-tab} py
-car_maker = generic.transport.manufacturer()
-print(car_maker)
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-Dodge
-```
-````
-3. **`airplane()`**: Generates a random airplane model name.
-````{tabs}
-```{code-tab} py
-airplane_model_name = generic.transport.airplane()
-print(airplane_model_name)
-```
-````
-
-````{tabs}
-
-```{code-tab} plaintext Python Output
-Airbus A319
-```
-````
-### 6.6. Class: mimesis.Text
+**Class: mimesis.Text**
 
 The `mimesis.Text` class generates random text data, such as sentences, words, quotes, levels, answers, and so on.
 
@@ -797,9 +259,7 @@ print(f"Random Long Paragraph:\n{long_paragraph}")
 ```
 ````
 
-````{tabs}
-
-```{code-tab} plaintext Python Output
+```plaintext
 ### 1. Random Sentence
 Random Sentence: Messages can be sent to and received from ports, but these messages must obey the so-called "port protocol."
 
@@ -825,8 +285,7 @@ high
 Random Long Paragraph:
 Do you come here often? I don't even care. Haskell features a type system with type inference and lazy evaluation. Haskell is a standardized, general-purpose purely functional programming language, with non-strict semantics and strong static typing. Tuples are containers for a fixed number of Erlang data types. Ports are used to communicate with the external world. The syntax {D1,D2,...,Dn} denotes a tuple whose arguments are D1, D2, ... Dn. He looked inquisitively at his keyboard and wrote another sentence. Messages can be sent to and received from ports, but these messages must obey the so-called "port protocol." Its main implementation is the Glasgow Haskell Compiler. Messages can be sent to and received from ports, but these messages must obey the so-called "port protocol." Messages can be sent to and received from ports, but these messages must obey the so-called "port protocol." Messages can be sent to and received from ports, but these messages must obey the so-called "port protocol." Tuples are containers for a fixed number of Erlang data types. I don't even care. Erlang is a general-purpose, concurrent, functional programming language. Ports are used to communicate with the external world. Type classes first appeared in the Haskell programming language. Initially composing light-hearted and irreverent works, he also wrote serious, sombre and religious pieces beginning in the 1930s. The arguments can be primitive data types or compound data types. In 1989 the building was heavily damaged by fire, but it has since been restored. The Galactic Empire is nearing completion of the Death Star, a space station with the power to destroy entire planets. Its main implementation is the Glasgow Haskell Compiler. Erlang is a general-purpose, concurrent, functional programming language. I don't even care. Haskell features a type system with type inference and lazy evaluation. They are written as strings of consecutive alphanumeric characters, the first character being lowercase. Initially composing light-hearted and irreverent works, he also wrote serious, sombre and religious pieces beginning in the 1930s. Haskell is a standardized, general-purpose purely functional programming language, with non-strict semantics and strong static typing. In 1989 the building was heavily damaged by fire, but it has since been restored. Do you come here often? Tuples are containers for a fixed number of Erlang data types. Ports are used to communicate with the external world. In 1989 the building was heavily damaged by fire, but it has since been restored. Atoms can contain any character if they are enclosed within single quotes and an escape convention exists which allows any character to be used within an atom. Haskell is a standardized, general-purpose purely functional programming language, with non-strict semantics and strong static typing. The syntax {D1,D2,...,Dn} denotes a tuple whose arguments are D1, D2, ... Dn. The Galactic Empire is nearing completion of the Death Star, a space station with the power to destroy entire planets. Type classes first appeared in the Haskell programming language. Its main implementation is the Glasgow Haskell Compiler. Its main implementation is the Glasgow Haskell Compiler. Atoms can contain any character if they are enclosed within single quotes and an escape convention exists which allows any character to be used within an atom. Atoms are used within a program to denote distinguished values. He looked inquisitively at his keyboard and wrote another sentence. The arguments can be primitive data types or compound data types. They are written as strings of consecutive alphanumeric characters, the first character being lowercase. Its main implementation is the Glasgow Haskell Compiler. Initially composing light-hearted and irreverent works, he also wrote serious, sombre and religious pieces beginning in the 1930s. The syntax {D1,D2,...,Dn} denotes a tuple whose arguments are D1, D2, ... Dn. Erlang is known for its designs that are well suited for systems.
 ```
-````
-### 7. Generating fake datasets
+### 7. Generating fake datasets wit Spark
 
 In this section, we will use PySpark along with Mimesis to generate synthetic person, finance, and population data, utilising Spark DataFrames instead of Pandas DataFrames. However, you can use Pandas DataFrames if that better suits your needs. PySpark allows you to scale the data generation process and handle larger datasets in a distributed manner.
 
@@ -846,7 +305,6 @@ from pyspark.sql import SparkSession
 from mimesis import Person, Locale
 from mimesis import Generic
 import pandas as pd
-#from pyspark.sql.functions import lit
 import os
 
 spark = SparkSession.builder.master("local[2]").appName("MimesisDataGeneration").getOrCreate()
@@ -885,32 +343,11 @@ else:
     personal_df = spark.read.csv(file_path, header=True, inferSchema=True)
      
 personal_df.limit(10).show()
-
-
 ```
 ````
+**Note:** If you encounter an error when creating a Spark DataFrame in a virtual environment, use the workaround provided (generate data, save as CSV, and read with `spark.read.csv()`). This is the same issue and solution as described in the Faker notebook.
 
-````{tabs}
-
-```{code-tab} plaintext Python Output
-is_in_venv: True | Spark DataFrame to be created from: Pandas DataFrame -> CSV -> Spark DataFrame
-+----------+---------+----------------+------+---+--------------------+-------------+-----------+--------------------+
-|First Name|Last Name|       Full Name|Gender|Age|               Email| Phone Number|Nationality|          Occupation|
-+----------+---------+----------------+------+---+--------------------+-------------+-----------+--------------------+
-|   Anthony|    Hogan|   Neville Gomez|  Male| 42|gear1828@example.org|056 9807 6526|      Dutch|   Riding Instructor|
-|     Kaley| Davidson| Epifania Daniel|  Male| 50|arrived2005@yahoo...|0800 449 8251|  Cambodian|         Taxidermist|
-|  Demarcus|     Hunt| Crysta Bradshaw|Female| 25|briefly2090@live.com|0800 851 3199|    Belgian|         Tax Advisor|
-|       Tom| Mcknight|  Conchita Gross|Female| 37|franklin2002@outl...|0841 398 2250|      Saudi|            Landlord|
-|      Zack|   Fields|Kenisha Schwartz|Female| 84|depend1871@exampl...| 01951 691569|    Mexican|   Research Director|
-|    Arlena|    Sears|     Randy Lynch| Other| 47|waters1934@yahoo.com|0800 363 8420|     Afghan|       Booking Clerk|
-|     Chris|    Sykes|    Malik Bolton|Female| 36|previously1912@pr...|055 5070 0035|  Brazilian|    Heating Engineer|
-|  Gilberto|  Aguirre| Melodi Mcdowell|  Male| 75|tales1846@yandex.com|  0800 219547|  Uruguayan|Purchasing Assistant|
-|      Vern|  Robbins|    Bryan Barton|Female| 64|compute1881@duck.com|0306 348 0660|  Dominican|      Accounts Staff|
-|       Tom|  Schultz|     Jayson Bond|Female| 50|boxing1995@proton...|0121 144 2294|    Chinese|  Records Supervisor|
-+----------+---------+----------------+------+---+--------------------+-------------+-----------+--------------------+
-```
-````
-### 7.2 Generating fake finance data
+#### 7.2 Generating fake finance data
 
 In this section, the code generates synthetic finance-related data using the Mimesis library's `Finance` class. The data includes bank names, company names and types, cryptocurrency data (ISO codes and symbols), currency data, stock exchange names, stock tickers, and random prices. This is done for n_rows rows, with the data organised in a Spark DataFrame. The locale is set to English (GB) to generate finance-related data that follows British conventions, with a seed for reproducibility.
 ````{tabs}
@@ -955,9 +392,7 @@ finance_df.limit(10).show()
 ```
 ````
 
-````{tabs}
-
-```{code-tab} plaintext Python Output
+```plaintext
 is_in_venv: True | Spark DataFrame to be created from: Pandas DataFrame -> CSV -> Spark DataFrame
 +--------------------+--------------+--------------------+-----------------------+---------------------+-----------------+---------------+------------+------------+-------------------+--------------------+------------+
 |           Bank Name|  Company Name|        Company Type|Cryptocurrency ISO Code|Cryptocurrency Symbol|Currency ISO Code|Currency Symbol|Random Price|Price in BTC|Stock Exchange Name|          Stock Name|Stock Ticker|
@@ -974,8 +409,7 @@ is_in_venv: True | Spark DataFrame to be created from: Pandas DataFrame -> CSV -
 |Felixstowe & Walt...|    Tullow Oil|Limited Liability...|                    IOT|                    ₿|              GBP|              £|       721.2|   1.8978818|               NYSE|International Gam...|        PETZ|
 +--------------------+--------------+--------------------+-----------------------+---------------------+-----------------+---------------+------------+------------+-------------------+--------------------+------------+
 ```
-````
-### 7.3 Generating fake population data
+#### 7.3 Generating fake population data
 
 We use Mimesis's `Generic`, `Address`, and `Person` providers to generate fake population data (e.g., address, postcode, names, etc.).  
 We define the function `generate_elector_data()` to create fake data for several fields like local authority, postcode, DOB, etc.  
@@ -1136,9 +570,7 @@ else:
 ```
 ````
 
-````{tabs}
-
-```{code-tab} plaintext Python Output
+```plaintext
 is_in_venv: True | Spark DataFrame to be created from: Pandas DataFrame -> CSV -> Spark DataFrame
 +---+--------------------+-------------------+--------------------+--------+--------------+--------------+--------------+--------------+--------------------+--------------+--------------+--------------+--------------+----------+-----------+----------+------+----------+-----------+
 | ID|         SOURCE_FILE|         TIME_STAMP|     Local_Authority|Postcode|Address_Line_1|Address_Line_2|Address_Line_3|Address_Line_4|      Address_Line_5|Address_Line_6|Address_Line_7|Address_Line_8|Address_Line_9| Last_Name|Middlenames|First_Name| Title|       DOB|       guid|
@@ -1166,7 +598,6 @@ is_in_venv: True | Spark DataFrame to be created from: Pandas DataFrame -> CSV -
 +---+--------------------+-------------------+--------------------+--------+--------------+--------------+--------------+--------------+--------------------+--------------+--------------+--------------+--------------+----------+-----------+----------+------+----------+-----------+
 only showing top 20 rows
 ```
-````
 ### 8. Conclusion
 
 In this notebook, we explored how to generate synthetic data using the `mimesis` library. We covered various classes, including `Person`, `Datetime`, `Finance`, `Address`, and `Transport`. These classes offer a rich set of features to generate realistic data for testing machine learning models or simulating real-world datasets. 
@@ -1183,5 +614,5 @@ Feel free to explore and modify the code to suit your data generation needs. Thi
 * [Mimesis API](https://mimesis.name/v12.1.1/api.html)
 * [Medium Blog on Mimesis](https://medium.com/@tubelwj/mimesis-a-python-library-for-generating-test-sample-data-7809d894cbd9)
 * [Getting Started with Mimesis: A Modern Approach to Synthetic Data Generation](https://www.statology.org/getting-started-mimesis-modern-approach-synthetic-data-generation/)
-* [Synthpop: Syntheic Data in `R`](../ancillary-topics/synthpop_with_r)
+* [Synthpop: Syntheic Data in R](../ancillary-topics/synthpop_with_r)
 * [Faker: Synthetic Data in Python](../ancillary-topics/faker)
