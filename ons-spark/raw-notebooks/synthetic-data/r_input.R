@@ -123,7 +123,8 @@ multi.compare(mysyn, mydata, var = "income", by = "agegr")
 multi.compare(mysyn, mydata, var = "income", by = "edu", cont.type = "boxplot")
 
 # Load the configuration and set the path to the census teaching data
-config <- yaml::yaml.load_file("/home/cdsw/ons-spark/config.yaml")
+# config <- yaml::yaml.load_file("/home/cdsw/ons-spark/config.yaml")
+config <- yaml::yaml.load_file("D:/dapcats_guidance/ons-spark/config.yaml")
 census_2011_path = config$census_2011_teaching_data_path_csv
 census_teaching_data <- data.table::fread(census_2011_path, skip = 1) %>%
                         janitor::clean_names()
@@ -145,7 +146,8 @@ summary(synthetic_census_teaching_data)
 synthpop::compare(object = synthetic_census_teaching_data,
                   data = small_census_teaching_data)
 
-config <- yaml::yaml.load_file("/home/cdsw/ons-spark/config.yaml")
+#config <- yaml::yaml.load_file("/home/cdsw/ons-spark/config.yaml")
+config <- yaml::yaml.load_file("D:/dapcats_guidance/ons-spark/config.yaml")
 census_relationship_path = config$census_relationship_file_path_csv
 
 input <- read.csv(census_relationship_path,
