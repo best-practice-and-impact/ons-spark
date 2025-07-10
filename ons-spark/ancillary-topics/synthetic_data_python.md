@@ -22,11 +22,6 @@ By the end of this notebook, you will be able to:
 
 First, install the required libraries and check their versions to ensure compatibility.
 ````{tabs}
-```{code-tab} py
-!pip install faker mimesis
-```
-````
-````{tabs}
 ```{code-tab} py Faker
 !pip install faker
 ```
