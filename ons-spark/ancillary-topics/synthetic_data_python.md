@@ -18,7 +18,7 @@ By the end of this notebook, you will be able to:
 - Scale up data generation for large datasets
 - Apply best practices for synthetic data projects
 
-### 2. Install and Setup
+### 2. Install and setup
 
 First, install the required libraries and check their versions to ensure compatibility.
 ````{tabs}
@@ -54,7 +54,7 @@ Mimesis version: 18.0.0
 ```
 ````
 
-### 3. Setting a Random Seed
+### 3. Setting a random seed
 
 Setting a random seed ensures reproducibility, so you get the same synthetic data each time you run the code.
 
@@ -82,7 +82,7 @@ Both Faker and Mimesis use the concept of **providers** (modules or classes that
 
 #### 4.1 Providers
 
-You can explore the full list of available providers and their methods in the [official Faker documentation](https://faker.readthedocs.io/en/master/providers.html) and [official Mimesis documentation](https://mimesis.name/v12.1.1/providers.html), which offer detailed information and usage examples for each one.
+You can explore the full list of available providers and their methods in the official [Faker](https://faker.readthedocs.io/en/master/providers.html) and [Mimesis](https://mimesis.name/v12.1.1/providers.html) documentations, which offer detailed information and usage examples for each one.
 
 ````{tabs}
 ```{code-tab} py Faker
@@ -157,7 +157,7 @@ Mimesis Providers:
 Locales allow you to generate data that matches the conventions and formats of different countries and regions. This is useful for internationalisation and region-specific testing.
 
 
-To demonstrate how locales influence data generation, let us create a simple example that generates person and address data for various regions.  Note that both libraries also support language-specific data generation; for example, outputs for Arabic and Japanese locales are written in the respective languages. For a full list of supported locales, please refer to the [official Faker documentation](https://fakerjs.dev/guide/localization.html#available-locales) and [official Mimesis documentation](https://mimesis.name/v12.1.1/locales.html).
+To demonstrate how locales influence data generation, let us create a simple example that generates person and address data for various regions.  Note that both libraries also support language-specific data generation; for example, outputs for Arabic and Japanese locales are written in the respective languages. For a full list of supported locales, please refer to the official [Faker](https://fakerjs.dev/guide/localization.html#available-locales) and [Mimesis](https://mimesis.name/v12.1.1/locales.html) documentations.
 
 
 **Generate data for multiple locales**
@@ -246,7 +246,7 @@ Job: تقني تدفئة وتكييف
 ```
 ````
 
-#### 4.3 Generate User Profiles with Multiple Providers
+#### 4.3 Generate user profiles with multiple providers
 
 Combining multiple providers allows you to create rich, realistic user profiles for testing and simulation.
 
@@ -311,7 +311,7 @@ Date of Birth: 1977-01-24
 ```
 ````
 
-#### 4.4 Generating Text using Faker and Mimesis
+#### 4.4 Generating text using Faker and Mimesis
 
 Generating synthetic text is useful for testing NLP pipelines, populating free-text fields, or simulating survey responses. Here, we show how to generate random sentences, words, paragraphs, and quotes using both Faker and Mimesis, side by side.
 
@@ -355,7 +355,7 @@ Quote: I'm gonna make him an offer he can't refuse.
 ```
 ````
 
-### 5. Generating Data at Scale with PySpark
+### 5. Generating data at scale with PySpark
 
 For large datasets, you can use Faker or Mimesis to generate data and load it into a Spark DataFrame. Below are parallel examples for both libraries.
 
@@ -481,7 +481,7 @@ only showing top 5 rows
 ```
 ````
 
-### 6. Generating Fake Population Data
+### 6. Generating fake population data
 
 Generating synthetic population data is essential for simulating census datasets, survey microdata, or anonymised samples. In this section, we demonstrate how to create tabular, population-like data with custom categories, such as sex, ethnicity, marital status, and employment status, while also simulating missing values, using the Mimesis library. The same approach and logic can be applied with the Faker library.
 
@@ -862,7 +862,7 @@ only showing top 5 rows
 ```
 ````
 
-### 7. Best Practices
+### 7. Best practices
 
 * Set a random seed for reproducibility.
 * Choose the appropriate locale for your use case.
