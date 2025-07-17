@@ -22,6 +22,11 @@ By the end of this notebook, you will be able to:
 
 First, install the required libraries and check their versions to ensure compatibility.
 ````{tabs}
+```{code-tab} py
+#!pip install faker mimesis
+```
+````
+````{tabs}
 ```{code-tab} py Faker
 !pip install faker
 ```
@@ -82,7 +87,7 @@ Both Faker and Mimesis use the concept of **providers** (modules or classes that
 
 #### 4.1 Providers
 
-You can explore the full list of available providers and their methods in the official [Faker](https://faker.readthedocs.io/en/master/providers.html) and [Mimesis](https://mimesis.name/v12.1.1/providers.html) documentations, which offer detailed information and usage examples for each one.
+You can explore the full list of available providers and their methods in the offical [Faker](https://faker.readthedocs.io/en/master/providers.html) and [Mimesis](https://mimesis.name/v12.1.1/providers.html) documentations, which offer detailed information and usage examples for each one.
 
 ````{tabs}
 ```{code-tab} py Faker
@@ -177,6 +182,7 @@ for loc in locales:
 
 ```{code-tab} py Mimesis
 from mimesis import Person
+from mimesis.locales import Locale
 print("\nMimesis Examples for Multiple Locales:")
 locales = [Locale.EN_GB, Locale.EN, Locale.JA, Locale.FR, Locale.AR_EG]
 for loc in locales:
@@ -396,6 +402,8 @@ spark.stop()
 ```
 ```{code-tab} py Mimesis
 import pandas as pd
+from pyspark.sql import SparkSession
+import os
 
 spark = SparkSession.builder.master("local[2]").appName("MimesisDataGeneration").getOrCreate()
 

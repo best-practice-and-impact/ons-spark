@@ -147,7 +147,7 @@ result_tbl <- synthetic_sd2011_tbl %>%
   
 result_tbl %>% collect()
 
-# spark_disconnect(sc)
+spark_disconnect(sc)
 
 # Load the configuration and set the path to the census teaching data
 # config <- yaml::yaml.load_file("/home/cdsw/ons-spark/config.yaml")
