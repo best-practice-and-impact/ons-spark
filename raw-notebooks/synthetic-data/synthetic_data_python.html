@@ -1,0 +1,1478 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Synthetic Data Generation in Python: Faker and Mimesis &#8212; Spark at the ONS</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/accessibility.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
+  <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-95MGHSRD0S');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script src="../../_static/tabs.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'raw-notebooks/synthetic-data/synthetic_data_python';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="Spark at the ONS - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="Spark at the ONS - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../intro.html">
+                    Introduction
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark overview</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/spark-start.html">Getting Started with Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/when-to-use-spark.html">When To Use Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/spark-session-guidance.html">Guidance on Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/example-spark-sessions.html">Example Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/spark-defaults.html">Configuration Hierarchy and <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/data-types.html">Data Types in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/creating-dataframes.html">Creating DataFrames Manually</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/reading-and-writing-data-spark.html">Reading and Writing Data in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/data-storage.html">Data Storage</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to PySpark</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../pyspark-intro/pyspark-intro.html">Introduction to PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyspark-intro/returning-data.html">Returning Data from Cluster to Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyspark-intro/f-col.html">Reference columns by name: <code class="docutils literal notranslate"><span class="pre">F.col()</span></code></a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to sparklyr</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../sparklyr-intro/sparklyr-intro.html">Introduction to sparklyr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sparklyr-intro/sparklyr-functions.html">Using Spark functions in sparklyr</a></li>
+
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark functions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/union-dataframes-with-different-columns.html">Union two DataFrames with different columns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/padding.html">Add leading zeros with <code class="docutils literal notranslate"><span class="pre">lpad()</span></code></a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/sampling.html">Sampling: an overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/pivot-tables.html">Pivot tables in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/rounding.html">Rounding differences in Python, R and Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/window-functions.html">Window Functions in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/cross-joins.html">Cross Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/arrays.html">Arrays Functions in PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/date-functions.html">Date functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/writing-data.html">Writing Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/job-description-notebook.html">Set Spark Job Description</a></li>
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/median.html">Median in Spark</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Understanding and Optimising Spark</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/optimisation-tips.html">Ideas for optimising Spark code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/spark-application-and-ui.html">Spark Application and UI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/groups-not-loops.html">Groups not Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/shuffling.html">Shuffling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/join-concepts.html">Optimising Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/salted-joins.html">Salted Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/partitions.html">Managing Partitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/persistence.html">Persisting in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/cache.html">Caching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/checkpoint-staging.html">Checkpoints and Staging Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/garbage-collection.html">Garbage Collection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/df-order.html">Spark DataFrames Are Not Ordered</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/exercises.html">Exercises</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Analysis in Spark</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../spark-analysis/big-data-workflow.html">Big data workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-analysis/interpolation.html">Interpolation in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-analysis/logistic-regression.html">Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-analysis/visualisation.html">Spark and Visualisation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-analysis/flags.html">Flags in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-analysis/bin-continuous-variable.html">Data binning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-analysis/cramer_v.html">Calculating Cramér’s V from a Spark DataFrame</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Testing and Debugging</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../testing-debugging/spark-errors.html">Understanding and Handling Spark Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../testing-debugging/unit-testing.html">Unit Testing in Spark</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Ancillary Topics</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/module-imports.html">Naming Conflicts in Module Imports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/pydoop.html">Pydoop: HDFS to pandas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/creating-a-SQL-view-in-HDFS.html">Creating a SQL view in HDFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/pandas-udfs.html">Pandas UDFs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/r-udfs.html">R UDFs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/synthpop_with_r.html">Synthpop: Synthetic Data in R</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/synthetic_data_python.html">Synthetic Data Generation in Python: Faker and Mimesis</a></li>
+</ul>
+
+        </div>
+    </nav></div>
+            <div class="bd-sidebar__bottom">
+                <!-- To handle the deprecated key -->
+                
+                <div class="navbar_extra_footer">
+                <div>
+        <p>Book version 2022.6</p>
+    </div>
+    
+                </div>
+                
+            </div>
+        </div>
+        <div id="rtd-footer-container"></div>
+    </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fraw-notebooks/synthetic-data/synthetic_data_python.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/raw-notebooks/synthetic-data/synthetic_data_python.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Synthetic Data Generation in Python: Faker and Mimesis</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">1. Introduction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#install-and-setup">2. Install and setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-a-random-seed">3. Setting a random seed</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#providers-and-locales-in-faker-and-mimesis">4. Providers and Locales in Faker and Mimesis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#providers">4.1 Providers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#locales">4.2 Locales</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#generate-user-profiles-with-multiple-providers">4.3 Generate user profiles with multiple providers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#generating-text-using-faker-and-mimesis">4.4 Generating text using Faker and Mimesis</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#generating-data-at-scale-with-pyspark">5. Generating data at scale with PySpark</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#generating-fake-population-data">6. Generating fake population data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#best-practices">7. Best practices</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion">8. Conclusion</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references-and-further-reading">References and further reading</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="synthetic-data-generation-in-python-faker-and-mimesis">
+<h1>Synthetic Data Generation in Python: Faker and Mimesis<a class="headerlink" href="#synthetic-data-generation-in-python-faker-and-mimesis" title="Permalink to this heading">#</a></h1>
+<section id="introduction">
+<h2>1. Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">#</a></h2>
+<p>This is a guide on generating synthetic data in Python. Synthetic data is artificially created information that closely resembles real-world data, but contains no actual personal or sensitive information. It is invaluable for:</p>
+<ul class="simple">
+<li><p>Testing and validating data pipelines and machine learning models</p></li>
+<li><p>Protecting privacy and confidentiality</p></li>
+<li><p>Simulating rare or edge-case scenarios</p></li>
+<li><p>Enabling reproducible research and open data sharing</p></li>
+</ul>
+<p>In this notebook, we demonstrate how to generate synthetic data using two leading Python libraries: <a class="reference external" href="https://faker.readthedocs.io/en/master/">Faker</a> and <a class="reference external" href="https://mimesis.name/">Mimesis</a>. For each example, we show parallel code for both libraries, highlighting their similarities and differences. We also cover best practices, advanced use cases, and how to scale up data generation with PySpark for big data applications.</p>
+<p>By the end of this notebook, you will be able to:</p>
+<ul class="simple">
+<li><p>Generate realistic synthetic data for a variety of domains</p></li>
+<li><p>Choose between Faker and Mimesis based on your needs</p></li>
+<li><p>Understand how to ensure reproducibility and locale-specific data</p></li>
+<li><p>Scale up data generation for large datasets</p></li>
+<li><p>Apply best practices for synthetic data projects</p></li>
+</ul>
+</section>
+<section id="install-and-setup">
+<h2>2. Install and setup<a class="headerlink" href="#install-and-setup" title="Permalink to this heading">#</a></h2>
+<p>First, install the required libraries and check their versions to ensure compatibility.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="ch">#!pip install faker mimesis</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-RmFrZXI=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-RmFrZXI=" name="RmFrZXI=" role="tab" tabindex="0">Faker</button><button aria-controls="panel-0-TWltZXNpcw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-TWltZXNpcw==" name="TWltZXNpcw==" role="tab" tabindex="-1">Mimesis</button></div><div aria-labelledby="tab-0-RmFrZXI=" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-RmFrZXI=" name="RmFrZXI=" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span>!pip install faker
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-TWltZXNpcw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-TWltZXNpcw==" name="TWltZXNpcw==" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span>!pip install mimesis
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-RmFrZXI=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-RmFrZXI=" name="RmFrZXI=" role="tab" tabindex="0">Faker</button><button aria-controls="panel-1-TWltZXNpcw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-TWltZXNpcw==" name="TWltZXNpcw==" role="tab" tabindex="-1">Mimesis</button></div><div aria-labelledby="tab-1-RmFrZXI=" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-RmFrZXI=" name="RmFrZXI=" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">faker</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pkg_resources</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Faker version:&quot;</span><span class="p">,</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">get_distribution</span><span class="p">(</span><span class="s2">&quot;Faker&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">version</span><span class="p">)</span> 
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-TWltZXNpcw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-TWltZXNpcw==" name="TWltZXNpcw==" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">mimesis</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mimesis version:&quot;</span><span class="p">,</span> <span class="n">mimesis</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-RmFrZXIgT3V0cHV0" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-RmFrZXIgT3V0cHV0" name="RmFrZXIgT3V0cHV0" role="tab" tabindex="0">Faker Output</button><button aria-controls="panel-2-TWltZXNpcyBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-TWltZXNpcyBPdXRwdXQ=" name="TWltZXNpcyBPdXRwdXQ=" role="tab" tabindex="-1">Mimesis Output</button></div><div aria-labelledby="tab-2-RmFrZXIgT3V0cHV0" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-RmFrZXIgT3V0cHV0" name="RmFrZXIgT3V0cHV0" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Faker version: 37.4.0
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-TWltZXNpcyBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-TWltZXNpcyBPdXRwdXQ=" name="TWltZXNpcyBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Mimesis version: 18.0.0
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="setting-a-random-seed">
+<h2>3. Setting a random seed<a class="headerlink" href="#setting-a-random-seed" title="Permalink to this heading">#</a></h2>
+<p>Setting a random seed ensures reproducibility, so you get the same synthetic data each time you run the code.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-RmFrZXI=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-RmFrZXI=" name="RmFrZXI=" role="tab" tabindex="0">Faker</button><button aria-controls="panel-3-TWltZXNpcw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-TWltZXNpcw==" name="TWltZXNpcw==" role="tab" tabindex="-1">Mimesis</button></div><div aria-labelledby="tab-3-RmFrZXI=" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-RmFrZXI=" name="RmFrZXI=" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">faker</span><span class="w"> </span><span class="kn">import</span> <span class="n">Faker</span>
+
+<span class="c1"># Set up Faker</span>
+<span class="n">fake_uk</span> <span class="o">=</span> <span class="n">Faker</span><span class="p">(</span><span class="s1">&#39;en_GB&#39;</span><span class="p">)</span>
+<span class="n">fake_uk</span><span class="o">.</span><span class="n">seed_instance</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-TWltZXNpcw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-TWltZXNpcw==" name="TWltZXNpcw==" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mimesis</span><span class="w"> </span><span class="kn">import</span> <span class="n">Generic</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mimesis</span><span class="w"> </span><span class="kn">import</span> <span class="n">random</span> <span class="k">as</span> <span class="n">mimesis_random</span>
+
+<span class="c1"># Set up Mimesis</span>
+<span class="n">mimesis_random</span><span class="o">.</span><span class="n">global_seed</span> <span class="o">=</span> <span class="mi">42</span>
+<span class="n">generic</span> <span class="o">=</span> <span class="n">Generic</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="s1">&#39;en_GB&#39;</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="providers-and-locales-in-faker-and-mimesis">
+<h2>4. Providers and Locales in Faker and Mimesis<a class="headerlink" href="#providers-and-locales-in-faker-and-mimesis" title="Permalink to this heading">#</a></h2>
+<p>Both Faker and Mimesis use the concept of <strong>providers</strong> (modules or classes that generate specific types of data) and <strong>locales</strong> (to match country or language conventions). Below, we show how to list available providers and generate data for different locales.</p>
+<section id="providers">
+<h3>4.1 Providers<a class="headerlink" href="#providers" title="Permalink to this heading">#</a></h3>
+<p>You can explore the full list of available providers and their methods in the offical <a class="reference external" href="https://faker.readthedocs.io/en/master/providers.html">Faker</a> and <a class="reference external" href="https://mimesis.name/v12.1.1/providers.html">Mimesis</a> documentations, which offer detailed information and usage examples for each one.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-4-RmFrZXI=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-RmFrZXI=" name="RmFrZXI=" role="tab" tabindex="0">Faker</button><button aria-controls="panel-4-TWltZXNpcw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-TWltZXNpcw==" name="TWltZXNpcw==" role="tab" tabindex="-1">Mimesis</button></div><div aria-labelledby="tab-4-RmFrZXI=" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-RmFrZXI=" name="RmFrZXI=" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Faker Providers:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">provider</span> <span class="ow">in</span> <span class="n">fake_uk</span><span class="o">.</span><span class="n">providers</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">provider</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-TWltZXNpcw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-TWltZXNpcw==" name="TWltZXNpcw==" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mimesis Providers:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">generic</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">attribute</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-5-RmFrZXIgT3V0cHV0" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-RmFrZXIgT3V0cHV0" name="RmFrZXIgT3V0cHV0" role="tab" tabindex="0">Faker Output</button><button aria-controls="panel-5-TWltZXNpcyBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-TWltZXNpcyBPdXRwdXQ=" name="TWltZXNpcyBPdXRwdXQ=" role="tab" tabindex="-1">Mimesis Output</button></div><div aria-labelledby="tab-5-RmFrZXIgT3V0cHV0" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-RmFrZXIgT3V0cHV0" name="RmFrZXIgT3V0cHV0" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Faker Providers:
+- &lt;faker.providers.user_agent.Provider object at 0x00000199DED9E740&gt;
+- &lt;faker.providers.ssn.en_GB.Provider object at 0x00000199DED9F670&gt;
+- &lt;faker.providers.sbn.Provider object at 0x00000199DED9C610&gt;
+- &lt;faker.providers.python.Provider object at 0x00000199DED9C1F0&gt;
+- &lt;faker.providers.profile.Provider object at 0x00000199DED9E470&gt;
+- &lt;faker.providers.phone_number.en_GB.Provider object at 0x00000199DED9FD60&gt;
+- &lt;faker.providers.person.en_GB.Provider object at 0x00000199DED9C070&gt;
+- &lt;faker.providers.passport.en_US.Provider object at 0x00000199DED9CAC0&gt;
+- &lt;faker.providers.misc.en_US.Provider object at 0x00000199DED9FDF0&gt;
+- &lt;faker.providers.lorem.la.Provider object at 0x00000199DED9FE80&gt;
+- &lt;faker.providers.job.en_US.Provider object at 0x00000199DED9C820&gt;
+- &lt;faker.providers.isbn.en_US.Provider object at 0x00000199DED9C880&gt;
+- &lt;faker.providers.internet.en_GB.Provider object at 0x00000199DED9C9A0&gt;
+- &lt;faker.providers.geo.en_US.Provider object at 0x00000199DED9C8B0&gt;
+- &lt;faker.providers.file.Provider object at 0x00000199DED9F7F0&gt;
+- &lt;faker.providers.emoji.Provider object at 0x00000199DED9F8B0&gt;
+- &lt;faker.providers.doi.Provider object at 0x00000199DED9F910&gt;
+- &lt;faker.providers.date_time.en_US.Provider object at 0x00000199DED9FA00&gt;
+- &lt;faker.providers.currency.en_US.Provider object at 0x00000199DED9DB10&gt;
+- &lt;faker.providers.credit_card.en_US.Provider object at 0x00000199DED9E5C0&gt;
+- &lt;faker.providers.company.en_US.Provider object at 0x00000199DED9E6B0&gt;
+- &lt;faker.providers.color.en_US.Provider object at 0x00000199DED9DCC0&gt;
+- &lt;faker.providers.barcode.en_US.Provider object at 0x00000199DED9EB00&gt;
+- &lt;faker.providers.bank.en_GB.Provider object at 0x00000199DED9DBD0&gt;
+- &lt;faker.providers.automotive.en_GB.Provider object at 0x00000199DEDC9AE0&gt;
+- &lt;faker.providers.address.en_GB.Provider object at 0x00000199DD272AD0&gt;
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-TWltZXNpcyBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-TWltZXNpcyBPdXRwdXQ=" name="TWltZXNpcyBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Mimesis Providers:
+- address
+- binaryfile
+- choice
+- code
+- cryptographic
+- datetime
+- development
+- file
+- finance
+- food
+- hardware
+- internet
+- numeric
+- path
+- payment
+- person
+- science
+- text
+- transport
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="locales">
+<h3>4.2 Locales<a class="headerlink" href="#locales" title="Permalink to this heading">#</a></h3>
+<p>Locales allow you to generate data that matches the conventions and formats of different countries and regions. This is useful for internationalisation and region-specific testing.</p>
+<p>To demonstrate how locales influence data generation, let us create a simple example that generates person and address data for various regions.  Note that both libraries also support language-specific data generation; for example, outputs for Arabic and Japanese locales are written in the respective languages. For a full list of supported locales, please refer to the official <a class="reference external" href="https://fakerjs.dev/guide/localization.html#available-locales">Faker</a> and <a class="reference external" href="https://mimesis.name/v12.1.1/locales.html">Mimesis</a> documentations.</p>
+<p><strong>Generate data for multiple locales</strong></p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-6-RmFrZXI=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-RmFrZXI=" name="RmFrZXI=" role="tab" tabindex="0">Faker</button><button aria-controls="panel-6-TWltZXNpcw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-TWltZXNpcw==" name="TWltZXNpcw==" role="tab" tabindex="-1">Mimesis</button></div><div aria-labelledby="tab-6-RmFrZXI=" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-RmFrZXI=" name="RmFrZXI=" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Faker Examples for Multiple Locales:&quot;</span><span class="p">)</span>
+<span class="n">locales</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;en_GB&#39;</span><span class="p">,</span> <span class="s1">&#39;en_US&#39;</span><span class="p">,</span> <span class="s1">&#39;ja_JP&#39;</span><span class="p">,</span> <span class="s1">&#39;fr_FR&#39;</span><span class="p">,</span> <span class="s1">&#39;ar&#39;</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">loc</span> <span class="ow">in</span> <span class="n">locales</span><span class="p">:</span>
+    <span class="n">fake</span> <span class="o">=</span> <span class="n">Faker</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span>
+    <span class="n">fake</span><span class="o">.</span><span class="n">seed_instance</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">loc</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2"> Example:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Name:&quot;</span><span class="p">,</span> <span class="n">fake</span><span class="o">.</span><span class="n">name</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Email:&quot;</span><span class="p">,</span> <span class="n">fake</span><span class="o">.</span><span class="n">email</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Job:&quot;</span><span class="p">,</span> <span class="n">fake</span><span class="o">.</span><span class="n">job</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-6-TWltZXNpcw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-TWltZXNpcw==" name="TWltZXNpcw==" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mimesis</span><span class="w"> </span><span class="kn">import</span> <span class="n">Person</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mimesis.locales</span><span class="w"> </span><span class="kn">import</span> <span class="n">Locale</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Mimesis Examples for Multiple Locales:&quot;</span><span class="p">)</span>
+<span class="n">locales</span> <span class="o">=</span> <span class="p">[</span><span class="n">Locale</span><span class="o">.</span><span class="n">EN_GB</span><span class="p">,</span> <span class="n">Locale</span><span class="o">.</span><span class="n">EN</span><span class="p">,</span> <span class="n">Locale</span><span class="o">.</span><span class="n">JA</span><span class="p">,</span> <span class="n">Locale</span><span class="o">.</span><span class="n">FR</span><span class="p">,</span> <span class="n">Locale</span><span class="o">.</span><span class="n">AR_EG</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">loc</span> <span class="ow">in</span> <span class="n">locales</span><span class="p">:</span>
+    <span class="n">person</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="n">loc</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">loc</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2"> Example:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Full Name:&quot;</span><span class="p">,</span> <span class="n">person</span><span class="o">.</span><span class="n">full_name</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Email:&quot;</span><span class="p">,</span> <span class="n">person</span><span class="o">.</span><span class="n">email</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Job:&quot;</span><span class="p">,</span> <span class="n">person</span><span class="o">.</span><span class="n">occupation</span><span class="p">())</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-7-RmFrZXIgT3V0cHV0" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-RmFrZXIgT3V0cHV0" name="RmFrZXIgT3V0cHV0" role="tab" tabindex="0">Faker Output</button><button aria-controls="panel-7-TWltZXNpcyBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-TWltZXNpcyBPdXRwdXQ=" name="TWltZXNpcyBPdXRwdXQ=" role="tab" tabindex="-1">Mimesis Output</button></div><div aria-labelledby="tab-7-RmFrZXIgT3V0cHV0" class="sphinx-tabs-panel code-tab group-tab" id="panel-7-RmFrZXIgT3V0cHV0" name="RmFrZXIgT3V0cHV0" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Faker Examples for Multiple Locales:
+
+EN_GB Example:
+Name: William Jennings
+Email: duncan32@example.net
+Job: Civil engineer, consulting
+
+EN_US Example:
+Name: Allison Hill
+Email: donaldgarcia@example.net
+Job: Sports administrator
+
+JA_JP Example:
+Name: 佐藤 淳
+Email: tomoyatakahashi@example.org
+Job: 測量士
+
+FR_FR Example:
+Name: Alexandre Traore
+Email: patrick32@example.net
+Job: boucher
+
+AR Example:
+Name: جلاء بنو العريج
+Email: dyaalhaby@example.net
+Job: رجل مباحث
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-7-TWltZXNpcyBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-7-TWltZXNpcyBPdXRwdXQ=" name="TWltZXNpcyBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Mimesis Examples for Multiple Locales:
+EN-GB Example:
+Full Name: Anthony Reilly
+Email: holds1871@live.com
+Job: Choreographer
+
+EN Example:
+Full Name: Anthony Reilly
+Email: holds1871@live.com
+Job: Choreographer
+
+JA Example:
+Full Name: 石松 田場
+Email: gilbert1852@yahoo.com
+Job: 巫女
+
+FR Example:
+Full Name: Alexy Rigal
+Email: holds1871@live.com
+Job: Responsable SAV (Service après-vente)
+
+AR-EG Example:
+Full Name: أيمن عبد الماجد باشا
+Email: gilbert1852@yahoo.com
+Job: تقني تدفئة وتكييف
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="generate-user-profiles-with-multiple-providers">
+<h3>4.3 Generate user profiles with multiple providers<a class="headerlink" href="#generate-user-profiles-with-multiple-providers" title="Permalink to this heading">#</a></h3>
+<p>Combining multiple providers allows you to create rich, realistic user profiles for testing and simulation.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-8-RmFrZXI=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-RmFrZXI=" name="RmFrZXI=" role="tab" tabindex="0">Faker</button><button aria-controls="panel-8-TWltZXNpcw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-TWltZXNpcw==" name="TWltZXNpcw==" role="tab" tabindex="-1">Mimesis</button></div><div aria-labelledby="tab-8-RmFrZXI=" class="sphinx-tabs-panel code-tab group-tab" id="panel-8-RmFrZXI=" name="RmFrZXI=" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">profile</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Name&quot;</span><span class="p">:</span> <span class="n">fake_uk</span><span class="o">.</span><span class="n">name</span><span class="p">(),</span>
+    <span class="s2">&quot;Address&quot;</span><span class="p">:</span> <span class="n">fake_uk</span><span class="o">.</span><span class="n">address</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;, &quot;</span><span class="p">),</span>
+    <span class="s2">&quot;Email&quot;</span><span class="p">:</span> <span class="n">fake_uk</span><span class="o">.</span><span class="n">email</span><span class="p">(),</span>
+    <span class="s2">&quot;Job&quot;</span><span class="p">:</span> <span class="n">fake_uk</span><span class="o">.</span><span class="n">job</span><span class="p">(),</span>
+    <span class="s2">&quot;Phone&quot;</span><span class="p">:</span> <span class="n">fake_uk</span><span class="o">.</span><span class="n">phone_number</span><span class="p">(),</span>
+    <span class="s2">&quot;Company&quot;</span><span class="p">:</span> <span class="n">fake_uk</span><span class="o">.</span><span class="n">company</span><span class="p">(),</span>
+    <span class="s2">&quot;Date of Birth&quot;</span><span class="p">:</span> <span class="n">fake_uk</span><span class="o">.</span><span class="n">date_of_birth</span><span class="p">(</span><span class="n">minimum_age</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">maximum_age</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Faker User Profile:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">profile</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-8-TWltZXNpcw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-8-TWltZXNpcw==" name="TWltZXNpcw==" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mimesis</span><span class="w"> </span><span class="kn">import</span> <span class="n">Address</span><span class="p">,</span> <span class="n">Finance</span><span class="p">,</span> <span class="n">Datetime</span>
+
+<span class="n">person</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="n">Locale</span><span class="o">.</span><span class="n">EN_GB</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">address</span> <span class="o">=</span> <span class="n">Address</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="n">Locale</span><span class="o">.</span><span class="n">EN_GB</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">finance</span> <span class="o">=</span> <span class="n">Finance</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="n">Locale</span><span class="o">.</span><span class="n">EN_GB</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">datetime</span> <span class="o">=</span> <span class="n">Datetime</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="n">Locale</span><span class="o">.</span><span class="n">EN_GB</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">profile_mimesis</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Name&quot;</span><span class="p">:</span> <span class="n">person</span><span class="o">.</span><span class="n">full_name</span><span class="p">(),</span>
+    <span class="s2">&quot;Address&quot;</span><span class="p">:</span> <span class="n">address</span><span class="o">.</span><span class="n">address</span><span class="p">(),</span>
+    <span class="s2">&quot;Email&quot;</span><span class="p">:</span> <span class="n">person</span><span class="o">.</span><span class="n">email</span><span class="p">(),</span>
+    <span class="s2">&quot;Job&quot;</span><span class="p">:</span> <span class="n">person</span><span class="o">.</span><span class="n">occupation</span><span class="p">(),</span>
+    <span class="s2">&quot;Phone&quot;</span><span class="p">:</span> <span class="n">person</span><span class="o">.</span><span class="n">telephone</span><span class="p">(),</span>
+    <span class="s2">&quot;Company&quot;</span><span class="p">:</span> <span class="n">finance</span><span class="o">.</span><span class="n">company</span><span class="p">(),</span>
+    <span class="s2">&quot;Date of Birth&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">formatted_date</span><span class="p">(</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1970</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="mi">2005</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mimesis User Profile:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">profile_mimesis</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-9-RmFrZXIgT3V0cHV0" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-RmFrZXIgT3V0cHV0" name="RmFrZXIgT3V0cHV0" role="tab" tabindex="0">Faker Output</button><button aria-controls="panel-9-TWltZXNpcyBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-TWltZXNpcyBPdXRwdXQ=" name="TWltZXNpcyBPdXRwdXQ=" role="tab" tabindex="-1">Mimesis Output</button></div><div aria-labelledby="tab-9-RmFrZXIgT3V0cHV0" class="sphinx-tabs-panel code-tab group-tab" id="panel-9-RmFrZXIgT3V0cHV0" name="RmFrZXIgT3V0cHV0" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Faker User Profile:
+Name: William Jennings
+Address: 2 Sian streets, New Maryton, E3 8ZA
+Email: francescaharrison@example.com
+Job: English as a second language teacher
+Phone: +44151 496 0940
+Company: Harrison LLC
+Date of Birth: 1972-04-21
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-9-TWltZXNpcyBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-9-TWltZXNpcyBPdXRwdXQ=" name="TWltZXNpcyBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Mimesis User Profile:
+Name: Anthony Reilly
+Address: 1310 Blaney Avenue
+Email: holds1871@live.com
+Job: Choreographer
+Phone: 01002 65774
+Company: Centrica
+Date of Birth: 1977-01-24
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="generating-text-using-faker-and-mimesis">
+<h3>4.4 Generating text using Faker and Mimesis<a class="headerlink" href="#generating-text-using-faker-and-mimesis" title="Permalink to this heading">#</a></h3>
+<p>Generating synthetic text is useful for testing NLP pipelines, populating free-text fields, or simulating survey responses. Here, we show how to generate random sentences, words, paragraphs, and quotes using both Faker and Mimesis, side by side.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-10-RmFrZXI=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-RmFrZXI=" name="RmFrZXI=" role="tab" tabindex="0">Faker</button><button aria-controls="panel-10-TWltZXNpcw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-TWltZXNpcw==" name="TWltZXNpcw==" role="tab" tabindex="-1">Mimesis</button></div><div aria-labelledby="tab-10-RmFrZXI=" class="sphinx-tabs-panel code-tab group-tab" id="panel-10-RmFrZXI=" name="RmFrZXI=" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">fake</span> <span class="o">=</span> <span class="n">Faker</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Sentence:&#39;</span><span class="p">,</span> <span class="n">fake</span><span class="o">.</span><span class="n">sentence</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Paragraph:&#39;</span><span class="p">,</span> <span class="n">fake</span><span class="o">.</span><span class="n">paragraph</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Text:&#39;</span><span class="p">,</span> <span class="n">fake</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">max_nb_chars</span><span class="o">=</span><span class="mi">100</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Word:&#39;</span><span class="p">,</span> <span class="n">fake</span><span class="o">.</span><span class="n">word</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Quote:&#39;</span><span class="p">,</span> <span class="n">fake</span><span class="o">.</span><span class="n">catch_phrase</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-10-TWltZXNpcw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-10-TWltZXNpcw==" name="TWltZXNpcw==" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mimesis</span><span class="w"> </span><span class="kn">import</span> <span class="n">Text</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="n">Text</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Sentence:&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">.</span><span class="n">sentence</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Paragraph:&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">quantity</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Text:&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">quantity</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Word:&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">.</span><span class="n">word</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Quote:&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">.</span><span class="n">quote</span><span class="p">())</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-11-RmFrZXIgT3V0cHV0" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-RmFrZXIgT3V0cHV0" name="RmFrZXIgT3V0cHV0" role="tab" tabindex="0">Faker Output</button><button aria-controls="panel-11-TWltZXNpcyBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-TWltZXNpcyBPdXRwdXQ=" name="TWltZXNpcyBPdXRwdXQ=" role="tab" tabindex="-1">Mimesis Output</button></div><div aria-labelledby="tab-11-RmFrZXIgT3V0cHV0" class="sphinx-tabs-panel code-tab group-tab" id="panel-11-RmFrZXIgT3V0cHV0" name="RmFrZXIgT3V0cHV0" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Sentence: Other hotel financial want nation.
+Paragraph: Kitchen together begin town draw story capital piece. Full which agency democratic election cold although because.
+Text: I president whatever very necessary seat color. Official behind yeah claim focus.
+Word: team
+Quote: Compatible modular adapter
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-11-TWltZXNpcyBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-11-TWltZXNpcyBPdXRwdXQ=" name="TWltZXNpcyBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Sentence: Messages can be sent to and received from ports, but these messages must obey the so-called &quot;port protocol.&quot;
+Paragraph: Haskell is a standardized, general-purpose purely functional programming language, with non-strict semantics and strong static typing.
+Text: Erlang is known for its designs that are well suited for systems. The sequential subset of Erlang supports eager evaluation, single assignment, and dynamic typing.
+Word: recipes
+Quote: I&#39;m gonna make him an offer he can&#39;t refuse.
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+<section id="generating-data-at-scale-with-pyspark">
+<h2>5. Generating data at scale with PySpark<a class="headerlink" href="#generating-data-at-scale-with-pyspark" title="Permalink to this heading">#</a></h2>
+<p>For large datasets, you can use Faker or Mimesis to generate data and load it into a Spark DataFrame. Below are parallel examples for both libraries.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-12-RmFrZXI=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-RmFrZXI=" name="RmFrZXI=" role="tab" tabindex="0">Faker</button><button aria-controls="panel-12-TWltZXNpcw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-TWltZXNpcw==" name="TWltZXNpcw==" role="tab" tabindex="-1">Mimesis</button></div><div aria-labelledby="tab-12-RmFrZXI=" class="sphinx-tabs-panel code-tab group-tab" id="panel-12-RmFrZXI=" name="RmFrZXI=" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparkSession</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;SyntheticDataExample&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
+
+<span class="n">n_rows</span> <span class="o">=</span> <span class="mi">1000</span>
+
+
+<span class="n">fake_uk</span> <span class="o">=</span> <span class="n">Faker</span><span class="p">(</span><span class="s1">&#39;en_GB&#39;</span><span class="p">)</span>
+<span class="n">fake_uk</span><span class="o">.</span><span class="n">seed_instance</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="n">faker_data</span> <span class="o">=</span> <span class="p">[(</span><span class="n">fake_uk</span><span class="o">.</span><span class="n">name</span><span class="p">(),</span> <span class="n">fake_uk</span><span class="o">.</span><span class="n">address</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;, &quot;</span><span class="p">),</span> <span class="n">fake_uk</span><span class="o">.</span><span class="n">email</span><span class="p">())</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">)]</span> 
+<span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Name&quot;</span><span class="p">,</span> <span class="s2">&quot;Address&quot;</span><span class="p">,</span> <span class="s2">&quot;Email&quot;</span><span class="p">]</span> 
+
+<span class="c1"># Check if in virtual environment</span>
+<span class="n">is_in_venv</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;VIRTUAL_ENV&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">is_in_venv</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;is_in_venv: </span><span class="si">{</span><span class="n">is_in_venv</span><span class="si">}</span><span class="s2"> | Spark DataFrame to be created from: spark.createDataFrame&quot;</span><span class="p">)</span>
+    <span class="n">df_spark</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">faker_data</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;is_in_venv: </span><span class="si">{</span><span class="n">is_in_venv</span><span class="si">}</span><span class="s2"> | Spark DataFrame to be created from: Pandas DataFrame -&gt; CSV -&gt; Spark DataFrame&quot;</span><span class="p">)</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+    <span class="n">df_pd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">faker_data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+
+    <span class="n">file_path</span> <span class="o">=</span> <span class="s2">&quot;personal_data_temp.csv&quot;</span>
+    <span class="n">df_pd</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">df_spark</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">df_spark</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-12-TWltZXNpcw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-12-TWltZXNpcw==" name="TWltZXNpcw==" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparkSession</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[2]&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;MimesisDataGeneration&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
+
+<span class="c1"># Check if in virtual environment</span>
+<span class="n">is_in_venv</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;VIRTUAL_ENV&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+<span class="n">person</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="n">Locale</span><span class="o">.</span><span class="n">EN_GB</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">finance</span> <span class="o">=</span> <span class="n">Finance</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="n">Locale</span><span class="o">.</span><span class="n">EN_GB</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="n">n_rows</span> <span class="o">=</span> <span class="mi">1000</span>
+
+<span class="n">mimesis_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;First Name&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">person</span><span class="o">.</span><span class="n">first_name</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">)],</span>
+    <span class="s2">&quot;Last Name&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">person</span><span class="o">.</span><span class="n">last_name</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">)],</span>
+    <span class="s2">&quot;Full Name&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">person</span><span class="o">.</span><span class="n">full_name</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">)],</span>
+    <span class="s2">&quot;Gender&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">person</span><span class="o">.</span><span class="n">gender</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">)],</span>
+    <span class="s2">&quot;Age&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">person</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">88</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">)],</span>
+    <span class="s2">&quot;Email&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">person</span><span class="o">.</span><span class="n">email</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">)],</span>
+    <span class="s2">&quot;Phone Number&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">person</span><span class="o">.</span><span class="n">phone_number</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">)],</span>
+    <span class="s2">&quot;Nationality&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">person</span><span class="o">.</span><span class="n">nationality</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">)],</span>
+    <span class="s2">&quot;Occupation&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">person</span><span class="o">.</span><span class="n">occupation</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">)],</span>
+    <span class="s2">&quot;Bank Name&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">finance</span><span class="o">.</span><span class="n">bank</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">)],</span>
+    <span class="s2">&quot;Company Name&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">finance</span><span class="o">.</span><span class="n">company</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">)],</span>
+    <span class="s2">&quot;Company Type&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">finance</span><span class="o">.</span><span class="n">company_type</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">)],</span>
+    <span class="s2">&quot;Cryptocurrency ISO Code&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">finance</span><span class="o">.</span><span class="n">cryptocurrency_iso_code</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">)],</span>
+    <span class="s2">&quot;Cryptocurrency Symbol&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">finance</span><span class="o">.</span><span class="n">cryptocurrency_symbol</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">)],</span>
+    <span class="s2">&quot;Currency ISO Code&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">finance</span><span class="o">.</span><span class="n">currency_iso_code</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">)],</span>
+    <span class="s2">&quot;Currency Symbol&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">finance</span><span class="o">.</span><span class="n">currency_symbol</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">)],</span>
+    <span class="s2">&quot;Random Price&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">finance</span><span class="o">.</span><span class="n">price</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">)],</span>
+    <span class="s2">&quot;Price in BTC&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">finance</span><span class="o">.</span><span class="n">price_in_btc</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">)],</span>
+    <span class="s2">&quot;Stock Exchange Name&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">finance</span><span class="o">.</span><span class="n">stock_exchange</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">)],</span>
+    <span class="s2">&quot;Stock Name&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">finance</span><span class="o">.</span><span class="n">stock_name</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">)],</span>
+    <span class="s2">&quot;Stock Ticker&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">finance</span><span class="o">.</span><span class="n">stock_ticker</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">)]</span>
+<span class="p">}</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">is_in_venv</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;is_in_venv: </span><span class="si">{</span><span class="n">is_in_venv</span><span class="si">}</span><span class="s2"> | Spark DataFrame to be created from: spark.createDataFrame&quot;</span><span class="p">)</span>
+    <span class="n">df_mimesis_spark</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span>
+        <span class="p">[(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">mimesis_data</span><span class="o">.</span><span class="n">values</span><span class="p">())],</span>
+        <span class="n">schema</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">mimesis_data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>  
+    <span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;is_in_venv: </span><span class="si">{</span><span class="n">is_in_venv</span><span class="si">}</span><span class="s2"> | Spark DataFrame to be created from: Pandas DataFrame -&gt; CSV -&gt; Spark DataFrame&quot;</span><span class="p">)</span>
+    <span class="n">df_mimesis_pd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">mimesis_data</span><span class="p">)</span>
+
+    <span class="n">file_path</span> <span class="o">=</span> <span class="s2">&quot;mimesis_data_temp.csv&quot;</span>
+    <span class="n">df_mimesis_pd</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">df_mimesis_spark</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+     
+<span class="n">df_mimesis_spark</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-13-RmFrZXIgT3V0cHV0" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-RmFrZXIgT3V0cHV0" name="RmFrZXIgT3V0cHV0" role="tab" tabindex="0">Faker Output</button><button aria-controls="panel-13-TWltZXNpcyBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-TWltZXNpcyBPdXRwdXQ=" name="TWltZXNpcyBPdXRwdXQ=" role="tab" tabindex="-1">Mimesis Output</button></div><div aria-labelledby="tab-13-RmFrZXIgT3V0cHV0" class="sphinx-tabs-panel code-tab group-tab" id="panel-13-RmFrZXIgT3V0cHV0" name="RmFrZXIgT3V0cHV0" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>is_in_venv: False | Spark DataFrame to be created from: spark.createDataFrame
+                                                                                
++--------------------+--------------------+--------------------+
+|                Name|             Address|               Email|
++--------------------+--------------------+--------------------+
+|    William Jennings|2 Sian streets, N...|francescaharrison...|
+|     Rosemary Wright|654 Robin track, ...|simpsongemma@exam...|
+|         Sean Norton|103 Robinson walk...|  rita19@example.net|
+|       Brenda Briggs|Studio 4, Lydia i...|iwilkins@example.org|
+|Leonard Powell-Mo...|Flat 32G, Green c...|andrea01@example.net|
++--------------------+--------------------+--------------------+
+only showing top 5 rows
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-13-TWltZXNpcyBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-13-TWltZXNpcyBPdXRwdXQ=" name="TWltZXNpcyBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>is_in_venv: False | Spark DataFrame to be created from: spark.createDataFrame
+                                                                                
++----------------+------+---+--------------------+-------------+-----------+--------------+--------------------+
+|       Full Name|Gender|Age|               Email| Phone Number|Nationality|    Occupation|           Bank Name|
++----------------+------+---+--------------------+-------------+-----------+--------------+--------------------+
+|  Anthony Reilly|  Male| 45| saw1917@outlook.com|023 5108 9063|  Ethiopian|        Brewer|National Counties...|
+|       Kaley Day| Other| 86|plan1855@protonma...|0893 286 9998|    Belgian| Horse Trainer|The Royal Bank of...|
+|Cleveland Osborn| Other| 23|finland2058@duck.com|0111 971 3359| Guatemalan|        Driver|Royal Bank of Sco...|
+|     Zack Holder|Female| 65|differ1890@proton...| 017582 12621| Ecuadorian|        Tailor|Paragon Banking G...|
+|     Arden Brady| Other| 82| aud2057@example.com|  0800 204605|      Greek|Bakery Manager|     Triodos Bank UK|
++----------------+------+---+--------------------+-------------+-----------+--------------+--------------------+
+only showing top 5 rows
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="generating-fake-population-data">
+<h2>6. Generating fake population data<a class="headerlink" href="#generating-fake-population-data" title="Permalink to this heading">#</a></h2>
+<p>Generating synthetic population data is essential for simulating census datasets, survey microdata, or anonymised samples. In this section, we demonstrate how to create tabular, population-like data with custom categories, such as sex, ethnicity, marital status, and employment status, while also simulating missing values, using the Mimesis library. The same approach and logic can be applied with the Faker library.</p>
+<p>Note: To generate a name consistent with a specific gender, use the <code class="docutils literal notranslate"><span class="pre">.person().first_name()</span></code> and <code class="docutils literal notranslate"><span class="pre">.person().last_name()</span></code> methods separately, specifying the gender for the first name with the <code class="docutils literal notranslate"><span class="pre">Gender.MALE</span></code> or <code class="docutils literal notranslate"><span class="pre">Gender.FEMALE</span></code> enum from Mimesis. This ensures that gender-related fields (such as first name and title) are logically consistent within each synthetic record.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-14-RmFrZXI=" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-14-RmFrZXI=" name="RmFrZXI=" role="tab" tabindex="0">Faker</button><button aria-controls="panel-14-TWltZXNpcw==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-14-TWltZXNpcw==" name="TWltZXNpcw==" role="tab" tabindex="-1">Mimesis</button></div><div aria-labelledby="tab-14-RmFrZXI=" class="sphinx-tabs-panel code-tab group-tab" id="panel-14-RmFrZXI=" name="RmFrZXI=" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">faker</span><span class="w"> </span><span class="kn">import</span> <span class="n">Faker</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparkSession</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">StructType</span><span class="p">,</span> <span class="n">StructField</span><span class="p">,</span> <span class="n">StringType</span><span class="p">,</span> <span class="n">IntegerType</span>
+
+<span class="n">fake</span> <span class="o">=</span> <span class="n">Faker</span><span class="p">(</span><span class="s1">&#39;en_GB&#39;</span><span class="p">)</span>
+<span class="n">Faker</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="n">n_rows</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">shared_address_rows</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="n">schema</span> <span class="o">=</span> <span class="n">StructType</span><span class="p">([</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s1">&#39;ID&#39;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s1">&#39;SOURCE_FILE&#39;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s1">&#39;TIME_STAMP&#39;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s1">&#39;Local_Authority&#39;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s1">&#39;Postcode&#39;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s1">&#39;Address_Line_1&#39;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s1">&#39;Address_Line_2&#39;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s1">&#39;Address_Line_3&#39;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s1">&#39;Address_Line_4&#39;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s1">&#39;Address_Line_5&#39;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s1">&#39;Address_Line_6&#39;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s1">&#39;Last_Name&#39;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s1">&#39;First_Name&#39;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s1">&#39;Sex&#39;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s1">&#39;Title&#39;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s1">&#39;Marital_Status&#39;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s1">&#39;DOB&#39;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s1">&#39;Ethnicity&#39;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s1">&#39;Education_Level&#39;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s1">&#39;Nationality&#39;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s1">&#39;Income&#39;</span><span class="p">,</span> <span class="n">IntegerType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s1">&#39;Employment_Status&#39;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s1">&#39;Academic_Degree&#39;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="n">StructField</span><span class="p">(</span><span class="s1">&#39;guid&#39;</span><span class="p">,</span> <span class="n">StringType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">)</span>
+<span class="p">])</span>
+
+<span class="n">categories</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;sex&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Male&#39;</span><span class="p">,</span> <span class="s1">&#39;Female&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;marital_status&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;Male&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Single&#39;</span><span class="p">,</span> <span class="s1">&#39;Married&#39;</span><span class="p">,</span> <span class="s1">&#39;Divorced&#39;</span><span class="p">,</span> <span class="s1">&#39;Widowed&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;Female&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Single&#39;</span><span class="p">,</span> <span class="s1">&#39;Married&#39;</span><span class="p">,</span> <span class="s1">&#39;Divorced&#39;</span><span class="p">,</span> <span class="s1">&#39;Widowed&#39;</span><span class="p">]</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;education_level&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s1">&#39;No Qualifications&#39;</span><span class="p">,</span> <span class="s1">&#39;GCSEs&#39;</span><span class="p">,</span> <span class="s1">&#39;A-Levels&#39;</span><span class="p">,</span> <span class="s1">&#39;Apprenticeship&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;Bachelor&#39;s Degree&quot;</span><span class="p">,</span> <span class="s2">&quot;Master&#39;s Degree&quot;</span><span class="p">,</span> <span class="s1">&#39;PhD&#39;</span>
+    <span class="p">],</span>
+    <span class="s1">&#39;ethnicity&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;White&#39;</span><span class="p">,</span> <span class="s1">&#39;Black&#39;</span><span class="p">,</span> <span class="s1">&#39;Asian&#39;</span><span class="p">,</span> <span class="s1">&#39;Mixed&#39;</span><span class="p">,</span> <span class="s1">&#39;Other&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;employment_status&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Employed&#39;</span><span class="p">,</span> <span class="s1">&#39;Unemployed&#39;</span><span class="p">,</span> <span class="s1">&#39;Student&#39;</span><span class="p">,</span> <span class="s1">&#39;Retired&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;academic_degree&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;None&quot;</span><span class="p">,</span> <span class="s2">&quot;Bachelor&#39;s Degree&quot;</span><span class="p">,</span> <span class="s2">&quot;Master&#39;s Degree&quot;</span><span class="p">,</span> <span class="s2">&quot;PhD&quot;</span><span class="p">,</span> <span class="s2">&quot;Diploma&quot;</span><span class="p">,</span> <span class="s2">&quot;Certificate&quot;</span>
+    <span class="p">],</span>
+    <span class="s1">&#39;nationality&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;British&quot;</span><span class="p">,</span> <span class="s2">&quot;Irish&quot;</span><span class="p">,</span> <span class="s2">&quot;Polish&quot;</span><span class="p">,</span> <span class="s2">&quot;Indian&quot;</span><span class="p">,</span> <span class="s2">&quot;Pakistani&quot;</span><span class="p">,</span> <span class="s2">&quot;Nigerian&quot;</span><span class="p">,</span> <span class="s2">&quot;Chinese&quot;</span><span class="p">,</span> <span class="s2">&quot;Other&quot;</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">maybe_missing</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">val</span> <span class="k">if</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">p</span> <span class="k">else</span> <span class="kc">None</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">random_timestamp</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span>
+
+<span class="n">shared_address</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Local_Authority&#39;</span><span class="p">:</span> <span class="n">fake</span><span class="o">.</span><span class="n">county</span><span class="p">(),</span>
+    <span class="s1">&#39;Postcode&#39;</span><span class="p">:</span> <span class="n">fake</span><span class="o">.</span><span class="n">postcode</span><span class="p">(),</span>
+    <span class="s1">&#39;Address_Line_1&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">200</span><span class="p">)),</span>
+    <span class="s1">&#39;Address_Line_2&#39;</span><span class="p">:</span> <span class="n">fake</span><span class="o">.</span><span class="n">street_name</span><span class="p">(),</span>
+    <span class="s1">&#39;Address_Line_3&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s1">&#39;Address_Line_4&#39;</span><span class="p">:</span> <span class="n">fake</span><span class="o">.</span><span class="n">city</span><span class="p">(),</span>
+    <span class="s1">&#39;Address_Line_5&#39;</span><span class="p">:</span> <span class="n">fake</span><span class="o">.</span><span class="n">country</span><span class="p">(),</span>
+    <span class="s1">&#39;Address_Line_6&#39;</span><span class="p">:</span> <span class="s1">&#39;United Kingdom&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">columns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;ID&#39;</span><span class="p">,</span> <span class="s1">&#39;SOURCE_FILE&#39;</span><span class="p">,</span> <span class="s1">&#39;TIME_STAMP&#39;</span><span class="p">,</span> <span class="s1">&#39;Local_Authority&#39;</span><span class="p">,</span> <span class="s1">&#39;Postcode&#39;</span><span class="p">,</span> <span class="s1">&#39;Address_Line_1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Address_Line_2&#39;</span><span class="p">,</span> <span class="s1">&#39;Address_Line_3&#39;</span><span class="p">,</span> <span class="s1">&#39;Address_Line_4&#39;</span><span class="p">,</span> <span class="s1">&#39;Address_Line_5&#39;</span><span class="p">,</span> <span class="s1">&#39;Address_Line_6&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Last_Name&#39;</span><span class="p">,</span> <span class="s1">&#39;First_Name&#39;</span><span class="p">,</span> <span class="s1">&#39;Sex&#39;</span><span class="p">,</span> <span class="s1">&#39;Title&#39;</span><span class="p">,</span> <span class="s1">&#39;Marital_Status&#39;</span><span class="p">,</span> <span class="s1">&#39;DOB&#39;</span><span class="p">,</span> <span class="s1">&#39;Ethnicity&#39;</span><span class="p">,</span> <span class="s1">&#39;Education_Level&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Nationality&#39;</span><span class="p">,</span> <span class="s1">&#39;Income&#39;</span><span class="p">,</span> <span class="s1">&#39;Employment_Status&#39;</span><span class="p">,</span> <span class="s1">&#39;Academic_Degree&#39;</span><span class="p">,</span> <span class="s1">&#39;guid&#39;</span>
+<span class="p">]</span>
+
+<span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">):</span>
+    <span class="n">sex</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">categories</span><span class="p">[</span><span class="s1">&#39;sex&#39;</span><span class="p">])</span>
+    <span class="n">first_name</span> <span class="o">=</span> <span class="n">fake</span><span class="o">.</span><span class="n">first_name_male</span><span class="p">()</span> <span class="k">if</span> <span class="n">sex</span> <span class="o">==</span> <span class="s1">&#39;Male&#39;</span> <span class="k">else</span> <span class="n">fake</span><span class="o">.</span><span class="n">first_name_female</span><span class="p">()</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="s1">&#39;Mr&#39;</span><span class="p">,</span> <span class="s1">&#39;Dr&#39;</span><span class="p">,</span> <span class="s1">&#39;Prof&#39;</span><span class="p">])</span> <span class="k">if</span> <span class="n">sex</span> <span class="o">==</span> <span class="s1">&#39;Male&#39;</span> <span class="k">else</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="s1">&#39;Ms&#39;</span><span class="p">,</span> <span class="s1">&#39;Mrs&#39;</span><span class="p">,</span> <span class="s1">&#39;Miss&#39;</span><span class="p">,</span> <span class="s1">&#39;Dr&#39;</span><span class="p">,</span> <span class="s1">&#39;Prof&#39;</span><span class="p">])</span>
+    <span class="n">last_name</span> <span class="o">=</span> <span class="n">fake</span><span class="o">.</span><span class="n">last_name</span><span class="p">()</span>
+    <span class="n">marital_status</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">categories</span><span class="p">[</span><span class="s1">&#39;marital_status&#39;</span><span class="p">][</span><span class="n">sex</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">n_rows</span> <span class="o">-</span> <span class="n">shared_address_rows</span><span class="p">:</span>
+        <span class="n">address</span> <span class="o">=</span> <span class="n">shared_address</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">address</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;Local_Authority&#39;</span><span class="p">:</span> <span class="n">fake</span><span class="o">.</span><span class="n">county</span><span class="p">(),</span>
+            <span class="s1">&#39;Postcode&#39;</span><span class="p">:</span> <span class="n">fake</span><span class="o">.</span><span class="n">postcode</span><span class="p">(),</span>
+            <span class="s1">&#39;Address_Line_1&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">200</span><span class="p">)),</span>
+            <span class="s1">&#39;Address_Line_2&#39;</span><span class="p">:</span> <span class="n">fake</span><span class="o">.</span><span class="n">street_name</span><span class="p">(),</span>
+            <span class="s1">&#39;Address_Line_3&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;Address_Line_4&#39;</span><span class="p">:</span> <span class="n">fake</span><span class="o">.</span><span class="n">city</span><span class="p">(),</span>
+            <span class="s1">&#39;Address_Line_5&#39;</span><span class="p">:</span> <span class="n">fake</span><span class="o">.</span><span class="n">country</span><span class="p">(),</span>
+            <span class="s1">&#39;Address_Line_6&#39;</span><span class="p">:</span> <span class="s1">&#39;United Kingdom&#39;</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="n">age</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">99</span><span class="p">)</span>
+    <span class="n">dob</span> <span class="o">=</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">age</span><span class="o">*</span><span class="mi">365</span> <span class="o">+</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">364</span><span class="p">)))</span>
+    <span class="n">income_val</span> <span class="o">=</span> <span class="n">maybe_missing</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">25000</span><span class="p">,</span> <span class="mi">75000</span><span class="p">))</span>
+    <span class="n">income_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">income_val</span><span class="p">)</span> <span class="k">if</span> <span class="n">income_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="n">row</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;ID&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">n_rows</span><span class="p">))),</span>
+        <span class="s1">&#39;SOURCE_FILE&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fake</span><span class="o">.</span><span class="n">user_name</span><span class="p">()</span><span class="si">}</span><span class="s2">.csv&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;TIME_STAMP&#39;</span><span class="p">:</span> <span class="n">random_timestamp</span><span class="p">(),</span>
+        <span class="o">**</span><span class="n">address</span><span class="p">,</span>
+        <span class="s1">&#39;Last_Name&#39;</span><span class="p">:</span> <span class="n">last_name</span><span class="p">,</span>
+        <span class="s1">&#39;First_Name&#39;</span><span class="p">:</span> <span class="n">first_name</span><span class="p">,</span>
+        <span class="s1">&#39;Sex&#39;</span><span class="p">:</span> <span class="n">sex</span><span class="p">,</span>
+        <span class="s1">&#39;Title&#39;</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span>
+        <span class="s1">&#39;Marital_Status&#39;</span><span class="p">:</span> <span class="n">marital_status</span><span class="p">,</span>
+        <span class="s1">&#39;DOB&#39;</span><span class="p">:</span> <span class="n">dob</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">-%m-%Y&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;Ethnicity&#39;</span><span class="p">:</span> <span class="n">maybe_missing</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">categories</span><span class="p">[</span><span class="s1">&#39;ethnicity&#39;</span><span class="p">])),</span>
+        <span class="s1">&#39;Education_Level&#39;</span><span class="p">:</span> <span class="n">maybe_missing</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">categories</span><span class="p">[</span><span class="s1">&#39;education_level&#39;</span><span class="p">])),</span>
+        <span class="s1">&#39;Nationality&#39;</span><span class="p">:</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">categories</span><span class="p">[</span><span class="s1">&#39;nationality&#39;</span><span class="p">]),</span>
+        <span class="s1">&#39;Income&#39;</span><span class="p">:</span> <span class="n">income_val</span><span class="p">,</span>
+        <span class="s1">&#39;Employment_Status&#39;</span><span class="p">:</span> <span class="n">maybe_missing</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">categories</span><span class="p">[</span><span class="s1">&#39;employment_status&#39;</span><span class="p">])),</span>
+        <span class="s1">&#39;Academic_Degree&#39;</span><span class="p">:</span> <span class="n">maybe_missing</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">categories</span><span class="p">[</span><span class="s1">&#39;academic_degree&#39;</span><span class="p">])),</span>
+        <span class="s1">&#39;guid&#39;</span><span class="p">:</span> <span class="n">fake</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span>
+    <span class="p">}</span>
+    <span class="c1"># Ensure all keys are present</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">row</span><span class="p">:</span>
+            <span class="n">row</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+<span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;FakerData&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
+<span class="n">is_in_venv</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;VIRTUAL_ENV&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+<span class="k">if</span> <span class="n">is_in_venv</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;is_in_venv: </span><span class="si">{</span><span class="n">is_in_venv</span><span class="si">}</span><span class="s2"> | Spark DataFrame to be created from: CSV file&quot;</span><span class="p">)</span>
+    <span class="n">file_path</span> <span class="o">=</span> <span class="s2">&quot;population_data_temp_faker.csv&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">csv</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictWriter</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">fieldnames</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">writeheader</span><span class="p">()</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">writerows</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+    <span class="n">population_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">schema</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;is_in_venv: </span><span class="si">{</span><span class="n">is_in_venv</span><span class="si">}</span><span class="s2"> | Spark DataFrame to be created from: spark.createDataFrame&quot;</span><span class="p">)</span>
+    <span class="n">population_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">schema</span><span class="p">)</span>
+
+<span class="c1"># To display the first 9 columns and 5 rows</span>
+<span class="n">population_df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">population_df</span><span class="o">.</span><span class="n">columns</span><span class="p">[:</span><span class="mi">9</span><span class="p">])</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># Or if you want to show specific columns</span>
+<span class="n">cols_to_show</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">,</span> <span class="s2">&quot;First_Name&quot;</span><span class="p">,</span> <span class="s2">&quot;Last_Name&quot;</span><span class="p">,</span> <span class="s2">&quot;Title&quot;</span><span class="p">,</span> <span class="s2">&quot;Sex&quot;</span><span class="p">,</span> <span class="s2">&quot;DOB&quot;</span><span class="p">,</span> <span class="s2">&quot;Ethnicity&quot;</span><span class="p">,</span> <span class="s2">&quot;Address_Line_1&quot;</span><span class="p">,</span> <span class="s2">&quot;Address_Line_2&quot;</span><span class="p">,</span> <span class="s2">&quot;Postcode&quot;</span><span class="p">]</span>
+<span class="n">population_df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cols_to_show</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-14-TWltZXNpcw==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-14-TWltZXNpcw==" name="TWltZXNpcw==" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mimesis</span><span class="w"> </span><span class="kn">import</span> <span class="n">Generic</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mimesis.locales</span><span class="w"> </span><span class="kn">import</span> <span class="n">Locale</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mimesis.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">Gender</span><span class="p">,</span> <span class="n">TitleType</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+
+<span class="n">generic</span> <span class="o">=</span> <span class="n">Generic</span><span class="p">(</span><span class="n">locale</span><span class="o">=</span><span class="n">Locale</span><span class="o">.</span><span class="n">EN_GB</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="n">n_rows</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">shared_address_rows</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="n">categories</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;sex&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Male&#39;</span><span class="p">,</span> <span class="s1">&#39;Female&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;marital_status&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;Male&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Single&#39;</span><span class="p">,</span> <span class="s1">&#39;Married&#39;</span><span class="p">,</span> <span class="s1">&#39;Divorced&#39;</span><span class="p">,</span> <span class="s1">&#39;Widowed&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;Female&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Single&#39;</span><span class="p">,</span> <span class="s1">&#39;Married&#39;</span><span class="p">,</span> <span class="s1">&#39;Divorced&#39;</span><span class="p">,</span> <span class="s1">&#39;Widowed&#39;</span><span class="p">]</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;education_level&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s1">&#39;No Qualifications&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;GCSEs&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;A-Levels&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Apprenticeship&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;Bachelor&#39;s Degree&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Master&#39;s Degree&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;PhD&#39;</span>
+    <span class="p">],</span>
+    <span class="s1">&#39;ethnicity&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;White&#39;</span><span class="p">,</span> <span class="s1">&#39;Black&#39;</span><span class="p">,</span> <span class="s1">&#39;Asian&#39;</span><span class="p">,</span> <span class="s1">&#39;Mixed&#39;</span><span class="p">,</span> <span class="s1">&#39;Other&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;employment_status&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Employed&#39;</span><span class="p">,</span> <span class="s1">&#39;Unemployed&#39;</span><span class="p">,</span> <span class="s1">&#39;Student&#39;</span><span class="p">,</span> <span class="s1">&#39;Retired&#39;</span><span class="p">]</span>
+<span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">maybe_missing</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">val</span> <span class="k">if</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">p</span> <span class="k">else</span> <span class="kc">None</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">random_timestamp</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span>
+
+<span class="c1"># Shared address for a group</span>
+<span class="n">shared_address</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Local_Authority&#39;</span><span class="p">:</span> <span class="n">generic</span><span class="o">.</span><span class="n">address</span><span class="o">.</span><span class="n">region</span><span class="p">(),</span>
+    <span class="s1">&#39;Postcode&#39;</span><span class="p">:</span> <span class="n">generic</span><span class="o">.</span><span class="n">address</span><span class="o">.</span><span class="n">postal_code</span><span class="p">(),</span>
+    <span class="s1">&#39;Address_Line_1&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">generic</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">200</span><span class="p">)),</span>
+    <span class="s1">&#39;Address_Line_2&#39;</span><span class="p">:</span> <span class="n">generic</span><span class="o">.</span><span class="n">address</span><span class="o">.</span><span class="n">street_name</span><span class="p">(),</span>
+    <span class="s1">&#39;Address_Line_3&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+    <span class="s1">&#39;Address_Line_4&#39;</span><span class="p">:</span> <span class="n">generic</span><span class="o">.</span><span class="n">address</span><span class="o">.</span><span class="n">city</span><span class="p">(),</span>
+    <span class="s1">&#39;Address_Line_5&#39;</span><span class="p">:</span> <span class="n">generic</span><span class="o">.</span><span class="n">address</span><span class="o">.</span><span class="n">country</span><span class="p">(),</span>
+    <span class="s1">&#39;Address_Line_6&#39;</span><span class="p">:</span> <span class="s1">&#39;United Kingdom&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Local_Authority&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;Postcode&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;Address_Line_1&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;Address_Line_2&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;Address_Line_3&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;Address_Line_4&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;Address_Line_5&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;Address_Line_6&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;Last_Name&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;First_Name&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;Sex&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;Title&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;Marital_Status&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;guid&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;SOURCE_FILE&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;DOB&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;Ethnicity&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;Education_Level&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;TIME_STAMP&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;Nationality&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;Income&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;Employment_Status&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;Academic_Degree&#39;</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">}</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">):</span>
+    <span class="c1"># Assign sex</span>
+    <span class="n">sex</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">categories</span><span class="p">[</span><span class="s1">&#39;sex&#39;</span><span class="p">])</span>
+    <span class="n">gender_enum</span> <span class="o">=</span> <span class="n">Gender</span><span class="o">.</span><span class="n">MALE</span> <span class="k">if</span> <span class="n">sex</span> <span class="o">==</span> <span class="s1">&#39;Male&#39;</span> <span class="k">else</span> <span class="n">Gender</span><span class="o">.</span><span class="n">FEMALE</span>
+    <span class="c1"># First name and title consistent with sex</span>
+    <span class="n">first_name</span> <span class="o">=</span> <span class="n">generic</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">first_name</span><span class="p">(</span><span class="n">gender</span><span class="o">=</span><span class="n">gender_enum</span><span class="p">)</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">generic</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">gender</span><span class="o">=</span><span class="n">gender_enum</span><span class="p">,</span> <span class="n">title_type</span><span class="o">=</span><span class="n">TitleType</span><span class="o">.</span><span class="n">TYPICAL</span><span class="p">)</span>
+    <span class="c1"># Marital status consistent with sex</span>
+    <span class="n">marital_status</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">categories</span><span class="p">[</span><span class="s1">&#39;marital_status&#39;</span><span class="p">][</span><span class="n">sex</span><span class="p">])</span>
+    <span class="c1"># Shared address for last shared_address_rows</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">n_rows</span> <span class="o">-</span> <span class="n">shared_address_rows</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">shared_address</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">shared_address</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Local_Authority&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">generic</span><span class="o">.</span><span class="n">address</span><span class="o">.</span><span class="n">region</span><span class="p">())</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Postcode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">generic</span><span class="o">.</span><span class="n">address</span><span class="o">.</span><span class="n">postal_code</span><span class="p">())</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Address_Line_1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">generic</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">200</span><span class="p">)))</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Address_Line_2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">generic</span><span class="o">.</span><span class="n">address</span><span class="o">.</span><span class="n">street_name</span><span class="p">())</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Address_Line_3&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Address_Line_4&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">generic</span><span class="o">.</span><span class="n">address</span><span class="o">.</span><span class="n">city</span><span class="p">())</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Address_Line_5&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">generic</span><span class="o">.</span><span class="n">address</span><span class="o">.</span><span class="n">country</span><span class="p">())</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Address_Line_6&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;United Kingdom&#39;</span><span class="p">)</span>
+    <span class="c1"># Names and other fields</span>
+    <span class="n">last_name</span> <span class="o">=</span> <span class="n">generic</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">last_name</span><span class="p">()</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Last_Name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">last_name</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;First_Name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">first_name</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Sex&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sex</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Title&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Marital_Status&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">marital_status</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;guid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">generic</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">password</span><span class="p">())</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;SOURCE_FILE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">generic</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">username</span><span class="p">(</span><span class="n">mask</span><span class="o">=</span><span class="s1">&#39;l_l&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">.csv&quot;</span><span class="p">)</span>
+    <span class="c1"># Date of Birth: Randomly generate between ages 18-99</span>
+    <span class="n">dob_year</span> <span class="o">=</span> <span class="n">generic</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1925</span><span class="p">,</span> <span class="mi">2007</span><span class="p">)</span>
+    <span class="n">dob_month</span> <span class="o">=</span> <span class="n">generic</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+    <span class="n">dob_day</span> <span class="o">=</span> <span class="n">generic</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">28</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;DOB&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dob_day</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">dob_month</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">dob_year</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Ethnicity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">maybe_missing</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">categories</span><span class="p">[</span><span class="s1">&#39;ethnicity&#39;</span><span class="p">])))</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Education_Level&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">maybe_missing</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">categories</span><span class="p">[</span><span class="s1">&#39;education_level&#39;</span><span class="p">])))</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;TIME_STAMP&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">random_timestamp</span><span class="p">())</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Nationality&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">generic</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">nationality</span><span class="p">())</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Income&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">maybe_missing</span><span class="p">(</span><span class="n">generic</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">25000</span><span class="p">,</span> <span class="mi">75000</span><span class="p">)))</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Employment_Status&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">maybe_missing</span><span class="p">(</span><span class="n">generic</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">categories</span><span class="p">[</span><span class="s1">&#39;employment_status&#39;</span><span class="p">])))</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Academic_Degree&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">maybe_missing</span><span class="p">(</span><span class="n">generic</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">academic_degree</span><span class="p">()))</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="c1"># Add ID column starting from 1</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">n_rows</span><span class="p">)))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_rows</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+<span class="c1"># Reorder columns</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span>
+    <span class="s1">&#39;ID&#39;</span><span class="p">,</span> <span class="s1">&#39;SOURCE_FILE&#39;</span><span class="p">,</span> <span class="s1">&#39;TIME_STAMP&#39;</span><span class="p">,</span> <span class="s1">&#39;Local_Authority&#39;</span><span class="p">,</span> <span class="s1">&#39;Postcode&#39;</span><span class="p">,</span> <span class="s1">&#39;Address_Line_1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Address_Line_2&#39;</span><span class="p">,</span> <span class="s1">&#39;Address_Line_3&#39;</span><span class="p">,</span> <span class="s1">&#39;Address_Line_4&#39;</span><span class="p">,</span> <span class="s1">&#39;Address_Line_5&#39;</span><span class="p">,</span> <span class="s1">&#39;Address_Line_6&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Last_Name&#39;</span><span class="p">,</span> <span class="s1">&#39;First_Name&#39;</span><span class="p">,</span> <span class="s1">&#39;Sex&#39;</span><span class="p">,</span> <span class="s1">&#39;Title&#39;</span><span class="p">,</span> <span class="s1">&#39;Marital_Status&#39;</span><span class="p">,</span> <span class="s1">&#39;DOB&#39;</span><span class="p">,</span> <span class="s1">&#39;Ethnicity&#39;</span><span class="p">,</span> <span class="s1">&#39;Education_Level&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Nationality&#39;</span><span class="p">,</span> <span class="s1">&#39;Income&#39;</span><span class="p">,</span> <span class="s1">&#39;Employment_Status&#39;</span><span class="p">,</span> <span class="s1">&#39;Academic_Degree&#39;</span><span class="p">,</span> <span class="s1">&#39;guid&#39;</span>
+<span class="p">]]</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+
+<span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;MimesisData&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
+
+<span class="c1"># Check if in virtual environment</span>
+<span class="n">is_in_venv</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;VIRTUAL_ENV&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+<span class="k">if</span> <span class="n">is_in_venv</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;is_in_venv: </span><span class="si">{</span><span class="n">is_in_venv</span><span class="si">}</span><span class="s2"> | Spark DataFrame to be created from: Pandas DataFrame -&gt; CSV -&gt; Spark DataFrame&quot;</span><span class="p">)</span>
+    <span class="n">file_path</span> <span class="o">=</span> <span class="s2">&quot;population_data_temp.csv&quot;</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">population_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;is_in_venv: </span><span class="si">{</span><span class="n">is_in_venv</span><span class="si">}</span><span class="s2"> | Spark DataFrame to be created from: spark.createDataFrame&quot;</span><span class="p">)</span>
+    <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">iteritems</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">items</span>
+    <span class="n">population_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+    
+<span class="c1"># To display the first 9 columns and 5 rows</span>
+<span class="n">population_df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">population_df</span><span class="o">.</span><span class="n">columns</span><span class="p">[:</span><span class="mi">9</span><span class="p">])</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># Or if you want to show specific columns</span>
+<span class="n">cols_to_show</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">,</span> <span class="s2">&quot;First_Name&quot;</span><span class="p">,</span> <span class="s2">&quot;Last_Name&quot;</span><span class="p">,</span> <span class="s2">&quot;Title&quot;</span><span class="p">,</span> <span class="s2">&quot;Sex&quot;</span><span class="p">,</span> <span class="s2">&quot;DOB&quot;</span><span class="p">,</span> <span class="s2">&quot;Ethnicity&quot;</span><span class="p">,</span> <span class="s2">&quot;Address_Line_1&quot;</span><span class="p">,</span> <span class="s2">&quot;Address_Line_2&quot;</span><span class="p">,</span> <span class="s2">&quot;Postcode&quot;</span><span class="p">]</span>
+<span class="n">population_df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cols_to_show</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-15-RmFrZXIgT3V0cHV0" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-15-RmFrZXIgT3V0cHV0" name="RmFrZXIgT3V0cHV0" role="tab" tabindex="0">Faker Output</button><button aria-controls="panel-15-TWltZXNpcyBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-15-TWltZXNpcyBPdXRwdXQ=" name="TWltZXNpcyBPdXRwdXQ=" role="tab" tabindex="-1">Mimesis Output</button></div><div aria-labelledby="tab-15-RmFrZXIgT3V0cHV0" class="sphinx-tabs-panel code-tab group-tab" id="panel-15-RmFrZXIgT3V0cHV0" name="RmFrZXIgT3V0cHV0" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>is_in_venv: False | Spark DataFrame to be created from: spark.createDataFrame
+                                                                                
++----+----------------+-------------------+---------------+--------+--------------+---------------+--------------+-----------------+
+|  ID|     SOURCE_FILE|         TIME_STAMP|Local_Authority|Postcode|Address_Line_1| Address_Line_2|Address_Line_3|   Address_Line_4|
++----+----------------+-------------------+---------------+--------+--------------+---------------+--------------+-----------------+
+|0001|  evansleigh.csv|2025-07-01 14:05:16|   Glasgow City| S37 0GS|            63|    White forge|          null|      Timothyland|
+|0002|palmersandra.csv|2025-07-01 14:05:16|  Pembrokeshire|  M9 9HD|            57|    Irene forks|          null|        Jasonbury|
+|0003|  wilsonryan.csv|2025-07-01 14:05:16|       Stirling| SN1 8JG|            89|     Lamb route|          null|      Lake Victor|
+|0004|      ievans.csv|2025-07-01 14:05:16|       Highland|HD3X 6TF|            60|Davidson summit|          null|     Fionachester|
+|0005|     jemma51.csv|2025-07-01 14:05:16|     Lancashire|CW6W 6RZ|            98|     Hill plaza|          null|Lake Geoffreyside|
++----+----------------+-------------------+---------------+--------+--------------+---------------+--------------+-----------------+
+only showing top 5 rows
+
++----+----------+---------+-----+------+----------+---------+--------------+---------------+--------+
+|  ID|First_Name|Last_Name|Title|   Sex|       DOB|Ethnicity|Address_Line_1| Address_Line_2|Postcode|
++----+----------+---------+-----+------+----------+---------+--------------+---------------+--------+
+|0001|    Howard|   Foster|   Mr|  Male|03-05-1979|     null|            63|    White forge| S37 0GS|
+|0002|   Bernard|Wilkinson| Prof|  Male|22-09-1949|    White|            57|    Irene forks|  M9 9HD|
+|0003|    Sheila|    Evans|   Ms|Female|12-03-1930|    Other|            89|     Lamb route| SN1 8JG|
+|0004|      Ryan|    Kelly|   Dr|  Male|27-12-1994|    Asian|            60|Davidson summit|HD3X 6TF|
+|0005|     Peter|   Taylor|   Mr|  Male|21-08-1972|    Asian|            98|     Hill plaza|CW6W 6RZ|
++----+----------+---------+-----+------+----------+---------+--------------+---------------+--------+
+only showing top 5 rows
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-15-TWltZXNpcyBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-15-TWltZXNpcyBPdXRwdXQ=" name="TWltZXNpcyBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>is_in_venv: False | Spark DataFrame to be created from: spark.createDataFrame
+                                                                                
++----+--------------------+-------------------+----------------+--------+--------------+--------------+--------------+--------------+
+|  ID|         SOURCE_FILE|         TIME_STAMP| Local_Authority|Postcode|Address_Line_1|Address_Line_2|Address_Line_3|Address_Line_4|
++----+--------------------+-------------------+----------------+--------+--------------+--------------+--------------+--------------+
+|0001|guitars_appeared.csv|2025-07-01 13:57:58|   County Armagh|FN0F 6OF|           190|   Invergourie|           NaN|         Luton|
+|0002|motors_chronicle.csv|2025-07-01 13:57:58|            Avon|TE4H 2TC|            57|  Druminiskill|           NaN|     Charlbury|
+|0003|  buffalo_grande.csv|2025-07-01 13:57:58|         Norfolk|PU7N 9JO|           187|     Killylane|           NaN|       Redhill|
+|0004|    treating_dsl.csv|2025-07-01 13:57:58|           Essex|SB2H 0GC|           117|  Craigatempin|           NaN|   Wednesfield|
+|0005|mariah_substantia...|2025-07-01 13:57:58|Northamptonshire|EJ6S 6BQ|           176|     Granshagh|           NaN|     Kirkcaldy|
++----+--------------------+-------------------+----------------+--------+--------------+--------------+--------------+--------------+
+only showing top 5 rows
+
++----+----------+---------+-----+------+----------+---------+--------------+--------------+--------+
+|  ID|First_Name|Last_Name|Title|   Sex|       DOB|Ethnicity|Address_Line_1|Address_Line_2|Postcode|
++----+----------+---------+-----+------+----------+---------+--------------+--------------+--------+
+|0001| Cornelius| Ferguson|  Mr.|  Male|23-04-1996|    Mixed|           190|   Invergourie|FN0F 6OF|
+|0002|       Tom|     Hunt|  Sir|  Male|12-02-1973|     null|            57|  Druminiskill|TE4H 2TC|
+|0003|   Kenisha|    James| Mrs.|Female|28-02-1962|    White|           187|     Killylane|PU7N 9JO|
+|0004|    Manuel|   Mosley|  Sir|  Male|09-07-1984|    Mixed|           117|  Craigatempin|SB2H 0GC|
+|0005|    Tyrone|      Gay|  Mr.|  Male|15-11-1975|    Black|           176|     Granshagh|EJ6S 6BQ|
++----+----------+---------+-----+------+----------+---------+--------------+--------------+--------+
+only showing top 5 rows
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="best-practices">
+<h2>7. Best practices<a class="headerlink" href="#best-practices" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Set a random seed for reproducibility.</p></li>
+<li><p>Choose the appropriate locale for your use case.</p></li>
+<li><p>Combine multiple providers for richer data.</p></li>
+<li><p>For large datasets, use PySpark or batch processing.</p></li>
+<li><p>Refer to the Faker documentation and Mimesis documentation for more features.</p></li>
+</ul>
+</section>
+<section id="conclusion">
+<h2>8. Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this heading">#</a></h2>
+<p>Synthetic data generation is a powerful tool for testing, privacy protection, and simulation. Both Faker and Mimesis offer extensive capabilities for generating realistic, diverse data in Python. By using parallel examples, you can choose the library that best fits your needs and easily adapt your code for different scenarios.</p>
+<p>We have demonstrated:</p>
+<ul class="simple">
+<li><p>The core concepts of providers and locales.</p></li>
+<li><p>How to generate a wide range of data types, including text, user profiles, and population data.</p></li>
+<li><p>How to scale up data generation using PySpark.</p></li>
+<li><p>Best practices for reproducibility and data realism.</p></li>
+</ul>
+<p>Feel free to expand on these examples and adapt them to your own projects.</p>
+</section>
+<section id="references-and-further-reading">
+<h2>References and further reading<a class="headerlink" href="#references-and-further-reading" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://faker.readthedocs.io/en/master/">Faker Documentation (Python)</a></p></li>
+<li><p><a class="reference external" href="https://mimesis.name/v12.1.1/api.html">Mimesis API</a></p></li>
+<li><p><a class="reference external" href="https://medium.com/&#64;tubelwj/mimesis-a-python-library-for-generating-test-sample-data-7809d894cbd9">Medium Blog on Mimesis</a></p></li>
+<li><p><a class="reference external" href="https://www.statology.org/getting-started-mimesis-modern-approach-synthetic-data-generation/">Getting Started with Mimesis: A Modern Approach to Synthetic Data Generation</a></p></li>
+<li><p><a class="reference external" href="https://spark.apache.org/docs/latest/api/python/index.html">PySpark Documentation</a></p></li>
+<li><p><span class="xref myst">Synthpop: Synthetic Data in R</span></p></li>
+</ul>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./raw-notebooks/synthetic-data"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">1. Introduction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#install-and-setup">2. Install and setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-a-random-seed">3. Setting a random seed</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#providers-and-locales-in-faker-and-mimesis">4. Providers and Locales in Faker and Mimesis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#providers">4.1 Providers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#locales">4.2 Locales</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#generate-user-profiles-with-multiple-providers">4.3 Generate user profiles with multiple providers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#generating-text-using-faker-and-mimesis">4.4 Generating text using Faker and Mimesis</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#generating-data-at-scale-with-pyspark">5. Generating data at scale with PySpark</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#generating-fake-population-data">6. Generating fake population data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#best-practices">7. Best practices</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion">8. Conclusion</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references-and-further-reading">References and further reading</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Analysis Standards and Pipelines in Quality and Improvement, Office for National Statistics
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

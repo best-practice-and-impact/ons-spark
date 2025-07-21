@@ -1,0 +1,1217 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Synthpop: Synthetic Data in R &#8212; Spark at the ONS</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/accessibility.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
+  <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-95MGHSRD0S');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'raw-notebooks/synthetic-data/synthpop_with_r';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="Spark at the ONS - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="Spark at the ONS - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../intro.html">
+                    Introduction
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark overview</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/spark-start.html">Getting Started with Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/when-to-use-spark.html">When To Use Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/spark-session-guidance.html">Guidance on Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/example-spark-sessions.html">Example Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/spark-defaults.html">Configuration Hierarchy and <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/data-types.html">Data Types in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/creating-dataframes.html">Creating DataFrames Manually</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/reading-and-writing-data-spark.html">Reading and Writing Data in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-overview/data-storage.html">Data Storage</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to PySpark</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../pyspark-intro/pyspark-intro.html">Introduction to PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyspark-intro/returning-data.html">Returning Data from Cluster to Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyspark-intro/f-col.html">Reference columns by name: <code class="docutils literal notranslate"><span class="pre">F.col()</span></code></a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to sparklyr</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../sparklyr-intro/sparklyr-intro.html">Introduction to sparklyr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sparklyr-intro/sparklyr-functions.html">Using Spark functions in sparklyr</a></li>
+
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark functions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/union-dataframes-with-different-columns.html">Union two DataFrames with different columns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/padding.html">Add leading zeros with <code class="docutils literal notranslate"><span class="pre">lpad()</span></code></a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/sampling.html">Sampling: an overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/pivot-tables.html">Pivot tables in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/rounding.html">Rounding differences in Python, R and Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/window-functions.html">Window Functions in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/cross-joins.html">Cross Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/arrays.html">Arrays Functions in PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/date-functions.html">Date functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/writing-data.html">Writing Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/job-description-notebook.html">Set Spark Job Description</a></li>
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="../../spark-functions/median.html">Median in Spark</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Understanding and Optimising Spark</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/optimisation-tips.html">Ideas for optimising Spark code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/spark-application-and-ui.html">Spark Application and UI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/groups-not-loops.html">Groups not Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/shuffling.html">Shuffling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/join-concepts.html">Optimising Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/salted-joins.html">Salted Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/partitions.html">Managing Partitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/persistence.html">Persisting in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/cache.html">Caching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/checkpoint-staging.html">Checkpoints and Staging Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/garbage-collection.html">Garbage Collection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/df-order.html">Spark DataFrames Are Not Ordered</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-concepts/exercises.html">Exercises</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Analysis in Spark</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../spark-analysis/big-data-workflow.html">Big data workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-analysis/interpolation.html">Interpolation in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-analysis/logistic-regression.html">Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-analysis/visualisation.html">Spark and Visualisation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-analysis/flags.html">Flags in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-analysis/bin-continuous-variable.html">Data binning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spark-analysis/cramer_v.html">Calculating Cramér’s V from a Spark DataFrame</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Testing and Debugging</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../testing-debugging/spark-errors.html">Understanding and Handling Spark Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../testing-debugging/unit-testing.html">Unit Testing in Spark</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Ancillary Topics</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/module-imports.html">Naming Conflicts in Module Imports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/pydoop.html">Pydoop: HDFS to pandas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/creating-a-SQL-view-in-HDFS.html">Creating a SQL view in HDFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/pandas-udfs.html">Pandas UDFs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/r-udfs.html">R UDFs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/synthpop_with_r.html">Synthpop: Synthetic Data in R</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ancillary-topics/synthetic_data_python.html">Synthetic Data Generation in Python: Faker and Mimesis</a></li>
+</ul>
+
+        </div>
+    </nav></div>
+            <div class="bd-sidebar__bottom">
+                <!-- To handle the deprecated key -->
+                
+                <div class="navbar_extra_footer">
+                <div>
+        <p>Book version 2022.6</p>
+    </div>
+    
+                </div>
+                
+            </div>
+        </div>
+        <div id="rtd-footer-container"></div>
+    </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fraw-notebooks/synthetic-data/synthpop_with_r.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/raw-notebooks/synthetic-data/synthpop_with_r.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Synthpop: Synthetic Data in R</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">1. Introduction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#generating-synthetic-data-in-r-from-scratch">2. Generating synthetic data in R from scratch</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#numerical-variables">2.1 Numerical variables</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#character-factor-variables">2.2 Character/factor variables</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#combining-data-into-a-synthetic-dataset">2.3 Combining data into a synthetic dataset</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#generating-synthetic-data-using-synthpop">3. Generating synthetic data using <code class="docutils literal notranslate"><span class="pre">synthpop</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-synthpop-and-required-packages">3.1 Setting up <code class="docutils literal notranslate"><span class="pre">synthpop</span></code> and required packages</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#case-1-synthesise-synthpop-sample-data-sd2011">Case 1: Synthesise <code class="docutils literal notranslate"><span class="pre">synthpop</span></code> sample data <code class="docutils literal notranslate"><span class="pre">SD2011</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-by-step-guide">Step-by-step guide</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-synthpop-with-sparklyr-for-scalable-synthetic-data-processing">Using <code class="docutils literal notranslate"><span class="pre">synthpop</span></code> with <code class="docutils literal notranslate"><span class="pre">sparklyr</span></code> for scalable synthetic data processing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#case-2-synthesise-census-teaching-data">Case 2: Synthesise census teaching data</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Step-by-step guide</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#relationships-between-multiple-variables">Relationships between multiple variables</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#comparison-with-real-data">Comparison with real data</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#acknowledgments">Acknowledgments</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="synthpop-synthetic-data-in-r">
+<h1>Synthpop: Synthetic Data in R<a class="headerlink" href="#synthpop-synthetic-data-in-r" title="Permalink to this heading">#</a></h1>
+<section id="introduction">
+<h2>1. Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">#</a></h2>
+<p>Synthetic data consists of artificially generated records that mimic the structure and statistical properties of real-world data, without containing any actual personal or sensitive information. It is widely used for:</p>
+<ul class="simple">
+<li><p>Testing and validating data pipelines and statistical models</p></li>
+<li><p>Protecting privacy and confidentiality in data sharing</p></li>
+<li><p>Simulating rare or edge-case scenarios</p></li>
+<li><p>Teaching and training with realistic, non-disclosive datasets</p></li>
+<li><p>Developing and prototyping systems in non-secure environments</p></li>
+</ul>
+<p><strong>Learning Objectives:</strong></p>
+<p>By the end of this section, you will be able to:</p>
+<ul class="simple">
+<li><p>Understand the concept and importance of synthetic data</p></li>
+<li><p>Recognise key use cases for synthetic data in official statistics and research</p></li>
+<li><p>Learn two main approaches for generating synthetic data in R:</p>
+<ol class="arabic simple">
+<li><p>Writing your own code</p></li>
+<li><p>Using the <code class="docutils literal notranslate"><span class="pre">synthpop</span></code> R package</p></li>
+</ol>
+</li>
+</ul>
+</section>
+<section id="generating-synthetic-data-in-r-from-scratch">
+<h2>2. Generating synthetic data in R from scratch<a class="headerlink" href="#generating-synthetic-data-in-r-from-scratch" title="Permalink to this heading">#</a></h2>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load the R packages</span>
+<span class="nf">rm</span><span class="p">(</span><span class="n">list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">ls</span><span class="p">())</span><span class="w"> </span>
+<span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">readr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">janitor</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">magrittr</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="numerical-variables">
+<h3>2.1 Numerical variables<a class="headerlink" href="#numerical-variables" title="Permalink to this heading">#</a></h3>
+<p>In this section, we will generate synthetic numerical variables using different distributions in R. We will use the following distributions:</p>
+<ol class="arabic simple">
+<li><p>Uniform Distribution</p></li>
+<li><p>Normal Distribution</p></li>
+<li><p>Binomial Distribution</p></li>
+<li><p>Poisson Distribution</p></li>
+</ol>
+<p>Below are the R codes to generate these variables.</p>
+<p>Note that in the interest of reproducible results, we can use the  <a class="reference external" href="https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/Random"><code class="docutils literal notranslate"><span class="pre">set.seed(n)</span></code></a> function.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">set.seed</span><span class="p">(</span><span class="m">12345</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>1. Uniform Distribution</strong>: The uniform distribution generates data where each value within a specified range is equally likely. This is useful for for simulating random allocation of survey respondents to experiemental groups, where each group has an equal chance of selection.</p>
+<p><a class="reference external" href="https://github.com/best-practice-and-impact/ons-spark/blob/synthetic-data-branch/ons-spark/raw-notebooks/synthetic-data/synthpop_with_r.ipynb"><code class="docutils literal notranslate"><span class="pre">runif()</span></code></a> generates data where each value within the specified range is equally likely. We can visualise this data using the following example:</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">uniform_dist</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">runif</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1000</span><span class="p">,</span><span class="w"> </span>
+<span class="w">                      </span><span class="n">min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w">  </span>
+<span class="w">                      </span><span class="n">max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+<span class="nf">hist</span><span class="p">(</span><span class="n">uniform_dist</span><span class="p">,</span><span class="w"> </span><span class="n">main</span><span class="o">=</span><span class="s">&quot;Uniform Distribution Example&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xlab</span><span class="o">=</span><span class="s">&quot;Value&quot;</span><span class="p">)</span>
+<span class="nf">summary</span><span class="p">(</span><span class="n">uniform_dist</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>2. Normal Distribution</strong>: The normal distribution, or Gaussian distribution, is useful for simulating data that clusters around a mean. This is common in many natural phenomena like modelling adult heights or test scores, which tend to cluster around a mean in population health or education statistics.</p>
+<p><a class="reference external" href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/Normal"><code class="docutils literal notranslate"><span class="pre">rnorm()</span></code></a> generates data that clusters around a specified mean, with a given standard deviation. We explore the generated data using the <code class="docutils literal notranslate"><span class="pre">hist()</span></code> and <code class="docutils literal notranslate"><span class="pre">summary()</span></code> functions.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">normal_dist</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rnorm</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1000</span><span class="p">,</span>
+<span class="w">                     </span><span class="n">mean</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">50</span><span class="p">,</span>
+<span class="w">                     </span><span class="n">sd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4</span><span class="p">)</span>
+<span class="nf">hist</span><span class="p">(</span><span class="n">normal_dist</span><span class="p">,</span><span class="w"> </span><span class="n">main</span><span class="o">=</span><span class="s">&quot;Normal Distribution Example&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xlab</span><span class="o">=</span><span class="s">&quot;Value&quot;</span><span class="p">)</span>
+<span class="nf">summary</span><span class="p">(</span><span class="n">normal_dist</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>3. Poisson Distribution</strong>: The Poisson distribution is used for count data, where you are counting the number of events in a fixed interval of time or space. Typical examples is simulating the number of visits to a government website per day or modelling the number of emergency service calls.</p>
+<p><a class="reference external" href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/Poisson"><code class="docutils literal notranslate"><span class="pre">rpois()</span></code></a> generates count data, useful for modeling the number of events in a fixed interval.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">poisson_dist</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rpois</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1000</span><span class="p">,</span><span class="w">  </span>
+<span class="w">                      </span><span class="n">lambda</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4</span><span class="p">)</span><span class="w">  </span>
+
+<span class="nf">hist</span><span class="p">(</span><span class="n">poisson_dist</span><span class="p">,</span><span class="w"> </span><span class="n">main</span><span class="o">=</span><span class="s">&quot;Poisson Distribution Example&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xlab</span><span class="o">=</span><span class="s">&quot;Number of Events&quot;</span><span class="p">)</span>
+<span class="nf">summary</span><span class="p">(</span><span class="n">poisson_dist</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>4. Binomial Distribution</strong>: The binomial distribution is useful for simulating the number of successes in a fixed number of trials, each with the same probability of success. This is suitable for estimating the number of individuals in a survey who respond “yes” to a yes/no question, such as employment status or vaccine uptake.</p>
+<p><a class="reference external" href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/Binomial"><code class="docutils literal notranslate"><span class="pre">rbinom()</span></code></a> generates data representing the number of successes in a fixed number of trials, each with the same probability of success.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">binomial_dist</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rbinom</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1000</span><span class="p">,</span><span class="w">   </span>
+<span class="w">                        </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">20</span><span class="p">,</span><span class="w">  </span>
+<span class="w">                        </span><span class="n">prob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.2</span><span class="p">)</span><span class="w">  </span>
+
+<span class="nf">hist</span><span class="p">(</span><span class="n">binomial_dist</span><span class="p">,</span><span class="w"> </span><span class="n">main</span><span class="o">=</span><span class="s">&quot;Binomial Distribution Example&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xlab</span><span class="o">=</span><span class="s">&quot;Number of Successes&quot;</span><span class="p">)</span>
+<span class="nf">summary</span><span class="p">(</span><span class="n">binomial_dist</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="character-factor-variables">
+<h3>2.2 Character/factor variables<a class="headerlink" href="#character-factor-variables" title="Permalink to this heading">#</a></h3>
+<p>In this section, we will generate synthetic <code class="docutils literal notranslate"><span class="pre">character</span> <span class="pre">(factor)</span></code> variables using random sampling in R. These variables are useful for simulating categorical data, such as demographic information.</p>
+<p><strong>1. Random sampling from a vector</strong>: Random sampling from a vector allows you to generate categorical data by randomly selecting elements from a specified set. This is useful for creating variables like gender, where each observation is randomly assigned a category.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">gender</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;M&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;F&quot;</span><span class="p">),</span><span class="w">  </span>
+<span class="w">              </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1000</span><span class="p">,</span><span class="w">      </span>
+<span class="w">              </span><span class="n">replace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">   </span>
+
+<span class="nf">table</span><span class="p">(</span><span class="n">gender</span><span class="p">)</span>
+<span class="nf">prop.table</span><span class="p">(</span><span class="nf">table</span><span class="p">(</span><span class="n">gender</span><span class="p">))</span>
+</pre></div>
+</div>
+<p><strong>2. Weighted sampling from a vector</strong>: Weighted sampling allows you to generate categorical data with specified probabilities for each category. This is useful for creating variables like marital status, where each category has a different likelihood of being selected.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">marriage_status</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;Single&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Married&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Divorced&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Widowed&quot;</span><span class="p">),</span><span class="w">  </span>
+<span class="w">                          </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1000</span><span class="p">,</span><span class="w">    </span>
+<span class="w">                          </span><span class="n">replace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">                          </span><span class="n">prob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0.35</span><span class="p">,</span><span class="w"> </span><span class="m">0.50</span><span class="p">,</span><span class="w"> </span><span class="m">0.10</span><span class="p">,</span><span class="w"> </span><span class="m">0.05</span><span class="p">))</span>
+
+<span class="nf">table</span><span class="p">(</span><span class="n">marriage_status</span><span class="p">)</span>
+<span class="nf">prop.table</span><span class="p">(</span><span class="nf">table</span><span class="p">(</span><span class="n">marriage_status</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Here is the explanation of the code snippet above:</p>
+<ol class="arabic simple">
+<li><p>Setting a Seed (<code class="docutils literal notranslate"><span class="pre">set.seed</span></code>):</p></li>
+</ol>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">set.seed(12345)</span></code>: Sets the seed for random number generation. The number <code class="docutils literal notranslate"><span class="pre">12345</span></code> can be any integer. Using the same seed will produce the same sequence of random numbers each time the code is run.</p></li>
+</ul>
+<ol class="arabic simple" start="2">
+<li><p>Random Sampling (<code class="docutils literal notranslate"><span class="pre">sample</span></code>):</p></li>
+</ol>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: The vector of elements to choose from.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">size</span></code>: The number of observations to generate.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">replace</span></code>: Whether sampling is with replacement (<code class="docutils literal notranslate"><span class="pre">TRUE</span></code>) or without replacement (<code class="docutils literal notranslate"><span class="pre">FALSE</span></code>).</p></li>
+<li><p>Further reading can be found here: <span class="xref myst">sampling</span>.</p></li>
+</ul>
+<ol class="arabic simple" start="3">
+<li><p>Weighted Sampling (<code class="docutils literal notranslate"><span class="pre">sample</span></code> with <code class="docutils literal notranslate"><span class="pre">prob</span></code>):</p></li>
+</ol>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">prob</span></code>: A vector of probabilities corresponding to the likelihood of each element in <code class="docutils literal notranslate"><span class="pre">x</span></code> being selected. The probabilities must sum to <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
+<li><p>Further reading can be found here: <span class="xref myst">sampling</span>.</p></li>
+</ul>
+</section>
+<section id="combining-data-into-a-synthetic-dataset">
+<h3>2.3 Combining data into a synthetic dataset<a class="headerlink" href="#combining-data-into-a-synthetic-dataset" title="Permalink to this heading">#</a></h3>
+<p>Now, we will combine the numerical and categorical data into a single synthetic dataset using the <code class="docutils literal notranslate"><span class="pre">data.table</span></code> package:</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">data.table</span><span class="p">)</span>
+
+<span class="n">synthetic_data1</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.table</span><span class="p">(</span><span class="n">uniform_dist</span><span class="p">,</span>
+<span class="w">                              </span><span class="n">normal_dist</span><span class="p">,</span>
+<span class="w">                              </span><span class="n">poisson_dist</span><span class="p">,</span>
+<span class="w">                              </span><span class="n">binomial_dist</span><span class="p">,</span>
+<span class="w">                              </span><span class="n">gender</span><span class="p">,</span>
+<span class="w">                              </span><span class="n">marriage_status</span><span class="p">)</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="nf">head</span><span class="p">(</span><span class="n">synthetic_data1</span><span class="p">))</span>
+<span class="nf">summary</span><span class="p">(</span><span class="n">synthetic_data1</span><span class="p">)</span>
+<span class="nf">str</span><span class="p">(</span><span class="n">synthetic_data1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Converting Character Variables to Factors</strong><br />
+To ensure that the categorical variables are treated appropriately in analyses, we should convert them to factor variables:</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Change gender and marriage_status to factor variables</span>
+<span class="n">synthetic_data1</span><span class="o">$</span><span class="n">gender</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.factor</span><span class="p">(</span><span class="n">synthetic_data1</span><span class="o">$</span><span class="n">gender</span><span class="p">)</span>
+<span class="n">synthetic_data1</span><span class="o">$</span><span class="n">marriage_status</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.factor</span><span class="p">(</span><span class="n">synthetic_data1</span><span class="o">$</span><span class="n">marriage_status</span><span class="p">)</span>
+
+<span class="c1"># Check the structure of the dataset again</span>
+<span class="nf">str</span><span class="p">(</span><span class="n">synthetic_data1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This combined synthetic dataset can now be used for various analyses, simulations, and testing purposes. It provides a comprehensive representation of both numerical and categorical variables, making it suitable for a wide range of applications.</p>
+<p>These snippets provide a starting point for generating synthetic categorical data using random and weighted sampling with reproducibility. You can adjust the parameters to fit the specific characteristics of the population you are modeling. For more detailed information on the <code class="docutils literal notranslate"><span class="pre">sample</span></code> function, refer to the <a class="reference external" href="https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/sample">R documentation</a>.</p>
+</section>
+</section>
+<section id="generating-synthetic-data-using-synthpop">
+<h2>3. Generating synthetic data using <code class="docutils literal notranslate"><span class="pre">synthpop</span></code><a class="headerlink" href="#generating-synthetic-data-using-synthpop" title="Permalink to this heading">#</a></h2>
+<p>In the guidiance, we will work with the R package <code class="docutils literal notranslate"><span class="pre">synthpop</span></code> <a class="reference external" href="https://www.synthpop.org.uk/get-started.html">(Nowok, Raab, and Dibben 2016)</a>, which is one of the most advanced and dedicated packages in R to create synthetic data.</p>
+<p>Synthpop generates synthetic data by modeling the relationships in the original dataset and then simulating new data that preserves the statistical properties of the original, while reducing disclosure risk.</p>
+<section id="setting-up-synthpop-and-required-packages">
+<h3>3.1 Setting up <code class="docutils literal notranslate"><span class="pre">synthpop</span></code> and required packages<a class="headerlink" href="#setting-up-synthpop-and-required-packages" title="Permalink to this heading">#</a></h3>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;synthpop&quot;</span><span class="p">)</span>
+<span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;sparklyr&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This will install <code class="docutils literal notranslate"><span class="pre">synthpop</span></code> and its dependencies and <code class="docutils literal notranslate"><span class="pre">sparklyr</span></code> from <a class="reference external" href="https://onsart-01/ui/login/">ONS Artifactory</a>.</p>
+<p>First clear the workspace and load packages using the <code class="docutils literal notranslate"><span class="pre">library()</span></code> function.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">rm</span><span class="p">(</span><span class="n">list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">ls</span><span class="p">())</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">synthpop</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To get a list of all <code class="docutils literal notranslate"><span class="pre">synthpop</span></code> functions, use:</p>
+<div class="highlight-{r, notranslate"><div class="highlight"><pre><span></span>help(package = synthpop)
+</pre></div>
+</div>
+<p>To quickly access a help file for a specific function, such as the main <code class="docutils literal notranslate"><span class="pre">synthpop</span></code> function <a class="reference external" href="https://www.rdocumentation.org/packages/synthpop/versions/1.8-0/topics/syn"><code class="docutils literal notranslate"><span class="pre">syn()</span></code></a>, you can type its name preceded by <code class="docutils literal notranslate"><span class="pre">?</span></code>.</p>
+<div class="highlight-{r, notranslate"><div class="highlight"><pre><span></span>?synthpop
+</pre></div>
+</div>
+<div class="highlight-{r, notranslate"><div class="highlight"><pre><span></span>?syn
+</pre></div>
+</div>
+</section>
+</section>
+<section id="case-1-synthesise-synthpop-sample-data-sd2011">
+<h2>Case 1: Synthesise <code class="docutils literal notranslate"><span class="pre">synthpop</span></code> sample data <code class="docutils literal notranslate"><span class="pre">SD2011</span></code><a class="headerlink" href="#case-1-synthesise-synthpop-sample-data-sd2011" title="Permalink to this heading">#</a></h2>
+<p>In most cases, you will be working with your own data, but for practice, you can use the sample data <a class="reference external" href="https://www.rdocumentation.org/packages/synthpop/versions/1.8-0/topics/SD2011"><code class="docutils literal notranslate"><span class="pre">SD2011</span></code></a> provided with the <code class="docutils literal notranslate"><span class="pre">synthpop</span></code> package.</p>
+<p><strong>Read the data</strong><br />
+Read the data you want to synthesise into <code class="docutils literal notranslate"><span class="pre">R</span></code>. You can use the <code class="docutils literal notranslate"><span class="pre">synthpop</span></code> function <a class="reference external" href="https://www.rdocumentation.org/packages/synthpop/versions/1.9-0/topics/read.obs"><code class="docutils literal notranslate"><span class="pre">read.obs()</span></code></a> to read data from other formats.</p>
+<p><strong>NOTE</strong>:  <code class="docutils literal notranslate"><span class="pre">synthpop</span></code> is an R package that generates synthetic data within R. While <code class="docutils literal notranslate"><span class="pre">synthpop</span></code> itself does not generate data directly in Spark, the synthetic datasets it produces can be easily transferred to Spark using <code class="docutils literal notranslate"><span class="pre">sparklyr</span></code> for scalable post-processing and analysis. Thus, Spark is used for processing and analysing the synthetic data, not for the initial data generation with <code class="docutils literal notranslate"><span class="pre">synthpop</span></code>.</p>
+<p><strong>Examine your data</strong><br />
+Start with a modest number of variables (8-12) to understand <code class="docutils literal notranslate"><span class="pre">synthpop</span></code>. If your data have more variables, make a selection. The package is intended for large datasets (at least <code class="docutils literal notranslate"><span class="pre">500</span></code> observations).</p>
+<p>Use the <a class="reference external" href="https://www.rdocumentation.org/packages/synthpop/versions/1.8-0/topics/codebook.syn"><code class="docutils literal notranslate"><span class="pre">codebook.syn()</span></code></a> function to examine the features relevant to synthesising.</p>
+<p>In this section, we will guide you through a sample synthesis using the <code class="docutils literal notranslate"><span class="pre">synthpop</span></code> package in R. This example uses the <a class="reference external" href="https://www.rdocumentation.org/packages/synthpop/versions/1.8-0/topics/SD2011"><code class="docutils literal notranslate"><span class="pre">SD2011</span></code> dataset</a> sample, provided with the <code class="docutils literal notranslate"><span class="pre">synthpop</span></code> package and <a class="reference external" href="https://www.synthpop.org.uk/assets/firstsynthesis.r">demonstrates how to generate synthetic data</a> with a smaller subset of variables. The SD2011 dataset is a social diagnosis survey from 2011, Poland</p>
+<p>In this example, we will load the SD2011 dataset, select a subset of variables, generate a synthetic version using synthpop, and compare the synthetic data to the original.</p>
+<section id="step-by-step-guide">
+<h3>Step-by-step guide<a class="headerlink" href="#step-by-step-guide" title="Permalink to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Explore the <code class="docutils literal notranslate"><span class="pre">SD2011</span></code> dataset</strong><br />
+Here, we will use the <code class="docutils literal notranslate"><span class="pre">help()</span></code> method to obtain the information about the SD2011, <code class="docutils literal notranslate"><span class="pre">dim()</span></code> method to get the size of the dataframe and <code class="docutils literal notranslate"><span class="pre">codebook.syn()</span></code> method to obtain the summary information about variables.</p></li>
+</ol>
+<p>Note: SD2011 is included with the synthpop package. If you cannot find it, load it with data(SD2011). This example was tested in RStudio/VS Code/CDP with synthpop installed.</p>
+<div class="highlight-{r, notranslate"><div class="highlight"><pre><span></span>help(SD2011) # this will give you information about it
+</pre></div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># This will give you the dimensions (rows, columns) of the SD2011 dataset</span>
+<span class="nf">dim</span><span class="p">(</span><span class="n">SD2011</span><span class="p">)</span><span class="w">  </span><span class="c1"># Output: 5000 rows, 35 variables</span>
+</pre></div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Show summary information for a subset of variables; here we show only the first five variables for brevity.</span>
+<span class="n">synthpop</span><span class="o">::</span><span class="nf">codebook.syn</span><span class="p">(</span><span class="n">SD2011</span><span class="p">[,</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">])</span><span class="o">$</span><span class="n">tab</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p><strong>Select a subset of variables</strong></p></li>
+</ol>
+<ul class="simple">
+<li><p>After loading the data, inspect it to understand its structure and contents.</p></li>
+<li><p>You can review a <code class="docutils literal notranslate"><span class="pre">summary()</span></code> of all variables to generate descriptive statistics.</p></li>
+</ul>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Select a smaller subset of variables for demonstration</span>
+<span class="n">mydata</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">SD2011</span><span class="p">[,</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="m">6</span><span class="p">,</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="m">11</span><span class="p">)]</span>
+<span class="c1"># Preview the first few rows of the dataset</span>
+<span class="nf">head</span><span class="p">(</span><span class="n">mydata</span><span class="p">)</span>
+<span class="c1"># Get a summary of the dataset</span>
+<span class="nf">summary</span><span class="p">(</span><span class="n">mydata</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p><strong>Checking for missing values</strong>
+The following code checks for negative and missing values in the income variable.</p></li>
+</ol>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check for negative income values</span>
+<span class="nf">table</span><span class="p">(</span><span class="n">mydata</span><span class="o">$</span><span class="n">income</span><span class="p">[</span><span class="n">mydata</span><span class="o">$</span><span class="n">income</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">0</span><span class="p">],</span><span class="w"> </span><span class="n">useNA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;ifany&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p><strong>Synthesise data</strong></p></li>
+</ol>
+<ul class="simple">
+<li><p>Use the <code class="docutils literal notranslate"><span class="pre">syn()</span></code> function from the <code class="docutils literal notranslate"><span class="pre">synthpop</span></code> package to create a synthetic version of your data, using the default settings.</p></li>
+<li><p>Fix the random seed before generating the synthetic data, so that you can compare your output with our output.</p></li>
+</ul>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">set.seed</span><span class="p">(</span><span class="m">123</span><span class="p">)</span>
+
+<span class="c1"># Synthesise data, handling -8 as a missing value for income</span>
+<span class="n">mysyn</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">synthpop</span><span class="o">::</span><span class="nf">syn</span><span class="p">(</span><span class="n">mydata</span><span class="p">,</span><span class="w"> </span><span class="n">cont.na</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">income</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">-8</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>We have now created the object <code class="docutils literal notranslate"><span class="pre">mysyn</span></code>, which is of class <code class="docutils literal notranslate"><span class="pre">synds</span></code> and contains several pieces of information related to the synthetic data. We will quickly go over the most important output. We can examine the synthesised data using the summary and head methods.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">summary</span><span class="p">(</span><span class="n">mysyn</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">head</span><span class="p">(</span><span class="n">mysyn</span><span class="o">$</span><span class="n">syn</span><span class="p">)</span><span class="w"> </span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">compare()</span></code> function below produces plots and statistics that help you assess how closely the synthetic data matches the original data for each variable:</p>
+<ul class="simple">
+<li><p>The bar plots show the distribution of counts for each value/category, with a legend distinguishing “Observed” (original data) and “Synthetic” (synthetic data).</p></li>
+<li><p>If the bars for observed and synthetic data are similar in height for each value, this indicates that the synthetic data replicates the original distribution well.</p></li>
+<li><p>The S_pMSE (Standardized Propensity Mean Squared Error) value, shown on each plot, quantifies the similarity between the observed and synthetic distributions.</p>
+<ul>
+<li><p><strong>A lower S_pMSE value (closer to 0)</strong> means the synthetic data closely matches the original data for that variable.</p></li>
+<li><p><strong>A higher S_pMSE value (&gt;&gt; 1)</strong> means there are greater differences between the synthetic and original data.</p></li>
+</ul>
+</li>
+</ul>
+<p>In summary, look for S_pMSE values near 0 and similar bar heights to conclude that the synthetic data replicates the original data well for a given variable. You can also get the S_pMSE values from the <code class="docutils literal notranslate"><span class="pre">print(mysyn)</span></code> method</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compare the synthetic data with the original data. In most cases, you would need to press &quot;Press return for next variable(s)&quot;</span>
+<span class="n">synthpop</span><span class="o">::</span><span class="nf">compare</span><span class="p">(</span><span class="n">mysyn</span><span class="p">,</span><span class="w"> </span><span class="n">mydata</span><span class="p">,</span><span class="w"> </span><span class="n">stat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;counts&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This figure shows examples of visuals from using the <code class="docutils literal notranslate"><span class="pre">multi.compare()</span></code> function:</p>
+<figure class="align-default" id="multicomparediagram">
+<a class="reference internal image-reference" href="raw-notebooks/images/Rplot_Observed_versus_synthetic_data.png"><img alt="Diagram showing visuals from using the `multi.compare()` function" src="raw-notebooks/images/Rplot_Observed_versus_synthetic_data.png" style="width: 100%;" /></a>
+<figcaption>
+<p><span class="caption-text">Observed_versus_synthetic_data</span><a class="headerlink" href="#multicomparediagram" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<ol class="arabic simple" start="5">
+<li><p><strong>Export synthetic data</strong></p></li>
+</ol>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Export synthetic data to CSV format</span>
+<span class="nf">write.syn</span><span class="p">(</span><span class="n">mysyn</span><span class="p">,</span><span class="w"> </span><span class="n">filename</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;mysyn_SD2011&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">filetype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;csv&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="6">
+<li><p><strong>Explore synthetic data</strong><br />
+After generating synthetic data using the <code class="docutils literal notranslate"><span class="pre">synthpop</span></code> package, it is important to explore and understand the structure and components of the synthetic data object. This section provides guidance on how to explore the synthetic data object and perform additional comparisons.</p></li>
+</ol>
+<p><strong>I. Retrieve component names</strong></p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">names</span><span class="p">(</span><span class="n">mysyn</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>This command retrieves the names of the components within the <code class="docutils literal notranslate"><span class="pre">mysyn</span></code> object, helping you understand its structure.</p></li>
+</ul>
+<p><strong>II. Explanation of some of the components</strong></p>
+<ol class="arabic simple">
+<li><p><a class="reference external" href="https://www.synthpop.org.uk/assets/firstsynthesis.r"><code class="docutils literal notranslate"><span class="pre">syn</span></code></a>: The synthetic data set.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">method</span></code>: The methods used for synthesising each variable.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">predictor.matrix</span></code>: The matrix indicating which variables were used as predictors for each synthesised variable.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">visit.sequence</span></code>: The order in which the variables were synthesised.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cont.na</span></code>: Information about how missing values were handled.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rules</span></code>: Any rules applied during synthesis.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rvalues</span></code>: Values used for rules.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">m</span></code>: Number of synthetic datasets created (if multiple).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">proper</span></code>: Indicates if proper synthesis was used.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">seed</span></code>: The seed used for random number generation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">call</span></code>: The original call to the syn() function.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code>: The original data used for synthesis.</p></li>
+</ol>
+<p><strong>III. Inspect key components</strong></p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">mysyn</span><span class="o">$</span><span class="n">method</span>
+<span class="n">mysyn</span><span class="o">$</span><span class="n">predictor.matrix</span>
+<span class="n">mysyn</span><span class="o">$</span><span class="n">visit.sequence</span>
+<span class="n">mysyn</span><span class="o">$</span><span class="n">cont.na</span>
+<span class="n">mysyn</span><span class="o">$</span><span class="n">seed</span>
+</pre></div>
+</div>
+<p><strong>IV. Additional comparisons</strong><br />
+To further validate the synthetic data, you can perform additional comparisons between the synthetic and original data using the <a class="reference external" href="https://www.rdocumentation.org/packages/synthpop/versions/1.8-0/topics/multi.compare"><code class="docutils literal notranslate"><span class="pre">multi.compare()</span></code></a> function.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Additional comparisons</span>
+<span class="n">synthpop</span><span class="o">::</span><span class="nf">multi.compare</span><span class="p">(</span><span class="n">mysyn</span><span class="p">,</span><span class="w"> </span><span class="n">mydata</span><span class="p">,</span><span class="w"> </span><span class="n">var</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;marital&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;sex&quot;</span><span class="p">)</span>
+<span class="n">synthpop</span><span class="o">::</span><span class="nf">multi.compare</span><span class="p">(</span><span class="n">mysyn</span><span class="p">,</span><span class="w"> </span><span class="n">mydata</span><span class="p">,</span><span class="w"> </span><span class="n">var</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;income&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;agegr&quot;</span><span class="p">)</span>
+<span class="n">synthpop</span><span class="o">::</span><span class="nf">multi.compare</span><span class="p">(</span><span class="n">mysyn</span><span class="p">,</span><span class="w"> </span><span class="n">mydata</span><span class="p">,</span><span class="w"> </span><span class="n">var</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;income&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;edu&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">cont.type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;boxplot&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>These figures show examples of visuals from using the <code class="docutils literal notranslate"><span class="pre">multi.compare()</span></code> function:</p>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="raw-notebooks/images/synthetic_data_marital_sex_relationship.png"><img alt="Compares the distribution of the `marital` variable by `sex` between the synthetic and original data" src="raw-notebooks/images/synthetic_data_marital_sex_relationship.png" style="width: 100%;" /></a>
+<figcaption>
+<p><span class="caption-text">Distribution_of_marital_variable_by_sex-synthetic_versus_original_data</span><a class="headerlink" href="#id1" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id2">
+<a class="reference internal image-reference" href="raw-notebooks/images/synthetic_data_income_agegroup_relationship.png"><img alt="Compares the distribution of the `income` variable by `age group` between the synthetic and original data" src="raw-notebooks/images/synthetic_data_income_agegroup_relationship.png" style="width: 100%;" /></a>
+<figcaption>
+<p><span class="caption-text">Distribution_of_income_variable_by_agegroup-synthetic_versus_original_data</span><a class="headerlink" href="#id2" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id3">
+<a class="reference internal image-reference" href="raw-notebooks/images/synthetic_data_income_edu_relationship.png"><img alt="Compares the distribution of the `income` variable by `education level` using boxplots between the synthetic and original data" src="raw-notebooks/images/synthetic_data_income_edu_relationship.png" style="width: 100%;" /></a>
+<figcaption>
+<p><span class="caption-text">Distribution_of_income_variable_by_educationlevel-synthetic_versus_original_data</span><a class="headerlink" href="#id3" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p>These steps help ensure that the synthetic data accurately reflects the structure and relationships present in the original data, making it suitable for analysis while protecting the privacy of the original data.</p>
+</section>
+</section>
+<section id="using-synthpop-with-sparklyr-for-scalable-synthetic-data-processing">
+<h2>Using <code class="docutils literal notranslate"><span class="pre">synthpop</span></code> with <code class="docutils literal notranslate"><span class="pre">sparklyr</span></code> for scalable synthetic data processing<a class="headerlink" href="#using-synthpop-with-sparklyr-for-scalable-synthetic-data-processing" title="Permalink to this heading">#</a></h2>
+<p>You can use <code class="docutils literal notranslate"><span class="pre">synthpop</span></code> together with <code class="docutils literal notranslate"><span class="pre">sparklyr</span></code> to generate synthetic data in R and then process it at scale with Apache Spark. In the example below, we build on Case 1 by copying the synthetic SD2011 data to Spark and using <code class="docutils literal notranslate"><span class="pre">dplyr</span></code> verbs for distributed analysis. We demonstrate how to group the data by <code class="docutils literal notranslate"><span class="pre">sex</span></code> and calculate the mean <code class="docutils literal notranslate"><span class="pre">income</span></code>, but you can apply any other Spark operations as needed. The <code class="docutils literal notranslate"><span class="pre">mysyn</span></code> object (of class <code class="docutils literal notranslate"><span class="pre">synds</span></code>) generated earlier is used for this Spark analysis.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;sparklyr&quot;</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
+
+<span class="n">sc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
+<span class="w">  </span><span class="n">master</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;local[2]&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">app_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;synthpop-spark&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">())</span>
+
+<span class="c1"># Access the synthetic data generated by synthpop (see Case 1)</span>
+<span class="n">synthetic_sd2011</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">mysyn</span><span class="o">$</span><span class="n">syn</span>
+
+<span class="c1"># Copy the synthetic data frame from R into the Spark session as a Spark table</span>
+<span class="n">synthetic_sd2011_tbl</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">copy_to</span><span class="p">(</span>
+<span class="w">  </span><span class="n">sc</span><span class="p">,</span>
+<span class="w">  </span><span class="n">synthetic_sd2011</span><span class="p">,</span>
+<span class="w">  </span><span class="s">&quot;synthetic_sd2011&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">overwrite</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span>
+<span class="p">)</span>
+
+<span class="c1"># Now you can use dplyr verbs with Spark for scalable processing</span>
+<span class="n">result_tbl</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">synthetic_sd2011_tbl</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">sex</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span>
+<span class="w">    </span><span class="n">mean_income</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">income</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n</span><span class="p">()</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="w">  </span>
+<span class="n">result_tbl</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="nf">collect</span><span class="p">()</span>
+
+<span class="nf">spark_disconnect</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="case-2-synthesise-census-teaching-data">
+<h2>Case 2: Synthesise census teaching data<a class="headerlink" href="#case-2-synthesise-census-teaching-data" title="Permalink to this heading">#</a></h2>
+<p>In this section, we will guide you through the process of synthesising another case study as presented by Iain Dove, a census teaching data using the <code class="docutils literal notranslate"><span class="pre">synthpop</span></code> package in R. This demo is an alternative to the synthesis of <code class="docutils literal notranslate"><span class="pre">SD2011</span></code> in <code class="docutils literal notranslate"><span class="pre">Case</span> <span class="pre">1</span></code>. This involves loading the data, creating a subset, synthesising the data, and comparing the synthetic data with the original data.</p>
+<section id="id4">
+<h3>Step-by-step guide<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Loading the data</strong></p></li>
+</ol>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load the configuration and set the path to the census teaching data</span>
+<span class="n">config</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">yaml</span><span class="o">::</span><span class="nf">yaml.load_file</span><span class="p">(</span><span class="s">&quot;/home/cdsw/ons-spark/config.yaml&quot;</span><span class="p">)</span>
+<span class="n">census_2011_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">census_2011_teaching_data_path_csv</span>
+<span class="n">census_teaching_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data.table</span><span class="o">::</span><span class="nf">fread</span><span class="p">(</span><span class="n">census_2011_path</span><span class="p">,</span><span class="w"> </span><span class="n">skip</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">                        </span><span class="n">janitor</span><span class="o">::</span><span class="nf">clean_names</span><span class="p">()</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p><strong>Create a subset of the data</strong></p></li>
+</ol>
+<p>As before, we first create a subset of the data to reduce run time.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a subset of the data</span>
+<span class="n">small_census_teaching_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">census_teaching_data</span><span class="p">[</span><span class="m">1</span><span class="o">:</span><span class="m">100000</span><span class="p">,]</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p><strong>First synthesis of census data</strong></p></li>
+</ol>
+<p>Let’s now create the synthetic data.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># First synthesis</span>
+<span class="n">synthetic_census_teaching_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">synthpop</span><span class="o">::</span><span class="nf">syn</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">small_census_teaching_data</span><span class="p">,</span>
+<span class="w">                                                </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;sample&quot;</span><span class="p">,</span>
+<span class="w">                                                </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">100000</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You have created a synthetic data object <code class="docutils literal notranslate"><span class="pre">synthetic_census_teaching_data</span></code> of class <code class="docutils literal notranslate"><span class="pre">synds</span></code>, which is a list with a number of components including the synthesised data and information on how they were created.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check the class of the synthetic data object</span>
+<span class="nf">class</span><span class="p">(</span><span class="n">synthetic_census_teaching_data</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p><strong>Access the synthetic dataframe</strong></p></li>
+</ol>
+<p>We have now created the object <code class="docutils literal notranslate"><span class="pre">mysyn</span></code>, which is of class <code class="docutils literal notranslate"><span class="pre">synds</span></code> (the main output class from synthpop, containing the synthetic data and metadata).</p>
+<p>To view the synthetic data, use <code class="docutils literal notranslate"><span class="pre">synthetic_census_teaching_data$syn</span></code>, and use <code class="docutils literal notranslate"><span class="pre">summary()</span></code> to review all variables</p>
+<div class="highlight-{r, notranslate"><div class="highlight"><pre><span></span># Access the synthetic dataframe
+synthetic_census_teaching_data$syn
+</pre></div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">summary</span><span class="p">(</span><span class="n">synthetic_census_teaching_data</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
+<li><p><strong>Comparison with real data</strong></p></li>
+</ol>
+<p><code class="docutils literal notranslate"><span class="pre">synthpop</span></code> contains functions to assess the accuracy of the synthetic data. Univariate measures are quite easy to satisfy, but relationships between multiple variables are much more difficult.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compare synthetic data with real data</span>
+<span class="n">synthpop</span><span class="o">::</span><span class="nf">compare</span><span class="p">(</span><span class="n">object</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">synthetic_census_teaching_data</span><span class="p">,</span>
+<span class="w">                  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">small_census_teaching_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="relationships-between-multiple-variables">
+<h3>Relationships between multiple variables<a class="headerlink" href="#relationships-between-multiple-variables" title="Permalink to this heading">#</a></h3>
+<p>Relationships between multiple variables are more complex to model. The <code class="docutils literal notranslate"><span class="pre">synthpop</span></code> default uses a saturated model, which can be challenging for large datasets. Here, we use an input <code class="docutils literal notranslate"><span class="pre">CSV</span></code> file to specify which variables are related.</p>
+<ol class="arabic simple">
+<li><p><strong>Load the input CSV file</strong></p></li>
+</ol>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">config</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">yaml</span><span class="o">::</span><span class="nf">yaml.load_file</span><span class="p">(</span><span class="s">&quot;/home/cdsw/ons-spark/config.yaml&quot;</span><span class="p">)</span>
+<span class="n">census_relationship_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">config</span><span class="o">$</span><span class="n">census_relationship_file_path_csv</span>
+
+<span class="n">input</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">read.csv</span><span class="p">(</span><span class="n">census_relationship_path</span><span class="p">,</span>
+<span class="w">                  </span><span class="n">stringsAsFactors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">,</span>
+<span class="w">                  </span><span class="n">skip</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">         </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span><span class="w"> </span><span class="n">description</span><span class="p">,</span><span class="w"> </span><span class="n">predictors</span><span class="p">)</span>
+
+<span class="c1"># Add row names to make it easier</span>
+<span class="nf">rownames</span><span class="p">(</span><span class="n">input</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">input</span><span class="o">$</span><span class="n">variable</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p><strong>Create predictor matrix</strong></p></li>
+</ol>
+<p>The predictor matrix tells <code class="docutils literal notranslate"><span class="pre">synthpop</span></code> which variables are related and which variables predict each other. If variable <code class="docutils literal notranslate"><span class="pre">X</span></code> is used as a predictor for variable <code class="docutils literal notranslate"><span class="pre">Y</span></code>, the relationship between <code class="docutils literal notranslate"><span class="pre">X</span></code> and <code class="docutils literal notranslate"><span class="pre">Y</span></code> will be preserved to some extent.</p>
+<p>The predictor matrix should have the following structure:</p>
+<ul class="simple">
+<li><p>Each row represents a variable that is being predicted.</p></li>
+<li><p>Each column represents a variable that is used as a predictor.</p></li>
+<li><p>A value of 1 in the matrix indicates that the column variable is used as a predictor for the row variable.</p></li>
+<li><p>A value of 0 indicates that the column variable is not used as a predictor for the row variable.</p></li>
+</ul>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create predictor matrix in appropriate format for synthpop from CSV input</span>
+<span class="n">predictor_matrix</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.data.frame</span><span class="p">(</span><span class="nf">matrix</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">nrow</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">input</span><span class="p">),</span><span class="w"> </span>
+<span class="w">                                         </span><span class="n">ncol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">input</span><span class="p">),</span><span class="w"> </span>
+<span class="w">                                         </span><span class="n">dimnames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">input</span><span class="o">$</span><span class="n">variable</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="o">$</span><span class="n">variable</span><span class="p">)))</span>
+
+<span class="c1"># Use predictors</span>
+<span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">var</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="n">input</span><span class="o">$</span><span class="n">variable</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">predictor_matrix</span><span class="p">[</span><span class="n">var</span><span class="p">,</span><span class="w"> </span><span class="nf">as.vector</span><span class="p">((</span><span class="nf">strsplit</span><span class="p">(</span><span class="n">input</span><span class="p">[</span><span class="n">var</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;predictors&#39;</span><span class="p">],</span><span class="w"> </span><span class="s">&quot; &quot;</span><span class="p">))[[</span><span class="m">1</span><span class="p">]])]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Relationships can be added manually (<code class="docutils literal notranslate"><span class="pre">row</span></code> variable predicted by <code class="docutils literal notranslate"><span class="pre">column</span></code> variable)</p>
+<p>Sensible predictors could be Marital Status being predicted by <code class="docutils literal notranslate"><span class="pre">Age</span></code> (under 16s not married) hours worked being predicted by <code class="docutils literal notranslate"><span class="pre">Economic</span> <span class="pre">Activity</span></code>.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Relationships can be added manually (row variable predicted by column variable)</span>
+<span class="n">predictor_matrix</span><span class="p">[</span><span class="s">&#39;Marital_Status&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;Age&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1</span>
+<span class="n">predictor_matrix</span><span class="p">[</span><span class="s">&#39;Economic_Activity&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;Age&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1</span>
+<span class="n">predictor_matrix</span><span class="p">[</span><span class="s">&#39;Occupation&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;Economic_Activity&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1</span>
+<span class="n">predictor_matrix</span><span class="p">[</span><span class="s">&#39;Hours_worked_per_week&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;Economic_Activity&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p><strong>Synthesise data with relationships</strong></p></li>
+</ol>
+<p>These relationships are used in the synthesis model. The <code class="docutils literal notranslate"><span class="pre">minnumlevels</span></code> parameter converts numeric variables with few unique values into factor variables for the synthesis.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Synthesise data with relationships</span>
+<span class="n">synthetic_census_teaching_data_2</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">synthpop</span><span class="o">::</span><span class="nf">syn</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">small_census_teaching_data</span><span class="p">,</span>
+<span class="w">                                                  </span><span class="n">predictor.matrix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.matrix</span><span class="p">(</span><span class="n">predictor_matrix</span><span class="p">),</span>
+<span class="w">                                                  </span><span class="n">minnumlevels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="comparison-with-real-data">
+<h3>Comparison with real data<a class="headerlink" href="#comparison-with-real-data" title="Permalink to this heading">#</a></h3>
+<p>To compare the synthetic and original data, use:</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compare synthetic data with real data</span>
+<span class="n">synthpop</span><span class="o">::</span><span class="nf">compare</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">small_census_teaching_data</span><span class="p">,</span>
+<span class="w">                  </span><span class="n">object</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">synthetic_census_teaching_data_2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Press <code class="docutils literal notranslate"><span class="pre">enter</span></code> on your keyboard for the next variable</strong></p>
+<p>You can write your own code to compare the datasets, particularly on variables/statistics of interest, e.g., compare bi-variate counts.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define variables to compare</span>
+<span class="n">compare_vars</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;economic_activity&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;hours_worked_per_week&quot;</span><span class="p">)</span>
+
+<span class="c1"># Frequency table of compare_vars in original data</span>
+<span class="n">orig_table</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">small_census_teaching_data</span><span class="p">[,</span><span class="w"> </span><span class="nf">.</span><span class="p">(</span><span class="n">orig_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">.N</span><span class="p">),</span><span class="w"> </span><span class="n">keyby</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compare_vars</span><span class="p">]</span>
+
+<span class="c1"># Convert to factors</span>
+<span class="n">orig_table</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">orig_table</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">              </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">economic_activity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.factor</span><span class="p">(</span><span class="n">economic_activity</span><span class="p">),</span>
+<span class="w">                            </span><span class="n">hours_worked_per_week</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.factor</span><span class="p">(</span><span class="n">hours_worked_per_week</span><span class="p">))</span>
+
+<span class="n">orig_table</span>
+</pre></div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Frequency table of compare_vars in synthetic data with relationships</span>
+<span class="n">synth2_table</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.data.table</span><span class="p">(</span><span class="n">synthetic_census_teaching_data_2</span><span class="o">$</span><span class="n">syn</span><span class="p">)[,</span><span class="w"> </span><span class="nf">.</span><span class="p">(</span><span class="n">synth2_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">.N</span><span class="p">),</span><span class="w"> </span><span class="n">keyby</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compare_vars</span><span class="p">]</span>
+
+<span class="n">synth2_table</span>
+
+<span class="c1"># Convert economic_activity in synth2_table to a factor</span>
+<span class="n">synth2_table</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">synth2_table</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">                </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">economic_activity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.factor</span><span class="p">(</span><span class="n">economic_activity</span><span class="p">),</span>
+<span class="w">                              </span><span class="n">hours_worked_per_week</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.factor</span><span class="p">(</span><span class="n">hours_worked_per_week</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Frequency table of compare_vars in basic synthetic data</span>
+<span class="n">synth1_table</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.data.table</span><span class="p">(</span><span class="n">synthetic_census_teaching_data</span><span class="o">$</span><span class="n">syn</span><span class="p">)[,</span><span class="w"> </span><span class="nf">.</span><span class="p">(</span><span class="n">synth1_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">.N</span><span class="p">),</span><span class="w"> </span><span class="n">keyby</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compare_vars</span><span class="p">]</span>
+
+<span class="n">synth1_table</span>
+
+<span class="c1"># Convert to factors</span>
+<span class="n">synth1_table</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">synth1_table</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">              </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">economic_activity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.factor</span><span class="p">(</span><span class="n">economic_activity</span><span class="p">),</span>
+<span class="w">                            </span><span class="n">hours_worked_per_week</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.factor</span><span class="p">(</span><span class="n">hours_worked_per_week</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Combine counts from both datasets for comparisons</span>
+<span class="n">comparison2_table</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">merge</span><span class="p">(</span><span class="n">orig_table</span><span class="p">,</span><span class="w"> </span><span class="n">synth2_table</span><span class="p">,</span><span class="w"> </span><span class="n">all</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="n">comparison1_table</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">merge</span><span class="p">(</span><span class="n">orig_table</span><span class="p">,</span><span class="w"> </span><span class="n">synth1_table</span><span class="p">,</span><span class="w"> </span><span class="n">all</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+
+<span class="c1"># Replace NA with 0</span>
+<span class="n">comparison1_table</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">comparison1_table</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">                     </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">orig_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.double</span><span class="p">(</span><span class="n">orig_count</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">                     </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">orig_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">if_else</span><span class="p">(</span><span class="n">condition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">is.na</span><span class="p">(</span><span class="n">orig_count</span><span class="p">),</span>
+<span class="w">                                                        </span><span class="n">true</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span>
+<span class="w">                                                        </span><span class="n">false</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">orig_count</span><span class="p">))</span>
+
+
+<span class="c1"># NAs occur if the combination is not present in one of the datasets, convert these to zero counts</span>
+<span class="n">comparison2_table</span><span class="p">[</span><span class="nf">is.na</span><span class="p">(</span><span class="n">orig_count</span><span class="p">),</span><span class="w"> </span><span class="n">orig_count</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="m">0</span><span class="p">]</span>
+<span class="n">comparison2_table</span><span class="p">[</span><span class="nf">is.na</span><span class="p">(</span><span class="n">synth2_count</span><span class="p">),</span><span class="w"> </span><span class="n">synth2_count</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="m">0</span><span class="p">]</span>
+<span class="n">comparison1_table</span><span class="p">[</span><span class="nf">is.na</span><span class="p">(</span><span class="n">orig_count</span><span class="p">),</span><span class="w"> </span><span class="n">orig_count</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="m">0</span><span class="p">]</span>
+<span class="n">comparison1_table</span><span class="p">[</span><span class="nf">is.na</span><span class="p">(</span><span class="n">synth1_count</span><span class="p">),</span><span class="w"> </span><span class="n">synth1_count</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="m">0</span><span class="p">]</span>
+
+<span class="c1"># Average absolute distance</span>
+<span class="n">comparison2_table</span><span class="p">[,</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">orig_count</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">synth2_count</span><span class="p">))]</span>
+<span class="n">comparison1_table</span><span class="p">[,</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">orig_count</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">synth1_count</span><span class="p">))]</span>
+
+<span class="c1"># Average percentage difference</span>
+<span class="n">comparison2_table</span><span class="p">[,</span><span class="w"> </span><span class="m">100</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nf">mean</span><span class="p">((</span><span class="nf">abs</span><span class="p">(</span><span class="n">orig_count</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">synth2_count</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">orig_count</span><span class="p">))]</span>
+<span class="n">comparison1_table</span><span class="p">[,</span><span class="w"> </span><span class="m">100</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nf">mean</span><span class="p">((</span><span class="nf">abs</span><span class="p">(</span><span class="n">orig_count</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">synth1_count</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">orig_count</span><span class="p">))]</span>
+</pre></div>
+</div>
+<p>This guide provides a concise overview of synthesizing census teaching data with relationships between multiple variables using the <code class="docutils literal notranslate"><span class="pre">synthpop</span></code> package in R. For more detailed information, refer to the <a class="reference external" href="https://www.synthpop.org.uk/get-started.html">synthpop documentation</a>.</p>
+</section>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.ons.gov.uk/methodology/methodologicalpublications/generalmethodology/onsworkingpaperseries/onsmethodologyworkingpaperseriesnumber16syntheticdatapilot">Synthetic data at ONS</a></p></li>
+<li><p><a class="reference external" href="https://www.synthpop.org.uk/get-started.html"><code class="docutils literal notranslate"><span class="pre">synthpop</span></code> (Nowok, Raab, and Dibben 2016)</a></p></li>
+<li><p><a class="reference external" href="https://thomvolker.github.io/osf_synthetic/osf_synthetic_workshop.html">Synthetic data in R: Generating synthetic data with high utility using synthpop (Thom Volker, Raoul Schram, Erik-Jan van Kesteren)</a></p></li>
+<li><p><span class="xref myst">Synthetic Data in Python</span></p></li>
+</ul>
+</section>
+<section id="acknowledgments">
+<h2>Acknowledgments<a class="headerlink" href="#acknowledgments" title="Permalink to this heading">#</a></h2>
+<p>Special thanks to Iain Dove for sharing his knowledge of the <code class="docutils literal notranslate"><span class="pre">Synthetic</span> <span class="pre">data,</span> <span class="pre">a</span> <span class="pre">useful</span> <span class="pre">tool</span> <span class="pre">for</span> <span class="pre">ONS</span></code>, and to Wil Roberts, Elisha Mercado and Vicky Pickering for inspiring this tip!</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./raw-notebooks/synthetic-data"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">1. Introduction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#generating-synthetic-data-in-r-from-scratch">2. Generating synthetic data in R from scratch</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#numerical-variables">2.1 Numerical variables</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#character-factor-variables">2.2 Character/factor variables</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#combining-data-into-a-synthetic-dataset">2.3 Combining data into a synthetic dataset</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#generating-synthetic-data-using-synthpop">3. Generating synthetic data using <code class="docutils literal notranslate"><span class="pre">synthpop</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-synthpop-and-required-packages">3.1 Setting up <code class="docutils literal notranslate"><span class="pre">synthpop</span></code> and required packages</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#case-1-synthesise-synthpop-sample-data-sd2011">Case 1: Synthesise <code class="docutils literal notranslate"><span class="pre">synthpop</span></code> sample data <code class="docutils literal notranslate"><span class="pre">SD2011</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-by-step-guide">Step-by-step guide</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-synthpop-with-sparklyr-for-scalable-synthetic-data-processing">Using <code class="docutils literal notranslate"><span class="pre">synthpop</span></code> with <code class="docutils literal notranslate"><span class="pre">sparklyr</span></code> for scalable synthetic data processing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#case-2-synthesise-census-teaching-data">Case 2: Synthesise census teaching data</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Step-by-step guide</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#relationships-between-multiple-variables">Relationships between multiple variables</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#comparison-with-real-data">Comparison with real data</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#acknowledgments">Acknowledgments</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Analysis Standards and Pipelines in Quality and Improvement, Office for National Statistics
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
