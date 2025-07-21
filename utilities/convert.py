@@ -1,12 +1,12 @@
 from notebook_converter import markdown_from_notebook
 # Group: Which chapter does this work belong in once converted 
-group = "spark-concepts"
+group = "ancillary-topics"
 
 # What is the name of the folder the .ipynb is located in 
-folder = "groups-not-loops"
+folder = "synthetic-data"
 
 # What is the name of the .ipynb folder
-page = "groups-not-loops"
+page = "synthetic_data_python"
 
 # The path to the folder named above (can be relative or absolute path)
 base_path = "ons-spark/"
@@ -18,6 +18,6 @@ nb_maker = (markdown_from_notebook(in_path + "/" + page + ".ipynb",
                                    out_path + "/" + page + ".md",
                                    in_path + "/r_input.R",
                                    in_path + "/outputs.csv",
-                                   show_warnings=False,
-                                   output_type="tabs")
+                                   show_warnings=True,
+                                   output_type='tab')
 )
