@@ -3,10 +3,10 @@ from notebook_converter import markdown_from_notebook
 group = "spark-concepts"
 
 # What is the name of the folder the .ipynb is located in 
-folder = "groups-not-loops"
+folder = "working-with-duplicates"
 
 # What is the name of the .ipynb folder
-page = "groups-not-loops"
+page = "working-with-duplicates"
 
 # The path to the folder named above (can be relative or absolute path)
 base_path = "ons-spark/"
@@ -18,6 +18,6 @@ nb_maker = (markdown_from_notebook(in_path + "/" + page + ".ipynb",
                                    out_path + "/" + page + ".md",
                                    in_path + "/r_input.R",
                                    in_path + "/outputs.csv",
-                                   show_warnings=False,
+                                   show_warnings=True,
                                    output_type="tabs")
 )

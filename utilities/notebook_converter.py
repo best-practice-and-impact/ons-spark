@@ -311,7 +311,7 @@ class MarkdownFromNotebook():
         """
         Write out results to output_file_path
         """
-        with open(output_file_path, "w") as f:
+        with open(output_file_path, "w", encoding="utf-8") as f:
             f.write("".join(self.md_output))
     
     def cell_outputs(self):
