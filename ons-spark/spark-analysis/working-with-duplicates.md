@@ -57,9 +57,7 @@ Setting spark.hadoop.yarn.resourcemanager.principal to johanna.hall
 ```{code-tab} py
 #read in MOT dataset and select columns we will be working with
 
-#mot_path = "s3a://onscdp-dev-data01-5320d6ca/bat/dapcats/mot_test_results.csv"
-# mot_path = "C:/Users/hallj/repos/data/mot_test_results.csv"
-mot_path = "D:/dapcats_guidance/working-with-duplicates/mot_test_results.csv"
+mot_path = "s3a://onscdp-dev-data01-5320d6ca/bat/dapcats/mot_test_results.csv"
 
 mot = (spark.read.csv(mot_path, header=True, inferSchema=True)
                  .select(['test_id', 
@@ -81,9 +79,8 @@ mot = mot.dropna()
 ```{code-tab} r R
 
 #read in the MOT dataset and select columns we want to work with
-#mot_path = "s3a://onscdp-dev-data01-5320d6ca/bat/dapcats/mot_test_results.csv"
-#mot_path = "C:/Users/hallj/repos/data/mot_test_results.csv"
-mot_path = "D:/dapcats_guidance/working-with-duplicates/mot_test_results.csv"
+mot_path = "s3a://onscdp-dev-data01-5320d6ca/bat/dapcats/mot_test_results.csv"
+
 
 mot <- sparklyr::spark_read_csv(sc,
     mot_path, 
@@ -284,9 +281,7 @@ duplicate_count %>%
 For demonstration purposes we will take a small sample of vehicle id 223981155. We will restrict results to those vehicles that have passed their MOT. We can then look how many of this vehicle id are in each postcode area. 
 ````{tabs}
 ```{code-tab} py
-#sample_path = "s3a://onscdp-dev-data01-5320d6ca/bat/dapcats/mot_duplicate_sample.parquet"
-# sample_path = "C:/Users/hallj/repos/ons-spark/ons-spark/ons-spark/data/mot_duplicate_sample.parquet"
-sample_path = "D:/dapcats_guidance/working-with-duplicates/mot_duplicate_sample.parquet"
+sample_path = "s3a://onscdp-dev-data01-5320d6ca/bat/dapcats/mot_duplicate_sample.parquet"
 
 #Read in a 10% sample of vehicle id 223981155 for demo purposes
 sample = spark.read.parquet(sample_path)
@@ -301,9 +296,8 @@ sample = spark.read.parquet(sample_path)
 ```{code-tab} r R
 
 
-#sample_path = "s3a://onscdp-dev-data01-5320d6ca/bat/dapcats/mot_duplicate_sample.parquet"
-#sample_path = "C:/Users/hallj/repos/ons-spark/ons-spark/ons-spark/data/mot_duplicate_sample.parquet"
-sample_path = "D:/dapcats_guidance/working-with-duplicates/mot_duplicate_sample.parquet"
+sample_path = "s3a://onscdp-dev-data01-5320d6ca/bat/dapcats/mot_duplicate_sample.parquet"
+
 
 #Read in a 10% sample of vehicle id 223981155 for demo purposes
 sample <- sparklyr::spark_read_parquet(sc,
