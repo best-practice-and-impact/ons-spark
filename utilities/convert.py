@@ -1,8 +1,9 @@
 from notebook_converter import markdown_from_notebook
 # Group: Which chapter does this work belong in once converted 
-group = "spark-concepts"
+group = "ancillary-topics"
 
 # What is the name of the folder the .ipynb is located in 
+
 folder = "working-with-duplicates"
 
 # What is the name of the .ipynb folder
@@ -19,5 +20,5 @@ nb_maker = (markdown_from_notebook(in_path + "/" + page + ".ipynb",
                                    in_path + "/r_input.R",
                                    in_path + "/outputs.csv",
                                    show_warnings=True,
-                                   output_type="tabs")
+                                   output_type='tab')
 )
