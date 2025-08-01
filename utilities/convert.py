@@ -3,10 +3,11 @@ from notebook_converter import markdown_from_notebook
 group = "ancillary-topics"
 
 # What is the name of the folder the .ipynb is located in 
-folder = "synthetic-data"
+
+folder = "working-with-duplicates"
 
 # What is the name of the .ipynb folder
-page = "synthetic_data_python"
+page = "working-with-duplicates"
 
 # The path to the folder named above (can be relative or absolute path)
 base_path = "ons-spark/"
