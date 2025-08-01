@@ -1,0 +1,1591 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Working with Duplicates &#8212; Spark at the ONS</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/accessibility.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-95MGHSRD0S');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script src="../_static/tabs.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'spark-analysis/working-with-duplicates';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Understanding and Handling Spark Errors" href="../testing-debugging/spark-errors.html" />
+    <link rel="prev" title="Calculating Cramér’s V from a Spark DataFrame" href="cramer_v.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Spark at the ONS - Home"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="Spark at the ONS - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Introduction
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark overview</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-start.html">Getting Started with Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/when-to-use-spark.html">When To Use Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-session-guidance.html">Guidance on Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/example-spark-sessions.html">Example Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-defaults.html">Configuration Hierarchy and <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/data-types.html">Data Types in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/creating-dataframes.html">Creating DataFrames Manually</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/reading-and-writing-data-spark.html">Reading and Writing Data in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/data-storage.html">Data Storage</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to PySpark</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/pyspark-intro.html">Introduction to PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/returning-data.html">Returning Data from Cluster to Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/f-col.html">Reference columns by name: <code class="docutils literal notranslate"><span class="pre">F.col()</span></code></a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to sparklyr</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/sparklyr-intro.html">Introduction to sparklyr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">Using Spark functions in sparklyr</a></li>
+
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark functions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/union-dataframes-with-different-columns.html">Union two DataFrames with different columns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/padding.html">Add leading zeros with <code class="docutils literal notranslate"><span class="pre">lpad()</span></code></a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/sampling.html">Sampling: an overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/pivot-tables.html">Pivot tables in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/rounding.html">Rounding differences in Python, R and Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/window-functions.html">Window Functions in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/cross-joins.html">Cross Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/arrays.html">Arrays Functions in PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/date-functions.html">Date functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/writing-data.html">Writing Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/job-description-notebook.html">Set Spark Job Description</a></li>
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/median.html">Median in Spark</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Understanding and Optimising Spark</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/optimisation-tips.html">Ideas for optimising Spark code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/spark-application-and-ui.html">Spark Application and UI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/groups-not-loops.html">Groups not Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/shuffling.html">Shuffling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/join-concepts.html">Optimising Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/salted-joins.html">Salted Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/partitions.html">Managing Partitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/persistence.html">Persisting in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/cache.html">Caching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/checkpoint-staging.html">Checkpoints and Staging Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/garbage-collection.html">Garbage Collection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/df-order.html">Spark DataFrames Are Not Ordered</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/exercises.html">Exercises</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Analysis in Spark</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="big-data-workflow.html">Big data workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpolation.html">Interpolation in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logistic-regression.html">Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualisation.html">Spark and Visualisation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flags.html">Flags in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bin-continuous-variable.html">Data binning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cramer_v.html">Calculating Cramér’s V from a Spark DataFrame</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Working with Duplicates</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Testing and Debugging</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../testing-debugging/spark-errors.html">Understanding and Handling Spark Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing-debugging/unit-testing.html">Unit Testing in Spark</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Ancillary Topics</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/module-imports.html">Naming Conflicts in Module Imports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/pydoop.html">Pydoop: HDFS to pandas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/creating-a-SQL-view-in-HDFS.html">Creating a SQL view in HDFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/pandas-udfs.html">Pandas UDFs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/r-udfs.html">R UDFs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/synthpop_with_r.html">Synthpop: Synthetic Data in R</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/synthetic_data_python.html">Synthetic Data Generation in Python: Faker and Mimesis</a></li>
+</ul>
+
+        </div>
+    </nav></div>
+            <div class="bd-sidebar__bottom">
+                <!-- To handle the deprecated key -->
+                
+                <div class="navbar_extra_footer">
+                <div>
+        <p>Book version 2022.6</p>
+    </div>
+    
+                </div>
+                
+            </div>
+        </div>
+        <div id="rtd-footer-container"></div>
+    </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fspark-analysis/working-with-duplicates.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/spark-analysis/working-with-duplicates.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Working with Duplicates</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dropduplicates-or-sparklyr-sdf-drop-duplicates"><code class="docutils literal notranslate"><span class="pre">.dropDuplicates()</span></code> or <code class="docutils literal notranslate"><span class="pre">sparklyr::sdf_drop_duplicates()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#window-method">Window method</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="working-with-duplicates">
+<h1>Working with Duplicates<a class="headerlink" href="#working-with-duplicates" title="Permalink to this heading">#</a></h1>
+<p>Duplicated data can cause many issues when it comes to running big data pipelines. There are several things to consider when working with duplicates in your data:</p>
+<ol class="arabic simple">
+<li><p>Dealing with duplicates is something that should be done at the start of your pipeline. However, you will also need to keep in mind that transformations further on in the pipeline (e.g. joins) may also create duplicates and this will need to be checked.</p></li>
+<li><p>You need to take into account which variables you are looking for duplicates in: a true duplicate will have duplicated data in all variables. However, in reality, you will most likely find rows which have duplicated data (e.g. id numbers or identifiers) but have differing data in their other variables. As such, you will need to determine how to deal with such data and whether to keep these entries or filter them based on other variable characteristics.</p></li>
+</ol>
+<p>There are several ways of dealing with duplicates in Spark. This section will cover two of the main ways: using Spark’s in-built drop duplicates function and an alternative using a Window with a row number.</p>
+<p>The first thing we will do is start our Spark session and read in our dataset.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-0-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-0-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparkSession</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyspark.sql.functions</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql.window</span><span class="w"> </span><span class="kn">import</span> <span class="n">Window</span>
+
+
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span>
+          <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s1">&#39;working_with_duplicates&#39;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">rlang</span><span class="p">)</span>
+
+<span class="n">default_config</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">()</span>
+<span class="n">default_config</span><span class="o">$</span><span class="n">spark.local.dir</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&quot;D:/tmp&quot;</span>
+
+<span class="n">sc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_connect</span><span class="p">(</span>
+<span class="w">  </span><span class="n">master</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;local&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">app_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;working_with_duplicates&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">default_config</span><span class="p">)</span>
+
+<span class="nf">connection_is_open</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-1-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-1-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Setting spark.hadoop.yarn.resourcemanager.principal to johanna.hall
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] TRUE
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-2-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-2-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="c1">#read in MOT dataset and select columns we will be working with</span>
+
+<span class="n">mot_path</span> <span class="o">=</span> <span class="s2">&quot;s3a://onscdp-dev-data01-5320d6ca/bat/dapcats/mot_test_results.csv&quot;</span>
+
+<span class="n">mot</span> <span class="o">=</span> <span class="p">(</span><span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">mot_path</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                 <span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;test_id&#39;</span><span class="p">,</span> 
+                         <span class="s1">&#39;vehicle_id&#39;</span><span class="p">,</span> 
+                         <span class="s1">&#39;test_date&#39;</span><span class="p">,</span> 
+                         <span class="s1">&#39;test_mileage&#39;</span><span class="p">,</span> 
+                         <span class="s1">&#39;postcode_area&#39;</span><span class="p">,</span> 
+                         <span class="s1">&#39;make&#39;</span><span class="p">,</span> 
+                         <span class="s1">&#39;colour&#39;</span><span class="p">,</span> 
+                         <span class="s1">&#39;test_result&#39;</span><span class="p">]))</span>
+
+<span class="c1">#change the date format to yyyy-MM-dd</span>
+<span class="n">mot</span> <span class="o">=</span> <span class="n">mot</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;test_date&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">to_date</span><span class="p">(</span><span class="s2">&quot;test_date&quot;</span><span class="p">,</span> <span class="s2">&quot;yyyy-MM-dd&quot;</span><span class="p">))</span>
+
+<span class="c1">#remove rows with nulls</span>
+<span class="n">mot</span> <span class="o">=</span> <span class="n">mot</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1">#read in the MOT dataset and select columns we want to work with</span>
+<span class="n">mot_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;s3a://onscdp-dev-data01-5320d6ca/bat/dapcats/mot_test_results.csv&quot;</span>
+
+
+<span class="n">mot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_csv</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span>
+<span class="w">    </span><span class="n">mot_path</span><span class="p">,</span><span class="w"> </span>
+<span class="w">    </span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;csv&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">    </span><span class="n">header</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span>
+<span class="w">    </span><span class="n">infer_schema</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span>
+<span class="w">      </span><span class="n">test_id</span><span class="p">,</span>
+<span class="w">      </span><span class="n">vehicle_id</span><span class="p">,</span><span class="w"> </span>
+<span class="w">      </span><span class="n">test_date</span><span class="p">,</span><span class="w"> </span>
+<span class="w">      </span><span class="n">test_mileage</span><span class="p">,</span><span class="w"> </span>
+<span class="w">      </span><span class="n">postcode_area</span><span class="p">,</span><span class="w"> </span>
+<span class="w">      </span><span class="n">make</span><span class="p">,</span><span class="w"> </span>
+<span class="w">      </span><span class="n">colour</span><span class="p">,</span>
+<span class="w">      </span><span class="n">test_result</span><span class="p">)</span>
+
+<span class="c1">#change the date format to yyyy-MM-dd</span>
+<span class="n">mot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">mot</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">test_date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">sql</span><span class="p">(</span><span class="s">&quot;CAST(test_date AS DATE)&quot;</span><span class="p">))</span>
+
+<span class="c1">#remove rows with nulls</span>
+<span class="n">mot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">na.omit</span><span class="p">(</span><span class="n">mot</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"></div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-4-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-4-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-4-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="c1">#check the schema of the data</span>
+<span class="n">mot</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1">#check schema and preview data</span>
+<span class="n">pillar</span><span class="o">::</span><span class="nf">glimpse</span><span class="p">(</span><span class="n">mot</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-5-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-5-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-5-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>root
+ |-- test_id: integer (nullable = true)
+ |-- vehicle_id: integer (nullable = true)
+ |-- test_date: date (nullable = true)
+ |-- test_mileage: integer (nullable = true)
+ |-- postcode_area: string (nullable = true)
+ |-- make: string (nullable = true)
+ |-- colour: string (nullable = true)
+ |-- test_result: string (nullable = true)
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Rows: ??
+
+Columns: 8
+
+Database: spark_connection
+
+$ test_id       [3m[38;5;246m&lt;int&gt;[39m[23m 1687460261, 1007821341, 1268040905, 232884115, 125102284…
+
+$ vehicle_id    [3m[38;5;246m&lt;int&gt;[39m[23m 1131526890, 211522675, 1218838379, 159956284, 851633977,…
+
+$ test_date     [3m[38;5;246m&lt;date&gt;[39m[23m 2023-04-28, 2023-04-28, 2023-04-28, 2023-04-28, 2023-04…
+
+$ test_mileage  [3m[38;5;246m&lt;int&gt;[39m[23m 129661, 26597, 11803, 148187, 12915, 22281, 30140, 23462…
+
+$ postcode_area [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;HU&quot;, &quot;IV&quot;, &quot;LA&quot;, &quot;BD&quot;, &quot;PO&quot;, &quot;WA&quot;, &quot;PH&quot;, &quot;B&quot;, &quot;S&quot;, &quot;PA&quot;…
+
+$ make          [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;BMW&quot;, &quot;FORD&quot;, &quot;THE EXPLORER GROUP&quot;, &quot;AUDI&quot;, &quot;DACIA&quot;, &quot;V…
+
+$ colour        [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;BLACK&quot;, &quot;BLUE&quot;, &quot;WHITE&quot;, &quot;WHITE&quot;, &quot;ORANGE&quot;, &quot;BLUE&quot;, &quot;GR…
+
+$ test_result   [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;F&quot;, &quot;P&quot;, &quot;P&quot;, &quot;F&quot;, &quot;P&quot;, &quot;P&quot;, &quot;P&quot;, &quot;P&quot;, &quot;P&quot;, &quot;P&quot;, &quot;P&quot;, &quot;…
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-6-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-6-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-6-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="c1">#check the size of the data we are working with</span>
+<span class="n">mot</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-6-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1">#check the size of the data we are working with</span>
+<span class="n">mot</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-7-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-7-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-7-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-7-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>41892592
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-7-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-7-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] 41892592
+</pre></div>
+</div>
+</div></div>
+<p>Lets start by having a look at a subset of our data. We will be using the DVSA MOT dataset from 2023. We can see that vehicle ID 223981155 is duplicated 863 times!</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-8-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-8-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-8-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-8-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="c1">#Filter to vehicles that have passed their MOT and groupby vehicle_id</span>
+<span class="n">duplicate_count</span> <span class="o">=</span> <span class="p">(</span><span class="n">mot</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;test_result&#39;</span><span class="p">)</span><span class="o">==</span><span class="s2">&quot;P&quot;</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;vehicle_id&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;count&quot;</span><span class="p">))</span>
+                <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;count&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">6</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+<span class="c1">#Show top 10 rows</span>
+<span class="n">duplicate_count</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-8-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-8-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1">#Filter to vehicles that have passed their MOT and groupby vehicle_id</span>
+<span class="n">duplicate_count</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">mot</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">test_result</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;P&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">vehicle_id</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">summarise</span><span class="p">(</span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">n</span><span class="p">(),</span><span class="w"> </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;drop&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">arrange</span><span class="p">(</span><span class="n">dplyr</span><span class="o">::</span><span class="nf">desc</span><span class="p">(</span><span class="n">count</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">ungroup</span><span class="p">()</span>
+
+<span class="c1">#Show top 10 rows</span>
+<span class="n">duplicate_count</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">head</span><span class="p">(</span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">print</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">Inf</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-9-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-9-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-9-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-9-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>   vehicle_id  count
+0   223981155    863
+1  1214612397      9
+2  1478780109      7
+3   371225013      7
+4  1497793597      7
+5   401693765      7
+6    43095996      7
+7  1316457909      7
+8  1357224061      7
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-9-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-9-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[38;5;246m# A tibble: 10 × 2[39m
+
+   vehicle_id count
+
+        [3m[38;5;246m&lt;int&gt;[39m[23m [3m[38;5;246m&lt;dbl&gt;[39m[23m
+
+[38;5;250m 1[39m  223[4m9[24m[4m8[24m[4m1[24m155   863
+
+[38;5;250m 2[39m [4m1[24m214[4m6[24m[4m1[24m[4m2[24m397     9
+
+[38;5;250m 3[39m [4m1[24m316[4m4[24m[4m5[24m[4m7[24m909     7
+
+[38;5;250m 4[39m  401[4m6[24m[4m9[24m[4m3[24m765     7
+
+[38;5;250m 5[39m   43[4m0[24m[4m9[24m[4m5[24m996     7
+
+[38;5;250m 6[39m  371[4m2[24m[4m2[24m[4m5[24m013     7
+
+[38;5;250m 7[39m [4m1[24m357[4m2[24m[4m2[24m[4m4[24m061     7
+
+[38;5;250m 8[39m [4m1[24m497[4m7[24m[4m9[24m[4m3[24m597     7
+
+[38;5;250m 9[39m [4m1[24m478[4m7[24m[4m8[24m[4m0[24m109     7
+
+[38;5;250m10[39m  936[4m5[24m[4m4[24m[4m2[24m225     6
+</pre></div>
+</div>
+</div></div>
+<p>For demonstration purposes we will take a small sample of vehicle id 223981155. We will restrict results to those vehicles that have passed their MOT. We can then look how many of this vehicle id are in each postcode area.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-10-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-10-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-10-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-10-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">sample_path</span> <span class="o">=</span> <span class="s2">&quot;s3a://onscdp-dev-data01-5320d6ca/bat/dapcats/mot_duplicate_sample.parquet&quot;</span>
+
+<span class="c1">#Read in a 10% sample of vehicle id 223981155 for demo purposes</span>
+<span class="n">sample</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">sample_path</span><span class="p">)</span>
+
+
+<span class="c1">#Check count of this vehicle per postcode area</span>
+<span class="p">(</span><span class="n">sample</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s1">&#39;postcode_area&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">))</span>
+    <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">show</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-10-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-10-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">sample_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;s3a://onscdp-dev-data01-5320d6ca/bat/dapcats/mot_duplicate_sample.parquet&quot;</span>
+
+
+<span class="c1">#Read in a 10% sample of vehicle id 223981155 for demo purposes</span>
+<span class="n">sample</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_parquet</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span>
+<span class="w">                                   </span><span class="n">sample_path</span><span class="p">,</span>
+<span class="w">                                   </span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;parquet&quot;</span><span class="p">)</span>
+
+<span class="c1">#Check count of this vehicle per postcode area</span>
+<span class="n">sample</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">postcode_area</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">summarise</span><span class="p">(</span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">n</span><span class="p">(),</span><span class="w"> </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;drop&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">arrange</span><span class="p">(</span><span class="n">dplyr</span><span class="o">::</span><span class="nf">desc</span><span class="p">(</span><span class="n">count</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">print</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">Inf</span><span class="p">)</span><span class="w"> </span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-11-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-11-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-11-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-11-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[Stage 9:&gt;                                                          (0 + 1) / 1]
++-------------+-----+
+|postcode_area|count|
++-------------+-----+
+|           BS|   21|
+|           NP|   20|
+|           PE|    8|
+|           NN|    7|
+|           WN|    7|
+|           BB|    7|
+|           NW|    5|
+|           SE|    4|
+|           LU|    2|
+|           ML|    2|
+|            E|    1|
+|           CO|    1|
+|           TS|    1|
+|           CF|    1|
+|           CH|    1|
+|            N|    1|
+|           EH|    1|
+|           DH|    1|
+|           SR|    1|
++-------------+-----+
+                                                                                
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-11-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-11-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>9     6
+
+[38;5;246m# A tibble: 19 × 2[39m
+
+   postcode_area count
+
+   [3m[38;5;246m&lt;chr&gt;[39m[23m         [3m[38;5;246m&lt;dbl&gt;[39m[23m
+
+[38;5;250m 1[39m BS               21
+
+[38;5;250m 2[39m NP               20
+
+[38;5;250m 3[39m PE                8
+
+[38;5;250m 4[39m BB                7
+
+[38;5;250m 5[39m WN                7
+
+[38;5;250m 6[39m NN                7
+
+[38;5;250m 7[39m NW                5
+
+[38;5;250m 8[39m SE                4
+
+[38;5;250m 9[39m LU                2
+
+[38;5;250m10[39m ML                2
+
+[38;5;250m11[39m N                 1
+
+[38;5;250m12[39m SR                1
+
+[38;5;250m13[39m CH                1
+
+[38;5;250m14[39m E                 1
+
+[38;5;250m15[39m EH                1
+
+[38;5;250m16[39m TS                1
+
+[38;5;250m17[39m CO                1
+
+[38;5;250m18[39m DH                1
+
+[38;5;250m19[39m CF                1
+</pre></div>
+</div>
+</div></div>
+<section id="dropduplicates-or-sparklyr-sdf-drop-duplicates">
+<h2><code class="docutils literal notranslate"><span class="pre">.dropDuplicates()</span></code> or <code class="docutils literal notranslate"><span class="pre">sparklyr::sdf_drop_duplicates()</span></code><a class="headerlink" href="#dropduplicates-or-sparklyr-sdf-drop-duplicates" title="Permalink to this heading">#</a></h2>
+<p>We can use the <code class="docutils literal notranslate"><span class="pre">.dropDuplicates()</span></code> or <code class="docutils literal notranslate"><span class="pre">sparklyr::sdf_drop_duplicates()</span></code> function on our sample, which in our case works fine as we are using it on the whole of the sample dataset. This means Spark will search for duplicates across all variables. We can see that there are multiple entries for various postcode areas, but they have different information for <code class="docutils literal notranslate"><span class="pre">test_id</span></code>, <code class="docutils literal notranslate"><span class="pre">test_date</span></code> and <code class="docutils literal notranslate"><span class="pre">test_mileage</span></code> despite having the same <code class="docutils literal notranslate"><span class="pre">vehicle_id</span></code> and <code class="docutils literal notranslate"><span class="pre">postcode_area</span></code>, so are not true duplicates and thus retained.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-12-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-12-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-12-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-12-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">sample</span><span class="o">.</span><span class="n">dropDuplicates</span><span class="p">()</span><span class="o">.</span><span class="n">sort</span><span class="p">([</span><span class="s1">&#39;postcode_area&#39;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">desc</span><span class="p">(</span><span class="s1">&#39;test_mileage&#39;</span><span class="p">)])</span><span class="o">.</span><span class="n">showpar</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-12-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-12-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1">#Drop duplicates based on all columns</span>
+<span class="n">sample</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">  </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_drop_duplicates</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">arrange</span><span class="p">(</span><span class="n">postcode_area</span><span class="p">,</span><span class="w"> </span><span class="nf">desc</span><span class="p">(</span><span class="n">test_mileage</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">   </span>
+<span class="w">  </span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">print</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">Inf</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-13-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-13-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-13-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-13-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[Stage 47:&gt;                                                         (0 + 1) / 1]
++----------+----------+----------+------------+-------------+----+------+-----------+
+|   test_id|vehicle_id| test_date|test_mileage|postcode_area|make|colour|test_result|
++----------+----------+----------+------------+-------------+----+------+-----------+
+|1712482407| 223981155|2023-09-08|      315802|           BB|DVSA| BEIGE|          P|
+| 608299587| 223981155|2023-09-08|      129365|           BB|DVSA| BEIGE|          P|
+|1243548035| 223981155|2023-09-08|      118059|           BB|DVSA| BEIGE|          P|
+|1041508715| 223981155|2023-08-15|      111890|           BB|DVSA| BEIGE|          P|
+|1569660147| 223981155|2023-09-05|       68311|           BB|DVSA| BEIGE|          P|
+|1531481473| 223981155|2023-09-09|       37932|           BB|DVSA| BEIGE|          P|
+| 693596559| 223981155|2023-09-08|       30568|           BB|DVSA| BEIGE|          P|
+| 243918949| 223981155|2023-09-16|      218001|           BS|DVSA| BEIGE|          P|
+| 890662963| 223981155|2023-09-16|      197459|           BS|DVSA| BEIGE|          P|
+| 537036175| 223981155|2023-08-29|      188907|           BS|DVSA| BEIGE|          P|
+| 250905065| 223981155|2023-08-28|      186254|           BS|DVSA| BEIGE|          P|
+| 746058855| 223981155|2023-09-19|      185623|           BS|DVSA| BEIGE|          P|
+|1096998015| 223981155|2023-08-23|      180932|           BS|DVSA| BEIGE|          P|
+|1517807321| 223981155|2023-09-22|      156503|           BS|DVSA| BEIGE|          P|
+|1563278235| 223981155|2023-06-20|      155722|           BS|DVSA| BEIGE|          P|
+|1141589769| 223981155|2023-09-19|      155482|           BS|DVSA| BEIGE|          P|
+| 291027007| 223981155|2023-09-19|      149706|           BS|DVSA| BEIGE|          P|
+|1803896485| 223981155|2023-08-11|      143010|           BS|DVSA| BEIGE|          P|
+|1745334919| 223981155|2023-09-12|      133314|           BS|DVSA| BEIGE|          P|
+| 972921705| 223981155|2023-08-16|      127893|           BS|DVSA| BEIGE|          P|
++----------+----------+----------+------------+-------------+----+------+-----------+
+only showing top 20 rows
+                                                                                
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-13-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-13-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[38;5;246m# A tibble: 92 × 8[39m
+
+      test_id vehicle_id test_date  test_mileage postcode_area make  colour
+
+        [3m[38;5;246m&lt;int&gt;[39m[23m      [3m[38;5;246m&lt;int&gt;[39m[23m [3m[38;5;246m&lt;date&gt;[39m[23m            [3m[38;5;246m&lt;int&gt;[39m[23m [3m[38;5;246m&lt;chr&gt;[39m[23m         [3m[38;5;246m&lt;chr&gt;[39m[23m [3m[38;5;246m&lt;chr&gt;[39m[23m 
+
+[38;5;250m 1[39m [4m1[24m712[4m4[24m[4m8[24m[4m2[24m407  223[4m9[24m[4m8[24m[4m1[24m155 2023-09-08       [4m3[24m[4m1[24m[4m5[24m802 BB            DVSA  BEIGE 
+
+[38;5;250m 2[39m  608[4m2[24m[4m9[24m[4m9[24m587  223[4m9[24m[4m8[24m[4m1[24m155 2023-09-08       [4m1[24m[4m2[24m[4m9[24m365 BB            DVSA  BEIGE 
+
+[38;5;250m 3[39m [4m1[24m243[4m5[24m[4m4[24m[4m8[24m035  223[4m9[24m[4m8[24m[4m1[24m155 2023-09-08       [4m1[24m[4m1[24m[4m8[24m059 BB            DVSA  BEIGE 
+
+[38;5;250m 4[39m [4m1[24m041[4m5[24m[4m0[24m[4m8[24m715  223[4m9[24m[4m8[24m[4m1[24m155 2023-08-15       [4m1[24m[4m1[24m[4m1[24m890 BB            DVSA  BEIGE 
+
+[38;5;250m 5[39m [4m1[24m569[4m6[24m[4m6[24m[4m0[24m147  223[4m9[24m[4m8[24m[4m1[24m155 2023-09-05        [4m6[24m[4m8[24m311 BB            DVSA  BEIGE 
+
+[38;5;250m 6[39m [4m1[24m531[4m4[24m[4m8[24m[4m1[24m473  223[4m9[24m[4m8[24m[4m1[24m155 2023-09-09        [4m3[24m[4m7[24m932 BB            DVSA  BEIGE 
+
+[38;5;250m 7[39m  693[4m5[24m[4m9[24m[4m6[24m559  223[4m9[24m[4m8[24m[4m1[24m155 2023-09-08        [4m3[24m[4m0[24m568 BB            DVSA  BEIGE 
+
+[38;5;250m 8[39m  243[4m9[24m[4m1[24m[4m8[24m949  223[4m9[24m[4m8[24m[4m1[24m155 2023-09-16       [4m2[24m[4m1[24m[4m8[24m001 BS            DVSA  BEIGE 
+
+[38;5;250m 9[39m  890[4m6[24m[4m6[24m[4m2[24m963  223[4m9[24m[4m8[24m[4m1[24m155 2023-09-16       [4m1[24m[4m9[24m[4m7[24m459 BS            DVSA  BEIGE 
+
+[38;5;250m10[39m  537[4m0[24m[4m3[24m[4m6[24m175  223[4m9[24m[4m8[24m[4m1[24m155 2023-08-29       [4m1[24m[4m8[24m[4m8[24m907 BS            DVSA  BEIGE 
+
+   test_result
+
+   [3m[38;5;246m&lt;chr&gt;[39m[23m      
+
+[38;5;250m 1[39m P          
+
+[38;5;250m 2[39m P          
+
+[38;5;250m 3[39m P          
+
+[38;5;250m 4[39m P          
+
+[38;5;250m 5[39m P          
+
+[38;5;250m 6[39m P          
+
+[38;5;250m 7[39m P          
+
+[38;5;250m 8[39m P          
+
+[38;5;250m 9[39m P          
+
+[38;5;250m10[39m P          
+
+[38;5;246m# ℹ 82 more rows[39m
+</pre></div>
+</div>
+</div></div>
+<p>One thing to be aware of when using the <code class="docutils literal notranslate"><span class="pre">.dropDuplicates()</span></code> or <code class="docutils literal notranslate"><span class="pre">sparklyr::sdf_drop_duplicates()</span></code> function is that it is non-deterministic which means it may not always produce the same results on different runs of the code, depending on which variables you are using it on and how your data is partitioned. This is especially pertinent when dropping duplicates on a subset of your data (e.g. specifying a variable, rather than using the function on all variables as was shown above).</p>
+<p>Let’s say we want to keep only one entry from vehicle id 223981155 per postcode area. To do this, we can use <code class="docutils literal notranslate"><span class="pre">.dropDuplicates()</span></code> or <code class="docutils literal notranslate"><span class="pre">sparklyr::sdf_drop_duplicates()</span></code> on the postcode_area variable. We have multiple entries for various postcodes and because we are only providing a single variable to drop duplicates on, Spark will simply keep the first entry of that variable it finds (without considering the values in the other variables).</p>
+<p>The important thing to note with this is that the results of your code will change <strong>depending on how your data is partitioned</strong>. There is no inherent order to how Spark processes the partitions when using this method, hence the variable results (unless your data is always only stored on 1 partition, then the result will remain the same).</p>
+<p>The below provides an illustration of this.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-14-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-14-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-14-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-14-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-14-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-14-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="c1">#Check the current partitioning of our data</span>
+<span class="n">sample</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-14-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-14-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1">#Check current partition of the data</span>
+<span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_num_partitions</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="nf">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-15-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-15-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button></div><div aria-labelledby="tab-15-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-15-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>1
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-16-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-16-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-16-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-16-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-16-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-16-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="c1">#Drop duplicates on postcode area</span>
+<span class="n">sample</span><span class="o">.</span><span class="n">dropDuplicates</span><span class="p">([</span><span class="s1">&#39;postcode_area&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-16-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-16-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1">#Drop duplicates based on postcode_area</span>
+<span class="n">sample</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_drop_duplicates</span><span class="p">(</span><span class="n">cols</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;postcode_area&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">print</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">Inf</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-17-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-17-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-17-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-17-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-17-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-17-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[Stage 12:&gt;                                                         (0 + 1) / 1]
++----------+----------+----------+------------+-------------+----+------+-----------+
+|   test_id|vehicle_id| test_date|test_mileage|postcode_area|make|colour|test_result|
++----------+----------+----------+------------+-------------+----+------+-----------+
+|1712482407| 223981155|2023-09-08|      315802|           BB|DVSA| BEIGE|          P|
+| 979064019| 223981155|2023-09-08|       91546|           BS|DVSA| BEIGE|          P|
+| 952073263| 223981155|2023-07-25|       43980|           CF|DVSA| BEIGE|          P|
+|1595426675| 223981155|2023-09-02|      184784|           CH|DVSA| BEIGE|          P|
+| 194619757| 223981155|2023-08-31|      107114|           CO|DVSA| BEIGE|          P|
+| 363813511| 223981155|2023-07-24|       68944|           DH|DVSA| BEIGE|          P|
+| 818121815| 223981155|2023-05-31|      139581|            E|DVSA| BEIGE|          P|
+| 130590349| 223981155|2023-02-06|      125337|           EH|DVSA| BEIGE|          P|
+|1621487003| 223981155|2023-04-11|       96702|           LU|DVSA| BEIGE|          P|
+| 217703609| 223981155|2023-07-28|       32574|           ML|DVSA| BEIGE|          P|
+| 364306397| 223981155|2023-02-23|       71745|            N|DVSA| BEIGE|          P|
+| 648395111| 223981155|2023-08-03|      185442|           NN|DVSA| BEIGE|          P|
+| 182333359| 223981155|2023-09-07|      158000|           NP|DVSA| BEIGE|          P|
+| 855822481| 223981155|2023-07-20|      152541|           NW|DVSA| BEIGE|          P|
+| 488527389| 223981155|2023-04-12|      105257|           PE|DVSA| BEIGE|          P|
+| 585395909| 223981155|2023-03-15|       65240|           SE|DVSA| BEIGE|          P|
+|  74140977| 223981155|2023-01-14|      144703|           SR|DVSA| BEIGE|          P|
+|1493456623| 223981155|2023-10-05|       49493|           TS|DVSA| BEIGE|          P|
+| 378218713| 223981155|2023-04-14|      156723|           WN|DVSA| BEIGE|          P|
++----------+----------+----------+------------+-------------+----+------+-----------+
+                                                                                
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-17-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-17-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[38;5;246m# A tibble: 19 × 8[39m
+
+      test_id vehicle_id test_date  test_mileage postcode_area make  colour
+
+        [3m[38;5;246m&lt;int&gt;[39m[23m      [3m[38;5;246m&lt;int&gt;[39m[23m [3m[38;5;246m&lt;date&gt;[39m[23m            [3m[38;5;246m&lt;int&gt;[39m[23m [3m[38;5;246m&lt;chr&gt;[39m[23m         [3m[38;5;246m&lt;chr&gt;[39m[23m [3m[38;5;246m&lt;chr&gt;[39m[23m 
+
+[38;5;250m 1[39m [4m1[24m712[4m4[24m[4m8[24m[4m2[24m407  223[4m9[24m[4m8[24m[4m1[24m155 2023-09-08       [4m3[24m[4m1[24m[4m5[24m802 BB            DVSA  BEIGE 
+
+[38;5;250m 2[39m  979[4m0[24m[4m6[24m[4m4[24m019  223[4m9[24m[4m8[24m[4m1[24m155 2023-09-08        [4m9[24m[4m1[24m546 BS            DVSA  BEIGE 
+
+[38;5;250m 3[39m  952[4m0[24m[4m7[24m[4m3[24m263  223[4m9[24m[4m8[24m[4m1[24m155 2023-07-25        [4m4[24m[4m3[24m980 CF            DVSA  BEIGE 
+
+[38;5;250m 4[39m [4m1[24m595[4m4[24m[4m2[24m[4m6[24m675  223[4m9[24m[4m8[24m[4m1[24m155 2023-09-02       [4m1[24m[4m8[24m[4m4[24m784 CH            DVSA  BEIGE 
+
+[38;5;250m 5[39m  194[4m6[24m[4m1[24m[4m9[24m757  223[4m9[24m[4m8[24m[4m1[24m155 2023-08-31       [4m1[24m[4m0[24m[4m7[24m114 CO            DVSA  BEIGE 
+
+[38;5;250m 6[39m  363[4m8[24m[4m1[24m[4m3[24m511  223[4m9[24m[4m8[24m[4m1[24m155 2023-07-24        [4m6[24m[4m8[24m944 DH            DVSA  BEIGE 
+
+[38;5;250m 7[39m  818[4m1[24m[4m2[24m[4m1[24m815  223[4m9[24m[4m8[24m[4m1[24m155 2023-05-31       [4m1[24m[4m3[24m[4m9[24m581 E             DVSA  BEIGE 
+
+[38;5;250m 8[39m  130[4m5[24m[4m9[24m[4m0[24m349  223[4m9[24m[4m8[24m[4m1[24m155 2023-02-06       [4m1[24m[4m2[24m[4m5[24m337 EH            DVSA  BEIGE 
+
+[38;5;250m 9[39m [4m1[24m621[4m4[24m[4m8[24m[4m7[24m003  223[4m9[24m[4m8[24m[4m1[24m155 2023-04-11        [4m9[24m[4m6[24m702 LU            DVSA  BEIGE 
+
+[38;5;250m10[39m  217[4m7[24m[4m0[24m[4m3[24m609  223[4m9[24m[4m8[24m[4m1[24m155 2023-07-28        [4m3[24m[4m2[24m574 ML            DVSA  BEIGE 
+
+[38;5;250m11[39m  364[4m3[24m[4m0[24m[4m6[24m397  223[4m9[24m[4m8[24m[4m1[24m155 2023-02-23        [4m7[24m[4m1[24m745 N             DVSA  BEIGE 
+
+[38;5;250m12[39m  648[4m3[24m[4m9[24m[4m5[24m111  223[4m9[24m[4m8[24m[4m1[24m155 2023-08-03       [4m1[24m[4m8[24m[4m5[24m442 NN            DVSA  BEIGE 
+
+[38;5;250m13[39m  182[4m3[24m[4m3[24m[4m3[24m359  223[4m9[24m[4m8[24m[4m1[24m155 2023-09-07       [4m1[24m[4m5[24m[4m8[24m000 NP            DVSA  BEIGE 
+
+[38;5;250m14[39m  855[4m8[24m[4m2[24m[4m2[24m481  223[4m9[24m[4m8[24m[4m1[24m155 2023-07-20       [4m1[24m[4m5[24m[4m2[24m541 NW            DVSA  BEIGE 
+
+[38;5;250m15[39m  488[4m5[24m[4m2[24m[4m7[24m389  223[4m9[24m[4m8[24m[4m1[24m155 2023-04-12       [4m1[24m[4m0[24m[4m5[24m257 PE            DVSA  BEIGE 
+
+[38;5;250m16[39m  585[4m3[24m[4m9[24m[4m5[24m909  223[4m9[24m[4m8[24m[4m1[24m155 2023-03-15        [4m6[24m[4m5[24m240 SE            DVSA  BEIGE 
+
+[38;5;250m17[39m   74[4m1[24m[4m4[24m[4m0[24m977  223[4m9[24m[4m8[24m[4m1[24m155 2023-01-14       [4m1[24m[4m4[24m[4m4[24m703 SR            DVSA  BEIGE 
+
+[38;5;250m18[39m [4m1[24m493[4m4[24m[4m5[24m[4m6[24m623  223[4m9[24m[4m8[24m[4m1[24m155 2023-10-05        [4m4[24m[4m9[24m493 TS            DVSA  BEIGE 
+
+[38;5;250m19[39m  378[4m2[24m[4m1[24m[4m8[24m713  223[4m9[24m[4m8[24m[4m1[24m155 2023-04-14       [4m1[24m[4m5[24m[4m6[24m723 WN            DVSA  BEIGE 
+
+   test_result
+
+   [3m[38;5;246m&lt;chr&gt;[39m[23m      
+
+[38;5;250m 1[39m P          
+
+[38;5;250m 2[39m P          
+
+[38;5;250m 3[39m P          
+
+[38;5;250m 4[39m P          
+
+[38;5;250m 5[39m P          
+
+[38;5;250m 6[39m P          
+
+[38;5;250m 7[39m P          
+
+[38;5;250m 8[39m P          
+
+[38;5;250m 9[39m P          
+
+[38;5;250m10[39m P          
+
+[38;5;250m11[39m P          
+
+[38;5;250m12[39m P          
+
+[38;5;250m13[39m P          
+
+[38;5;250m14[39m P          
+
+[38;5;250m15[39m P          
+
+[38;5;250m16[39m P          
+
+[38;5;250m17[39m P          
+
+[38;5;250m18[39m P          
+
+[38;5;250m19[39m P          
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-18-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-18-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-18-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-18-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-18-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-18-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="c1">#Repartition our data</span>
+<span class="n">sample</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">repartition</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">sample</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-18-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-18-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1">#Repartition the data</span>
+<span class="n">sample</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_repartition</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span><span class="w"> </span><span class="n">partitions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">)</span>
+<span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_num_partitions</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="nf">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-19-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-19-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-19-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-19-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-19-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-19-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[Stage 15:&gt;                                                         (0 + 1) / 1]
+10
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-19-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-19-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] 10
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-20-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-20-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-20-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-20-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-20-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-20-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="c1">#Rerun drop duplicates to see discrepancy</span>
+<span class="n">sample</span><span class="o">.</span><span class="n">dropDuplicates</span><span class="p">([</span><span class="s1">&#39;postcode_area&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-20-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-20-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1">#Rerun drop duplicates</span>
+<span class="n">sample</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_drop_duplicates</span><span class="p">(</span><span class="n">cols</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;postcode_area&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">print</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">Inf</span><span class="p">)</span>
+<span class="w">  </span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-21-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-21-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-21-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-21-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-21-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-21-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[Stage 18:=======================================&gt;                 (7 + 1) / 10]
++----------+----------+----------+------------+-------------+----+------+-----------+
+|   test_id|vehicle_id| test_date|test_mileage|postcode_area|make|colour|test_result|
++----------+----------+----------+------------+-------------+----+------+-----------+
+| 693596559| 223981155|2023-09-08|       30568|           BB|DVSA| BEIGE|          P|
+|1745334919| 223981155|2023-09-12|      133314|           BS|DVSA| BEIGE|          P|
+| 952073263| 223981155|2023-07-25|       43980|           CF|DVSA| BEIGE|          P|
+|1595426675| 223981155|2023-09-02|      184784|           CH|DVSA| BEIGE|          P|
+| 194619757| 223981155|2023-08-31|      107114|           CO|DVSA| BEIGE|          P|
+| 363813511| 223981155|2023-07-24|       68944|           DH|DVSA| BEIGE|          P|
+| 818121815| 223981155|2023-05-31|      139581|            E|DVSA| BEIGE|          P|
+| 130590349| 223981155|2023-02-06|      125337|           EH|DVSA| BEIGE|          P|
+|1621487003| 223981155|2023-04-11|       96702|           LU|DVSA| BEIGE|          P|
+| 804896923| 223981155|2023-06-21|      189384|           ML|DVSA| BEIGE|          P|
+| 364306397| 223981155|2023-02-23|       71745|            N|DVSA| BEIGE|          P|
+|1628501733| 223981155|2023-07-13|       75452|           NN|DVSA| BEIGE|          P|
+|1710297771| 223981155|2023-08-16|      141404|           NP|DVSA| BEIGE|          P|
+|1356082105| 223981155|2023-06-13|      167670|           NW|DVSA| BEIGE|          P|
+|1968902105| 223981155|2023-04-14|      116994|           PE|DVSA| BEIGE|          P|
+|1177098561| 223981155|2023-03-15|      121700|           SE|DVSA| BEIGE|          P|
+|  74140977| 223981155|2023-01-14|      144703|           SR|DVSA| BEIGE|          P|
+|1493456623| 223981155|2023-10-05|       49493|           TS|DVSA| BEIGE|          P|
+|1507431521| 223981155|2023-03-08|      129272|           WN|DVSA| BEIGE|          P|
++----------+----------+----------+------------+-------------+----+------+-----------+
+                                                                                
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-21-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-21-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[38;5;246m# A tibble: 19 × 8[39m
+
+      test_id vehicle_id test_date  test_mileage postcode_area make  colour
+
+        [3m[38;5;246m&lt;int&gt;[39m[23m      [3m[38;5;246m&lt;int&gt;[39m[23m [3m[38;5;246m&lt;date&gt;[39m[23m            [3m[38;5;246m&lt;int&gt;[39m[23m [3m[38;5;246m&lt;chr&gt;[39m[23m         [3m[38;5;246m&lt;chr&gt;[39m[23m [3m[38;5;246m&lt;chr&gt;[39m[23m 
+
+[38;5;250m 1[39m  693[4m5[24m[4m9[24m[4m6[24m559  223[4m9[24m[4m8[24m[4m1[24m155 2023-09-08        [4m3[24m[4m0[24m568 BB            DVSA  BEIGE 
+
+[38;5;250m 2[39m [4m1[24m745[4m3[24m[4m3[24m[4m4[24m919  223[4m9[24m[4m8[24m[4m1[24m155 2023-09-12       [4m1[24m[4m3[24m[4m3[24m314 BS            DVSA  BEIGE 
+
+[38;5;250m 3[39m  952[4m0[24m[4m7[24m[4m3[24m263  223[4m9[24m[4m8[24m[4m1[24m155 2023-07-25        [4m4[24m[4m3[24m980 CF            DVSA  BEIGE 
+
+[38;5;250m 4[39m [4m1[24m595[4m4[24m[4m2[24m[4m6[24m675  223[4m9[24m[4m8[24m[4m1[24m155 2023-09-02       [4m1[24m[4m8[24m[4m4[24m784 CH            DVSA  BEIGE 
+
+[38;5;250m 5[39m  194[4m6[24m[4m1[24m[4m9[24m757  223[4m9[24m[4m8[24m[4m1[24m155 2023-08-31       [4m1[24m[4m0[24m[4m7[24m114 CO            DVSA  BEIGE 
+
+[38;5;250m 6[39m  363[4m8[24m[4m1[24m[4m3[24m511  223[4m9[24m[4m8[24m[4m1[24m155 2023-07-24        [4m6[24m[4m8[24m944 DH            DVSA  BEIGE 
+
+[38;5;250m 7[39m  818[4m1[24m[4m2[24m[4m1[24m815  223[4m9[24m[4m8[24m[4m1[24m155 2023-05-31       [4m1[24m[4m3[24m[4m9[24m581 E             DVSA  BEIGE 
+
+[38;5;250m 8[39m  130[4m5[24m[4m9[24m[4m0[24m349  223[4m9[24m[4m8[24m[4m1[24m155 2023-02-06       [4m1[24m[4m2[24m[4m5[24m337 EH            DVSA  BEIGE 
+
+[38;5;250m 9[39m [4m1[24m621[4m4[24m[4m8[24m[4m7[24m003  223[4m9[24m[4m8[24m[4m1[24m155 2023-04-11        [4m9[24m[4m6[24m702 LU            DVSA  BEIGE 
+
+[38;5;250m10[39m  804[4m8[24m[4m9[24m[4m6[24m923  223[4m9[24m[4m8[24m[4m1[24m155 2023-06-21       [4m1[24m[4m8[24m[4m9[24m384 ML            DVSA  BEIGE 
+
+[38;5;250m11[39m  364[4m3[24m[4m0[24m[4m6[24m397  223[4m9[24m[4m8[24m[4m1[24m155 2023-02-23        [4m7[24m[4m1[24m745 N             DVSA  BEIGE 
+
+[38;5;250m12[39m [4m1[24m628[4m5[24m[4m0[24m[4m1[24m733  223[4m9[24m[4m8[24m[4m1[24m155 2023-07-13        [4m7[24m[4m5[24m452 NN            DVSA  BEIGE 
+
+[38;5;250m13[39m [4m1[24m710[4m2[24m[4m9[24m[4m7[24m771  223[4m9[24m[4m8[24m[4m1[24m155 2023-08-16       [4m1[24m[4m4[24m[4m1[24m404 NP            DVSA  BEIGE 
+
+[38;5;250m14[39m [4m1[24m356[4m0[24m[4m8[24m[4m2[24m105  223[4m9[24m[4m8[24m[4m1[24m155 2023-06-13       [4m1[24m[4m6[24m[4m7[24m670 NW            DVSA  BEIGE 
+
+[38;5;250m15[39m [4m1[24m968[4m9[24m[4m0[24m[4m2[24m105  223[4m9[24m[4m8[24m[4m1[24m155 2023-04-14       [4m1[24m[4m1[24m[4m6[24m994 PE            DVSA  BEIGE 
+
+[38;5;250m16[39m [4m1[24m177[4m0[24m[4m9[24m[4m8[24m561  223[4m9[24m[4m8[24m[4m1[24m155 2023-03-15       [4m1[24m[4m2[24m[4m1[24m700 SE            DVSA  BEIGE 
+
+[38;5;250m17[39m   74[4m1[24m[4m4[24m[4m0[24m977  223[4m9[24m[4m8[24m[4m1[24m155 2023-01-14       [4m1[24m[4m4[24m[4m4[24m703 SR            DVSA  BEIGE 
+
+[38;5;250m18[39m [4m1[24m493[4m4[24m[4m5[24m[4m6[24m623  223[4m9[24m[4m8[24m[4m1[24m155 2023-10-05        [4m4[24m[4m9[24m493 TS            DVSA  BEIGE 
+
+[38;5;250m19[39m [4m1[24m507[4m4[24m[4m3[24m[4m1[24m521  223[4m9[24m[4m8[24m[4m1[24m155 2023-03-08       [4m1[24m[4m2[24m[4m9[24m272 WN            DVSA  BEIGE 
+
+   test_result
+
+   [3m[38;5;246m&lt;chr&gt;[39m[23m      
+
+[38;5;250m 1[39m P          
+
+[38;5;250m 2[39m P          
+
+[38;5;250m 3[39m P          
+
+[38;5;250m 4[39m P          
+
+[38;5;250m 5[39m P          
+
+[38;5;250m 6[39m P          
+
+[38;5;250m 7[39m P          
+
+[38;5;250m 8[39m P          
+
+[38;5;250m 9[39m P          
+
+[38;5;250m10[39m P          
+
+[38;5;250m11[39m P          
+
+[38;5;250m12[39m P          
+
+[38;5;250m13[39m P          
+
+[38;5;250m14[39m P          
+
+[38;5;250m15[39m P          
+
+[38;5;250m16[39m P          
+
+[38;5;250m17[39m P          
+
+[38;5;250m18[39m P          
+
+[38;5;250m19[39m P          
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="window-method">
+<h2>Window method<a class="headerlink" href="#window-method" title="Permalink to this heading">#</a></h2>
+<p>If you are dropping duplicates on a particular variable and want to avoid the inherent non-deterministic nature of <code class="docutils literal notranslate"><span class="pre">.dropDuplicates()</span></code> or <code class="docutils literal notranslate"><span class="pre">sparklyr::drop_duplicates()</span></code>, an alternative method to use is a Window function with <code class="docutils literal notranslate"><span class="pre">F.row_number()</span></code>.</p>
+<p>Simply <code class="docutils literal notranslate"><span class="pre">.partitionBy()</span></code> (or <code class="docutils literal notranslate"><span class="pre">dplyr::group_by()</span></code> in sparklyr) the same column(s) you want to remove duplicates from and use <code class="docutils literal notranslate"><span class="pre">.orderBy()</span></code> (or <code class="docutils literal notranslate"><span class="pre">dplyr::arrange()</span></code> in sparklyr) to specify the rows you want. This will return the rank within the groups. Note that <code class="docutils literal notranslate"><span class="pre">F.row_number()</span></code> (<code class="docutils literal notranslate"><span class="pre">dplyr::row_number()</span></code> in sparklyr) will return unique values within each group.</p>
+<p>Let’s say we want to retain the record with the highest test mileage in each postcode area. We can use <code class="docutils literal notranslate"><span class="pre">postcode_area</span></code> to partition the data, and then order it by <code class="docutils literal notranslate"><span class="pre">test_mileage</span></code>. We can then apply the <code class="docutils literal notranslate"><span class="pre">F.row_number()</span></code> function to the window to rank each of the entries in that postcode area based on their mileage.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-22-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-22-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-22-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-22-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-22-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-22-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="c1">#create our window based on postcode_area, ordered by test_mileage.</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s1">&#39;postcode_area&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">desc</span><span class="p">(</span><span class="s1">&#39;test_mileage&#39;</span><span class="p">))</span>
+
+<span class="c1">#rank the rows within each postcode_area based on mileage.</span>
+<span class="n">windowed_duplicates</span> <span class="o">=</span> <span class="p">(</span><span class="n">sample</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;row_n&#39;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">row_number</span><span class="p">()</span><span class="o">.</span><span class="n">over</span><span class="p">(</span><span class="n">w</span><span class="p">)))</span>
+
+<span class="n">windowed_duplicates</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-22-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-22-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1">#create our window based on postcode_area, ordered by test_mileage.</span>
+<span class="c1">#rank the rows within each postcode_area based on mileage.</span>
+<span class="n">windowed_duplicates</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sample</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">postcode_area</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">arrange</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">test_mileage</span><span class="p">),</span><span class="w"> </span><span class="n">.by_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">row_n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">row_number</span><span class="p">())</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">ungroup</span><span class="p">()</span>
+
+<span class="n">windowed_duplicates</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">print</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">Inf</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-23-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-23-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-23-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-23-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-23-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-23-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[Stage 65:&gt;                                                         (0 + 1) / 1]
++----------+----------+----------+------------+-------------+----+------+-----------+-----+
+|   test_id|vehicle_id| test_date|test_mileage|postcode_area|make|colour|test_result|row_n|
++----------+----------+----------+------------+-------------+----+------+-----------+-----+
+|1712482407| 223981155|2023-09-08|      315802|           BB|DVSA| BEIGE|          P|    1|
+| 608299587| 223981155|2023-09-08|      129365|           BB|DVSA| BEIGE|          P|    2|
+|1243548035| 223981155|2023-09-08|      118059|           BB|DVSA| BEIGE|          P|    3|
+|1041508715| 223981155|2023-08-15|      111890|           BB|DVSA| BEIGE|          P|    4|
+|1569660147| 223981155|2023-09-05|       68311|           BB|DVSA| BEIGE|          P|    5|
+|1531481473| 223981155|2023-09-09|       37932|           BB|DVSA| BEIGE|          P|    6|
+| 693596559| 223981155|2023-09-08|       30568|           BB|DVSA| BEIGE|          P|    7|
+| 243918949| 223981155|2023-09-16|      218001|           BS|DVSA| BEIGE|          P|    1|
+| 890662963| 223981155|2023-09-16|      197459|           BS|DVSA| BEIGE|          P|    2|
+| 537036175| 223981155|2023-08-29|      188907|           BS|DVSA| BEIGE|          P|    3|
+| 250905065| 223981155|2023-08-28|      186254|           BS|DVSA| BEIGE|          P|    4|
+| 746058855| 223981155|2023-09-19|      185623|           BS|DVSA| BEIGE|          P|    5|
+|1096998015| 223981155|2023-08-23|      180932|           BS|DVSA| BEIGE|          P|    6|
+|1517807321| 223981155|2023-09-22|      156503|           BS|DVSA| BEIGE|          P|    7|
+|1563278235| 223981155|2023-06-20|      155722|           BS|DVSA| BEIGE|          P|    8|
+|1141589769| 223981155|2023-09-19|      155482|           BS|DVSA| BEIGE|          P|    9|
+| 291027007| 223981155|2023-09-19|      149706|           BS|DVSA| BEIGE|          P|   10|
+|1803896485| 223981155|2023-08-11|      143010|           BS|DVSA| BEIGE|          P|   11|
+|1745334919| 223981155|2023-09-12|      133314|           BS|DVSA| BEIGE|          P|   12|
+| 972921705| 223981155|2023-08-16|      127893|           BS|DVSA| BEIGE|          P|   13|
++----------+----------+----------+------------+-------------+----+------+-----------+-----+
+only showing top 20 rows
+                                                                                
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-23-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-23-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>
+[38;5;246m# A tibble: 92 × 9[39m
+
+      test_id vehicle_id test_date  test_mileage postcode_area make  colour
+
+        [3m[38;5;246m&lt;int&gt;[39m[23m      [3m[38;5;246m&lt;int&gt;[39m[23m [3m[38;5;246m&lt;date&gt;[39m[23m            [3m[38;5;246m&lt;int&gt;[39m[23m [3m[38;5;246m&lt;chr&gt;[39m[23m         [3m[38;5;246m&lt;chr&gt;[39m[23m [3m[38;5;246m&lt;chr&gt;[39m[23m 
+
+[38;5;250m 1[39m [4m1[24m712[4m4[24m[4m8[24m[4m2[24m407  223[4m9[24m[4m8[24m[4m1[24m155 2023-09-08       [4m3[24m[4m1[24m[4m5[24m802 BB            DVSA  BEIGE 
+
+[38;5;250m 2[39m  608[4m2[24m[4m9[24m[4m9[24m587  223[4m9[24m[4m8[24m[4m1[24m155 2023-09-08       [4m1[24m[4m2[24m[4m9[24m365 BB            DVSA  BEIGE 
+
+[38;5;250m 3[39m [4m1[24m243[4m5[24m[4m4[24m[4m8[24m035  223[4m9[24m[4m8[24m[4m1[24m155 2023-09-08       [4m1[24m[4m1[24m[4m8[24m059 BB            DVSA  BEIGE 
+
+[38;5;250m 4[39m [4m1[24m041[4m5[24m[4m0[24m[4m8[24m715  223[4m9[24m[4m8[24m[4m1[24m155 2023-08-15       [4m1[24m[4m1[24m[4m1[24m890 BB            DVSA  BEIGE 
+
+[38;5;250m 5[39m [4m1[24m569[4m6[24m[4m6[24m[4m0[24m147  223[4m9[24m[4m8[24m[4m1[24m155 2023-09-05        [4m6[24m[4m8[24m311 BB            DVSA  BEIGE 
+
+[38;5;250m 6[39m [4m1[24m531[4m4[24m[4m8[24m[4m1[24m473  223[4m9[24m[4m8[24m[4m1[24m155 2023-09-09        [4m3[24m[4m7[24m932 BB            DVSA  BEIGE 
+
+[38;5;250m 7[39m  693[4m5[24m[4m9[24m[4m6[24m559  223[4m9[24m[4m8[24m[4m1[24m155 2023-09-08        [4m3[24m[4m0[24m568 BB            DVSA  BEIGE 
+
+[38;5;250m 8[39m  243[4m9[24m[4m1[24m[4m8[24m949  223[4m9[24m[4m8[24m[4m1[24m155 2023-09-16       [4m2[24m[4m1[24m[4m8[24m001 BS            DVSA  BEIGE 
+
+[38;5;250m 9[39m  890[4m6[24m[4m6[24m[4m2[24m963  223[4m9[24m[4m8[24m[4m1[24m155 2023-09-16       [4m1[24m[4m9[24m[4m7[24m459 BS            DVSA  BEIGE 
+
+[38;5;250m10[39m  537[4m0[24m[4m3[24m[4m6[24m175  223[4m9[24m[4m8[24m[4m1[24m155 2023-08-29       [4m1[24m[4m8[24m[4m8[24m907 BS            DVSA  BEIGE 
+
+   test_result row_n
+
+   [3m[38;5;246m&lt;chr&gt;[39m[23m       [3m[38;5;246m&lt;int&gt;[39m[23m
+
+[38;5;250m 1[39m P               1
+
+[38;5;250m 2[39m P               2
+
+[38;5;250m 3[39m P               3
+
+[38;5;250m 4[39m P               4
+
+[38;5;250m 5[39m P               5
+
+[38;5;250m 6[39m P               6
+
+[38;5;250m 7[39m P               7
+
+[38;5;250m 8[39m P               1
+
+[38;5;250m 9[39m P               2
+
+[38;5;250m10[39m P               3
+
+[38;5;246m# ℹ 82 more rows[39m
+</pre></div>
+</div>
+</div></div>
+<p>We can then simply <code class="docutils literal notranslate"><span class="pre">.filter()</span></code> or <code class="docutils literal notranslate"><span class="pre">dplyr::filter()</span></code> the row number to get the first entry of that postcode area. This will retain the vehicle with the highest mileage.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-24-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-24-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-24-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-24-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-24-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-24-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="c1">#retain the first entry (highest mileage) in each postcode_area</span>
+<span class="n">highest_mileage_duplicates</span> <span class="o">=</span> <span class="n">windowed_duplicates</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;row_n&#39;</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">highest_mileage_duplicates</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-24-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-24-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1">#retain the first entry (highest mileage) in each postcode_area</span>
+<span class="n">highest_mileage_duplicates</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">windowed_duplicates</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">row_n</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="o">-</span><span class="n">row_n</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">arrange</span><span class="p">(</span><span class="n">postcode_area</span><span class="p">)</span>
+
+<span class="n">highest_mileage_duplicates</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">collect</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">print</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">Inf</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-25-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-25-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-25-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-25-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-25-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-25-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+----------+----------+----------+------------+-------------+----+------+-----------+-----+
+|   test_id|vehicle_id| test_date|test_mileage|postcode_area|make|colour|test_result|row_n|
++----------+----------+----------+------------+-------------+----+------+-----------+-----+
+|1712482407| 223981155|2023-09-08|      315802|           BB|DVSA| BEIGE|          P|    1|
+| 243918949| 223981155|2023-09-16|      218001|           BS|DVSA| BEIGE|          P|    1|
+| 952073263| 223981155|2023-07-25|       43980|           CF|DVSA| BEIGE|          P|    1|
+|1595426675| 223981155|2023-09-02|      184784|           CH|DVSA| BEIGE|          P|    1|
+| 194619757| 223981155|2023-08-31|      107114|           CO|DVSA| BEIGE|          P|    1|
+| 363813511| 223981155|2023-07-24|       68944|           DH|DVSA| BEIGE|          P|    1|
+| 818121815| 223981155|2023-05-31|      139581|            E|DVSA| BEIGE|          P|    1|
+| 130590349| 223981155|2023-02-06|      125337|           EH|DVSA| BEIGE|          P|    1|
+|1700053881| 223981155|2023-03-02|      103661|           LU|DVSA| BEIGE|          P|    1|
+| 804896923| 223981155|2023-06-21|      189384|           ML|DVSA| BEIGE|          P|    1|
+| 364306397| 223981155|2023-02-23|       71745|            N|DVSA| BEIGE|          P|    1|
+| 278592185| 223981155|2023-08-03|      220980|           NN|DVSA| BEIGE|          P|    1|
+| 649777577| 223981155|2023-08-14|      177213|           NP|DVSA| BEIGE|          P|    1|
+| 986714569| 223981155|2023-05-16|      201262|           NW|DVSA| BEIGE|          P|    1|
+| 126550303| 223981155|2023-03-01|      157423|           PE|DVSA| BEIGE|          P|    1|
+|1177098561| 223981155|2023-03-15|      121700|           SE|DVSA| BEIGE|          P|    1|
+|  74140977| 223981155|2023-01-14|      144703|           SR|DVSA| BEIGE|          P|    1|
+|1493456623| 223981155|2023-10-05|       49493|           TS|DVSA| BEIGE|          P|    1|
+| 378218713| 223981155|2023-04-14|      156723|           WN|DVSA| BEIGE|          P|    1|
++----------+----------+----------+------------+-------------+----+------+-----------+-----+
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-25-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-25-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>6m# A tibble: 19 × 8[39m
+
+      test_id vehicle_id test_date  test_mileage postcode_area make  colour
+
+        [3m[38;5;246m&lt;int&gt;[39m[23m      [3m[38;5;246m&lt;int&gt;[39m[23m [3m[38;5;246m&lt;date&gt;[39m[23m            [3m[38;5;246m&lt;int&gt;[39m[23m [3m[38;5;246m&lt;chr&gt;[39m[23m         [3m[38;5;246m&lt;chr&gt;[39m[23m [3m[38;5;246m&lt;chr&gt;[39m[23m 
+
+[38;5;250m 1[39m [4m1[24m712[4m4[24m[4m8[24m[4m2[24m407  223[4m9[24m[4m8[24m[4m1[24m155 2023-09-08       [4m3[24m[4m1[24m[4m5[24m802 BB            DVSA  BEIGE 
+
+[38;5;250m 2[39m  243[4m9[24m[4m1[24m[4m8[24m949  223[4m9[24m[4m8[24m[4m1[24m155 2023-09-16       [4m2[24m[4m1[24m[4m8[24m001 BS            DVSA  BEIGE 
+
+[38;5;250m 3[39m  952[4m0[24m[4m7[24m[4m3[24m263  223[4m9[24m[4m8[24m[4m1[24m155 2023-07-25        [4m4[24m[4m3[24m980 CF            DVSA  BEIGE 
+
+[38;5;250m 4[39m [4m1[24m595[4m4[24m[4m2[24m[4m6[24m675  223[4m9[24m[4m8[24m[4m1[24m155 2023-09-02       [4m1[24m[4m8[24m[4m4[24m784 CH            DVSA  BEIGE 
+
+[38;5;250m 5[39m  194[4m6[24m[4m1[24m[4m9[24m757  223[4m9[24m[4m8[24m[4m1[24m155 2023-08-31       [4m1[24m[4m0[24m[4m7[24m114 CO            DVSA  BEIGE 
+
+[38;5;250m 6[39m  363[4m8[24m[4m1[24m[4m3[24m511  223[4m9[24m[4m8[24m[4m1[24m155 2023-07-24        [4m6[24m[4m8[24m944 DH            DVSA  BEIGE 
+
+[38;5;250m 7[39m  818[4m1[24m[4m2[24m[4m1[24m815  223[4m9[24m[4m8[24m[4m1[24m155 2023-05-31       [4m1[24m[4m3[24m[4m9[24m581 E             DVSA  BEIGE 
+
+[38;5;250m 8[39m  130[4m5[24m[4m9[24m[4m0[24m349  223[4m9[24m[4m8[24m[4m1[24m155 2023-02-06       [4m1[24m[4m2[24m[4m5[24m337 EH            DVSA  BEIGE 
+
+[38;5;250m 9[39m [4m1[24m700[4m0[24m[4m5[24m[4m3[24m881  223[4m9[24m[4m8[24m[4m1[24m155 2023-03-02       [4m1[24m[4m0[24m[4m3[24m661 LU            DVSA  BEIGE 
+
+[38;5;250m10[39m  804[4m8[24m[4m9[24m[4m6[24m923  223[4m9[24m[4m8[24m[4m1[24m155 2023-06-21       [4m1[24m[4m8[24m[4m9[24m384 ML            DVSA  BEIGE 
+
+[38;5;250m11[39m  364[4m3[24m[4m0[24m[4m6[24m397  223[4m9[24m[4m8[24m[4m1[24m155 2023-02-23        [4m7[24m[4m1[24m745 N             DVSA  BEIGE 
+
+[38;5;250m12[39m  278[4m5[24m[4m9[24m[4m2[24m185  223[4m9[24m[4m8[24m[4m1[24m155 2023-08-03       [4m2[24m[4m2[24m[4m0[24m980 NN            DVSA  BEIGE 
+
+[38;5;250m13[39m  649[4m7[24m[4m7[24m[4m7[24m577  223[4m9[24m[4m8[24m[4m1[24m155 2023-08-14       [4m1[24m[4m7[24m[4m7[24m213 NP            DVSA  BEIGE 
+
+[38;5;250m14[39m  986[4m7[24m[4m1[24m[4m4[24m569  223[4m9[24m[4m8[24m[4m1[24m155 2023-05-16       [4m2[24m[4m0[24m[4m1[24m262 NW            DVSA  BEIGE 
+
+[38;5;250m15[39m  126[4m5[24m[4m5[24m[4m0[24m303  223[4m9[24m[4m8[24m[4m1[24m155 2023-03-01       [4m1[24m[4m5[24m[4m7[24m423 PE            DVSA  BEIGE 
+
+[38;5;250m16[39m [4m1[24m177[4m0[24m[4m9[24m[4m8[24m561  223[4m9[24m[4m8[24m[4m1[24m155 2023-03-15       [4m1[24m[4m2[24m[4m1[24m700 SE            DVSA  BEIGE 
+
+[38;5;250m17[39m   74[4m1[24m[4m4[24m[4m0[24m977  223[4m9[24m[4m8[24m[4m1[24m155 2023-01-14       [4m1[24m[4m4[24m[4m4[24m703 SR            DVSA  BEIGE 
+
+[38;5;250m18[39m [4m1[24m493[4m4[24m[4m5[24m[4m6[24m623  223[4m9[24m[4m8[24m[4m1[24m155 2023-10-05        [4m4[24m[4m9[24m493 TS            DVSA  BEIGE 
+
+[38;5;250m19[39m  378[4m2[24m[4m1[24m[4m8[24m713  223[4m9[24m[4m8[24m[4m1[24m155 2023-04-14       [4m1[24m[4m5[24m[4m6[24m723 WN            DVSA  BEIGE 
+
+   test_result
+
+   [3m[38;5;246m&lt;chr&gt;[39m[23m      
+
+[38;5;250m 1[39m P          
+
+[38;5;250m 2[39m P          
+
+[38;5;250m 3[39m P          
+
+[38;5;250m 4[39m P          
+
+[38;5;250m 5[39m P          
+
+[38;5;250m 6[39m P          
+
+[38;5;250m 7[39m P          
+
+[38;5;250m 8[39m P          
+
+[38;5;250m 9[39m P          
+
+[38;5;250m10[39m P          
+
+[38;5;250m11[39m P          
+
+[38;5;250m12[39m P          
+
+[38;5;250m13[39m P          
+
+[38;5;250m14[39m P          
+
+[38;5;250m15[39m P          
+
+[38;5;250m16[39m P          
+
+[38;5;250m17[39m P          
+
+[38;5;250m18[39m P          
+
+[38;5;250m19[39m P          
+</pre></div>
+</div>
+</div></div>
+<p>For further detailed information on Window functions in Spark and other use cases please see the <a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-functions/window-functions.html">relevant section</a>.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-26-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-26-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-26-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-26-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-26-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-26-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="c1">#Close Spark session</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-26-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-26-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1">#Close Spark session</span>
+<span class="nf">spark_disconnect</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./spark-analysis"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="cramer_v.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Calculating Cramér’s V from a Spark DataFrame</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../testing-debugging/spark-errors.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Understanding and Handling Spark Errors</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dropduplicates-or-sparklyr-sdf-drop-duplicates"><code class="docutils literal notranslate"><span class="pre">.dropDuplicates()</span></code> or <code class="docutils literal notranslate"><span class="pre">sparklyr::sdf_drop_duplicates()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#window-method">Window method</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Analysis Standards and Pipelines in Quality and Improvement, Office for National Statistics
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
