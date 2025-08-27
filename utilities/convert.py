@@ -1,13 +1,13 @@
 from notebook_converter import markdown_from_notebook
 # Group: Which chapter does this work belong in once converted 
-group = "ancillary-topics"
+group = "spark-analysis"
 
 # What is the name of the folder the .ipynb is located in 
 
-folder = "working-with-duplicates"
+folder = "sampling-for-eda"
 
 # What is the name of the .ipynb folder
-page = "working-with-duplicates"
+page = "sampling-for-eda"
 
 # The path to the folder named above (can be relative or absolute path)
 base_path = "ons-spark/"
