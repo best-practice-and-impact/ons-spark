@@ -56,7 +56,8 @@ pillar::glimpse(mot)
 
 
 
-# Check for missing data first, do not just omit it. Here, the test_mileage column is shown as an example.
+# Check for missing data first, do not just omit it. The example uses the test_mileage column.
+
 mot %>% 
     filter(is.na(test_mileage)) %>% 
     sdf_nrow() %>% 
@@ -73,7 +74,9 @@ mot <- mot %>%
 
 
 
-# If appropriate for your data, remove the duplicated rows and preview your clean dataset (removal of duplicates and missing values).
+# If appropriate for your data, remove the duplicated rows and preview your clean dataset 
+(i.e. removal of duplicates and missing values).
+
 mot_clean <- sdf_distinct(mot)
 
 mot_clean_size <- mot_clean %>%

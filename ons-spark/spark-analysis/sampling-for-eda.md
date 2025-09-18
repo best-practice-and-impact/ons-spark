@@ -559,4 +559,226 @@ cylinder_capacity	 -0.000010	 0.269720	     1.00000
 
 ```
 ````
+### Simple EDA of big data
 
+We now have a version of the big data that we can sample for EDA! At this point, some simple EDA on the big data can be useful for sample verification further on. In PySpark you can use `.summary()`to provide summary statistics on numeric and string columns; however, the statistics for a string will be based on length of the string and therefore an example is not shown here. In SparklyR you can use `sdf_describe()` which will produce different outputs depending on the data type of the input column.
+
+````{tabs}
+```{code-tab} py
+
+# Summary statistics for a numeric column
+summary_mileage = mot.select("test_mileage").summary().show()
+
+```
+
+```{code-tab} r R
+
+# Summary statistics for a numeric and string column 
+summary_mileage <- sdf_describe(mot_clean, "test_mileage")
+summary_mileage
+
+summary_colour <- sdf_describe(mot_clean, "colour")
+summary_colour
+
+```
+````
+````{tabs}
+```{code-tab} plaintext Python Output
+
++-------+-----------------+
+|summary|     test_mileage|
++-------+-----------------+
+|  count|         39601678|
+|   mean|75561.09864907745|
+| stddev|48373.21593230994|
+|    min|                1|
+|    25%|            39360|
+|    50%|            67306|
+|    75%|           102216|
+|    max|           999999|
++-------+-----------------+
+
+```
+
+```{code-tab} plaintext R Output
+
+# Source:   table<`sparklyr_tmp_79c6c9f3_ad03_4a70_9e2d_7fc866427ca4`> [?? x 2]
+# Database: spark_connection
+  summary test_mileage
+  <chr>   <chr>
+1 count   39601678
+2 mean    75561.09864907745
+3 stddev  48373.21593231007
+4 min     1
+5 max     
+
+# Source:   table<`sparklyr_tmp_b358f855_9aca_49d5_8467_e152a80a5e8e`> [?? x 2]
+# Database: spark_connection
+  summary colour
+  <chr>   <chr>
+1 count   39601678
+2 mean    NA
+3 stddev  NA
+4 min     BEIGE
+5 max     YELLOW  
+
+```
+````
+
+## Sampling big data for EDA
+
+Generally the larger your sample the more representative of your original population the sample is. However, when you are working with big data it is perhaps not realistic to take a 10 % or even a 1 % sample as this could still equate to upwards of 10 million rows. This would mean that Spark would still be needed for EDA, whereas ideally you want to do is use Python or R instead. 
+
+There are two main methods you can adopt for informing your sample size: 
+1) Use a sample calculator.
+2) Input your own sample size into standard sampling methods: `.sample()` in Pyspark or `sdf_sample()` in SparklyR (please refer to out Sampling: an overview page for more details on these (LINK)).
+
+The worked example in this guidance will determine sample size using the sample calculator; the sample will then be taken using the standard sampling methods. The mot_clean dataset created above will be used. If you want to determine your own sample size, based on a fraction of the population, this could be simply inputted into the standard sampling methods. 
+
+### Using a sample calculator
+
+Here, a function has been created so that you can determine an ideal sample size for your data based on a number of input parameters and on a finite population. If you want to create a sample for an infinite population then simply remove the adjusted_size part of the function. To find z-score, please refer to the conversion table provided [here](https://www.calculator.net/sample-size-calculator.html).
+
+````{tabs}
+```{code-tab} py
+
+import math
+
+def sample_size_finite(N, z, p, e):
+  """
+  Calculates a suggested sample size for a finite population.
+  
+  Parameters:
+  N (int): population size
+  z (int): z score (e.g. 1.96 = 95% confidence)
+  p (int): population proportion (use 0.5 if unknown)
+  e (int): margin of error (e.g. 0.05 for 5%) 
+  
+  Returns:
+  int: adjusted sample size (rounded up)
+  """
+  # Initial sample size without finite population correction
+  n = (z**2 * p * (1 - p)) / (e**2)
+  
+  # Adjusted sample size for finite population
+  adjusted_size = n / (1 + (n / N))
+  
+  # Return the ceiling of the adjusted sample size.
+  return math.ceil(adjusted_size)
+
+# We will now use the function to determine a sample size for the mot_clean data, based on a 99.99% confidence interval and 1% margin of error.
+# As we set the mot_clean_size variable we will input this as N.
+
+sample_size = sample_size_finite(mot_clean_size, 3.89, 0.5, 0.01)
+sample_size
+
+```
+
+```{code-tab} r R
+sample_size_finite <- function(N, z, p, e) {
+    #' Calculates a suggested sample size for a finite population.
+    #'
+    #' @param N = population size
+    #' @param z = z score (e.g. 1.96 = 95% confidence)
+    #' @param p = population proportion (use 0.5 if unknown)
+    #' @param e = margin of error (e.g. 0.05 for 5%)
+
+  # Initial sample size without finite population correction
+  n <- (z^2 * p * (1 - p)) / (e^2)
+  
+  # Adjusted sample size for finite population
+  adjusted_size <- n / (1 + (n / N))
+  
+  # Return the ceiling of the adjusted sample size. 
+  print(ceiling(adjusted_size))
+}
+
+# We will now use the function to determine a sample size for the mot_clean data, based on a 99.99% confidence interval and 1% margin of error.
+# As we set the mot_clean_size variable we will input this as N.
+
+sample_size <- sample_size_finite(mot_clean_size, 3.89, 0.5, 0.01)
+```
+````
+
+````{tabs}
+```{code-tab} plaintext Python Output
+
+37795
+
+```
+
+```{code-tab} plaintext R Output
+
+[1] 37795
+
+```
+````
+
+The sample size suggestion is approximately 0.1 % of the mot_clean dataset. Note, that additional iterations were tested and this sample size gave a good representation of categorical and numerical variables when compared to the big data **for this specific example**. 
+
+### Taking the sample 
+
+Now that sample size has been determined we can input this into standard sampling functions in Pyspark or SparklyR to take the sample for EDA. For more information on using sampling functions please refer to our [guidance](../spark-functions/sampling) on this specifically. 
+
+First, you need to set determine `fraction`, this is needed when using sampling functions in Pyspark and SparklyR. If you want to input your own sample size do this here, or input it directly into the sampling functions.
+
+````{tabs}
+```{code-tab} py
+
+fraction = sample_size/mot_clean_size
+
+mot_sample = mot.sample(withReplacement = None,
+                       fraction = fraction, 
+                       seed = 99)
+mot_sample.count()
+```
+
+```{code-tab} r R
+
+fraction <- sample_size/mot_clean_size %>% print()
+mot_sample <- mot_clean %>% sparklyr::sdf_sample(fraction, replacement=FALSE, seed = 99)
+mot_sample %>% sparklyr::sdf_nrow()
+
+```
+````
+
+````{tabs}
+``` {code-tab} plaintext Python Output
+
+39606
+
+```
+
+```{code-tab} plaintext R Output
+
+37660
+
+```
+````
+Once the sample has been taken it can be exported. Bare in mind that although you have sampled your original dataframe the partition number is retained. As the sample is much smaller than the original dataframe we can re-partition the sample data using `.coalesce()` in Pyspark or `sdf_coalesce()` in SparklyR. Please remember to close the Spark session after your have exported your data.
+
+````{tabs}
+```{code-tab} py
+
+# It is best practice to always stop a Spark session.
+spark.stop()
+
+```
+
+```{code-tab} r R
+```r
+### writing out to s3 bucket
+#mot_sample %>% 
+#  sparklyr::sdf_coalesce(1) %>%
+#  sparklyr::spark_write_csv(mot_sample,         
+#                            path = "s3a://onscdp-dev-data01-5320d6ca/bat/dapcats/mot_eda_sample.csv",
+#                            header = TRUE, 
+#                            mode = 'overwrite')
+
+### writing out to current directory
+write.csv(mot_sample, file = "mot_eda_sample_0.1.csv", row.names = FALSE)
+
+# It is best practice to always stop a Spark session.
+spark_disconnect(sc)
+```
+````
