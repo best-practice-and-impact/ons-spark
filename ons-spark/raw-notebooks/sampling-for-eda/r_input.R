@@ -74,6 +74,20 @@ mot <- mot %>%
 
 
 
+# Identify duplicate data in the mot dataframe
+duplicates <- mot %>%
+  group_by(vehicle_id, test_date, test_mileage, postcode_area, make, colour, cylinder_capacity) %>%
+  summarise(count = n()) %>%
+  filter(count > 1)
+  arrange(desc(count))
+
+duplicates %>%
+    sdf_nrow() %>%
+    print()
+
+
+
+
 # If appropriate for your data, remove the duplicated rows and preview your clean dataset 
 (i.e. removal of duplicates and missing values).
 
@@ -131,4 +145,104 @@ colour
 corr_matrix <- mot_distinct %>%
               ml_corr(c("vehicle_id", "test_mileage", "cylinder_capacity"))
 corr_matrix
+
+
+
+
+# Summary statistics for a numeric and string column 
+summary_mileage <- sdf_describe(mot_clean, "test_mileage")
+summary_mileage
+
+summary_colour <- sdf_describe(mot_clean, "colour")
+summary_colour
+
+
+
+sample_size_finite <- function(N, z, p, e) {
+    #' Calculates a suggested sample size for a finite population.
+    #'
+    #' @param N = population size
+    #' @param z = z score (e.g. 1.96 = 95% confidence)
+    #' @param p = population proportion (use 0.5 if unknown)
+    #' @param e = margin of error (e.g. 0.05 for 5%)
+
+  # Initial sample size without finite population correction
+  n <- (z^2 * p * (1 - p)) / (e^2)
+  
+  # Adjusted sample size for finite population
+  adjusted_size <- n / (1 + (n / N))
+  
+  # Return the ceiling of the adjusted sample size. 
+  print(ceiling(adjusted_size))
+}
+
+# We will now use the function to determine a sample size for the mot_clean data, based on a 99.99% confidence interval and 1% margin of error.
+# As we set the mot_clean_size variable we will input this as N.
+
+sample_size <- sample_size_finite(mot_clean_size, 3.89, 0.5, 0.01)
+
+
+
+fraction <- sample_size/mot_clean_size %>% print()
+mot_sample <- mot_clean %>% sparklyr::sdf_sample(fraction, replacement=FALSE, seed = 99)
+mot_sample %>% sparklyr::sdf_nrow()
+
+
+
+
+
+# Read in the sample data ready for EDA
+mot_eda_sample <- read.csv("D:/repos/ons-spark/ons-spark/data/mot_eda_sample_0.1.csv")
+
+# Check schema and preview data
+pillar::glimpse(mot_eda_sample)
+
+
+
+
+# Again, check the data types of each column in the dataframe, change them if necessary
+
+mot_eda_sample <- mot_eda_sample %>% 
+    dplyr::mutate(test_date = as.Date(test_date)) %>%
+    dplyr::mutate_at(c("make", "colour"), as.factor)
+
+
+
+
+summary <- summary(mot_eda_sample)
+summary
+
+
+
+
+colour_percentage <- mot_eda_sample %>% 
+              dplyr::group_by(colour) %>% 
+              dplyr::summarise(count = length(colour)) %>%
+              dplyr::mutate(percentage = count/(nrow(mot_eda_sample))*100) %>%
+              arrange(desc(percentage))
+
+
+
+
+mean_mileage <- mot_eda_sample %>% 
+                group_by(colour) %>% 
+                summarise(mean_mileage = mean(test_mileage, na.rm = TRUE)) %>%
+                arrange(desc(mean_mileage)) %>%
+                print()
+
+
+
+
+library(ggplot2)
+
+gplot(mean_mileage, aes(x = reorder(colour, -mean_mileage), y = mean_mileage)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  geom_text(aes(label = round(mean_mileage, 0)), vjust = 1, angle = 45) +
+  labs(
+    title = "Mean Mileage by Car Colour",
+    x = "Car Colour",
+    y = "Mean Mileage"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 

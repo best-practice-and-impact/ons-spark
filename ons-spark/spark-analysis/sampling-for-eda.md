@@ -828,20 +828,12 @@ Data columns (total 7 columns):
 dtypes: int64(3), object(4)
 memory usage: 2.0+ MB
 
-
-        vehicle_id	test_date	 test_mileage	postcode_area	make	   colour	cylinder_capacity
-0	      936278007	  2023-04-28 42480      	ML	          NISSAN	 ORANGE	998
-1	      858355106	  2023-04-28 42340	      NE	          KAWASAKI BLACK	553
-2	      1027196372  2023-04-28 93433     	  GL	          FIAT	   BLUE	  1242
-3	      1397627616  2023-04-28 217404     	B	            TOYOTA	 GREY  	1798
-4	      384731403	  2023-05-03 4592         DN	          YAMAHA	W HITE	125
-
-vehicle_id	test_date	test_mileage	postcode_area	make	colour	cylinder_capacity
-0	936278007	2023-04-28	42480	ML	NISSAN	ORANGE	998
-1	858355106	2023-04-28	42340	NE	KAWASAKI	BLACK	553
-2	1027196372	2023-04-28	93433	GL	FIAT	BLUE	1242
-3	1397627616	2023-04-28	217404	B	TOYOTA	GREY	1798
-4	384731403	2023-05-03	4592	DN	YAMAHA	WHITE	125
+   vehicle_id   test_date  test_mileage postcode_area      make  colour  cylinder_capacity
+0   936278007  2023-04-28         42480            ML    NISSAN  ORANGE                998
+1   858355106  2023-04-28         42340            NE  KAWASAKI   BLACK                553
+2  1027196372  2023-04-28         93433            GL      FIAT    BLUE               1242
+3  1397627616  2023-04-28        217404             B    TOYOTA    GREY               1798
+4   384731403  2023-05-03          4592            DN    YAMAHA   WHITE                125
 
 ```
 
@@ -883,7 +875,7 @@ A good place to start with EDA is to calculate the descriptive statistics of you
 ```{code-tab} py
 
 summary = mot_eda_sample.describe()
-summary
+print(summary)
 
 ```
 
@@ -898,15 +890,15 @@ summary
 ````{tabs}
 {code-tab} plaintext Python Output
 
-      vehicle_id	  test_mileage	cylinder_capacity
-count	3.766000e+04	37660.000000	37660.000000
-mean	7.491470e+08	75578.674482	1696.151275
-std	  4.327012e+08	48708.057036	595.992351
-min	  3.173600e+04	6.000000	    48.000000
-25%	  3.766455e+08	39360.750000	1329.000000
-50%  	7.469845e+08	67142.500000	1597.000000
-75%	  1.122075e+09	101951.250000	1995.000000
-max	  1.499980e+09	999999.000000	7300.000000
+         vehicle_id   test_mileage  cylinder_capacity
+count  3.766000e+04   37660.000000       37660.000000
+mean   7.491470e+08   75578.674482        1696.151275
+std    4.327012e+08   48708.057036         595.992351
+min    3.173600e+04       6.000000          48.000000
+25%    3.766455e+08   39360.750000        1329.000000
+50%    7.469845e+08   67142.500000        1597.000000
+75%    1.122075e+09  101951.250000        1995.000000
+max    1.499980e+09  999999.000000        7300.000000
 
 ```
 
@@ -950,10 +942,10 @@ cor(correlation_data)
 ````{tabs} 
 ```{code-tab} plaintext Python Output
 
-	                 vehicle_id	 test_mileage	 cylinder_capacity
-       vehicle_id	  1.000000	 0.006824	     -0.004033
-     test_mileage	  0.006824	 1.000000        0.270533
-cylinder_capacity	 -0.004033   0.270533	       1.000000
+                   vehicle_id  test_mileage  cylinder_capacity
+vehicle_id           1.000000      0.006824          -0.004033
+test_mileage         0.006824      1.000000           0.270533
+cylinder_capacity   -0.004033      0.270533           1.000000
 
 ```
 
@@ -987,7 +979,8 @@ colour_percentage = (
     .sort_values(by='percentage', ascending=False)
     .reset_index()
 )
-colour_percentage
+
+print(colour_percentage)
 
 ```
 
@@ -1004,27 +997,27 @@ colour_percentage <- mot_eda_sample %>%
 ````{tabs}
 ```{code-tab} plaintext Python Output
 
-  colour	        count	percentage
-0	         WHITE	7366	19.559214
-1	         BLACK	7110	18.879448
-2	          BLUE	5923	15.727562
-3	        SILVER	5878	15.608072
-4  	        GREY	5614	14.907063
-5	           RED	3665	9.731811
-6	         GREEN	691	1.834838
-7	        ORANGE	286	0.759426
-8	        YELLOW	237	0.629315
-9	         BROWN	224	0.594796
-10         BEIGE	220	0.584174
-11        PURPLE	124	0.329262
-12        BRONZE	95	0.252257
-13          GOLD	78	0.207116
-14     TURQUOISE	40	0.106213
-15        	PINK	30	0.079660
-16	      MAROON	29	0.077005
-17	       CREAM	25	0.066383
-18	MULTI-COLOUR	24	0.063728
-19	  NOT STATED	 1	0.002655
+          colour  count  percentage
+0          WHITE   7366   19.559214
+1          BLACK   7110   18.879448
+2           BLUE   5923   15.727562
+3         SILVER   5878   15.608072
+4           GREY   5614   14.907063
+5            RED   3665    9.731811
+6          GREEN    691    1.834838
+7         ORANGE    286    0.759426
+8         YELLOW    237    0.629315
+9          BROWN    224    0.594796
+10         BEIGE    220    0.584174
+11        PURPLE    124    0.329262
+12        BRONZE     95    0.252257
+13          GOLD     78    0.207116
+14     TURQUOISE     40    0.106213
+15          PINK     30    0.079660
+16        MAROON     29    0.077005
+17         CREAM     25    0.066383
+18  MULTI-COLOUR     24    0.063728
+19    NOT STATED      1    0.002655
 
 ```
 
@@ -1070,7 +1063,7 @@ mean_mileage = (
     .reset_index()
 )
 
-mean_mileage
+print(mean_mileage)
 
 ```
 
@@ -1088,27 +1081,27 @@ mean_mileage <- mot_eda_sample %>%
 ````{tabs}
 ```{code-tab} plaintext Python Output
 
-	colour	        mean_mileage
-0	        SILVER	86479.125043
-1	          GOLD	83671.474359
-2	        MAROON	83003.137931
-3	         GREEN	81787.465991
-4	         BEIGE	81261.990909
-5	         WHITE	76983.261879
-6	         BLACK	76787.602532
-7	          BLUE	74151.760425
-8	        YELLOW	73962.924051
-9	         BROWN	72189.325893
-10	      BRONZE	71280.473684
-11	        GREY	69890.805843
-12	MULTI-COLOUR	66295.791667
-13	         RED	65283.650750
-14	   TURQUOISE	63925.875000
-15	      PURPLE	63629.895161
-16	       CREAM	54210.720000
-17	      ORANGE	53829.835664
-18	        PINK	50783.933333
-19	  NOT STATED	7712.000000
+          colour  mean_mileage
+0         SILVER  86479.125043
+1           GOLD  83671.474359
+2         MAROON  83003.137931
+3          GREEN  81787.465991
+4          BEIGE  81261.990909
+5          WHITE  76983.261879
+6          BLACK  76787.602532
+7           BLUE  74151.760425
+8         YELLOW  73962.924051
+9          BROWN  72189.325893
+10        BRONZE  71280.473684
+11          GREY  69890.805843
+12  MULTI-COLOUR  66295.791667
+13           RED  65283.650750
+14     TURQUOISE  63925.875000
+15        PURPLE  63629.895161
+16         CREAM  54210.720000
+17        ORANGE  53829.835664
+18          PINK  50783.933333
+19    NOT STATED   7712.000000
 
 ```
 
