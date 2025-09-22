@@ -825,6 +825,8 @@ Data columns (total 7 columns):
  4   make               37660 non-null  object
  5   colour             37660 non-null  object
  6   cylinder_capacity  37660 non-null  int64 
+
+
 dtypes: int64(3), object(4)
 memory usage: 2.0+ MB
 
@@ -851,6 +853,7 @@ $ cylinder_capacity <int> 998, 553, 1242, 1798, 125, 765, 1078, 124, 1497, 125â€
 
 ```
 ````
+
 ````{tabs}
 ```{code-tab} py
 # Again, check the data types of each column in the dataframe, change them if necessary
@@ -888,7 +891,7 @@ summary
 ````
 
 ````{tabs}
-{code-tab} plaintext Python Output
+```{code-tab} plaintext Python Output
 
          vehicle_id   test_mileage  cylinder_capacity
 count  3.766000e+04   37660.000000       37660.000000
