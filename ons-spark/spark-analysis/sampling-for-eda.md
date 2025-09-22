@@ -300,7 +300,7 @@ mot <- mot %>%
 ```
 ````
 
-There are two ways to look at duplicates in SparklyR. You can apply `sdf_distinct()` to the entire dataframe which will remove duplicate rows based on all columns and ensures each row is unique. Alternatively, `sdf_drop_duplicates()` is more flexible as you can remove duplicate rows based on specific columns. Here, we will use the first option to remove fully duplicated rows from the filtered dataset. As with missing values, it is advised that you look at the duplicated data first before removing it; for this, please refer to our [working with duplicates guidance](https://best-practice-and-impact.github.io/ons-spark/spark-analysis/working-with-duplicates.html).
+There are two ways to look at duplicates in PySpark and SparklyR. You can apply `distinct()` or `sdf_distinct()` to the entire dataframe which will remove duplicate rows based on all columns and ensures each row is unique. Alternatively, `dropDuplicates()` or `sdf_drop_duplicates()` are more flexible as you can remove duplicate rows based on specific columns. Here, we will use the first options to remove fully duplicated rows from the filtered dataset. As with missing values, it is advised that you look at the duplicated data first before removing it; for this, please refer to our [working with duplicates guidance](https://best-practice-and-impact.github.io/ons-spark/spark-analysis/working-with-duplicates.html).
 
 ````{tabs}
 ```{code-tab} py
@@ -316,7 +316,7 @@ duplicates.count()
 
 ```
 
-```{code-tab} r 
+```{code-tab} r R
 
 # Identify duplicate data in the mot dataframe
 duplicates <- mot %>%
@@ -351,6 +351,7 @@ duplicates %>%
 # If appropriate for your data, remove the duplicated rows and preview your clean dataset 
 (i.e. removal of duplicates and missing values).
 
+# If no arguments are provided dropDuplicates() works the same as distinct() 
 mot_clean = mot.dropDuplicates()
 
 mot_clean_size <- mot_clean.count()
