@@ -768,7 +768,7 @@ spark.stop()
 ```{code-tab} r R
 ```r
 ### writing out to s3 bucket
-#mot_sample %>% 
+# mot_sample %>% 
 #  sparklyr::sdf_coalesce(1) %>%
 #  sparklyr::spark_write_csv(mot_sample,         
 #                            path = "s3a://onscdp-dev-data01-5320d6ca/bat/dapcats/mot_eda_sample.csv",
@@ -780,5 +780,398 @@ write.csv(mot_sample, file = "mot_eda_sample_0.1.csv", row.names = FALSE)
 
 # It is best practice to always stop a Spark session.
 spark_disconnect(sc)
+```
+````
+## EDA on a big data sample
+
+Now you have your sample taken and exported you can carry out the EDA. As long as your sample is small enough then Spark is no longer needed and you can carry out the EDA in a normal session using Python or R. Once the data is read in, you will apply similar functions to those used on the big data above; remember that you are now working in Python or R, not Spark, therefore the functions may be different and we can produce results and plots much quicker. Also, Spark uses 'estimations' for results, which is not the case for Python and R.
+
+````{tabs}
+```{code-tab} py
+import pandas as pd
+
+# Read in the sample data ready for EDA
+mot_eda_sample = pd.read_csv("D:/repos/ons-spark/ons-spark/data/mot_eda_sample_0.1.csv")
+
+# Check the schema and datatypes and preview data 
+mot_eda_sample.info()
+mot_eda_sample.head()
+
+```
+
+```{code-tab} r R
+# Read in the sample data ready for EDA
+mot_eda_sample <- read.csv("D:/repos/ons-spark/ons-spark/data/mot_eda_sample_0.1.csv")
+
+# Check schema and preview data
+pillar::glimpse(mot_eda_sample)
+
+```
+````
+
+````{tabs}
+```{code-tab} plaintext Python Output
+
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 37660 entries, 0 to 37659
+Data columns (total 7 columns):
+ #   Column             Non-Null Count  Dtype 
+---  ------             --------------  ----- 
+ 0   vehicle_id         37660 non-null  int64 
+ 1   test_date          37660 non-null  object
+ 2   test_mileage       37660 non-null  int64 
+ 3   postcode_area      37660 non-null  object
+ 4   make               37660 non-null  object
+ 5   colour             37660 non-null  object
+ 6   cylinder_capacity  37660 non-null  int64 
+dtypes: int64(3), object(4)
+memory usage: 2.0+ MB
+
+
+        vehicle_id	test_date	 test_mileage	postcode_area	make	   colour	cylinder_capacity
+0	      936278007	  2023-04-28 42480      	ML	          NISSAN	 ORANGE	998
+1	      858355106	  2023-04-28 42340	      NE	          KAWASAKI BLACK	553
+2	      1027196372  2023-04-28 93433     	  GL	          FIAT	   BLUE	  1242
+3	      1397627616  2023-04-28 217404     	B	            TOYOTA	 GREY  	1798
+4	      384731403	  2023-05-03 4592         DN	          YAMAHA	W HITE	125
+
+```
+
+```{code-tab} plaintext R Output
+
+Rows: 37,660
+Columns: 7
+$ vehicle_id        <int> 936278007, 858355106, 1027196372, 1397627616, 384731…
+$ test_date         <chr> "2023-04-28", "2023-04-28", "2023-04-28", "2023-04-2…
+$ test_mileage      <int> 42480, 42340, 93433, 217404, 4592, 6801, 11466, 1259…
+$ postcode_area     <chr> "ML", "NE", "GL", "B", "DN", "CT", "PR", "W", "NW", …
+$ make              <chr> "NISSAN", "KAWASAKI", "FIAT", "TOYOTA", "YAMAHA", "T…
+$ colour            <chr> "ORANGE", "BLACK", "BLUE", "GREY", "WHITE", "SILVER"…
+$ cylinder_capacity <int> 998, 553, 1242, 1798, 125, 765, 1078, 124, 1497, 125…
+
+```
+````
+````{tabs}
+```{code-tab} py
+# Again, check the data types of each column in the dataframe, change them if necessary
+
+
+```
+
+```{code-tab} r R
+
+# Again, check the data types of each column in the dataframe, change them if necessary
+
+mot_eda_sample <- mot_eda_sample %>% 
+    dplyr::mutate(test_date = as.Date(test_date)) %>%
+    dplyr::mutate_at(c("make", "colour"), as.factor)
+
+```
+````
+
+A good place to start with EDA is to calculate the descriptive statistics of your sample data set. This will give you a nice overview of the data. For numerical variables you get: quartiles, min, max, mean values and number of NA's and for categorical variables you get a snippet of the count data for groups within a column. It is also a good idea to save your summary statistics as a variable, you may one to use these later for further analysis.
+
+````{tabs}
+```{code-tab} py
+
+summary = mot_eda_sample.describe()
+summary
+
+```
+
+```{code-tab} r R
+
+summary <- summary(mot_eda_sample)
+summary
+
+```
+````
+
+````{tabs}
+{code-tab} plaintext Python Output
+
+      vehicle_id	  test_mileage	cylinder_capacity
+count	3.766000e+04	37660.000000	37660.000000
+mean	7.491470e+08	75578.674482	1696.151275
+std	  4.327012e+08	48708.057036	595.992351
+min	  3.173600e+04	6.000000	    48.000000
+25%	  3.766455e+08	39360.750000	1329.000000
+50%  	7.469845e+08	67142.500000	1597.000000
+75%	  1.122075e+09	101951.250000	1995.000000
+max	  1.499980e+09	999999.000000	7300.000000
+
+```
+
+```{code-tab} plaintext R Output
+
+   vehicle_id         test_date          test_mileage    postcode_area
+ Min.   :3.174e+04   Length:37660       Min.   :     6   Length:37660
+ 1st Qu.:3.766e+08   Class :character   1st Qu.: 39361   Class :character
+ Median :7.470e+08   Mode  :character   Median : 67143   Mode  :character
+ Mean   :7.491e+08                      Mean   : 75579
+ 3rd Qu.:1.122e+09                      3rd Qu.:101951
+ Max.   :1.500e+09                      Max.   :999999
+     make              colour          cylinder_capacity
+ Length:37660       Length:37660       Min.   :  48
+ Class :character   Class :character   1st Qu.:1329
+ Mode  :character   Mode  :character   Median :1597
+                                       Mean   :1696
+                                       3rd Qu.:1995
+                                       Max.   :7300
+
+```
+````
+Applying correlation functions to your sample data can be used to check whether the patterns in collinearity revealed during pre-sampling have been maintained post-sampling.
+
+````{tabs}
+```{code-tab} py
+
+mot_eda_sample.corr(numeric_only = True)
+
+```
+
+```{code-tabs} r R
+
+correlation_data <- mot_eda_sample[, c("vehicle_id", "test_mileage", "cylinder_capacity")]
+cor(correlation_data)
+
+```
+````
+
+
+````{tabs} 
+```{code-tab} plaintext Python Output
+
+	                 vehicle_id	 test_mileage	 cylinder_capacity
+       vehicle_id	  1.000000	 0.006824	     -0.004033
+     test_mileage	  0.006824	 1.000000        0.270533
+cylinder_capacity	 -0.004033   0.270533	       1.000000
+
+```
+
+```{code-tab} plaintext R Output
+
+                    vehicle_id test_mileage cylinder_capacity
+vehicle_id         1.000000000   0.00682399      -0.004033095
+test_mileage       0.006823990   1.00000000       0.270533043
+cylinder_capacity -0.004033095   0.27053304       1.000000000
+
+```
+````
+To take a deeper dive into your sample data you can apply `group_by()` and `summarise()` from the `dplyr` package in R or `groupby()` and `.agg()` in Python. By using these functions you can filter your data to get the answers you want. By grouping data you can select one or more columns to group your data by, for example `colour`. Then, through summary and aggregation you can apply additional functions:
+
+- `mean()` and `median()` can be used to find the center of your data 
+- `min()` and `max()` give the range of your data 
+- `sd()` and `IQR()` give the spread of your data 
+- `n()` and `n_distinct` give count data
+- this is not an exhaustive list so if you want to know anything else use google, there is likely a function!
+
+In this first example we will determine the most popular car colour - note that the method applied here could be used for any of the categorical variables in the data frame. We will group the data by `colour`, determine the the count data, mutate this into a percentage and arrange the output data.
+
+````{tabs}
+```{code-tab} py 
+
+colour_percentage = (
+    mot_eda_sample
+    .groupby('colour')
+    .agg(count=('colour','size'))
+    .assign(percentage=lambda df: (df['count'] / len(mot_eda_sample)) * 100)
+    .sort_values(by='percentage', ascending=False)
+    .reset_index()
+)
+colour_percentage
+
+```
+
+```{code-tab} r R
+
+colour_percentage <- mot_eda_sample %>% 
+              dplyr::group_by(colour) %>% 
+              dplyr::summarise(count = length(colour)) %>%
+              dplyr::mutate(percentage = count/(nrow(mot_eda_sample))*100) %>%
+              arrange(desc(percentage))
+
+```
+````
+````{tabs}
+```{code-tab} plaintext Python Output
+
+  colour	        count	percentage
+0	         WHITE	7366	19.559214
+1	         BLACK	7110	18.879448
+2	          BLUE	5923	15.727562
+3	        SILVER	5878	15.608072
+4  	        GREY	5614	14.907063
+5	           RED	3665	9.731811
+6	         GREEN	691	1.834838
+7	        ORANGE	286	0.759426
+8	        YELLOW	237	0.629315
+9	         BROWN	224	0.594796
+10         BEIGE	220	0.584174
+11        PURPLE	124	0.329262
+12        BRONZE	95	0.252257
+13          GOLD	78	0.207116
+14     TURQUOISE	40	0.106213
+15        	PINK	30	0.079660
+16	      MAROON	29	0.077005
+17	       CREAM	25	0.066383
+18	MULTI-COLOUR	24	0.063728
+19	  NOT STATED	 1	0.002655
+
+```
+
+```{code-tab} plaintext R Output
+
+# A tibble: 20 × 3
+   colour           n percentage
+   <chr>        <int>      <dbl>
+ 1 WHITE         7366   19.6
+ 2 BLACK         7110   18.9
+ 3 BLUE          5923   15.7
+ 4 SILVER        5878   15.6
+ 5 GREY          5614   14.9
+ 6 RED           3665    9.73
+ 7 GREEN          691    1.83
+ 8 ORANGE         286    0.759
+ 9 YELLOW         237    0.629
+10 BROWN          224    0.595
+11 BEIGE          220    0.584
+12 PURPLE         124    0.329
+13 BRONZE          95    0.252  
+14 GOLD            78    0.207
+15 TURQUOISE       40    0.106
+16 PINK            30    0.0797
+17 MAROON          29    0.0770
+18 CREAM           25    0.0664
+19 MULTI-COLOUR    24    0.0637
+20 NOT STATED       1    0.00266
+
+```
+````
+
+As well as calculating descriptive statistics it is important to visualize your data. Plots helps you see the spread of the data, to assess skew and to spot whether anomalies or nulls are present. In this example, we have applied `mean()` to show the mean `test_mileage` of cars grouped by `colour`. The argument `na.rm` has been added to the `summarise()` function which lets you decide whether you want NA values removing or leaving in the calculations. A bar chart has been used for visualisation.
+
+````{tabs}
+```{code-tab} py
+
+mean_mileage = (
+    mot_eda_sample
+    .groupby('colour')
+    .agg(mean_mileage=('test_mileage','mean'))
+    .sort_values(by='mean_mileage', ascending=False)
+    .reset_index()
+)
+
+mean_mileage
+
+```
+
+```{code-tab} r R
+
+mean_mileage <- mot_eda_sample %>% 
+                group_by(colour) %>% 
+                summarise(mean_mileage = mean(test_mileage, na.rm = TRUE)) %>%
+                arrange(desc(mean_mileage)) %>%
+                print()
+
+```
+````
+
+````{tabs}
+```{code-tab} plaintext Python Output
+
+	colour	        mean_mileage
+0	        SILVER	86479.125043
+1	          GOLD	83671.474359
+2	        MAROON	83003.137931
+3	         GREEN	81787.465991
+4	         BEIGE	81261.990909
+5	         WHITE	76983.261879
+6	         BLACK	76787.602532
+7	          BLUE	74151.760425
+8	        YELLOW	73962.924051
+9	         BROWN	72189.325893
+10	      BRONZE	71280.473684
+11	        GREY	69890.805843
+12	MULTI-COLOUR	66295.791667
+13	         RED	65283.650750
+14	   TURQUOISE	63925.875000
+15	      PURPLE	63629.895161
+16	       CREAM	54210.720000
+17	      ORANGE	53829.835664
+18	        PINK	50783.933333
+19	  NOT STATED	7712.000000
+
+```
+
+```{code-tab} plaintext R Output
+
+# A tibble: 20 × 2
+   colour       mean_mileage
+   <chr>               <dbl>
+ 1 SILVER             86479.
+ 2 GOLD               83671.
+ 3 MAROON             83003.
+ 4 GREEN              81787.
+ 5 BEIGE              81262.
+ 6 WHITE              76983.
+ 7 BLACK              76788.
+ 8 BLUE               74152.
+ 9 YELLOW             73963.
+10 BROWN              72189.
+11 BRONZE             71280.
+12 GREY               69891.
+13 MULTI-COLOUR       66296.
+14 RED                65284.
+15 TURQUOISE          63926.
+16 PURPLE             63630.
+17 CREAM              54211.
+18 ORANGE             53830.
+19 PINK               50784.
+20 NOT STATED          7712
+
+```
+````
+
+````{tabs}
+```{code-tab} py
+
+import matplotlib.pyplot as plt
+
+(mean_mileage.plot(title='mean test mileage by colour', kind='bar', x='colour', y='mean_mileage')
+            .set(xlabel='colour', ylabel='mean_test_mileage'))
+
+```
+
+```{code-tab} r R
+
+library(ggplot2)
+
+gplot(mean_mileage, aes(x = reorder(colour, -mean_mileage), y = mean_mileage)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  geom_text(aes(label = round(mean_mileage, 0)), vjust = 1, angle = 45) +
+  labs(
+    title = "Mean Mileage by Car Colour",
+    x = "Car Colour",
+    y = "Mean Mileage"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+````
+
+````{tabs}
+```{code-tab} plaintext Python Output
+
+[Text(0.5, 0, 'colour'), Text(0, 0.5, 'mean_test_mileage')]
+NEED TO ADD IMAGE
+
+```
+
+````{code-tab} plaintext R Output
+
+NEED TO ADD IMAGE
+
 ```
 ````
