@@ -632,7 +632,7 @@ Generally the larger your sample the more representative of your original popula
 
 There are two main methods you can adopt for informing your sample size: 
 1) Use a sample calculator.
-2) Input your own sample size into standard sampling methods: `.sample()` in Pyspark or `sdf_sample()` in SparklyR (please refer to out Sampling: an overview page for more details on these (LINK)).
+2) Input your own sample size into standard sampling methods: `.sample()` in Pyspark or `sdf_sample()` in SparklyR (please refer to out [Sampling: an overview page](https://best-practice-and-impact.github.io/ons-spark/spark-functions/sampling.html#sampling-an-overview) for more details).
 
 The worked example in this guidance will determine sample size using the sample calculator; the sample will then be taken using the standard sampling methods. The mot_clean dataset created above will be used. If you want to determine your own sample size, based on a fraction of the population, this could be simply inputted into the standard sampling methods. 
 
@@ -772,7 +772,7 @@ spark.stop()
 # mot_sample %>% 
 #  sparklyr::sdf_coalesce(1) %>%
 #  sparklyr::spark_write_csv(mot_sample,         
-#                            path = "s3a://onscdp-dev-data01-5320d6ca/bat/dapcats/mot_eda_sample.csv",
+#                            path = "s3a://onscdp-dev-data01-5320d6ca/bat/dapcats/mot_eda_sample_0.1.csv",
 #                            header = TRUE, 
 #                            mode = 'overwrite')
 
@@ -858,6 +858,7 @@ $ cylinder_capacity <int> 998, 553, 1242, 1798, 125, 765, 1078, 124, 1497, 125â€
 ```{code-tab} py
 # Again, check the data types of each column in the dataframe, change them if necessary
 
+mot_eda_sample['test_date'] = pd.to_datetime(mot_eda_sample['test_date'])
 
 ```
 
@@ -893,15 +894,25 @@ summary
 ````{tabs}
 ```{code-tab} plaintext Python Output
 
-         vehicle_id   test_mileage  cylinder_capacity
-count  3.766000e+04   37660.000000       37660.000000
-mean   7.491470e+08   75578.674482        1696.151275
-std    4.327012e+08   48708.057036         595.992351
-min    3.173600e+04       6.000000          48.000000
-25%    3.766455e+08   39360.750000        1329.000000
-50%    7.469845e+08   67142.500000        1597.000000
-75%    1.122075e+09  101951.250000        1995.000000
-max    1.499980e+09  999999.000000        7300.000000
+         vehicle_id                      test_date   test_mileage  \
+count  3.766000e+04                          37660   37660.000000   
+mean   7.491470e+08  2023-07-01 01:07:08.635156736   75578.674482   
+min    3.173600e+04            2023-01-02 00:00:00       6.000000   
+25%    3.766455e+08            2023-03-23 00:00:00   39360.750000   
+50%    7.469845e+08            2023-07-06 00:00:00   67142.500000   
+75%    1.122075e+09            2023-10-02 00:00:00  101951.250000   
+max    1.499980e+09            2023-12-31 00:00:00  999999.000000   
+std    4.327012e+08                            NaN   48708.057036   
+
+       cylinder_capacity  
+count       37660.000000  
+mean         1696.151275  
+min            48.000000  
+25%          1329.000000  
+50%          1597.000000  
+75%          1995.000000  
+max          7300.000000  
+std           595.992351 
 
 ```
 
