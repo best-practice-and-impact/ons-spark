@@ -153,9 +153,6 @@ corr_matrix
 summary_mileage <- sdf_describe(mot_clean, "test_mileage")
 summary_mileage
 
-summary_colour <- sdf_describe(mot_clean, "colour")
-summary_colour
-
 
 
 sample_size_finite <- function(N, z, p, e) {
@@ -235,7 +232,7 @@ mean_mileage <- mot_eda_sample %>%
 
 library(ggplot2)
 
-gplot(mean_mileage, aes(x = reorder(colour, -mean_mileage), y = mean_mileage)) +
+ggplot(mean_mileage, aes(x = reorder(colour, -mean_mileage), y = mean_mileage)) +
   geom_bar(stat = "identity", fill = "skyblue") +
   geom_text(aes(label = round(mean_mileage, 0)), vjust = 1, angle = 45) +
   labs(
