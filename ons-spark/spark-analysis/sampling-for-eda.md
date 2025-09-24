@@ -1180,13 +1180,26 @@ ggplot(mean_mileage, aes(x = reorder(colour, -mean_mileage), y = mean_mileage)) 
 ```{code-tab} plaintext Python Output
 
 [Text(0.5, 0, 'colour'), Text(0, 0.5, 'mean_test_mileage')]
-NEED TO ADD IMAGE
+
+```{figure} ../images/mean_test_mileage_colour_python.png
+---
+width: 100%
+name: MeanTestMileageVsColour
+alt: A diagram showing mean test mileage vs colour for 2023 MOT sample data using Python.
+---
 
 ```
+```
 
-````{code-tab} plaintext R Output
+```{code-tab} plaintext R Output
 
-NEED TO ADD IMAGE
+```{figure} ../images/mean_test_mileage_colour_R.png
+---
+width: 100%
+name: MeanTestMileageVsColour
+alt: A diagram showing mean test mileage vs colour for 2023 MOT sample data using R.
+---
 
+```
 ```
 ````
