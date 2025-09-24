@@ -1176,8 +1176,7 @@ ggplot(mean_mileage, aes(x = reorder(colour, -mean_mileage), y = mean_mileage)) 
 ```
 ````
 
-````{tabs}
-```{figure-tab} ../images/mean_test_mileage_colour_python.png
+```{figure} ../images/mean_test_mileage_colour_python.png
 ---
 width: 100%
 name: MeanTestMileageVsColour
@@ -1186,7 +1185,7 @@ alt: A diagram showing mean test mileage vs colour for 2023 MOT sample data usin
 
 ```
 
-```{figure-tab} ../images/mean_test_mileage_colour_R.png
+```{figure} ../images/mean_test_mileage_colour_R.png
 ---
 width: 100%
 name: MeanTestMileageVsColour
@@ -1194,4 +1193,11 @@ alt: A diagram showing mean test mileage vs colour for 2023 MOT sample data usin
 ---
 
 ```
-````
+
+### Further Resources
+
+Spark at the ONS Articles:
+- [Big data workflow](https://best-practice-and-impact.github.io/ons-spark/spark-analysis/big-data-workflow.html)
+- [Sampling: an overview](https://best-practice-and-impact.github.io/ons-spark/spark-functions/sampling.html)
+- [Working with duplicates](https://best-practice-and-impact.github.io/ons-spark/spark-analysis/working-with-duplicates.html)
+
