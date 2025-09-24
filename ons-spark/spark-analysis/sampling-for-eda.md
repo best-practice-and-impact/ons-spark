@@ -562,7 +562,7 @@ cylinder_capacity	 -0.000010	 0.269720	     1.00000
 ````
 ### Simple EDA of big data
 
-We now have a version of the big data that we can sample for EDA! At this point, some simple EDA on the big data can be useful for sample verification further on. In PySpark you can use `.summary()`to provide summary statistics on numeric and string columns; however, the statistics for a string will be based on length of the string and therefore an example is not shown here. In SparklyR you can use `sdf_describe()` which will produce different outputs depending on the data type of the input column.
+We now have a version of the big data that we can sample for EDA! At this point, some simple EDA on the big data can be useful for sample verification further on. In PySpark you can use `.summary()`to provide summary statistics on numeric and string columns; however, the statistics for a string will be based on length of the string and therefore an example is not shown here. In SparklyR you can use `sdf_describe()` which produces the same outputs.
 
 ````{tabs}
 ```{code-tab} py
@@ -577,9 +577,6 @@ summary_mileage = mot.select("test_mileage").summary().show()
 # Summary statistics for a numeric and string column 
 summary_mileage <- sdf_describe(mot_clean, "test_mileage")
 summary_mileage
-
-summary_colour <- sdf_describe(mot_clean, "colour")
-summary_colour
 
 ```
 ````
@@ -611,17 +608,7 @@ summary_colour
 2 mean    75561.09864907745
 3 stddev  48373.21593231007
 4 min     1
-5 max     
-
-# Source:   table<`sparklyr_tmp_b358f855_9aca_49d5_8467_e152a80a5e8e`> [?? x 2]
-# Database: spark_connection
-  summary colour
-  <chr>   <chr>
-1 count   39601678
-2 mean    NA
-3 stddev  NA
-4 min     BEIGE
-5 max     YELLOW  
+5 max      
 
 ```
 ````
