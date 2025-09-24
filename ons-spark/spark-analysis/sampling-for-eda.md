@@ -944,7 +944,7 @@ mot_eda_sample.corr(numeric_only = True)
 
 ```
 
-```{code-tabs} r R
+```{code-tab} r R
 
 correlation_data <- mot_eda_sample[, c("vehicle_id", "test_mileage", "cylinder_capacity")]
 cor(correlation_data)

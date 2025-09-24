@@ -212,6 +212,12 @@ summary
 
 
 
+correlation_data <- mot_eda_sample[, c("vehicle_id", "test_mileage", "cylinder_capacity")]
+cor(correlation_data)
+
+
+
+
 colour_percentage <- mot_eda_sample %>% 
               dplyr::group_by(colour) %>% 
               dplyr::summarise(count = length(colour)) %>%
