@@ -846,6 +846,8 @@ $ cylinder_capacity <int> 998, 553, 1242, 1798, 125, 765, 1078, 124, 1497, 125â€
 # Again, check the data types of each column in the dataframe, change them if necessary
 
 mot_eda_sample['test_date'] = pd.to_datetime(mot_eda_sample['test_date'])
+mot_eda_sample['colour'] = pd.Categorical(mot_eda_sample['colour'])
+mot_eda_sample['make'] = pd.Categorical(mot_eda_sample['make'])
 
 ```
 
@@ -867,6 +869,9 @@ A good place to start with EDA is to calculate the descriptive statistics of you
 
 summary = mot_eda_sample.describe()
 print(summary)
+
+# you can also use .describe() on specified cateogircal columns
+mot['colour].describe()
 
 ```
 
@@ -901,24 +906,32 @@ min            48.000000
 max          7300.000000  
 std           595.992351 
 
+mot['colour'].describe()
+count     37660
+unique       20
+top       WHITE
+freq       7366
+Name: colour, dtype: object
+
 ```
 
 ```{code-tab} plaintext R Output
-
-   vehicle_id         test_date          test_mileage    postcode_area
- Min.   :3.174e+04   Length:37660       Min.   :     6   Length:37660
- 1st Qu.:3.766e+08   Class :character   1st Qu.: 39361   Class :character
- Median :7.470e+08   Mode  :character   Median : 67143   Mode  :character
- Mean   :7.491e+08                      Mean   : 75579
- 3rd Qu.:1.122e+09                      3rd Qu.:101951
- Max.   :1.500e+09                      Max.   :999999
-     make              colour          cylinder_capacity
- Length:37660       Length:37660       Min.   :  48
- Class :character   Class :character   1st Qu.:1329
- Mode  :character   Mode  :character   Median :1597
-                                       Mean   :1696
-                                       3rd Qu.:1995
-                                       Max.   :7300
+vehicle_id          test_date           test_mileage    postcode_area     
+ Min.   :3.174e+04   Min.   :2023-01-02   Min.   :     6   Length:37660      
+ 1st Qu.:3.766e+08   1st Qu.:2023-03-23   1st Qu.: 39361   Class :character  
+ Median :7.470e+08   Median :2023-07-06   Median : 67142   Mode  :character  
+ Mean   :7.491e+08   Mean   :2023-07-01   Mean   : 75579                     
+ 3rd Qu.:1.122e+09   3rd Qu.:2023-10-02   3rd Qu.:101951                     
+ Max.   :1.500e+09   Max.   :2023-12-31   Max.   :999999                     
+                                                                             
+            make           colour     cylinder_capacity
+ FORD         : 5233   WHITE  :7366   Min.   :  48     
+ VAUXHALL     : 3495   BLACK  :7110   1st Qu.:1329     
+ VOLKSWAGEN   : 3420   BLUE   :5923   Median :1597     
+ MERCEDES-BENZ: 2086   SILVER :5878   Mean   :1696     
+ BMW          : 2020   GREY   :5614   3rd Qu.:1995     
+ AUDI         : 1868   RED    :3665   Max.   :7300     
+ (Other)      :19538   (Other):2104                 
 
 ```
 ````
@@ -1149,7 +1162,7 @@ import matplotlib.pyplot as plt
 
 library(ggplot2)
 
-gplot(mean_mileage, aes(x = reorder(colour, -mean_mileage), y = mean_mileage)) +
+ggplot(mean_mileage, aes(x = reorder(colour, -mean_mileage), y = mean_mileage)) +
   geom_bar(stat = "identity", fill = "skyblue") +
   geom_text(aes(label = round(mean_mileage, 0)), vjust = 1, angle = 45) +
   labs(
