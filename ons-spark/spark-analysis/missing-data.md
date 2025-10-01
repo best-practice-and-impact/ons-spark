@@ -447,12 +447,38 @@ $ mileage_imputed          <int> 15150, 46995, 15150, 15150, 15150, 15150, 105â€
 
 ```
 ````
+
+### Last observation carried forward (LOCF) and next observation carried backward (NOCB)
+
+For time series data, a simple imputation method for missing values is to use the most recently observed value (LOCF) or next observed value (NOCB) for a particular subject.
+
+In SparklyR, this can be achieved by applying the fill() function across a window function which groups the unique subject id in the dataset, in this case `vehicle_id`. We also need to order the window by date (`year_test` here) using window_order() from the dbplyr package. Fill direction can be specified as "down" (last value), "up" (next value), or "downup"/"updown" (last value if available, or next value if it is not and vice versa).
+
+In this example we have set the direction to "downup" so we are applying LOCF first, followed by NOCB if a given value is still missing.
+
 ````{tabs}
 ```{code-tab} py
 
 ```
 
 ```{code-tab} r R
+
+# Apply LOCF followed by NOCB across columns to be imputed
+impute_lcf <- results %>%
+  group_by(vehicle_id) %>%
+  dbplyr::window_order(year_test) %>%
+  mutate(mileage_lcf = test_mileage,
+         cyl_lcf = cylinder_capacity) %>%
+  sparklyr::fill(mileage_lcf, .direction = "downup") %>%
+  sparklyr::fill(cyl_lcf, .direction = "downup") %>% ungroup()
+  
+# Get a summary of NAs
+results_nas <- impute_lcf %>%
+  dplyr::summarise_all(~sum(as.integer(is.na(.)))) 
+
+# View which columns have NAs
+results_nas %>% 
+  print(width = Inf) 
 
 ```
 ````
@@ -466,3 +492,6 @@ $ mileage_imputed          <int> 15150, 46995, 15150, 15150, 15150, 15150, 105â€
 
 ```
 ````
+We can see that this imputation method applied to our MOT dataset has only really been useful for the test_mileage column, where we have reduced the number of missing values from 324129 to 110072.
+
+An alternative approach that may be more reasonable in this case to impute missing mileage values for a given vehicle between test years would be to interpolate test_mileage. Please refer to the guidance on [Interpolation in Spark](https://best-practice-and-impact.github.io/ons-spark/spark-analysis/interpolation.html?highlight=interpolation) in another section of the book. 
