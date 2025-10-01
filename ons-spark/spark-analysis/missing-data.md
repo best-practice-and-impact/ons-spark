@@ -216,7 +216,158 @@ Now we have identified missing values, one option to deal with them would be to 
 
 #### Mean or median imputation
 
+Imputing missing values with the mean or the median value for a given variable is a simple way of dealing with missing values in a dataset. In Spark, this type of imputation is easy to achieve using feature transformers. In SparklyR you would use  `ft_imputer` and in Pyspark it would be `Imputer()`.
 
+Before we impute the missing values, we will do some data manipulation. To simplify the data we will drop the full date and use just the year. We will also encode the missing values - add an indicator column for each variable will be added which be filled with 1 for non-missing values and 0 if a value is missing for a particular record.
+
+````{tabs}
+```{code-tab} py
+
+```
+
+```{code-tab} r R
+
+results <- mot %>%
+  mutate(year_test = year(test_date)) %>%
+  # drop date cols
+  select(-test_date) %>%
+  # encode missing values
+   mutate(missing_cyl = ifelse(is.na(cylinder_capacity), 0, 1), 
+         missing_mileage = ifelse(is.na(test_mileage), 0, 1))
+
+results %>% 
+  print(width = Inf)
+
+```
+````
+
+````{tabs}
+```{code-tab} plaintext Python output
+
+```
+
+```{code-tab} plaintext R output
+
+# Source:   SQL [?? x 10]
+# Database: spark_connection
+   vehicle_id test_mileage postcode_area make               model        colour
+        <int>        <int> <chr>         <chr>              <chr>        <chr> 
+ 1 1131526890       129661 HU            BMW                525          BLACK 
+ 2  211522675        26597 IV            FORD               FIESTA       BLUE  
+ 3 1218838379        11803 LA            THE EXPLORER GROUP UNCLASSIFIED WHITE 
+ 4  159956284       148187 BD            AUDI               A3           WHITE 
+ 5  851633977        12915 PO            DACIA              DUSTER       ORANGE
+ 6 1236900649        22281 WA            VAUXHALL           CORSA        BLUE  
+ 7 1343158317        30140 PH            CITROEN            C3           GREY  
+ 8 1221072863        23462 B             PEUGEOT            3008         GREY  
+ 9  249708845        26122 S             BMW                X5           WHITE 
+10  480476389        22007 PA            FORD               C-MAX        BLUE  
+   cylinder_capacity year_test missing_cyl missing_mileage
+               <int>     <int>       <dbl>           <dbl>
+ 1              2497      2023           1               1
+ 2               998      2023           1               1
+ 3              1997      2023           1               1
+ 4              1968      2023           1               1
+ 5              1330      2023           1               1
+ 6              1398      2023           1               1
+ 7              1199      2023           1               1
+ 8              1500      2023           1               1
+ 9              2993      2023           1               1
+10              1596      2023           1               1
+
+```
+````
+Next we can apply mean imputation by setting the strategy argument to "mean". But first, we need to enforce new column types as double or float so that we can include a mutate statement first to initialise. Note that you could also use "median" as the strategy argument in the below code. 
+
+````{tabs}
+```{code-tab} py
+
+```
+
+```{code-tab} r R
+
+# Specify columns to impute
+impute_cols <-  c("cylinder_capacity", "test_mileage")
+
+# Actually is very quick to do on full dataset
+mean_imputed <- results %>%
+  mutate(across(all_of(impute_cols), ~as.double(.))) %>%
+  ft_imputer(input_cols = impute_cols,
+             output_cols = c("cyl_imputed", "mileage_imputed"), 
+             strategy = "mean")
+
+mean_imputed %>% 
+  arrange(missing_cyl, missing_mileage) %>% 
+  glimpse()
+
+```
+````
+
+````{tabs}
+```{code-tab} plaintext Python output
+
+```
+
+```{code-tab} plaintext R output
+
+Rows: ??
+Columns: 12
+Database: spark_connection
+Ordered by: missing_cyl, missing_mileage
+$ vehicle_id        <int> 1025464220, 347027954, 145727633, 250280838, 9537842…
+$ test_mileage      <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ postcode_area     <chr> "E", "B", "G", "CH", "TN", "SN", "ME", "KT", "W", "W…
+$ make              <chr> "TOYOTA", "HUMMER", "RENAULT", "FORD", "S5 E2", "TES…
+$ model             <chr> "PRIUS", "UNCLASSIFIED", "KANGOO", "TRANSIT", "UNCLA…
+$ colour            <chr> "SILVER", "WHITE", "WHITE", "WHITE", "GREY", "BLUE",…
+$ cylinder_capacity <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ year_test         <int> 2023, 2023, 2023, 2023, 2023, 2023, 2023, 2023, 2023…
+$ missing_cyl       <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ missing_mileage   <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ cyl_imputed       <dbl> 1694.371, 1694.371, 1694.371, 1694.371, 1694.371, 16…
+$ mileage_imputed   <dbl> 75507.65, 75507.65, 75507.65, 75507.65, 75507.65, 75…
+
+```
+````
+
+````{tabs}
+```{code-tab} py
+
+```
+
+```{code-tab} r R
+
+```
+````
+
+````{tabs}
+```{code-tab} plaintext Python output
+
+```
+
+```{code-tab} plaintext R output
+
+```
+````
+````{tabs}
+```{code-tab} py
+
+```
+
+```{code-tab} r R
+
+```
+````
+
+````{tabs}
+```{code-tab} plaintext Python output
+
+```
+
+```{code-tab} plaintext R output
+
+```
+````
 ````{tabs}
 ```{code-tab} py
 
