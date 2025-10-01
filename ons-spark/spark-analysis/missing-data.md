@@ -330,12 +330,34 @@ $ mileage_imputed   <dbl> 75507.65, 75507.65, 75507.65, 75507.65, 75507.65, 75�
 ```
 ````
 
+#### Group imputation 
+
+It might sometimes make sense to group records by their common features before imputing missing values with the mean or median value. For example, we might expect that cars in our dataset with the same make model would have more similar features (such as cylinder capacity) to one another than to other cars in the dataset. For this type of imputation, we cannot use the feature transformers and instead have to take the mean/median of the data ourselves once it has been grouped accordingly.
+
+In the example below, we will use a window function to calculate the mean missing values for the data grouped by make and model.
+
 ````{tabs}
 ```{code-tab} py
 
 ```
 
 ```{code-tab} r R
+
+# Use a window function to generate the grouped means for columns to be imputed
+group_means <- results %>%
+  group_by(make, model) %>%
+  mutate(across(impute_cols , ~mean(.), .names = "{.col}_mean")) %>%
+  ungroup()
+
+# Impute grouped mean values
+group_mean_impute <- group_means %>%
+  mutate(cylinder_imputed = ifelse(is.na(cylinder_capacity), (cylinder_capacity_mean), cylinder_capacity),
+         mileage_imputed = ifelse(is.na(test_mileage), test_mileage_mean, test_mileage))
+
+# Preview the output         
+group_mean_impute %>% 
+  arrange(missing_cyl, missing_mileage) %>%
+  glimpse()
 
 ```
 ````
@@ -347,14 +369,52 @@ $ mileage_imputed   <dbl> 75507.65, 75507.65, 75507.65, 75507.65, 75507.65, 75�
 
 ```{code-tab} plaintext R output
 
+Rows: ??
+Columns: 14
+Database: spark_connection
+Ordered by: missing_cyl, missing_mileage
+$ vehicle_id             <int> 497753562, 753286372, 1293170531, 681959931, 21…
+$ test_mileage           <int> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ postcode_area          <chr> "SK", "N", "NW", "CT", "SN", "NW", "NP", "DN", …
+$ make                   <chr> "LEYLAND DAF", "CHRYSLER", "MG", "VAUXHALL", "H…
+$ model                  <chr> "4X4", "300 C", "5 EXCLUSIVE", "VIVARO-E 3100 D…
+$ colour                 <chr> "GREEN", "GREY", "SILVER", "BLUE", "WHITE", "SI…
+$ cylinder_capacity      <int> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ year_test              <int> 2023, 2023, 2023, 2023, 2023, 2023, 2023, 2023,…
+$ missing_cyl            <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ missing_mileage        <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ cylinder_capacity_mean <dbl> NA, 3424.638, NA, NA, 2565.170, NA, 3453.359, N…
+$ test_mileage_mean      <dbl> NA, 110413.590, 32373.737, 18902.268, 89109.871…
+$ cylinder_imputed       <dbl> NA, 3424.638, NA, NA, 2565.170, NA, 3453.359, N…
+$ mileage_imputed        <dbl> NA, 110413.590, 32373.737, 18902.268, 89109.871…
+
 ```
 ````
+It is also possible to impute the median value for a group (using percentile_approx() - please see [median guidance](https://best-practice-and-impact.github.io/ons-spark/spark-functions/median.html?highlight=median)), although it cannot be done as simply as the mean. 
+
+In SparklyR, percentile_approx() is only supported as an aggregation function (i.e. to be used within summarise) as opposed to a window function (which can be used with mutate()).
+Therefore, we need to use summarise and percentile_approx() to generate a new dataframe of median values to impute and then perform a left_join to bind this to the original dataframe. 
+
+Note that joins are computationally expensive (link to guidance), so the method below should be avoided if you have many different groups in your data (i.e., if the group_medians dataframe has many rows). Taking as small a sample as possible may help with this (link to sampling page once published).
+
 ````{tabs}
 ```{code-tab} py
 
 ```
 
 ```{code-tab} r R
+
+group_medians <- results %>%
+  group_by(make, model) %>%
+  summarise(across(impute_cols, ~percentile_approx(., 0.5), .names = "{.col}_median")) 
+
+group_median_impute <- left_join(results, group_medians, by = c("make", "model")) %>%
+  mutate(cylinder_imputed = ifelse(is.na(cylinder_capacity), (cylinder_capacity_median), cylinder_capacity),
+         mileage_imputed = ifelse(is.na(test_mileage), test_mileage_median, test_mileage))
+         
+group_median_impute %>% 
+  arrange(missing_cyl, missing_mileage) %>%
+  glimpse()
 
 ```
 ````
@@ -365,6 +425,25 @@ $ mileage_imputed   <dbl> 75507.65, 75507.65, 75507.65, 75507.65, 75507.65, 75�
 ```
 
 ```{code-tab} plaintext R output
+
+Rows: ??
+Columns: 14
+Database: spark_connection
+Ordered by: missing_cyl, missing_mileage
+$ vehicle_id               <int> 1041526103, 680456344, 618950011, 1186928579,…
+$ test_mileage             <int> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ postcode_area            <chr> "TN", "SW", "S", "BS", "CT", "GU", "GU", "MK"…
+$ make                     <chr> "MINI", "PEUGEOT", "MINI", "MINI", "MINI", "M…
+$ model                    <chr> "COOPER S ELECTRIC LEVEL 2", "PEUGEOT", "COOP…
+$ colour                   <chr> "SILVER", "WHITE", "SILVER", "SILVER", "BLACK…
+$ cylinder_capacity        <int> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ year_test                <int> 2023, 2023, 2023, 2023, 2023, 2023, 2023, 202…
+$ missing_cyl              <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ missing_mileage          <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ cylinder_capacity_median <int> NA, 1749, NA, NA, NA, NA, 2199, NA, NA, 2499,…
+$ test_mileage_median      <int> 15150, 46995, 15150, 15150, 15150, 15150, 105…
+$ cylinder_imputed         <int> NA, 1749, NA, NA, NA, NA, 2199, NA, NA, 2499,…
+$ mileage_imputed          <int> 15150, 46995, 15150, 15150, 15150, 15150, 105…
 
 ```
 ````
