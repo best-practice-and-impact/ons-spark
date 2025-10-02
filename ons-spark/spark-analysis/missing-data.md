@@ -31,7 +31,7 @@ library(pillar)
 default_config <- sparklyr::spark_config()
 
 sc <- spark_connect(master = "local",
-                  app_name = "missing_data",
+                  app_name = "missing-data",
                   config = default_config)
 
 
@@ -490,8 +490,174 @@ results_nas %>%
 
 ```{code-tab} plaintext R output
 
+# Source:     SQL [1 x 12]
+# Database:   spark_connection
+# Ordered by: year_test
+  vehicle_id test_mileage postcode_area  make model colour cylinder_capacity
+       <dbl>        <dbl>         <dbl> <dbl> <dbl>  <dbl>             <dbl>
+1          0       324129             0     0     0      0            279982
+  year_test missing_cyl missing_mileage mileage_lcf cyl_lcf
+      <dbl>       <dbl>           <dbl>       <dbl>   <dbl>
+1         0           0               0      110073  279982
+
 ```
 ````
-We can see that this imputation method applied to our MOT dataset has only really been useful for the test_mileage column, where we have reduced the number of missing values from 324129 to 110072.
+We can see that this imputation method applied to our MOT dataset has only really been useful for the test_mileage column, where we have reduced the number of missing values from 324129 to 110072. The cylinder capacity has not changed at all. 
 
 An alternative approach that may be more reasonable in this case to impute missing mileage values for a given vehicle between test years would be to interpolate test_mileage. Please refer to the guidance on [Interpolation in Spark](https://best-practice-and-impact.github.io/ons-spark/spark-analysis/interpolation.html?highlight=interpolation) in another section of the book. 
+
+### Imputation for categorical variables 
+
+#### Imputations by most frequent category (mode imputation)
+
+A `mode()` function in SparklyR is a new addition for Spark 3.4. But for this example, we will employ `group_by()`, `count()` and `select()` to get the category with the highest count. This category will the be used for imputation. 
+
+
+````{tabs}
+```{code-tab} py
+
+```
+
+```{code-tab} r R
+
+make_mode <- results %>%
+  filter(!make %in% c("UNCLASSIFIED", "unknown")) %>%
+  group_by(make) %>%
+  summarise(count = n()) %>%
+  slice_max(order_by = count) %>%
+  pull(make)
+
+# Impute 1 unknown make value
+mode_imputed <- results %>%
+  mutate(make_missing = ifelse(make %in% c("UNCLASSIFIED", "unknown"), 0, 1)) %>%
+  mutate(make_imputed = ifelse(make_missing ==0, make_mode, make)) 
+
+```
+````
+
+````{tabs}
+```{code-tab} plaintext Python output
+
+```
+
+```{code-tab} plaintext R output
+
+```
+````
+
+From the results we can see that there are still some 'unclassified' and 'unknown' data in the model column. 
+
+````{tabs}
+```{code-tab} py
+
+```
+
+```{code-tab} r R
+
+```{code-tab} r R
+model_mode <- results %>%
+   filter(
+     !model %in% c("UNCLASSIFIED", "unknown")) %>%
+   group_by(make, model) %>%
+   summarise(count = n()) %>%
+   slice_max(order_by = count) %>%
+   select(make,
+          model_mode = model)
+   
+
+model_imputed <- mode_imputed %>%
+  mutate(model_missing = ifelse(model %in% c("UNCLASSIFIED", "unknown"), 0, 1)) %>%
+  left_join(model_mode, by = c("make_imputed" = "make")) %>%
+  mutate(model_imputed = ifelse(model_missing == 0, model_mode, model))
+```
+````
+
+````{tabs}
+```{code-tab} plaintext Python output
+
+```
+
+```{code-tab} plaintext R output
+
+# Source:   SQL [?? x 15]
+# Database: spark_connection
+   vehicle_id test_mileage postcode_area make               model        colour
+        <int>        <int> <chr>         <chr>              <chr>        <chr> 
+ 1  851633977        12915 PO            DACIA              DUSTER       ORANGE
+ 2 1343158317        30140 PH            CITROEN            C3           GREY  
+ 3  884826478        85596 DD            BENTLEY            BROOKLANDS   GREEN 
+ 4  211522675        26597 IV            FORD               FIESTA       BLUE  
+ 5  159956284       148187 BD            AUDI               A3           WHITE 
+ 6  480476389        22007 PA            FORD               C-MAX        BLUE  
+ 7 1218838379        11803 LA            THE EXPLORER GROUP UNCLASSIFIED WHITE 
+ 8 1221072863        23462 B             PEUGEOT            3008         GREY  
+ 9 1236900649        22281 WA            VAUXHALL           CORSA        BLUE  
+10 1131526890       129661 HU            BMW                525          BLACK 
+   cylinder_capacity year_test missing_cyl missing_mileage make_missing
+               <int>     <int>       <dbl>           <dbl>        <dbl>
+ 1              1330      2023           1               1            1
+ 2              1199      2023           1               1            1
+ 3              6750      2023           1               1            1
+ 4               998      2023           1               1            1
+ 5              1968      2023           1               1            1
+ 6              1596      2023           1               1            1
+ 7              1997      2023           1               1            1
+ 8              1500      2023           1               1            1
+ 9              1398      2023           1               1            1
+10              2497      2023           1               1            1
+   make_imputed       model_missing model_mode    model_imputed
+   <chr>                      <dbl> <chr>         <chr>        
+ 1 DACIA                          1 SANDERO       DUSTER       
+ 2 CITROEN                        1 C3            C3           
+ 3 BENTLEY                        1 CONTINENTAL   BROOKLANDS   
+ 4 FORD                           1 FIESTA        FIESTA       
+ 5 AUDI                           1 A3            A3           
+ 6 FORD                           1 FIESTA        C-MAX        
+ 7 THE EXPLORER GROUP             0 MOTOR CARAVAN MOTOR CARAVAN
+ 8 PEUGEOT                        1 208           3008         
+ 9 VAUXHALL                       1 CORSA         CORSA        
+10 BMW                            1 3 SERIES      525    
+
+```
+````
+
+````{tabs}
+```{code-tab} py
+
+```
+
+```{code-tab} r R
+
+```
+````
+
+````{tabs}
+```{code-tab} plaintext Python output
+
+```
+
+```{code-tab} plaintext R output
+
+```
+````
+
+````{tabs}
+```{code-tab} py
+
+```
+
+```{code-tab} r R
+
+```
+````
+
+````{tabs}
+```{code-tab} plaintext Python output
+
+```
+
+```{code-tab} plaintext R output
+
+```
+````
+
