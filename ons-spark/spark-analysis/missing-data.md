@@ -26,6 +26,7 @@ spark = (SparkSession.builder
 library(sparklyr)
 library(dplyr)
 library(pillar)
+library(mltools)
 
 # Set up Spark session
 default_config <- sparklyr::spark_config()
@@ -448,7 +449,7 @@ $ mileage_imputed          <int> 15150, 46995, 15150, 15150, 15150, 15150, 105â€
 ```
 ````
 
-### Last observation carried forward (LOCF) and next observation carried backward (NOCB)
+#### Last observation carried forward (LOCF) and next observation carried backward (NOCB)
 
 For time series data, a simple imputation method for missing values is to use the most recently observed value (LOCF) or next observed value (NOCB) for a particular subject.
 
@@ -620,6 +621,19 @@ model_imputed <- mode_imputed %>%
 
 ```
 ````
+### Checking if data is 'Missing not at random' (MNAR)
+
+An important consideration in imputing missing values is whether the data is missing at random or not. In theory, every data point has some probability of being missing and if this probability is the same for all cases, then the data is said to be missing at random (MAR). However, if some cases in the data are more likely to have missing values than others, for example, if older cars in our dataset are more likely to not have mileage recorded then the data is missing not a random (MNAR).
+
+In this case, we can't ignore the missing data mechanism and it should be accounted for in the way we impute the data. In practice, it is difficult to know for sure whether data is missing at random or not. One relatively simple test to see if values are more likely to be missing for certain observations is to add new columns to the data (one for each variable that contains missing values) and assign a value of 0 in the case where the data is missing, and a value of 1 where it is not. We can then run some simple correlation tests to determine whether there is any dependence of missing values on the other observed values in the dataset. When working with big data however, this process can be difficult to carry out efficiently.
+
+
+Correlation tests on big data, particularly if there are many columns and different categories in your data can be incredibly resource intensive and difficult to run. Additionally, categorical variables all need to be encoded before running the tests. While this can be done relatively simply using the feature transformers `ft_string_indexer` and `ft_one_hot_encoder` (SparklyR), it can be very difficult to interpret the results of the correlation test once complete, since the string indexer and encoder do not label categories helpfully (see [Logistic Regression page](https://best-practice-and-impact.github.io/ons-spark/spark-analysis/logistic-regression.html?highlight=logistic) for more details).
+
+A solution to both of these problems is to take a small enough sample of your data initially so that you can bring it into local memory and carry out correlation tests in python/R rather than PySpark/SparklyR (see Sampling page (needs to be published to link)). This is generally much faster and more user friendly, while reducing the computational resource required to do the same analysis on the full dataset. This can help identify general trends in missing values in the data that can be confirmed on a simplified version of the larger dataset later if necessary.
+
+For demonstration purposes, we will take a quick sample of our test_result dataset and execute correlation tests. If the data you are working with is sufficiently small ( < 10 millions rows) then you can bring the data into local memory using `collect()`. As numeric missing values have already been encoded in the set up stage for imputation this does not need to carrying this out again.
+
 
 ````{tabs}
 ```{code-tab} py
@@ -660,4 +674,5 @@ model_imputed <- mode_imputed %>%
 
 ```
 ````
+
 
