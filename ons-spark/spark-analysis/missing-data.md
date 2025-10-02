@@ -621,12 +621,11 @@ model_imputed <- mode_imputed %>%
 
 ```
 ````
-### Checking if data is 'Missing not at random' (MNAR)
+### Checking if data is 'Missing not at random' (MNAR) - PYTHON BITS NEED ADDING
 
 An important consideration in imputing missing values is whether the data is missing at random or not. In theory, every data point has some probability of being missing and if this probability is the same for all cases, then the data is said to be missing at random (MAR). However, if some cases in the data are more likely to have missing values than others, for example, if older cars in our dataset are more likely to not have mileage recorded then the data is missing not a random (MNAR).
 
 In this case, we can't ignore the missing data mechanism and it should be accounted for in the way we impute the data. In practice, it is difficult to know for sure whether data is missing at random or not. One relatively simple test to see if values are more likely to be missing for certain observations is to add new columns to the data (one for each variable that contains missing values) and assign a value of 0 in the case where the data is missing, and a value of 1 where it is not. We can then run some simple correlation tests to determine whether there is any dependence of missing values on the other observed values in the dataset. When working with big data however, this process can be difficult to carry out efficiently.
-
 
 Correlation tests on big data, particularly if there are many columns and different categories in your data can be incredibly resource intensive and difficult to run. Additionally, categorical variables all need to be encoded before running the tests. While this can be done relatively simply using the feature transformers `ft_string_indexer` and `ft_one_hot_encoder` (SparklyR), it can be very difficult to interpret the results of the correlation test once complete, since the string indexer and encoder do not label categories helpfully (see [Logistic Regression page](https://best-practice-and-impact.github.io/ons-spark/spark-analysis/logistic-regression.html?highlight=logistic) for more details).
 
@@ -642,6 +641,15 @@ For demonstration purposes, we will take a quick sample of our test_result datas
 
 ```{code-tab} r R
 
+# Take a sample and collect the output into R
+
+sample <- results %>% sparklyr::sdf_sample(fraction=0.001, replacement=FALSE, seed = 99)
+
+sample %>% count()
+
+results_r <- sample %>% 
+                    collect()
+
 ```
 ````
 
@@ -652,8 +660,117 @@ For demonstration purposes, we will take a quick sample of our test_result datas
 
 ```{code-tab} plaintext R output
 
+42138
+
 ```
 ````
+NEED TO EDIT THIS AND ADD PYTHON BITS:
+We can now use regular R packages because we don't need to worry about support for Spark dataframes.
+Load the corrr library for correlation tests and mltools for one hot encoding
+Can then one hot encode categorical variables using the one_hot() function. These need to be converted into a factor first.
+Then correlation test can be run using the correlate() function (set use argument to "everything" so it does not drop cases with missing values):
+
+````{tabs}
+```{code-tab} py
+
+```
+
+```{code-tab} r R
+
+results_r_ohe <- results_r %>%
+    select(-vehicle_id, -model) %>%
+    mutate(across(where(is.character), ~as.factor(.))) %>%
+    mutate(year_test = as.Date(year_test))
+
+results_ohe <- mltools::one_hot(data.table::as.data.table(results_r_ohe))
+
+corr_test <- results_ohe %>% 
+  corrr::correlate(use = "everything") 
+  
+corr_test %>% print()
+
+```
+````
+
+````{tabs}
+```{code-tab} plaintext Python output
+
+```
+
+```{code-tab} plaintext R output
+
+A tibble: 345 × 346
+   term           test_mileage postcode_area_AB postcode_area_AL postcode_area_B
+   <chr>                 <dbl>            <dbl>            <dbl>           <dbl>
+ 1 test_mileage             NA         NA               NA               NA     
+ 2 postcode_area…           NA         NA               -0.00553         -0.0158
+ 3 postcode_area…           NA         -0.00553         NA               -0.0103
+ 4 postcode_area…           NA         -0.0158          -0.0103          NA     
+ 5 postcode_area…           NA         -0.00880         -0.00573         -0.0164
+ 6 postcode_area…           NA         -0.00897         -0.00583         -0.0167
+ 7 postcode_area…           NA         -0.00864         -0.00562         -0.0161
+ 8 postcode_area…           NA         -0.00963         -0.00627         -0.0179
+ 9 postcode_area…           NA         -0.00815         -0.00530         -0.0152
+10 postcode_area…           NA         -0.0106          -0.00689         -0.0197
+# ℹ 335 more rows
+# ℹ 341 more variables: postcode_area_BA <dbl>, postcode_area_BB <dbl>,
+#   postcode_area_BD <dbl>, postcode_area_BH <dbl>, postcode_area_BL <dbl>,
+#   postcode_area_BN <dbl>, postcode_area_BR <dbl>, postcode_area_BS <dbl>,
+#   postcode_area_CA <dbl>, postcode_area_CB <dbl>, postcode_area_CF <dbl>,
+#   postcode_area_CH <dbl>, postcode_area_CM <dbl>, postcode_area_CO <dbl>,
+#   postcode_area_CR <dbl>, postcode_area_CT <dbl>, postcode_area_CV <dbl>, …
+
+```
+````
+
+We now have a correlation dataframe that we can furher interrogate. At this point it is still quite large and difficult to interpret therefore it is useful to select and filter to refine the results. For example, we are mostly just interested in 'strong' correlations with our missing values columns, so we can select only the 'missing_' columns from the correlation dataframe and then filter for correlations stronger than 0.1 or -0.1:
+
+````{tabs}
+```{code-tab} py
+
+```
+
+```{code-tab} r R
+
+strong_corr <- corr_test %>%
+  select(term, starts_with("missing_")) %>%
+  filter(if_any(where(is.numeric), .fns = ~!dplyr::between(., -0.1, 0.1)))
+
+strong_corr %>% print()
+
+```
+````
+
+````{tabs}
+```{code-tab} plaintext Python output
+
+```
+
+```{code-tab} plaintext R output
+
+# A tibble: 2 × 3
+  term          missing_cyl missing_mileage
+  <chr>               <dbl>           <dbl>
+1 make_POLESTAR      -0.104        0.000755
+2 make_TESLA         -0.462       -0.00379 
+
+```
+````
+
+PYTHON BITS NEED ADDING HERE: 
+
+This narrows things down a bit. From the results of the strong correlation test we can see that make_POLESTAR and make_TESLA results are less likely to have cylinder capacity recorded. This makes intuitive sense as both POLESTAR and TESLA are makes of electric car which would not have cylinders! In this case, it would not make sense to impute and therefore it would be reasonable to set cylinder capacity to 0.
+
+On the other hand, there is also correlation with missing_mileage for both car makes. This suggests that we can't really assume that mileage variables are missing at random, so we might want to use an imputation method which accounts for the dependence, such as a regression imputation.
+
+This involves using the remaining variables to predict the value of a missing variable. A regression model could be built to do this if necessary by following the guidance outlined in [Logistic Regression](https://best-practice-and-impact.github.io/ons-spark/spark-analysis/logistic-regression.html?highlight=logistic) and using the default arguments for family and link ("gaussian" and NULL).
+
+An alternative popular approach would be to use a clustering based imputation method, such as K-nearest neighbours. Calculating nearest neighbours with big data in Spark is not straight-forward, and typically approximate nearest neighbours would be calculated instead (Link to potential other guidance page on this??)
+
+Back to our correlations...
+
+If we wanted to verify this on the larger dataset in Spark, we could use this information to simplify and encode our categorical data (eg. group car makes into electric and not electric) and then apply ml_corr. It still takes a little bit of extra effort to tidy this into an easily readable format (adding the term column):
+
 
 ````{tabs}
 ```{code-tab} py
@@ -672,7 +789,6 @@ For demonstration purposes, we will take a quick sample of our test_result datas
 
 ```{code-tab} plaintext R output
 
+
 ```
 ````
-
-
