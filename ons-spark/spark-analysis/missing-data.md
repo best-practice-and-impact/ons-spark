@@ -175,8 +175,7 @@ It is important to consider what data is really needed for your purpose. Filter 
 ```{code-tab} r R
 
 # Select for certain columns and correct data types
-
-cleaned_results <- test_result %>%
+cleaned_results <- mot %>%
     sparklyr::select(vehicle_id, test_date, test_mileage, postcode_area, make, model, colour, cylinder_capacity) %>%
     dplyr::mutate(test_date = as.date(test_date))
 
@@ -209,12 +208,11 @@ results_nas %>%
 ```
 ````
 
-We can now see there are lots of missing values in test_mileage and cylinder_capacity.
+We can see there are lots of missing values in test_mileage and cylinder_capacity.
 
 Now we have identified missing values, one option to deal with them would be to exclude these columns from our analysis, or simply to filter out rows with missing values. However, filtering out missing values might skew the distributions of values in our dataset and make our analysis unreliable. Similarly, we may not want to discard these columns from our analysis because they might still be important despite being incomplete eg. we might expect test_mileage to be an important predictor of whether a car is likely to pass an MOT test or not, so excluding this column would not be ideal. Think of what you are wanting to use the data for!
 
 ### Common imputation methods for continuous variables 
-
 #### Mean or median imputation
 
 Imputing missing values with the mean or the median value for a given variable is a simple way of dealing with missing values in a dataset. In Spark, this type of imputation is easy to achieve using feature transformers. In SparklyR you would use  `ft_imputer` and in Pyspark it would be `Imputer()`.
@@ -278,7 +276,7 @@ results %>%
 
 ```
 ````
-Next we can apply mean imputation by setting the strategy argument to "mean". But first, we need to enforce new column types as double or float so that we can include a mutate statement first to initialise. Note that you could also use "median" as the strategy argument in the below code. 
+Next, we can apply mean imputation by setting the strategy argument to "mean". But first, we need to enforce new column types as double or float so that we can include a mutate statement first to initialise. Note that you could also use "median" as the strategy argument in the below code. 
 
 ````{tabs}
 ```{code-tab} py
