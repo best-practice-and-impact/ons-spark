@@ -132,6 +132,15 @@ $ first_use_date    <date> 2002-05-27, 2016-06-27, 2017-03-03, 2010-10-30, 201â€
 ````{tabs}
 ```{code-tab} py
 
+# Convert columns if necessary
+mot = mot.withColumn("test_date", F.to_date(col("test_date")))
+mot = mot.withColumn("first_use_date", F.to_date(col("first_use_date")))
+
+# Get a summary of NAs for the entire dataset
+results_nas = mot.select([F.count(F.when(F.isnull(c), c)).alias(c) for c in mot.columns])
+
+results_nas.show()
+
 ```
 
 ```{code-tab} r R
@@ -149,6 +158,11 @@ results_nas %>%
 
 ````{tabs}
 ```{code-tab} plaintext Python output
++-------+----------+---------+-------------+---------+-----------+------------+-------------+----+-----+------+---------+-----------------+--------------+
+|test_id|vehicle_id|test_date|test_class_id|test_type|test_result|test_mileage|postcode_area|make|model|colour|fuel_type|cylinder_capacity|first_use_date|
++-------+----------+---------+-------------+---------+-----------+------------+-------------+----+-----+------+---------+-----------------+--------------+
+|0      |0         |0        |0            |0        |0          |324129      |0            |0   |0    |0     |0        |279982           |0             |
++-------+----------+---------+-------------+---------+-----------+------------+-------------+----+-----+------+---------+-----------------+--------------+
 
 ```
 
@@ -169,6 +183,12 @@ It is important to consider what data is really needed for your purpose. Filter 
 
 ````{tabs}
 ```{code-tab} py
+
+mot = (mot.select("vehicle_id", "test_date", "test_mileage", "postcode_area", "make", "model", "colour", "cylinder_capacity"))
+
+results_nas = mot.select([F.count(F.when(F.isnull(c), c)).alias(c) for c in mot.columns])
+
+results_nas.show()
 
 ```
 
@@ -191,6 +211,12 @@ results_nas %>%
 
 ````{tabs}
 ```{code-tab} plaintext Python output
+
++----------+---------+------------+-------------+----+-----+------+-----------------+
+|vehicle_id|test_date|test_mileage|postcode_area|make|model|colour|cylinder_capacity|
++----------+---------+------------+-------------+----+-----+------+-----------------+
+|         0|        0|      324129|            0|   0|    0|     0|           279982|
++----------+---------+------------+-------------+----+-----+------+-----------------+
 
 ```
 
@@ -215,23 +241,34 @@ Now we have identified missing values, one option to deal with them would be to 
 ### Common imputation methods for continuous variables 
 #### Mean or median imputation
 
-Imputing missing values with the mean or the median value for a given variable is a simple way of dealing with missing values in a dataset. In Spark, this type of imputation is easy to achieve using feature transformers. In SparklyR you would use  `ft_imputer` and in Pyspark it would be `Imputer()`.
+Imputing missing values with the mean or the median value for a given variable is a simple way of dealing with missing values in a dataset. In Spark, this type of imputation is easy to achieve using feature transformers. In SparklyR you would use  `ft_imputer()` and in Pyspark it would be `Imputer()`.
 
 Before we impute the missing values, we will do some data manipulation. To simplify the data we will drop the full date and use just the year. We will also encode the missing values - add an indicator column for each variable will be added which be filled with 1 for non-missing values and 0 if a value is missing for a particular record.
 
 ````{tabs}
 ```{code-tab} py
 
+# Prepaing the data for imputation by adding a new column for year_test, dropping test_date 
+# and encoding missing values
+
+results = mot.withColumn("year_test", F.year(F.col("test_date")))
+             .drop("test_date")
+             .withColumn("missing_cyl", F.when(F.col("cylinder_capacity").isNull(), 0).otherwise(1)) \
+             .withColumn("missing_mileage", F.when(F.col("test_mileage").isNull(), 0).otherwise(1))
+
+results.show(10)  
+
 ```
 
 ```{code-tab} r R
 
+# Prepaing the data for imputation by adding a new column for year_test, dropping test_date 
+# and encoding missing values
+
 results <- mot %>%
   mutate(year_test = year(test_date)) %>%
-  # drop date cols
   select(-test_date) %>%
-  # encode missing values
-   mutate(missing_cyl = ifelse(is.na(cylinder_capacity), 0, 1), 
+  mutate(missing_cyl = ifelse(is.na(cylinder_capacity), 0, 1), 
          missing_mileage = ifelse(is.na(test_mileage), 0, 1))
 
 results %>% 
@@ -242,6 +279,22 @@ results %>%
 
 ````{tabs}
 ```{code-tab} plaintext Python output
+
++----------+------------+-------------+------------------+------------+------+-----------------+---------+-----------+---------------+
+|vehicle_id|test_mileage|postcode_area|              make|       model|colour|cylinder_capacity|year_test|missing_cyl|missing_mileage|
++----------+------------+-------------+------------------+------------+------+-----------------+---------+-----------+---------------+
+|1131526890|      129661|           HU|               BMW|         525| BLACK|             2497|     2023|          1|              1|
+| 211522675|       26597|           IV|              FORD|      FIESTA|  BLUE|              998|     2023|          1|              1|
+|1218838379|       11803|           LA|THE EXPLORER GROUP|UNCLASSIFIED| WHITE|             1997|     2023|          1|              1|
+| 159956284|      148187|           BD|              AUDI|          A3| WHITE|             1968|     2023|          1|              1|
+| 851633977|       12915|           PO|             DACIA|      DUSTER|ORANGE|             1330|     2023|          1|              1|
+|1236900649|       22281|           WA|          VAUXHALL|       CORSA|  BLUE|             1398|     2023|          1|              1|
+|1343158317|       30140|           PH|           CITROEN|          C3|  GREY|             1199|     2023|          1|              1|
+|1221072863|       23462|            B|           PEUGEOT|        3008|  GREY|             1500|     2023|          1|              1|
+| 249708845|       26122|            S|               BMW|          X5| WHITE|             2993|     2023|          1|              1|
+| 480476389|       22007|           PA|              FORD|       C-MAX|  BLUE|             1596|     2023|          1|              1|
++----------+------------+-------------+------------------+------------+------+-----------------+---------+-----------+---------------+
+only showing top 10 rows
 
 ```
 
@@ -276,10 +329,31 @@ results %>%
 
 ```
 ````
-Next, we can apply mean imputation by setting the strategy argument to "mean". But first, we need to enforce new column types as double or float so that we can include a mutate statement first to initialise. Note that you could also use "median" as the strategy argument in the below code. 
+Next, we can apply mean imputation by setting the strategy argument to "mean". But first, we need to enforce new column types as doubles or floats, therefore we will include a mutate statement first to initialise. Note that you could also use "median" as the strategy argument in the below code. 
 
 ````{tabs}
 ```{code-tab} py
+
+# Specify columns to impute
+impute_cols = ["cylinder_capacity", "test_mileage"]
+
+# Convert impute columns to  (not essential)
+for col_name in impute_cols:
+    results = results.withColumn(col_name, F.col(col_name).cast("double"))
+
+# Mean imputation over the entire dataset
+imputer = Imputer(
+    inputCols= impute_cols,
+    outputCols=["cyl_imputed", "mileage_imputed"],
+    strategy="mean"
+)
+
+mean_imputed = imputer.fit(results).transform(results)
+
+mean_imputed = mean_imputed.orderBy(["missing_cyl", "missing_mileage"])
+
+mean_imputed.show(5)
+
 
 ```
 
@@ -288,7 +362,7 @@ Next, we can apply mean imputation by setting the strategy argument to "mean". B
 # Specify columns to impute
 impute_cols <-  c("cylinder_capacity", "test_mileage")
 
-# Actually is very quick to do on full dataset
+# Mean imputation over the whole dataset
 mean_imputed <- results %>%
   mutate(across(all_of(impute_cols), ~as.double(.))) %>%
   ft_imputer(input_cols = impute_cols,
@@ -304,6 +378,17 @@ mean_imputed %>%
 
 ````{tabs}
 ```{code-tab} plaintext Python output
+
++----------+------------+-------------+-------------+---------------+------+-----------------+---------+-----------+---------------+-----------------+-----------------+
+|vehicle_id|test_mileage|postcode_area|         make|          model|colour|cylinder_capacity|year_test|missing_cyl|missing_mileage|      cyl_imputed|  mileage_imputed|
++----------+------------+-------------+-------------+---------------+------+-----------------+---------+-----------+---------------+-----------------+-----------------+
+|1172698277|        null|           LS|      PORSCHE|TAYCAN 4S 79KWH|  BLUE|             null|     2023|          0|              0|1694.370506228441|75507.64795274544|
+| 138949409|        null|           WF|      PEUGEOT|        PARTNER| WHITE|             null|     2023|          0|              0|1694.370506228441|75507.64795274544|
+|1142435961|        null|            E|           MG|    5 EXCLUSIVE|SILVER|             null|     2023|          0|              0|1694.370506228441|75507.64795274544|
+| 581858783|        null|           HR|        TESLA|        MODEL S|SILVER|             null|     2023|          0|              0|1694.370506228441|75507.64795274544|
+| 359887434|        null|           LS|MERCEDES-BENZ|       SPRINTER|SILVER|             null|     2023|          0|              0|1694.370506228441|75507.64795274544|
++----------+------------+-------------+-------------+---------------+------+-----------------+---------+-----------+---------------+-----------------+-----------------+
+only showing top 5 rows
 
 ```
 
@@ -337,6 +422,24 @@ In the example below, we will use a window function to calculate the mean missin
 
 ````{tabs}
 ```{code-tab} py
+# Use a window function to generate the grouped means for columns to be imputed
+
+group_window = Window.partitionBy("make", "model")
+
+group_means = results.withColumn("cylinder_capacity_mean", F.mean("cylinder_capacity").over(group_window)) \
+                 .withColumn("test_mileage_mean", F.mean("test_mileage").over(group_window))
+
+# Impute grouped mean values
+group_means_impute = group_means.withColumn(
+    "cylinder_imputed",
+    F.when(F.col("cylinder_capacity").isNull(), F.col("cylinder_capacity_mean")).otherwise(F.col("cylinder_capacity"))
+).withColumn(
+    "mileage_imputed",
+    F.when(F.col("test_mileage").isNull(), F.col("test_mileage_mean")).otherwise(F.col("test_mileage"))
+)
+
+# Preview the output
+group_means_impute.orderBy(["missing_cyl", "missing_mileage"]).show(5)
 
 ```
 
@@ -363,6 +466,16 @@ group_mean_impute %>%
 
 ````{tabs}
 ```{code-tab} plaintext Python output
++----------+------------+-------------+---------+--------------------+------+-----------------+---------+-----------+---------------+----------------------+-----------------+-----------------+-----------------+
+|vehicle_id|test_mileage|postcode_area|     make|               model|colour|cylinder_capacity|year_test|missing_cyl|missing_mileage|cylinder_capacity_mean|test_mileage_mean| cylinder_imputed|  mileage_imputed|
++----------+------------+-------------+---------+--------------------+------+-----------------+---------+-----------+---------------+----------------------+-----------------+-----------------+-----------------+
+| 256443157|        null|           NE|     FORD|MUSTANG MACH-E ST...| WHITE|             null|     2023|          0|              0|                  null|         20485.25|             null|         20485.25|
+| 966488781|        null|           TA|    YADEA|             HARRIER| BLACK|             null|     2023|          0|              0|                  null|             null|             null|             null|
+| 662016819|        null|           SP|     MINI|COOPER S ELECTRIC...|  BLUE|             null|     2023|          0|              0|                  null|7529.333333333333|             null|7529.333333333333|
+| 315465802|        null|            B|WINNEBAGO|               BRAVE| WHITE|             null|     2023|          0|              0|     6671.428571428572|67912.29411764706|6671.428571428572|67912.29411764706|
+| 703102459|        null|           HU|    YADEA|             HARRIER| BLACK|             null|     2023|          0|              0|                  null|             null|             null|             null|
++----------+------------+-------------+---------+--------------------+------+-----------------+---------+-----------+---------------+----------------------+-----------------+-----------------+-----------------+
+only showing top 5 rows
 
 ```
 
