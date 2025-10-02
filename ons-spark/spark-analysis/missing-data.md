@@ -502,7 +502,7 @@ $ mileage_imputed        <dbl> NA, 110413.590, 32373.737, 18902.268, 89109.871â€
 
 ```
 ````
-It is also possible to impute the median value for a group (using percentile_approx() - please see [median guidance](https://best-practice-and-impact.github.io/ons-spark/spark-functions/median.html?highlight=median)), although it cannot be done as simply as the mean. 
+It is also possible to impute the median value for a group using `percentile_approx()` in SparklyR or `.approxQuantile()` or `percent_rank()` in Pyspark (please see [median guidance](https://best-practice-and-impact.github.io/ons-spark/spark-functions/median.html?highlight=median)). Note that this cannot be done as simply as the mean. 
 
 In SparklyR, percentile_approx() is only supported as an aggregation function (i.e. to be used within summarise) as opposed to a window function (which can be used with mutate()).
 Therefore, we need to use summarise and percentile_approx() to generate a new dataframe of median values to impute and then perform a left_join to bind this to the original dataframe. 
@@ -880,7 +880,9 @@ An alternative popular approach would be to use a clustering based imputation me
 
 Back to our correlations...
 
-If we wanted to verify this on the larger dataset in Spark, we could use this information to simplify and encode our categorical data (eg. group car makes into electric and not electric) and then apply ml_corr. It still takes a little bit of extra effort to tidy this into an easily readable format (adding the term column):
+If we wanted to verify this on the larger dataset in Spark, we could use this information to simplify and encode our categorical data (eg. group fuel types into electric and not electric) and then apply ml_corr. It still takes a little bit of extra effort to tidy this into an easily readable format (adding the term column): 
+
+NOTE I HAVENT GOT FUEL TYPES IN MY DATAFRAME SO TEXT AND CODE NEEDS EDITING, IS THERE A SENSIBLE EXAMPLE IN THE DATA I HAVE GOT
 
 
 ````{tabs}
