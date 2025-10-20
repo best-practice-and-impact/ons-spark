@@ -502,12 +502,11 @@ $ mileage_imputed        <dbl> NA, 110413.590, 32373.737, 18902.268, 89109.871â€
 
 ```
 ````
-It is also possible to impute the median value for a group using `percentile_approx()` in SparklyR or `.approxQuantile()` or `percent_rank()` in Pyspark (please see [median guidance](https://best-practice-and-impact.github.io/ons-spark/spark-functions/median.html?highlight=median)). Note that this cannot be done as simply as the mean. 
+It is also possible to impute the median value for a group using `percentile_approx()` in SparklyR or `.approxQuantile()` or `percent_rank()` in Pyspark (please see [median guidance](https://best-practice-and-impact.github.io/ons-spark/spark-functions/median.html?highlight=median)). Note that this cannot be done as simply as the mean and outputs are an approximation.
 
-In SparklyR, percentile_approx() is only supported as an aggregation function (i.e. to be used within summarise) as opposed to a window function (which can be used with mutate()).
-Therefore, we need to use summarise and percentile_approx() to generate a new dataframe of median values to impute and then perform a left_join to bind this to the original dataframe. 
+In SparklyR, percentile_approx() is only supported as an aggregation function (i.e. to be used within summarise) as opposed to a window function (which can be used with mutate()). Therefore, we need to use summarise and percentile_approx() to generate a new dataframe of median values to impute and then perform a left_join to bind this to the original dataframe. 
 
-Note that joins are computationally expensive (link to guidance), so the method below should be avoided if you have many different groups in your data (i.e., if the group_medians dataframe has many rows). Taking as small a sample as possible may help with this (link to sampling page once published).
+Note that [joins](https://best-practice-and-impact.github.io/ons-spark/spark-concepts/join-concepts.html) are computationally expensive, so the method below should be avoided if you have many different groups in your data (i.e., if the group_medians dataframe has many rows). Taking as small a sample as possible may help with this (link to sampling page once published).
 
 ````{tabs}
 ```{code-tab} py
