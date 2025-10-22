@@ -422,6 +422,9 @@ In the example below, we will use a window function to calculate the mean missin
 
 ````{tabs}
 ```{code-tab} py
+
+impute_cols = ["cylinder_capacity", "test_mileage"]
+
 # Use a window function to generate the grouped means for columns to be imputed
 
 group_window = Window.partitionBy("make", "model")
@@ -445,10 +448,12 @@ group_means_impute.orderBy(["missing_cyl", "missing_mileage"]).show(5)
 
 ```{code-tab} r R
 
+impute_cols <-  c("cylinder_capacity", "test_mileage")
+
 # Use a window function to generate the grouped means for columns to be imputed
 group_means <- results %>%
   group_by(make, model) %>%
-  mutate(across(impute_cols , ~mean(.), .names = "{.col}_mean")) %>%
+  mutate(across(all_of(impute_cols), ~mean(.), .names = "{.col}_mean")) %>%
   ungroup()
 
 # Impute grouped mean values
@@ -511,6 +516,8 @@ Note that [joins](https://best-practice-and-impact.github.io/ons-spark/spark-con
 ````{tabs}
 ```{code-tab} py
 
+impute_cols = ["cylinder_capacity", "test_mileage"]
+
 # Create the expression for the aggregation
 exprs = [
     F.expr(f'percentile_approx({col}, 0.5)').alias(f'{col}_median')
@@ -539,6 +546,8 @@ group_medians_impute.orderBy(["missing_cyl", "missing_mileage"]).show(5)
 ```
 
 ```{code-tab} r R
+
+impute_cols <-  c("cylinder_capacity", "test_mileage")
 
 # Apply the grouping and aggregation functions
 group_medians <- results %>%
