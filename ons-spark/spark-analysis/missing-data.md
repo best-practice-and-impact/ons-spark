@@ -502,27 +502,55 @@ $ mileage_imputed        <dbl> NA, 110413.590, 32373.737, 18902.268, 89109.871â€
 
 ```
 ````
-It is also possible to impute the median value for a group using `percentile_approx()` in SparklyR or `.approxQuantile()` or `percent_rank()` in Pyspark (please see [median guidance](https://best-practice-and-impact.github.io/ons-spark/spark-functions/median.html?highlight=median)). Note that this cannot be done as simply as the mean and outputs are an approximation.
+It is also possible to impute the median value for a group using `percentile_approx()` in SparklyR and in Pyspark (please see [median guidance](https://best-practice-and-impact.github.io/ons-spark/spark-functions/median.html?highlight=median)). Note that this cannot be done as simply as the mean and outputs are an approximation.
 
-In SparklyR, percentile_approx() is only supported as an aggregation function (i.e. to be used within summarise) as opposed to a window function (which can be used with mutate()). Therefore, we need to use summarise and percentile_approx() to generate a new dataframe of median values to impute and then perform a left_join to bind this to the original dataframe. 
+ Percentile_approx() is only supported as an aggregation function as opposed to a window function. Therefore, we need to use an aggregation function (in SparklyR `summarise()` is used for this) and `percentile_approx()` to generate a new dataframe of median values. These values are then used for imputation and then you perform a left_join to bind the imputed values to the original dataframe. 
 
 Note that [joins](https://best-practice-and-impact.github.io/ons-spark/spark-concepts/join-concepts.html) are computationally expensive, so the method below should be avoided if you have many different groups in your data (i.e., if the group_medians dataframe has many rows). Taking as small a sample as possible may help with this (link to sampling page once published).
 
 ````{tabs}
 ```{code-tab} py
 
+# Create the expression for the aggregation
+exprs = [
+    F.expr(f'percentile_approx({col}, 0.5)').alias(f'{col}_median')
+    for col in impute_cols
+]
+
+# Apply the grouping and aggregation functions
+group_medians = results.groupBy("make", "model").agg(*exprs)
+
+# Impute missing values using the group_medians and execute a left join
+group_medians_impute = results.join(group_medians, on=["make", "model"], how = "left")
+
+group_medians_impute = group_medians_impute.withColumn(
+    "cylinder_imputed",
+    F.when(F.col("cylinder_capacity").isNull(), F.col("cylinder_capacity_median"))
+     .otherwise(F.col("cylinder_capacity"))
+).withColumn(
+    "mileage_imputed",
+    F.when(F.col("test_mileage").isNull(), F.col("test_mileage_median"))
+     .otherwise(F.col("test_mileage"))
+)
+
+# View the new dataframe
+group_medians_impute.orderBy(["missing_cyl", "missing_mileage"]).show(5)
+
 ```
 
 ```{code-tab} r R
 
+# Apply the grouping and aggregation functions
 group_medians <- results %>%
   group_by(make, model) %>%
   summarise(across(impute_cols, ~percentile_approx(., 0.5), .names = "{.col}_median")) 
 
+# Impute missing values using the group_medians and execute a left join
 group_median_impute <- left_join(results, group_medians, by = c("make", "model")) %>%
   mutate(cylinder_imputed = ifelse(is.na(cylinder_capacity), (cylinder_capacity_median), cylinder_capacity),
          mileage_imputed = ifelse(is.na(test_mileage), test_mileage_median, test_mileage))
-         
+
+# View the new dataframe
 group_median_impute %>% 
   arrange(missing_cyl, missing_mileage) %>%
   glimpse()
