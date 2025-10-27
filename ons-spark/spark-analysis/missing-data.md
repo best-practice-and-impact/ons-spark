@@ -772,13 +772,16 @@ For demonstration purposes, we will take a quick sample of the 'results' datafra
 ```
 
 ```{code-tab} r R
+# Load in required R packages 
+library(corrr)
+library(mltools)
 
 # Take a sample and collect the output into R
-
 sample <- results %>% sparklyr::sdf_sample(fraction=0.001, replacement=FALSE, seed = 99)
 
 sample %>% count()
 
+# Collect and preview the sample
 results_r <- sample %>% 
                     collect()
 
@@ -822,13 +825,15 @@ Then correlation test can be run using the correlate() function (set use argumen
 
 ```{code-tab} r R
 
+# Remove unecessary columns and change format of columns where required
 results_r_ohe <- results_r %>%
-    select(-vehicle_id, -model) %>%
-    mutate(across(where(is.character), ~as.factor(.))) %>%
-    mutate(year_test = as.Date(year_test))
+    select(-vehicle_id, -model, -year_test) %>%
+    mutate(across(where(is.character), ~as.factor(.)))
 
+# Apply one hot encoder
 results_ohe <- mltools::one_hot(data.table::as.data.table(results_r_ohe))
 
+# Apply the correlation test and preview the output
 corr_test <- results_ohe %>% 
   corrr::correlate(use = "everything") 
   
@@ -844,7 +849,7 @@ corr_test %>% print()
 
 ```{code-tab} plaintext R output
 
-A tibble: 345 × 346
+# A tibble: 344 × 345
    term           test_mileage postcode_area_AB postcode_area_AL postcode_area_B
    <chr>                 <dbl>            <dbl>            <dbl>           <dbl>
  1 test_mileage             NA         NA               NA               NA     
@@ -857,8 +862,8 @@ A tibble: 345 × 346
  8 postcode_area…           NA         -0.00963         -0.00627         -0.0179
  9 postcode_area…           NA         -0.00815         -0.00530         -0.0152
 10 postcode_area…           NA         -0.0106          -0.00689         -0.0197
-# ℹ 335 more rows
-# ℹ 341 more variables: postcode_area_BA <dbl>, postcode_area_BB <dbl>,
+# ℹ 334 more rows
+# ℹ 340 more variables: postcode_area_BA <dbl>, postcode_area_BB <dbl>,
 #   postcode_area_BD <dbl>, postcode_area_BH <dbl>, postcode_area_BL <dbl>,
 #   postcode_area_BN <dbl>, postcode_area_BR <dbl>, postcode_area_BS <dbl>,
 #   postcode_area_CA <dbl>, postcode_area_CB <dbl>, postcode_area_CF <dbl>,
@@ -906,7 +911,7 @@ PYTHON BITS NEED ADDING HERE:
 
 This narrows things down a bit. From the results of the strong correlation test we can see that make_POLESTAR and make_TESLA results are less likely to have cylinder capacity recorded. This makes intuitive sense as both POLESTAR and TESLA are makes of electric car which would not have cylinders! In this case, it would not make sense to impute and therefore it would be reasonable to set cylinder capacity to 0.
 
-On the other hand, there is also correlation with missing_mileage for both car makes. This suggests that we can't really assume that mileage variables are missing at random, so we might want to use an imputation method which accounts for the dependence, such as a regression imputation.
+On the other hand, there is also a correlation with missing_mileage for both car makes. This suggests that we can't really assume that mileage variables are missing at random, so we might want to use an imputation method which accounts for the dependence, such as a regression imputation.
 
 This involves using the remaining variables to predict the value of a missing variable. A regression model could be built to do this if necessary by following the guidance outlined in [Logistic Regression](https://best-practice-and-impact.github.io/ons-spark/spark-analysis/logistic-regression.html?highlight=logistic) and using the default arguments for family and link ("gaussian" and NULL).
 
