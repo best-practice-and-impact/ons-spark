@@ -195,11 +195,11 @@ results_nas.show()
 ```{code-tab} r R
 
 # Select for certain columns and correct data types
-cleaned_results <- mot %>%
+mot <- mot %>%
     sparklyr::select(vehicle_id, test_date, test_mileage, postcode_area, make, model, colour, cylinder_capacity) %>%
     dplyr::mutate(test_date = as.date(test_date))
 
-results_nas <- cleaned_results %>%
+results_nas <- mot %>%
   dplyr::summarise_all(~sum(as.integer(is.na(.))))
 
 # Check the NA data again
@@ -248,7 +248,7 @@ Before we impute the missing values, we will do some data manipulation. To simpl
 ````{tabs}
 ```{code-tab} py
 
-# Prepaing the data for imputation by adding a new column for year_test, dropping test_date 
+# Preparing the data for imputation by adding a new column for year_test, dropping test_date 
 # and encoding missing values
 
 results = mot.withColumn("year_test", F.year(F.col("test_date")))
@@ -262,7 +262,7 @@ results.show(10)
 
 ```{code-tab} r R
 
-# Prepaing the data for imputation by adding a new column for year_test, dropping test_date 
+# Preparing the data for imputation by adding a new column for year_test, dropping test_date 
 # and encoding missing values
 
 results <- mot %>%
@@ -329,7 +329,7 @@ only showing top 10 rows
 
 ```
 ````
-Next, we can apply mean imputation by setting the strategy argument to "mean". But first, we need to enforce new column types as doubles or floats, therefore we will include a mutate statement first to initialise. Note that you could also use "median" as the strategy argument in the below code. 
+Next, we can apply mean imputation by setting the strategy argument to "mean". But first, we need to enforce new column types as doubles or floats, therefore we will include a mutate statement first to initialise. Note that you could also use "median" as the strategy argument in the below code. Note that to make the data output neater and easier to follow we are only selecting to show certain columns. 
 
 ````{tabs}
 ```{code-tab} py
@@ -337,7 +337,7 @@ Next, we can apply mean imputation by setting the strategy argument to "mean". B
 # Specify columns to impute
 impute_cols = ["cylinder_capacity", "test_mileage"]
 
-# Convert impute columns to  (not essential)
+# Convert impute columns
 for col_name in impute_cols:
     results = results.withColumn(col_name, F.col(col_name).cast("double"))
 
@@ -362,14 +362,14 @@ mean_imputed.show(5)
 # Specify columns to impute
 impute_cols <-  c("cylinder_capacity", "test_mileage")
 
-# Mean imputation over the whole dataset
+# Convert impute columns and mean imputation over the whole dataset
 mean_imputed <- results %>%
   mutate(across(all_of(impute_cols), ~as.double(.))) %>%
   ft_imputer(input_cols = impute_cols,
              output_cols = c("cyl_imputed", "mileage_imputed"), 
              strategy = "mean")
 
-mean_imputed %>% 
+mean_imputed %>% select (-postcode_area, -make, -model, -colour) %>%
   arrange(missing_cyl, missing_mileage) %>% 
   glimpse()
 
@@ -395,15 +395,11 @@ only showing top 5 rows
 ```{code-tab} plaintext R output
 
 Rows: ??
-Columns: 12
+Columns: 8
 Database: spark_connection
 Ordered by: missing_cyl, missing_mileage
-$ vehicle_id        <int> 1025464220, 347027954, 145727633, 250280838, 9537842…
+$ vehicle_id        <int> 172516075, 1395302789, 415824769, 315465802, 2403496…
 $ test_mileage      <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
-$ postcode_area     <chr> "E", "B", "G", "CH", "TN", "SN", "ME", "KT", "W", "W…
-$ make              <chr> "TOYOTA", "HUMMER", "RENAULT", "FORD", "S5 E2", "TES…
-$ model             <chr> "PRIUS", "UNCLASSIFIED", "KANGOO", "TRANSIT", "UNCLA…
-$ colour            <chr> "SILVER", "WHITE", "WHITE", "WHITE", "GREY", "BLUE",…
 $ cylinder_capacity <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
 $ year_test         <int> 2023, 2023, 2023, 2023, 2023, 2023, 2023, 2023, 2023…
 $ missing_cyl       <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
@@ -416,9 +412,9 @@ $ mileage_imputed   <dbl> 75507.65, 75507.65, 75507.65, 75507.65, 75507.65, 75�
 
 #### Group imputation 
 
-It might sometimes make sense to group records by their common features before imputing missing values with the mean or median value. For example, we might expect that cars in our dataset with the same make model would have more similar features (such as cylinder capacity) to one another than to other cars in the dataset. For this type of imputation, we cannot use the feature transformers and instead have to take the mean/median of the data ourselves once it has been grouped accordingly.
+It might sometimes make sense to group records by their common features before imputing missing values with the mean or median value. For example, we might expect that cars in our dataset with the same make and model would have similar features, such as cylinder capacity. For group imputation we cannot use the feature transformers implemented above and instead have to take the mean/median of the data ourselves after grouping has been done..
 
-In the example below, we will use a window function to calculate the mean missing values for the data grouped by make and model.
+In the example below, we will use a window function to calculate mean values grouped on make and model. This will then be used to impute missing values in the overall dataframe.
 
 ````{tabs}
 ```{code-tab} py
@@ -463,7 +459,8 @@ group_mean_impute <- group_means %>%
 
 # Preview the output         
 group_mean_impute %>% 
-  arrange(missing_cyl, missing_mileage) %>%
+  select (-postcode_area, -make, -model, -colour) %>%
+  arrange(missing_cyl, missing_mileage, vehicle_id) %>% 
   glimpse()
 
 ```
@@ -487,23 +484,19 @@ only showing top 5 rows
 ```{code-tab} plaintext R output
 
 Rows: ??
-Columns: 14
+Columns: 10
 Database: spark_connection
-Ordered by: missing_cyl, missing_mileage
-$ vehicle_id             <int> 497753562, 753286372, 1293170531, 681959931, 21…
+Ordered by: missing_cyl, missing_mileage, vehicle_id
+$ vehicle_id             <int> 2106035, 2241065, 2519037, 2613217, 3128811, 38…
 $ test_mileage           <int> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-$ postcode_area          <chr> "SK", "N", "NW", "CT", "SN", "NW", "NP", "DN", …
-$ make                   <chr> "LEYLAND DAF", "CHRYSLER", "MG", "VAUXHALL", "H…
-$ model                  <chr> "4X4", "300 C", "5 EXCLUSIVE", "VIVARO-E 3100 D…
-$ colour                 <chr> "GREEN", "GREY", "SILVER", "BLUE", "WHITE", "SI…
 $ cylinder_capacity      <int> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 $ year_test              <int> 2023, 2023, 2023, 2023, 2023, 2023, 2023, 2023,…
 $ missing_cyl            <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
 $ missing_mileage        <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
-$ cylinder_capacity_mean <dbl> NA, 3424.638, NA, NA, 2565.170, NA, 3453.359, N…
-$ test_mileage_mean      <dbl> NA, 110413.590, 32373.737, 18902.268, 89109.871…
-$ cylinder_imputed       <dbl> NA, 3424.638, NA, NA, 2565.170, NA, 3453.359, N…
-$ mileage_imputed        <dbl> NA, 110413.590, 32373.737, 18902.268, 89109.871…
+$ cylinder_capacity_mean <dbl> 0.00000, NA, 634.35595, 21.09580, NA, NA, NA, N…
+$ test_mileage_mean      <dbl> 31644.694, 28954.636, 36485.393, 44618.871, NA,…
+$ cylinder_imputed       <dbl> 0.00000, NA, 634.35595, 21.09580, NA, NA, NA, N…
+$ mileage_imputed        <dbl> 31644.694, 28954.636, 36485.393, 44618.871, NA,…
 
 ```
 ````
@@ -561,7 +554,8 @@ group_median_impute <- left_join(results, group_medians, by = c("make", "model")
 
 # View the new dataframe
 group_median_impute %>% 
-  arrange(missing_cyl, missing_mileage) %>%
+  select (-postcode_area, -make, -model, -colour) %>%
+  arrange(missing_cyl, missing_mileage, vehicle_id) %>%
   glimpse()
 
 ```
@@ -575,34 +569,29 @@ group_median_impute %>%
 ```{code-tab} plaintext R output
 
 Rows: ??
-Columns: 14
+Columns: 10
 Database: spark_connection
-Ordered by: missing_cyl, missing_mileage
-$ vehicle_id               <int> 1041526103, 680456344, 618950011, 1186928579,…
+Ordered by: missing_cyl, missing_mileage, vehicle_id
+$ vehicle_id               <int> 2106035, 2241065, 2519037, 2613217, 3128811, …
 $ test_mileage             <int> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-$ postcode_area            <chr> "TN", "SW", "S", "BS", "CT", "GU", "GU", "MK"…
-$ make                     <chr> "MINI", "PEUGEOT", "MINI", "MINI", "MINI", "M…
-$ model                    <chr> "COOPER S ELECTRIC LEVEL 2", "PEUGEOT", "COOP…
-$ colour                   <chr> "SILVER", "WHITE", "SILVER", "SILVER", "BLACK…
 $ cylinder_capacity        <int> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
 $ year_test                <int> 2023, 2023, 2023, 2023, 2023, 2023, 2023, 202…
 $ missing_cyl              <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
 $ missing_mileage          <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ cylinder_capacity_median <int> NA, 1749, NA, NA, NA, NA, 2199, NA, NA, 2499,…
-$ test_mileage_median      <int> 15150, 46995, 15150, 15150, 15150, 15150, 105…
-$ cylinder_imputed         <int> NA, 1749, NA, NA, NA, NA, 2199, NA, NA, 2499,…
-$ mileage_imputed          <int> 15150, 46995, 15150, 15150, 15150, 15150, 105…
-
+$ cylinder_capacity_median <int> 0, NA, 647, 0, NA, NA, NA, NA, NA, NA, 1590, …
+$ test_mileage_median      <int> 29269, 25271, 30835, 40095, NA, 29830, 29300,…
+$ cylinder_imputed         <int> 0, NA, 647, 0, NA, NA, NA, NA, NA, NA, 1590, …
+$ mileage_imputed          <int> 29269, 25271, 30835, 40095, NA, 29830, 29300,…
 ```
 ````
 
 #### Last observation carried forward (LOCF) and next observation carried backward (NOCB)
 
-For time series data, a simple imputation method for missing values is to use the most recently observed value (LOCF) or next observed value (NOCB) for a particular subject.
+For time series data, a simple imputation method for missing values is to use the last observed value carried forward (LOCF) or the next observed value carried backwards (NOCB).
 
 In SparklyR, this can be achieved by applying the fill() function across a window function which groups the unique subject id in the dataset, in this case `vehicle_id`. We also need to order the window by date (`year_test` here) using window_order() from the dbplyr package. Fill direction can be specified as "down" (last value), "up" (next value), or "downup"/"updown" (last value if available, or next value if it is not and vice versa).
 
-In this example we have set the direction to "downup" so we are applying LOCF first, followed by NOCB if a given value is still missing.
+In this example we have set the direction to "downup" so we are applying LOCF first, you can follow this by NOCB if value are still missing.
 
 ````{tabs}
 ```{code-tab} py
@@ -611,7 +600,7 @@ In this example we have set the direction to "downup" so we are applying LOCF fi
 
 ```{code-tab} r R
 
-# Apply LOCF followed by NOCB across columns to be imputed
+# Apply LOCF across columns to be imputed
 impute_lcf <- results %>%
   group_by(vehicle_id) %>%
   dbplyr::window_order(year_test) %>%
@@ -650,15 +639,14 @@ results_nas %>%
 
 ```
 ````
-We can see that this imputation method applied to our MOT dataset has only really been useful for the test_mileage column, where we have reduced the number of missing values from 324129 to 110072. The cylinder capacity has not changed at all. 
+We can see that applying the LOCF imputation method to our MOT dataset has only really been useful for the test_mileage column, where we have reduced the number of missing values from 324129 to 110073. The cylinder capacity has not changed at all. Using the NOCB method had the same outcome. 
 
 An alternative approach that may be more reasonable in this case to impute missing mileage values for a given vehicle between test years would be to interpolate test_mileage. Please refer to the guidance on [Interpolation in Spark](https://best-practice-and-impact.github.io/ons-spark/spark-analysis/interpolation.html?highlight=interpolation) in another section of the book. 
 
 ### Imputation for categorical variables 
-
 #### Imputations by most frequent category (mode imputation)
 
-A `mode()` function in SparklyR is a new addition for Spark 3.4. But for this example, we will employ `group_by()`, `count()` and `select()` to get the category with the highest count. This category will the be used for imputation. 
+A `mode()` function in SparklyR is a new addition for Spark 3.4. But for this example, we will employ `group_by()`, `count()` and `select()` to get the category with the highest count. This category will the be used for imputation of any missing values in a specificied column. In this example we will first look at car `make` followed by `model`.
 
 
 ````{tabs}
@@ -676,9 +664,13 @@ make_mode <- results %>%
   pull(make)
 
 # Impute 1 unknown make value
-mode_imputed <- results %>%
-  mutate(make_missing = ifelse(make %in% c("UNCLASSIFIED", "unknown"), 0, 1)) %>%
+make_mode <- results %>%
+  mutate(make_missing = ifelse(make %in% c("UNCLASSIFIED", "(UNCLASSIFIED)", "unknown", "."), 0, 1)) %>%
   mutate(make_imputed = ifelse(make_missing ==0, make_mode, make)) 
+
+# Preview dataframe
+make_mode_imputed %>% select(-test_mileage, -postcode_area, -colour, -cylinder_capacity) %>%
+  arrange(make, model) %>% print(width = Inf)
 
 ```
 ````
@@ -693,7 +685,7 @@ mode_imputed <- results %>%
 ```
 ````
 
-From the results we can see that there are still some 'unclassified' and 'unknown' data in the model column. 
+From the results we can see that there are some 'unclassified' and 'unknown' data in the `model` column. 
 
 ````{tabs}
 ```{code-tab} py
@@ -702,21 +694,24 @@ From the results we can see that there are still some 'unclassified' and 'unknow
 
 ```{code-tab} r R
 
-```{code-tab} r R
-model_mode <- results %>%
+model_mode <- results %>% 
    filter(
-     !model %in% c("UNCLASSIFIED", "unknown")) %>%
+     !model %in% c("UNCLASSIFIED","(UNCLASSIFIED)", "unknown", ".")) %>%
    group_by(make, model) %>%
-   summarise(count = n()) %>%
+   summarise(count = n(), .groups = "drop_last") %>% #this ensure that top model per mark is selected
    slice_max(order_by = count) %>%
    select(make,
           model_mode = model)
    
-
-model_imputed <- mode_imputed %>%
+model_mode_imputed <- make_mode_imputed %>%
   mutate(model_missing = ifelse(model %in% c("UNCLASSIFIED", "unknown"), 0, 1)) %>%
   left_join(model_mode, by = c("make_imputed" = "make")) %>%
   mutate(model_imputed = ifelse(model_missing == 0, model_mode, model))
+
+model_mode_imputed %>% select(-test_mileage, -postcode_area, -colour, -cylinder_capacity, -missing_cyl, -missing_mileage) %>%
+  arrange(make, model, vehicle_id) %>% print(width = Inf)
+
+
 ```
 ````
 
@@ -727,44 +722,34 @@ model_imputed <- mode_imputed %>%
 
 ```{code-tab} plaintext R output
 
-# Source:   SQL [?? x 15]
-# Database: spark_connection
-   vehicle_id test_mileage postcode_area make               model        colour
-        <int>        <int> <chr>         <chr>              <chr>        <chr> 
- 1  851633977        12915 PO            DACIA              DUSTER       ORANGE
- 2 1343158317        30140 PH            CITROEN            C3           GREY  
- 3  884826478        85596 DD            BENTLEY            BROOKLANDS   GREEN 
- 4  211522675        26597 IV            FORD               FIESTA       BLUE  
- 5  159956284       148187 BD            AUDI               A3           WHITE 
- 6  480476389        22007 PA            FORD               C-MAX        BLUE  
- 7 1218838379        11803 LA            THE EXPLORER GROUP UNCLASSIFIED WHITE 
- 8 1221072863        23462 B             PEUGEOT            3008         GREY  
- 9 1236900649        22281 WA            VAUXHALL           CORSA        BLUE  
-10 1131526890       129661 HU            BMW                525          BLACK 
-   cylinder_capacity year_test missing_cyl missing_mileage make_missing
-               <int>     <int>       <dbl>           <dbl>        <dbl>
- 1              1330      2023           1               1            1
- 2              1199      2023           1               1            1
- 3              6750      2023           1               1            1
- 4               998      2023           1               1            1
- 5              1968      2023           1               1            1
- 6              1596      2023           1               1            1
- 7              1997      2023           1               1            1
- 8              1500      2023           1               1            1
- 9              1398      2023           1               1            1
-10              2497      2023           1               1            1
-   make_imputed       model_missing model_mode    model_imputed
-   <chr>                      <dbl> <chr>         <chr>        
- 1 DACIA                          1 SANDERO       DUSTER       
- 2 CITROEN                        1 C3            C3           
- 3 BENTLEY                        1 CONTINENTAL   BROOKLANDS   
- 4 FORD                           1 FIESTA        FIESTA       
- 5 AUDI                           1 A3            A3           
- 6 FORD                           1 FIESTA        C-MAX        
- 7 THE EXPLORER GROUP             0 MOTOR CARAVAN MOTOR CARAVAN
- 8 PEUGEOT                        1 208           3008         
- 9 VAUXHALL                       1 CORSA         CORSA        
-10 BMW                            1 3 SERIES      525    
+# Source:     SQL [?? x 9]
+# Database:   spark_connection
+# Ordered by: make, model, vehicle_id
+   vehicle_id make           model        year_test make_missing make_imputed
+        <int> <chr>          <chr>            <int>        <dbl> <chr>       
+ 1  426859900 (UNCLASSIFIED) UNCLASSIFIED      2023            0 FORD        
+ 2  360707502 .              UNCLASSIFIED      2023            0 FORD        
+ 3  337781128 .CATERHAMC     UNCLASSIFIED      2023            1 .CATERHAMC  
+ 4  693130085 10 TEN         125 RX            2023            1 10 TEN      
+ 5 1397120868 10/4 AUSTIN    10                2023            1 10/4 AUSTIN 
+ 6 1410376411 10TEN          125R              2023            1 10TEN       
+ 7 1410376411 10TEN          125R              2023            1 10TEN       
+ 8  269504085 10TEN          RX                2023            1 10TEN       
+ 9  269504085 10TEN          RX                2023            1 10TEN       
+10 1206781297 10TEN 250RX    RX                2023            1 10TEN 250RX 
+   model_missing model_mode model_imputed
+           <dbl> <chr>      <chr>        
+ 1             0 FIESTA     FIESTA       
+ 2             0 FIESTA     FIESTA       
+ 3             0 NA         NA           
+ 4             1 125 RX     125 RX       
+ 5             1 10         10           
+ 6             1 RX         125R         
+ 7             1 125R       125R         
+ 8             1 RX         RX           
+ 9             1 125R       RX           
+10             1 RX         RX           
+# ℹ more rows
 
 ```
 ````
@@ -778,7 +763,7 @@ Correlation tests on big data, particularly if there are many columns and differ
 
 A solution to both of these problems is to take a small enough sample of your data initially so that you can bring it into local memory and carry out correlation tests in python/R rather than PySpark/SparklyR (see Sampling page (needs to be published to link)). This is generally much faster and more user friendly, while reducing the computational resource required to do the same analysis on the full dataset. This can help identify general trends in missing values in the data that can be confirmed on a simplified version of the larger dataset later if necessary.
 
-For demonstration purposes, we will take a quick sample of our test_result dataset and execute correlation tests. If the data you are working with is sufficiently small ( < 10 millions rows) then you can bring the data into local memory using `collect()`. As numeric missing values have already been encoded in the set up stage for imputation this does not need to carrying this out again.
+For demonstration purposes, we will take a quick sample of the 'results' dataframe and execute correlation tests. If the data you are working with is sufficiently small ( < 10 millions rows) then you can bring the data into local memory using `collect()`. Missing values for cylinder_capcity and test_mileage have already been encoded in the set up stage for imputation so this does not need to be done again.
 
 
 ````{tabs}
@@ -797,6 +782,8 @@ sample %>% count()
 results_r <- sample %>% 
                     collect()
 
+results_r %>% pillar::glimpse()
+
 ```
 ````
 
@@ -807,13 +794,24 @@ results_r <- sample %>%
 
 ```{code-tab} plaintext R output
 
-42138
+Rows: 42,138
+Columns: 10
+$ vehicle_id        <int> 958610381, 783133891, 1345968522, 431373591, 9856010…
+$ test_mileage      <int> 29743, 55347, 73709, 19988, 11681, 46999, 11534, 541…
+$ postcode_area     <chr> "YO", "NG", "DH", "CR", "BA", "G", "PL", "AB", "TS",…
+$ make              <chr> "VOLKSWAGEN", "FORD", "VOLVO", "KIA", "TOYOTA", "REN…
+$ model             <chr> "GOLF", "FIESTA", "S40", "SPORTAGE", "YARIS", "KADJA…
+$ colour            <chr> "BLUE", "WHITE", "GREY", "WHITE", "RED", "GREY", "BL…
+$ cylinder_capacity <int> 1498, 998, 1560, 1591, 1496, 1198, 1130, 2993, 1390,…
+$ year_test         <int> 2023, 2023, 2023, 2023, 2023, 2023, 2023, 2023, 2023…
+$ missing_cyl       <dbl> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+$ missing_mileage   <dbl> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
 
 ```
 ````
 NEED TO EDIT THIS AND ADD PYTHON BITS:
-We can now use regular R packages because we don't need to worry about support for Spark dataframes.
-Load the corrr library for correlation tests and mltools for one hot encoding
+Now that we have a small enough sample We can use regular R packages. 
+Load the corrr library for correlation tests and mltools for one hot encoding (ohe).
 Can then one hot encode categorical variables using the one_hot() function. These need to be converted into a factor first.
 Then correlation test can be run using the correlate() function (set use argument to "everything" so it does not drop cases with missing values):
 
