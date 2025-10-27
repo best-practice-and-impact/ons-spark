@@ -605,7 +605,9 @@ For time series data, a simple imputation method for missing values is to use th
 
 In SparklyR, this can be achieved by applying the fill() function across a window function which groups the unique subject id in the dataset, in this case `vehicle_id`. We also need to order the window by time (`month_test` here) using window_order() from the dbplyr package. Fill direction can be specified as "down" (last value), "up" (next value), or "downup"/"updown" (last value if available, or next value if it is not and vice versa).
 
-In this example we have set the direction to "downup" so we are applying LOCF first, you can follow this by NOCB if value are still missing.
+In Python ....ADD CONTENT
+
+In this example we have set the direction to "downup" so we are applying LOCF first, you can follow this by NOCB if values are still missing.
 
 ````{tabs}
 ```{code-tab} py
