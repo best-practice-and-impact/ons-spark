@@ -248,10 +248,10 @@ Before we impute the missing values, we will do some data manipulation. To simpl
 ````{tabs}
 ```{code-tab} py
 
-# Preparing the data for imputation by adding a new column for year_test, dropping test_date 
+# Preparing the data for imputation by adding a new column for month_test, dropping test_date 
 # and encoding missing values
 
-results = mot.withColumn("year_test", F.year(F.col("test_date")))
+results = mot.withColumn("month_test", F.month(F.col("test_date")))
              .drop("test_date")
              .withColumn("missing_cyl", F.when(F.col("cylinder_capacity").isNull(), 0).otherwise(1)) \
              .withColumn("missing_mileage", F.when(F.col("test_mileage").isNull(), 0).otherwise(1))
@@ -262,11 +262,11 @@ results.show(10)
 
 ```{code-tab} r R
 
-# Preparing the data for imputation by adding a new column for year_test, dropping test_date 
+# Preparing the data for imputation by adding a new column for month_test, dropping test_date 
 # and encoding missing values
 
 results <- mot %>%
-  mutate(year_test = year(test_date)) %>%
+  mutate(month_test = month(test_date)) %>%
   select(-test_date) %>%
   mutate(missing_cyl = ifelse(is.na(cylinder_capacity), 0, 1), 
          missing_mileage = ifelse(is.na(test_mileage), 0, 1))
@@ -280,20 +280,20 @@ results %>%
 ````{tabs}
 ```{code-tab} plaintext Python output
 
-+----------+------------+-------------+------------------+------------+------+-----------------+---------+-----------+---------------+
-|vehicle_id|test_mileage|postcode_area|              make|       model|colour|cylinder_capacity|year_test|missing_cyl|missing_mileage|
-+----------+------------+-------------+------------------+------------+------+-----------------+---------+-----------+---------------+
-|1131526890|      129661|           HU|               BMW|         525| BLACK|             2497|     2023|          1|              1|
-| 211522675|       26597|           IV|              FORD|      FIESTA|  BLUE|              998|     2023|          1|              1|
-|1218838379|       11803|           LA|THE EXPLORER GROUP|UNCLASSIFIED| WHITE|             1997|     2023|          1|              1|
-| 159956284|      148187|           BD|              AUDI|          A3| WHITE|             1968|     2023|          1|              1|
-| 851633977|       12915|           PO|             DACIA|      DUSTER|ORANGE|             1330|     2023|          1|              1|
-|1236900649|       22281|           WA|          VAUXHALL|       CORSA|  BLUE|             1398|     2023|          1|              1|
-|1343158317|       30140|           PH|           CITROEN|          C3|  GREY|             1199|     2023|          1|              1|
-|1221072863|       23462|            B|           PEUGEOT|        3008|  GREY|             1500|     2023|          1|              1|
-| 249708845|       26122|            S|               BMW|          X5| WHITE|             2993|     2023|          1|              1|
-| 480476389|       22007|           PA|              FORD|       C-MAX|  BLUE|             1596|     2023|          1|              1|
-+----------+------------+-------------+------------------+------------+------+-----------------+---------+-----------+---------------+
++----------+------------+-------------+------------------+------------+------+-----------------+----------+-----------+---------------+
+|vehicle_id|test_mileage|postcode_area|              make|       model|colour|cylinder_capacity|month_test|missing_cyl|missing_mileage|
++----------+------------+-------------+------------------+------------+------+-----------------+----------+-----------+---------------+
+|1131526890|      129661|           HU|               BMW|         525| BLACK|             2497|         4|          1|              1|
+| 211522675|       26597|           IV|              FORD|      FIESTA|  BLUE|              998|         4|          1|              1|
+|1218838379|       11803|           LA|THE EXPLORER GROUP|UNCLASSIFIED| WHITE|             1997|         4|          1|              1|
+| 159956284|      148187|           BD|              AUDI|          A3| WHITE|             1968|         4|          1|              1|
+| 851633977|       12915|           PO|             DACIA|      DUSTER|ORANGE|             1330|         4|          1|              1|
+|1236900649|       22281|           WA|          VAUXHALL|       CORSA|  BLUE|             1398|         4|          1|              1|
+|1343158317|       30140|           PH|           CITROEN|          C3|  GREY|             1199|         4|          1|              1|
+|1221072863|       23462|            B|           PEUGEOT|        3008|  GREY|             1500|         4|          1|              1|
+| 249708845|       26122|            S|               BMW|          X5| WHITE|             2993|         4|          1|              1|
+| 480476389|       22007|           PA|              FORD|       C-MAX|  BLUE|             1596|         4|          1|              1|
++----------+------------+-------------+------------------+------------+------+-----------------+----------+-----------+---------------+
 only showing top 10 rows
 
 ```
@@ -350,10 +350,9 @@ imputer = Imputer(
 
 mean_imputed = imputer.fit(results).transform(results)
 
-mean_imputed = mean_imputed.orderBy(["missing_cyl", "missing_mileage"])
-
-mean_imputed.show(5)
-
+mean_imputed.drop("postcode_area", "make", "model", "colour", "month_test")
+            .orderBy(["missing_cyl", "missing_mileage", "vehicle_id"])
+            .show(5)
 
 ```
 
@@ -369,7 +368,7 @@ mean_imputed <- results %>%
              output_cols = c("cyl_imputed", "mileage_imputed"), 
              strategy = "mean")
 
-mean_imputed %>% select (-postcode_area, -make, -model, -colour) %>%
+mean_imputed %>% select(-postcode_area, -make, -model, -colour, -month_test) %>%
   arrange(missing_cyl, missing_mileage) %>% 
   glimpse()
 
@@ -379,15 +378,15 @@ mean_imputed %>% select (-postcode_area, -make, -model, -colour) %>%
 ````{tabs}
 ```{code-tab} plaintext Python output
 
-+----------+------------+-------------+-------------+---------------+------+-----------------+---------+-----------+---------------+-----------------+-----------------+
-|vehicle_id|test_mileage|postcode_area|         make|          model|colour|cylinder_capacity|year_test|missing_cyl|missing_mileage|      cyl_imputed|  mileage_imputed|
-+----------+------------+-------------+-------------+---------------+------+-----------------+---------+-----------+---------------+-----------------+-----------------+
-|1172698277|        null|           LS|      PORSCHE|TAYCAN 4S 79KWH|  BLUE|             null|     2023|          0|              0|1694.370506228441|75507.64795274544|
-| 138949409|        null|           WF|      PEUGEOT|        PARTNER| WHITE|             null|     2023|          0|              0|1694.370506228441|75507.64795274544|
-|1142435961|        null|            E|           MG|    5 EXCLUSIVE|SILVER|             null|     2023|          0|              0|1694.370506228441|75507.64795274544|
-| 581858783|        null|           HR|        TESLA|        MODEL S|SILVER|             null|     2023|          0|              0|1694.370506228441|75507.64795274544|
-| 359887434|        null|           LS|MERCEDES-BENZ|       SPRINTER|SILVER|             null|     2023|          0|              0|1694.370506228441|75507.64795274544|
-+----------+------------+-------------+-------------+---------------+------+-----------------+---------+-----------+---------------+-----------------+-----------------+
++----------+------------+-----------------+-----------+---------------+-----------------+-----------------+
+|vehicle_id|test_mileage|cylinder_capacity|missing_cyl|missing_mileage|cyl_imputed      |mileage_imputed  |
++----------+------------+-----------------+-----------+---------------+-----------------+-----------------+
+|2106035   |null        |null             |0          |0              |1694.370506228441|75507.64795274544|
+|2241065   |null        |null             |0          |0              |1694.370506228441|75507.64795274544|
+|2519037   |null        |null             |0          |0              |1694.370506228441|75507.64795274544|
+|2613217   |null        |null             |0          |0              |1694.370506228441|75507.64795274544|
+|3128811   |null        |null             |0          |0              |1694.370506228441|75507.64795274544|
++----------+------------+-----------------+-----------+---------------+-----------------+-----------------+
 only showing top 5 rows
 
 ```
@@ -422,7 +421,6 @@ In the example below, we will use a window function to calculate mean values gro
 impute_cols = ["cylinder_capacity", "test_mileage"]
 
 # Use a window function to generate the grouped means for columns to be imputed
-
 group_window = Window.partitionBy("make", "model")
 
 group_means = results.withColumn("cylinder_capacity_mean", F.mean("cylinder_capacity").over(group_window)) \
@@ -438,7 +436,9 @@ group_means_impute = group_means.withColumn(
 )
 
 # Preview the output
-group_means_impute.orderBy(["missing_cyl", "missing_mileage"]).show(5)
+group_means_impute.drop("postcode_area", "make", "model", "colour", "month_test")
+                  .orderBy(["missing_cyl", "missing_mileage", "vehicle_id"])
+                  .show(5)
 
 ```
 
@@ -459,7 +459,7 @@ group_mean_impute <- group_means %>%
 
 # Preview the output         
 group_mean_impute %>% 
-  select (-postcode_area, -make, -model, -colour) %>%
+  select (-postcode_area, -make, -model, -colour, -month_test) %>%
   arrange(missing_cyl, missing_mileage, vehicle_id) %>% 
   glimpse()
 
@@ -468,15 +468,16 @@ group_mean_impute %>%
 
 ````{tabs}
 ```{code-tab} plaintext Python output
-+----------+------------+-------------+---------+--------------------+------+-----------------+---------+-----------+---------------+----------------------+-----------------+-----------------+-----------------+
-|vehicle_id|test_mileage|postcode_area|     make|               model|colour|cylinder_capacity|year_test|missing_cyl|missing_mileage|cylinder_capacity_mean|test_mileage_mean| cylinder_imputed|  mileage_imputed|
-+----------+------------+-------------+---------+--------------------+------+-----------------+---------+-----------+---------------+----------------------+-----------------+-----------------+-----------------+
-| 256443157|        null|           NE|     FORD|MUSTANG MACH-E ST...| WHITE|             null|     2023|          0|              0|                  null|         20485.25|             null|         20485.25|
-| 966488781|        null|           TA|    YADEA|             HARRIER| BLACK|             null|     2023|          0|              0|                  null|             null|             null|             null|
-| 662016819|        null|           SP|     MINI|COOPER S ELECTRIC...|  BLUE|             null|     2023|          0|              0|                  null|7529.333333333333|             null|7529.333333333333|
-| 315465802|        null|            B|WINNEBAGO|               BRAVE| WHITE|             null|     2023|          0|              0|     6671.428571428572|67912.29411764706|6671.428571428572|67912.29411764706|
-| 703102459|        null|           HU|    YADEA|             HARRIER| BLACK|             null|     2023|          0|              0|                  null|             null|             null|             null|
-+----------+------------+-------------+---------+--------------------+------+-----------------+---------+-----------+---------------+----------------------+-----------------+-----------------+-----------------+
+
++----------+------------+-----------------+-----------+---------------+----------------------+------------------+------------------+------------------+
+|vehicle_id|test_mileage|cylinder_capacity|missing_cyl|missing_mileage|cylinder_capacity_mean|test_mileage_mean |cylinder_imputed  |mileage_imputed   |
++----------+------------+-----------------+-----------+---------------+----------------------+------------------+------------------+------------------+
+|2106035   |null        |null             |0          |0              |0.0                   |31644.693553946916|0.0               |31644.693553946916|
+|2241065   |null        |null             |0          |0              |null                  |28954.636141038198|null              |28954.636141038198|
+|2519037   |null        |null             |0          |0              |634.3559469449881     |36485.393287238425|634.3559469449881 |36485.393287238425|
+|2613217   |null        |null             |0          |0              |21.095800524934383    |44618.871315738776|21.095800524934383|44618.871315738776|
+|3128811   |null        |null             |0          |0              |null                  |null              |null              |null              |
++----------+------------+-----------------+-----------+---------------+----------------------+------------------+------------------+------------------+
 only showing top 5 rows
 
 ```
@@ -534,7 +535,9 @@ group_medians_impute = group_medians_impute.withColumn(
 )
 
 # View the new dataframe
-group_medians_impute.orderBy(["missing_cyl", "missing_mileage"]).show(5)
+group_medians_impute.drop("postcode_area", "make", "model", "colour", "month_test")
+                  .orderBy(["missing_cyl", "missing_mileage", "vehicle_id"])
+                  .show(5)
 
 ```
 
@@ -554,7 +557,7 @@ group_median_impute <- left_join(results, group_medians, by = c("make", "model")
 
 # View the new dataframe
 group_median_impute %>% 
-  select (-postcode_area, -make, -model, -colour) %>%
+  select (-postcode_area, -make, -model, -colour, -month_test) %>%
   arrange(missing_cyl, missing_mileage, vehicle_id) %>%
   glimpse()
 
@@ -563,6 +566,17 @@ group_median_impute %>%
 
 ````{tabs}
 ```{code-tab} plaintext Python output
+
++----------+------------+-----------------+-----------+---------------+------------------------+-------------------+----------------+---------------+
+|vehicle_id|test_mileage|cylinder_capacity|missing_cyl|missing_mileage|cylinder_capacity_median|test_mileage_median|cylinder_imputed|mileage_imputed|
++----------+------------+-----------------+-----------+---------------+------------------------+-------------------+----------------+---------------+
+|   2106035|        null|             null|          0|              0|                     0.0|            29269.0|             0.0|        29269.0|
+|   2241065|        null|             null|          0|              0|                    null|            25271.0|            null|        25271.0|
+|   2519037|        null|             null|          0|              0|                   647.0|            30828.0|           647.0|        30828.0|
+|   2613217|        null|             null|          0|              0|                     0.0|            40093.0|             0.0|        40093.0|
+|   3128811|        null|             null|          0|              0|                    null|               null|            null|           null|
++----------+------------+-----------------+-----------+---------------+------------------------+-------------------+----------------+---------------+
+only showing top 5 rows
 
 ```
 
@@ -589,7 +603,7 @@ $ mileage_imputed          <int> 29269, 25271, 30835, 40095, NA, 29830, 29300,â€
 
 For time series data, a simple imputation method for missing values is to use the last observed value carried forward (LOCF) or the next observed value carried backwards (NOCB).
 
-In SparklyR, this can be achieved by applying the fill() function across a window function which groups the unique subject id in the dataset, in this case `vehicle_id`. We also need to order the window by date (`year_test` here) using window_order() from the dbplyr package. Fill direction can be specified as "down" (last value), "up" (next value), or "downup"/"updown" (last value if available, or next value if it is not and vice versa).
+In SparklyR, this can be achieved by applying the fill() function across a window function which groups the unique subject id in the dataset, in this case `vehicle_id`. We also need to order the window by time (`month_test` here) using window_order() from the dbplyr package. Fill direction can be specified as "down" (last value), "up" (next value), or "downup"/"updown" (last value if available, or next value if it is not and vice versa).
 
 In this example we have set the direction to "downup" so we are applying LOCF first, you can follow this by NOCB if value are still missing.
 
@@ -603,7 +617,7 @@ In this example we have set the direction to "downup" so we are applying LOCF fi
 # Apply LOCF across columns to be imputed
 impute_lcf <- results %>%
   group_by(vehicle_id) %>%
-  dbplyr::window_order(year_test) %>%
+  dbplyr::window_order(month_test) %>%
   mutate(mileage_lcf = test_mileage,
          cyl_lcf = cylinder_capacity) %>%
   sparklyr::fill(mileage_lcf, .direction = "downup") %>%
