@@ -1,4 +1,4 @@
-# Sampling Big Data for Exploratory Data Analysis
+## Sampling Big Data for Exploratory Data Analysis
 
 Generally, it is unnecessary and not good practice to carry out the majority of data analysis on a full dataset, especially if it is very large (~10 million rows+). In the exploratory data analysis (EDA), detailed analysis and development phases of your work it is suggested that you keep the size of your data as small as possible to conserve compute resource, time and money. Ideally, you should take a sample small enough that you can work in Python or R instead of PySpark and SparklyR - we recommend anything less than a few million rows. For more information on choosing the right tool please refer to our [guidance](https://gitlab-app-l-01/DAP_CATS/cdp-guidance-wiki/-/wikis/Choosing-the-right-tool-in-DAP).
 
@@ -11,7 +11,6 @@ In this section we will cover pre-sampling, sampling methods and sample verifica
 ```{code-tab} py
 from pyspark.sql import SparkSession
 import pyspark.sql.functions as F
-from pyspark.sql.window import Window
 
 spark = (SparkSession.builder
           .appName('sampling_for_eda')
@@ -161,7 +160,7 @@ mot %>%
 ```
 ````
 
-It is important to consider what data is really needed for your purpose. Filter out the unnecessary data early on to reduce the size of your dataset and therefore compute resource, time and money. For example, select which columns you need to be in your dataset. Once you know which columns you want for analysis, you won't to load in the overall dataset every time you open a session, you could just use `sparklyr::select(column_name_1, column_name_2, ..., column_name_5)` at the point of reading in your data.
+It is important to consider what data is really needed for your purpose. Filter out the unnecessary data early on to reduce the size of your dataset and therefore compute resource, time and money. For example, select which columns you need to be in your dataset. Once you know which columns you want for analysis, you won't need to load in the overall dataset every time you open a session, you could just use `sparklyr::select(column_name_1, column_name_2, ..., column_name_5)` at the point of reading in your data.
 
 ````{tabs}
 ```{code-tab} py
@@ -225,7 +224,7 @@ $ cylinder_capacity <int> 2497, 998, 1997, 1968, 1330, 1398, 1199, 1500, 2993,â€
 
 ## Pre-sampling
 
-Pre-sampling is executed before taking a sample your big data, it works to clean your data and it gives a 'quick' idea of what the data looks like and helps inform decisions on what to include in your sample. Pre-sampling involves looking at nulls, duplicates, quick summary stats. If these steps are not taken then the results ouputted from analysis on your sample could be skewed and non-representative of the big data.
+Pre-sampling is executed before taking a sample of your big data, it works to clean your data and it gives a 'quick' idea of what the data looks like and helps inform decisions on what to include in your sample. Pre-sampling involves looking at nulls, duplicates, quick summary stats. If these steps are not taken then the results ouputted from analysis on your sample could be skewed and non-representative of the big data.
 
 It is important to consider the order you execute things as this will affect your analysis. For example, if you filter out unwanted columns additional duplicates could be thrown up as you may have removed the columns with the differing data. The same goes for nulls; when you filter out unwanted columns the number of nulls could reduce as you may have removed the deciding columns and therefore when you use a function such as `na.omit()`, rows that may have been removed before filtering would actually be left in your sample. 
 
@@ -236,7 +235,7 @@ It is good practice to check the missing data and duplicate data first, do not j
 
 # Check for missing data first, do not just omit it. The example uses the test_mileage column.
 
-from pyspark.sql.functions import col, isnan
+from pyspark.sql.functions import col
 mot.filter(col("test_mileage").isNull()).count()
 
 ```
@@ -322,7 +321,7 @@ duplicates.count()
 duplicates <- mot %>%
   group_by(vehicle_id, test_date, test_mileage, postcode_area, make, colour, cylinder_capacity) %>%
   summarise(count = n()) %>%
-  filter(count > 1)
+  filter(count > 1) %>%
   arrange(desc(count))
 
 duplicates %>%
@@ -349,12 +348,12 @@ duplicates %>%
 ```{code-tab} py
 
 # If appropriate for your data, remove the duplicated rows and preview your clean dataset 
-(i.e. removal of duplicates and missing values).
+# (i.e. removal of duplicates and missing values).
 
 # If no arguments are provided dropDuplicates() works the same as distinct() 
 mot_clean = mot.dropDuplicates()
 
-mot_clean_size <- mot_clean.count()
+mot_clean_size = mot_clean.count()
 mot_clean_size 
 
 mot_clean.printSchema()
@@ -532,7 +531,7 @@ corr_matrix_df
 
 ```{code-tab} r R
 
-corr_matrix <- mot_distinct %>%
+corr_matrix <- mot_clean %>%
               ml_corr(c("vehicle_id", "test_mileage", "cylinder_capacity"))
 corr_matrix
 
@@ -556,7 +555,7 @@ cylinder_capacity	 -0.000010	 0.269720	     1.00000
          <dbl>        <dbl>             <dbl>
 1  1              -0.000128      -0.000000333
 2 -0.000128        1              0.270      
-3 -0.000000333     0.270          
+3 -0.000000333     0.270          1
 
 ```
 ````
@@ -608,20 +607,20 @@ summary_mileage
 2 mean    75561.09864907745
 3 stddev  48373.21593231007
 4 min     1
-5 max      
+5 max     999999
 
 ```
 ````
 
 ## Sampling big data for EDA
 
-Generally the larger your sample the more representative of your original population the sample is. However, when you are working with big data it is perhaps not realistic to take a 10 % or even a 1 % sample as this could still equate to upwards of 10 million rows. This would mean that Spark would still be needed for EDA, whereas ideally you want to do is use Python or R instead. 
+Generally the larger your sample the more representative of your original population the sample is. However, when you are working with big data it is perhaps not realistic to take a 10% or even a 1% sample as this could still equate to upwards of 10 million rows. This would mean that Spark would still be needed for EDA, whereas ideally you want to do is use Python or R instead. 
 
 There are two main methods you can adopt for informing your sample size: 
 1) Use a sample calculator.
 2) Input your own sample size into standard sampling methods: `.sample()` in Pyspark or `sdf_sample()` in SparklyR (please refer to out [Sampling: an overview page](https://best-practice-and-impact.github.io/ons-spark/spark-functions/sampling.html#sampling-an-overview) for more details).
 
-The worked example in this guidance will determine sample size using the sample calculator; the sample will then be taken using the standard sampling methods. The mot_clean dataset created above will be used. If you want to determine your own sample size, based on a fraction of the population, this could be simply inputted into the standard sampling methods. 
+The worked example in this guidance will determine sample size using the sample calculator; the sample will then be taken using the standard sampling methods. The `mot_clean` dataset created above will be used. If you want to determine your own sample size, based on a fraction of the population, this could be simply inputted into the standard sampling methods. 
 
 ### Using a sample calculator
 
@@ -638,9 +637,9 @@ def sample_size_finite(N, z, p, e):
   
   Parameters:
   N (int): population size
-  z (int): z score (e.g. 1.96 = 95% confidence)
-  p (int): population proportion (use 0.5 if unknown)
-  e (int): margin of error (e.g. 0.05 for 5%) 
+  z (float): z score (e.g. 1.96 = 95% confidence)
+  p (float): population proportion (0 < p < 1; use 0.5 if unknown)
+  e (float): margin of error (e.g. 0.05 for 5%; must be > 0) 
   
   Returns:
   int: adjusted sample size (rounded up)
@@ -702,7 +701,7 @@ sample_size <- sample_size_finite(mot_clean_size, 3.89, 0.5, 0.01)
 ```
 ````
 
-The sample size suggestion is approximately 0.1 % of the mot_clean dataset. Note, that additional iterations were tested and this sample size gave a good representation of categorical and numerical variables when compared to the big data **for this specific example**. 
+The sample size suggestion is approximately 0.1% of the mot_clean dataset. Note, that additional iterations were tested and this sample size gave a good representation of categorical and numerical variables when compared to the big data **for this specific example**. 
 
 ### Taking the sample 
 
@@ -715,7 +714,7 @@ First, you need to set determine `fraction`, this is needed when using sampling 
 
 fraction = sample_size/mot_clean_size
 
-mot_sample = mot.sample(withReplacement = None,
+mot_sample = mot.sample(withReplacement = False,
                        fraction = fraction, 
                        seed = 99)
 mot_sample.count()
@@ -743,7 +742,7 @@ mot_sample %>% sparklyr::sdf_nrow()
 
 ```
 ````
-Once the sample has been taken it can be exported. Bare in mind that although you have sampled your original dataframe the partition number is retained. As the sample is much smaller than the original dataframe we can re-partition the sample data using `.coalesce()` in Pyspark or `sdf_coalesce()` in SparklyR. Please remember to close the Spark session after your have exported your data.
+Once the sample has been taken it can be exported. Bear in mind that although you have sampled your original dataframe the partition number is retained. As the sample is much smaller than the original dataframe we can re-partition the sample data using `.coalesce()` in Pyspark or `sdf_coalesce()` in SparklyR. Please remember to close the Spark session after your have exported your data.
 
 ````{tabs}
 ```{code-tab} py
@@ -871,7 +870,7 @@ summary = mot_eda_sample.describe()
 print(summary)
 
 # you can also use .describe() on specified cateogircal columns
-mot['colour].describe()
+mot_eda_sample['colour].describe()
 
 ```
 
@@ -1143,16 +1142,13 @@ mean_mileage <- mot_eda_sample %>%
 17 CREAM              54211.
 18 ORANGE             53830.
 19 PINK               50784.
-20 NOT STATED          7712
+20 NOT STATED          7712.
 
 ```
 ````
 
 ````{tabs}
 ```{code-tab} py
-
-import matplotlib.pyplot as plt
-
 (mean_mileage.plot(title='mean test mileage by colour', kind='bar', x='colour', y='mean_mileage')
             .set(xlabel='colour', ylabel='mean_test_mileage'))
 
