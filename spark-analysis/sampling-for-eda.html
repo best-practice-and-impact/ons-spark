@@ -1,0 +1,1595 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Sampling Big Data for Exploratory Data Analysis &#8212; Spark at the ONS</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/accessibility.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-95MGHSRD0S"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-95MGHSRD0S');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script src="../_static/tabs.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'spark-analysis/sampling-for-eda';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Interpolation in Spark" href="interpolation.html" />
+    <link rel="prev" title="Big data workflow" href="big-data-workflow.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Spark at the ONS - Home"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="Spark at the ONS - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Introduction
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark overview</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-start.html">Getting Started with Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/when-to-use-spark.html">When To Use Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-session-guidance.html">Guidance on Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/example-spark-sessions.html">Example Spark Sessions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/spark-defaults.html">Configuration Hierarchy and <code class="docutils literal notranslate"><span class="pre">spark-defaults.conf</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/data-types.html">Data Types in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/creating-dataframes.html">Creating DataFrames Manually</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/reading-and-writing-data-spark.html">Reading and Writing Data in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-overview/data-storage.html">Data Storage</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to PySpark</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/pyspark-intro.html">Introduction to PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/returning-data.html">Returning Data from Cluster to Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyspark-intro/f-col.html">Reference columns by name: <code class="docutils literal notranslate"><span class="pre">F.col()</span></code></a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to sparklyr</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/sparklyr-intro.html">Introduction to sparklyr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sparklyr-intro/sparklyr-functions.html">Using Spark functions in sparklyr</a></li>
+
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Spark functions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/union-dataframes-with-different-columns.html">Union two DataFrames with different columns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/padding.html">Add leading zeros with <code class="docutils literal notranslate"><span class="pre">lpad()</span></code></a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/sampling.html">Sampling: an overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/pivot-tables.html">Pivot tables in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/rounding.html">Rounding differences in Python, R and Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/window-functions.html">Window Functions in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/cross-joins.html">Cross Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/arrays.html">Arrays Functions in PySpark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/date-functions.html">Date functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/writing-data.html">Writing Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/job-description-notebook.html">Set Spark Job Description</a></li>
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="../spark-functions/median.html">Median in Spark</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Understanding and Optimising Spark</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/optimisation-tips.html">Ideas for optimising Spark code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/spark-application-and-ui.html">Spark Application and UI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/groups-not-loops.html">Groups not Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/shuffling.html">Shuffling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/join-concepts.html">Optimising Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/salted-joins.html">Salted Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/partitions.html">Managing Partitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/persistence.html">Persisting in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/cache.html">Caching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/checkpoint-staging.html">Checkpoints and Staging Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/garbage-collection.html">Garbage Collection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/df-order.html">Spark DataFrames Are Not Ordered</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spark-concepts/exercises.html">Exercises</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Analysis in Spark</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="big-data-workflow.html">Big data workflow</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Sampling Big Data for Exploratory Data Analysis</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="interpolation.html">Interpolation in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logistic-regression.html">Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualisation.html">Spark and Visualisation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flags.html">Flags in Spark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bin-continuous-variable.html">Data binning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cramer_v.html">Calculating Cramér’s V from a Spark DataFrame</a></li>
+<li class="toctree-l1"><a class="reference internal" href="working-with-duplicates.html">Working with Duplicates</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Testing and Debugging</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../testing-debugging/spark-errors.html">Understanding and Handling Spark Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing-debugging/unit-testing.html">Unit Testing in Spark</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Ancillary Topics</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/module-imports.html">Naming Conflicts in Module Imports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/pydoop.html">Pydoop: HDFS to pandas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/creating-a-SQL-view-in-HDFS.html">Creating a SQL view in HDFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/pandas-udfs.html">Pandas UDFs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/r-udfs.html">R UDFs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/synthpop_with_r.html">Synthpop: Synthetic Data in R</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ancillary-topics/synthetic_data_python.html">Synthetic Data Generation in Python: Faker and Mimesis</a></li>
+</ul>
+
+        </div>
+    </nav></div>
+            <div class="bd-sidebar__bottom">
+                <!-- To handle the deprecated key -->
+                
+                <div class="navbar_extra_footer">
+                <div>
+        <p>Book version 2022.6</p>
+    </div>
+    
+                </div>
+                
+            </div>
+        </div>
+        <div id="rtd-footer-container"></div>
+    </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/best-practice-and-impact/ons-spark/issues/new?title=Issue%20on%20page%20%2Fspark-analysis/sampling-for-eda.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/spark-analysis/sampling-for-eda.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Sampling Big Data for Exploratory Data Analysis</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Sampling Big Data for Exploratory Data Analysis</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-spark-and-loading-your-data">Setting up Spark and loading your data</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pre-sampling">Pre-sampling</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-eda-of-big-data">Simple EDA of big data</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#sampling-big-data-for-eda">Sampling big data for EDA</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-a-sample-calculator">Using a sample calculator</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#taking-the-sample">Taking the sample</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#eda-on-a-big-data-sample">EDA on a big data sample</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further Resources</a></li>
+</ul>
+</li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="sampling-big-data-for-exploratory-data-analysis">
+<h1>Sampling Big Data for Exploratory Data Analysis<a class="headerlink" href="#sampling-big-data-for-exploratory-data-analysis" title="Permalink to this heading">#</a></h1>
+<p>Generally, it is unnecessary and not good practice to carry out the majority of data analysis on a full dataset, especially if it is very large (~10 million rows+). In the exploratory data analysis (EDA), detailed analysis and development phases of your work it is suggested that you keep the size of your data as small as possible to conserve compute resource, time and money. Ideally, you should take a sample small enough that you can work in Python or R instead of PySpark and SparklyR - we recommend anything less than a few million rows. For more information on choosing the right tool please refer to our <a class="reference external" href="https://gitlab-app-l-01/DAP_CATS/cdp-guidance-wiki/-/wikis/Choosing-the-right-tool-in-DAP">guidance</a>.</p>
+<p>One way to reduce your data is to take samples, especially in the EDA phase. Simply, EDA allows you to investigate your data before deep diving into further analysis, you can summarise main characteristics, assess data types, spot  anomalies and trends, test hypotheses and check assumptions; you can also determine if the techniques you want to use for further analysis are appropriate for your data. As a result, you want your sample to be as representative of the overall dataset as possible and therefore sample verification is also essential.</p>
+<p>In this section we will cover pre-sampling, sampling methods and sample verification. The worked example we will use is the DVLA MOT dataset for 2023.</p>
+<section id="setting-up-spark-and-loading-your-data">
+<h2>Setting up Spark and loading your data<a class="headerlink" href="#setting-up-spark-and-loading-your-data" title="Permalink to this heading">#</a></h2>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-0-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-0-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-0-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-0-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparkSession</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyspark.sql.functions</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+
+<span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span>
+          <span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s1">&#39;sampling_for_eda&#39;</span><span class="p">)</span>
+          <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-0-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load in required packages</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">sparklyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">pillar</span><span class="p">)</span>
+
+<span class="c1"># Set up Spark session</span>
+<span class="n">default_config</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_config</span><span class="p">()</span>
+
+<span class="n">sc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">spark_connect</span><span class="p">(</span><span class="n">master</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;local&quot;</span><span class="p">,</span>
+<span class="w">                  </span><span class="n">app_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;sampling_for_eda&quot;</span><span class="p">,</span>
+<span class="w">                  </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">default_config</span><span class="p">)</span>
+
+
+<span class="c1"># Check Spark connection is open</span>
+<span class="w">  </span><span class="nf">spark_connection_is_open</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-1-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-1-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-1-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-1-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Setting spark.hadoop.yarn.resourcemanager.principal to alexandra.snowdon
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-1-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] TRUE
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-2-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-2-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-2-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-2-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="c1"># Read in the MOT dataset</span>
+<span class="c1">#mot_path = &quot;s3a://onscdp-dev-data01-5320d6ca/bat/dapcats/mot_test_results.csv</span>
+<span class="n">mot_path</span> <span class="o">=</span> <span class="s2">&quot;C:/Users/snowda/repos/data/mot_test_results.csv&quot;</span>
+
+<span class="n">mot</span> <span class="o">=</span> <span class="p">(</span><span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="n">mot_path</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inferSchema</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+<span class="c1"># Check schema and preview data</span>
+<span class="n">mot</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-2-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Read in the MOT dataset</span>
+<span class="c1">#mot_path = &quot;s3a://onscdp-dev-data01-5320d6ca/bat/dapcats/mot_test_results.csv&quot;</span>
+<span class="n">mot_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;C:/Users/snowda/repos/data/mot_test_results.csv&quot;</span>
+<span class="n">mot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">spark_read_csv</span><span class="p">(</span>
+<span class="w">    </span><span class="n">sc</span><span class="p">,</span>
+<span class="w">    </span><span class="n">mot_path</span><span class="p">,</span>
+<span class="w">    </span><span class="n">header</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">    </span><span class="n">infer_schema</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+
+<span class="c1"># Check schema and preview data</span>
+<span class="n">pillar</span><span class="o">::</span><span class="nf">glimpse</span><span class="p">(</span><span class="n">mot</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-3-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-3-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-3-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-3-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>root
+ |-- test_id: integer (nullable = true)
+ |-- vehicle_id: integer (nullable = true)
+ |-- test_date: timestamp (nullable = true)
+ |-- test_class_id: integer (nullable = true)
+ |-- test_type: string (nullable = true)
+ |-- test_result: string (nullable = true)
+ |-- test_mileage: integer (nullable = true)
+ |-- postcode_area: string (nullable = true)
+ |-- make: string (nullable = true)
+ |-- model: string (nullable = true)
+ |-- colour: string (nullable = true)
+ |-- fuel_type: string (nullable = true)
+ |-- cylinder_capacity: integer (nullable = true)
+ |-- first_use_date: timestamp (nullable = true)
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-3-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Rows: ??
+Columns: 14
+Database: spark_connection
+$ test_id           &lt;int&gt; 1687460261, 1007821341, 1268040905, 232884115, 12510…
+$ vehicle_id        &lt;int&gt; 1131526890, 211522675, 1218838379, 159956284, 851633…
+$ test_date         &lt;date&gt; 2023-04-28, 2023-04-28, 2023-04-28, 2023-04-28, 202…
+$ test_class_id     &lt;int&gt; 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 7, 4…
+$ test_type         &lt;chr&gt; &quot;NT&quot;, &quot;NT&quot;, &quot;RT&quot;, &quot;NT&quot;, &quot;NT&quot;, &quot;NT&quot;, &quot;NT&quot;, &quot;NT&quot;, &quot;NT&quot;…
+$ test_result       &lt;chr&gt; &quot;F&quot;, &quot;P&quot;, &quot;P&quot;, &quot;F&quot;, &quot;P&quot;, &quot;P&quot;, &quot;P&quot;, &quot;P&quot;, &quot;P&quot;, &quot;P&quot;, &quot;P…
+$ test_mileage      &lt;int&gt; 129661, 26597, 11803, 148187, 12915, 22281, 30140, 2…
+$ postcode_area     &lt;chr&gt; &quot;HU&quot;, &quot;IV&quot;, &quot;LA&quot;, &quot;BD&quot;, &quot;PO&quot;, &quot;WA&quot;, &quot;PH&quot;, &quot;B&quot;, &quot;S&quot;, …
+$ make              &lt;chr&gt; &quot;BMW&quot;, &quot;FORD&quot;, &quot;THE EXPLORER GROUP&quot;, &quot;AUDI&quot;, &quot;DACIA&quot;…
+$ model             &lt;chr&gt; &quot;525&quot;, &quot;FIESTA&quot;, &quot;UNCLASSIFIED&quot;, &quot;A3&quot;, &quot;DUSTER&quot;, &quot;CO…
+$ colour            &lt;chr&gt; &quot;BLACK&quot;, &quot;BLUE&quot;, &quot;WHITE&quot;, &quot;WHITE&quot;, &quot;ORANGE&quot;, &quot;BLUE&quot;,…
+$ fuel_type         &lt;chr&gt; &quot;DI&quot;, &quot;PE&quot;, &quot;DI&quot;, &quot;DI&quot;, &quot;PE&quot;, &quot;PE&quot;, &quot;PE&quot;, &quot;DI&quot;, &quot;DI&quot;…
+$ cylinder_capacity &lt;int&gt; 2497, 998, 1997, 1968, 1330, 1398, 1199, 1500, 2993,…
+$ first_use_date    &lt;date&gt; 2002-05-27, 2016-06-27, 2017-03-03, 2010-10-30, 201…
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-4-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-4-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-4-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-4-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-4-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check the size of the data we are working with</span>
+<span class="n">mot</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-4-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check the size of the data we are working with</span>
+<span class="n">mot</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-5-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-5-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-5-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-5-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-5-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>42216721
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-5-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] 42216721
+</pre></div>
+</div>
+</div></div>
+<p>It is important to consider what data is really needed for your purpose. Filter out the unnecessary data early on to reduce the size of your dataset and therefore compute resource, time and money. For example, select which columns you need to be in your dataset. Once you know which columns you want for analysis, you won’t need to load in the overall dataset every time you open a session, you could just use <code class="docutils literal notranslate"><span class="pre">sparklyr::select(column_name_1,</span> <span class="pre">column_name_2,</span> <span class="pre">...,</span> <span class="pre">column_name_5)</span></code> at the point of reading in your data.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-6-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-6-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-6-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-6-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-6-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="c1"># Select columns we want to work with</span>
+<span class="n">mot</span> <span class="o">=</span> <span class="p">(</span><span class="n">mot</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;vehicle_id&quot;</span><span class="p">,</span> <span class="s2">&quot;test_date&quot;</span><span class="p">,</span> <span class="s2">&quot;test_mileage&quot;</span><span class="p">,</span> <span class="s2">&quot;postcode_area&quot;</span><span class="p">,</span> <span class="s2">&quot;make&quot;</span><span class="p">,</span> <span class="s2">&quot;colour&quot;</span><span class="p">,</span> <span class="s2">&quot;cylinder_capacity&quot;</span><span class="p">))</span>
+
+<span class="c1"># Change column data type or column name formatting. For example, change test_date to a date instead of an integer.</span>
+<span class="n">mot</span> <span class="o">=</span> <span class="n">mot</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;test_date&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">to_date</span><span class="p">(</span><span class="s2">&quot;test_date&quot;</span><span class="p">,</span> <span class="s2">&quot;yyyy-MM-dd&quot;</span><span class="p">))</span>
+
+<span class="c1"># Re-check the schema to ensure your changes have been made to the mot dataframe</span>
+<span class="n">mot</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-6-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-6-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Select columns we want to work with</span>
+<span class="n">mot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">mot</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">vehicle_id</span><span class="p">,</span><span class="w"> </span><span class="n">test_date</span><span class="p">,</span><span class="w"> </span><span class="n">test_mileage</span><span class="p">,</span><span class="w"> </span><span class="n">postcode_area</span><span class="p">,</span><span class="w"> </span><span class="n">make</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="p">,</span><span class="w"> </span><span class="n">cylinder_capacity</span><span class="p">)</span>
+
+<span class="c1"># Change column data type or column name formatting. For example, change test_date to a date instead of an integer.</span>
+<span class="n">mot</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">test_date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.date</span><span class="p">(</span><span class="n">test_date</span><span class="p">))</span>
+
+<span class="c1"># Re-check the schema to ensure your changes have been made to the mot dataframe</span>
+<span class="n">pillar</span><span class="o">::</span><span class="nf">glimpse</span><span class="p">(</span><span class="n">mot</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-7-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-7-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-7-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-7-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-7-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>root
+ |-- vehicle_id: integer (nullable = true)
+ |-- test_date: date (nullable = true)
+ |-- test_mileage: integer (nullable = true)
+ |-- postcode_area: string (nullable = true)
+ |-- make: string (nullable = true)
+ |-- colour: string (nullable = true)
+ |-- cylinder_capacity: integer (nullable = true)
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-7-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-7-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Rows: ??
+Columns: 7
+Database: spark_connection
+$ vehicle_id        &lt;int&gt; 1131526890, 211522675, 1218838379, 159956284, 851633…
+$ test_date         &lt;date&gt; 2023-04-28, 2023-04-28, 2023-04-28, 2023-04-28, 202…
+$ test_mileage      &lt;int&gt; 129661, 26597, 11803, 148187, 12915, 22281, 30140, 2…
+$ postcode_area     &lt;chr&gt; &quot;HU&quot;, &quot;IV&quot;, &quot;LA&quot;, &quot;BD&quot;, &quot;PO&quot;, &quot;WA&quot;, &quot;PH&quot;, &quot;B&quot;, &quot;S&quot;, …
+$ make              &lt;chr&gt; &quot;BMW&quot;, &quot;FORD&quot;, &quot;THE EXPLORER GROUP&quot;, &quot;AUDI&quot;, &quot;DACIA&quot;…
+$ colour            &lt;chr&gt; &quot;BLACK&quot;, &quot;BLUE&quot;, &quot;WHITE&quot;, &quot;WHITE&quot;, &quot;ORANGE&quot;, &quot;BLUE&quot;,…
+$ cylinder_capacity &lt;int&gt; 2497, 998, 1997, 1968, 1330, 1398, 1199, 1500, 2993,…
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+<section id="pre-sampling">
+<h1>Pre-sampling<a class="headerlink" href="#pre-sampling" title="Permalink to this heading">#</a></h1>
+<p>Pre-sampling is executed before taking a sample of your big data, it works to clean your data and it gives a ‘quick’ idea of what the data looks like and helps inform decisions on what to include in your sample. Pre-sampling involves looking at nulls, duplicates, quick summary stats. If these steps are not taken then the results ouputted from analysis on your sample could be skewed and non-representative of the big data.</p>
+<p>It is important to consider the order you execute things as this will affect your analysis. For example, if you filter out unwanted columns additional duplicates could be thrown up as you may have removed the columns with the differing data. The same goes for nulls; when you filter out unwanted columns the number of nulls could reduce as you may have removed the deciding columns and therefore when you use a function such as <code class="docutils literal notranslate"><span class="pre">na.omit()</span></code>, rows that may have been removed before filtering would actually be left in your sample.</p>
+<p>It is good practice to check the missing data and duplicate data first, do not just omit them. If you find unusual outputs you can investigate further to determine whether they are true nulls or duplicates. In the worked example on this page we will remove rows with null values and fully duplicated rows - note that this may not be appropriate for your data! Please refer to our accompanying pages which offer further guidance on how to handle <a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-analysis/interpolation.html?highlight=imputation#interpolation-in-spark">missing data with imputation</a> and how to work with <a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-analysis/working-with-duplicates.html?highlight=duplicates#working-with-duplicates">duplicates</a>.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-8-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-8-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-8-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-8-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-8-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check for missing data first, do not just omit it. The example uses the test_mileage column.</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql.functions</span><span class="w"> </span><span class="kn">import</span> <span class="n">col</span>
+<span class="n">mot</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;test_mileage&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">isNull</span><span class="p">())</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-8-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-8-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check for missing data first, do not just omit it. The example uses the test_mileage column.</span>
+
+<span class="n">mot</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">    </span><span class="nf">filter</span><span class="p">(</span><span class="nf">is.na</span><span class="p">(</span><span class="n">test_mileage</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">    </span><span class="nf">sdf_nrow</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">    </span><span class="nf">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-9-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-9-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-9-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-9-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-9-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>324129
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-9-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-9-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] 324129
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-10-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-10-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-10-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-10-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-10-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="c1"># If appropriate for your data, remove any rows with missing data under ANY variable.</span>
+<span class="n">mot</span> <span class="o">=</span> <span class="n">mot</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+<span class="n">mot</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-10-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-10-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># If appropriate for your data, remove any rows with missing data under ANY variable.</span>
+<span class="n">mot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">mot</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">na.omit</span><span class="p">()</span>
+
+<span class="w"> </span><span class="n">mot</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="nf">sdf_nrow</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-11-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-11-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-11-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-11-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-11-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>41614543
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-11-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-11-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] 41614543
+</pre></div>
+</div>
+</div></div>
+<p>There are two ways to look at duplicates in PySpark and SparklyR. You can apply <code class="docutils literal notranslate"><span class="pre">distinct()</span></code> or <code class="docutils literal notranslate"><span class="pre">sdf_distinct()</span></code> to the entire dataframe which will remove duplicate rows based on all columns and ensures each row is unique. Alternatively, <code class="docutils literal notranslate"><span class="pre">dropDuplicates()</span></code> or <code class="docutils literal notranslate"><span class="pre">sdf_drop_duplicates()</span></code> are more flexible as you can remove duplicate rows based on specific columns. Here, we will use the first options to remove fully duplicated rows from the filtered dataset. As with missing values, it is advised that you look at the duplicated data first before removing it; for this, please refer to our <a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-analysis/working-with-duplicates.html">working with duplicates guidance</a>.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-12-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-12-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-12-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-12-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-12-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="c1"># Identify duplicate data in the mot dataframe</span>
+<span class="n">duplicates</span> <span class="o">=</span> <span class="p">(</span><span class="n">mot</span>
+            <span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="n">mot</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">count</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;count&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+<span class="n">duplicates</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-12-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-12-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Identify duplicate data in the mot dataframe</span>
+<span class="n">duplicates</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">mot</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">vehicle_id</span><span class="p">,</span><span class="w"> </span><span class="n">test_date</span><span class="p">,</span><span class="w"> </span><span class="n">test_mileage</span><span class="p">,</span><span class="w"> </span><span class="n">postcode_area</span><span class="p">,</span><span class="w"> </span><span class="n">make</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="p">,</span><span class="w"> </span><span class="n">cylinder_capacity</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n</span><span class="p">())</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">filter</span><span class="p">(</span><span class="n">count</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">arrange</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">count</span><span class="p">))</span>
+
+<span class="n">duplicates</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">sdf_nrow</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-13-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-13-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-13-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-13-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-13-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>2007820
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-13-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-13-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] 2007820
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-14-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-14-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-14-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-14-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-14-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-14-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="c1"># If appropriate for your data, remove the duplicated rows and preview your clean dataset </span>
+<span class="c1"># (i.e. removal of duplicates and missing values).</span>
+
+<span class="c1"># If no arguments are provided dropDuplicates() works the same as distinct() </span>
+<span class="n">mot_clean</span> <span class="o">=</span> <span class="n">mot</span><span class="o">.</span><span class="n">dropDuplicates</span><span class="p">()</span>
+
+<span class="n">mot_clean_size</span> <span class="o">=</span> <span class="n">mot_clean</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<span class="n">mot_clean_size</span> 
+
+<span class="n">mot_clean</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
+<span class="n">mot_clean</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-14-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-14-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># If appropriate for your data, remove the duplicated rows and preview your clean dataset </span>
+<span class="p">(</span><span class="n">i.e.</span><span class="w"> </span><span class="n">removal</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">duplicates</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">missing</span><span class="w"> </span><span class="n">values</span><span class="p">)</span><span class="n">.</span>
+
+<span class="n">mot_clean</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sdf_distinct</span><span class="p">(</span><span class="n">mot</span><span class="p">)</span>
+
+<span class="n">mot_clean_size</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">mot_clean</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">                            </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">()</span>
+
+<span class="n">mot_clean_size</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="nf">print</span><span class="p">()</span>
+
+<span class="n">pillar</span><span class="o">::</span><span class="nf">glimpse</span><span class="p">(</span><span class="n">mot_clean</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-15-UHl0aG9uIE91cHV0" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-15-UHl0aG9uIE91cHV0" name="UHl0aG9uIE91cHV0" role="tab" tabindex="0">Python Ouput</button><button aria-controls="panel-15-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-15-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-15-UHl0aG9uIE91cHV0" class="sphinx-tabs-panel code-tab group-tab" id="panel-15-UHl0aG9uIE91cHV0" name="UHl0aG9uIE91cHV0" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>39601678
+
+root
+ |-- vehicle_id: integer (nullable = true)
+ |-- test_date: date (nullable = true)
+ |-- test_mileage: integer (nullable = true)
+ |-- postcode_area: string (nullable = true)
+ |-- make: string (nullable = true)
+ |-- colour: string (nullable = true)
+ |-- cylinder_capacity: integer (nullable = true)
+
+[Stage 20:&gt;                                                         (0 + 1) / 1]
++----------+----------+------------+-------------+----------+------+-----------------+
+|vehicle_id| test_date|test_mileage|postcode_area|      make|colour|cylinder_capacity|
++----------+----------+------------+-------------+----------+------+-----------------+
+| 956475846|2023-02-22|      160714|           SY|     HONDA| BLACK|             1246|
+| 797546870|2023-02-22|       92582|            N|     HONDA|SILVER|             1799|
+|1338418818|2023-02-22|      168403|           SP|     HONDA|SILVER|             1998|
+| 546006004|2023-02-22|       68636|           ME|     MAZDA|  GOLD|             1598|
+| 167704309|2023-02-22|       60569|           SE|VOLKSWAGEN|SILVER|             1198|
++----------+----------+------------+-------------+----------+------+-----------------+
+only showing top 5 rows
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-15-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-15-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] 39601678
+
+Rows: ??
+Columns: 7
+Database: spark_connection
+$ vehicle_id        &lt;int&gt; 631967128, 949451480, 1095423235, 744210417, 9604893…
+$ test_date         &lt;date&gt; 2023-04-28, 2023-04-28, 2023-04-28, 2023-04-28, 202…
+$ test_mileage      &lt;int&gt; 16393, 67737, 66732, 53372, 60347, 28404, 83208, 427…
+$ postcode_area     &lt;chr&gt; &quot;PL&quot;, &quot;LS&quot;, &quot;ST&quot;, &quot;AB&quot;, &quot;NN&quot;, &quot;BB&quot;, &quot;CO&quot;, &quot;AB&quot;, &quot;PL&quot;…
+$ make              &lt;chr&gt; &quot;HARLEY-DAVIDSON&quot;, &quot;RENAULT&quot;, &quot;AUDI&quot;, &quot;RENAULT&quot;, &quot;MI…
+$ colour            &lt;chr&gt; &quot;RED&quot;, &quot;BLACK&quot;, &quot;WHITE&quot;, &quot;SILVER&quot;, &quot;BLUE&quot;, &quot;WHITE&quot;, …
+$ cylinder_capacity &lt;int&gt; 1200, 1149, 1968, 1598, 1998, 1248, 1598, 2179, 998,…
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-16-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-16-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-16-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-16-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-16-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-16-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="c1"># It can also be useful to view distinct groups in the categorical columns across your data frame -</span>
+<span class="c1"># for example showing the distinct groups in the &#39;colour&#39; column will show you all the different colours of cars reported in the dataframe.</span>
+<span class="c1"># This could also help you spot anomalies or errors.</span>
+
+<span class="n">mot_clean</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;colour&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">distinct</span><span class="p">()</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-16-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-16-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># It can also be useful to view distinct groups in the categorical columns across your data frame, for example showing the distinct groups in the &#39;colour&#39; column will show you all the different colours of cars reported in the dataframe. This could also help you spot anomalies or errors.</span>
+<span class="n">colour</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">mot_clean</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">  </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span><span class="n">colour</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">  </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_distinct</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_collect</span><span class="p">()</span>
+
+<span class="w"> </span><span class="n">colour</span><span class="w"> </span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-17-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-17-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-17-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-17-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-17-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-17-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[Stage 11:======================================================&gt; (27 + 1) / 28]
++------------+
+|      colour|
++------------+
+|         RED|
+|       WHITE|
+|       BLACK|
+|       BEIGE|
+|       GREEN|
+|       CREAM|
+|      SILVER|
+|        GOLD|
+|      PURPLE|
+|       BROWN|
+|MULTI-COLOUR|
+|      YELLOW|
+|      MAROON|
+|  NOT STATED|
+|        GREY|
+|   TURQUOISE|
+|      BRONZE|
+|        BLUE|
+|        PINK|
+|      ORANGE|
++------------+
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-17-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-17-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">colour</span>
+<span class="c1"># A tibble: 20 × 1</span>
+<span class="w">   </span><span class="n">colour</span>
+<span class="w">   </span><span class="o">&lt;</span><span class="n">chr</span><span class="o">&gt;</span>
+<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="n">RED</span>
+<span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="n">CREAM</span>
+<span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="n">GOLD</span>
+<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="n">BROWN</span>
+<span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="n">YELLOW</span>
+<span class="w"> </span><span class="m">6</span><span class="w"> </span><span class="n">BRONZE</span><span class="w">      </span>
+<span class="w"> </span><span class="m">7</span><span class="w"> </span><span class="n">BLACK</span>
+<span class="w"> </span><span class="m">8</span><span class="w"> </span><span class="n">MULTI</span><span class="o">-</span><span class="n">COLOUR</span>
+<span class="w"> </span><span class="m">9</span><span class="w"> </span><span class="n">NOT</span><span class="w"> </span><span class="n">STATED</span>
+<span class="m">10</span><span class="w"> </span><span class="n">SILVER</span>
+<span class="m">11</span><span class="w"> </span><span class="n">PINK</span>
+<span class="m">12</span><span class="w"> </span><span class="n">PURPLE</span>
+<span class="m">13</span><span class="w"> </span><span class="n">BLUE</span>
+<span class="m">14</span><span class="w"> </span><span class="n">GREY</span>
+<span class="m">15</span><span class="w"> </span><span class="n">BEIGE</span>
+<span class="m">16</span><span class="w"> </span><span class="n">MAROON</span>
+<span class="m">17</span><span class="w"> </span><span class="n">TURQUOISE</span>
+<span class="m">18</span><span class="w"> </span><span class="n">WHITE</span>
+<span class="m">19</span><span class="w"> </span><span class="n">ORANGE</span>
+<span class="m">20</span><span class="w"> </span><span class="n">GREEN</span>
+</pre></div>
+</div>
+</div></div>
+<p>As one last check of the data before sampling it is worth checking for collinearity between the numerical variables. The outputs could induce further filtering of the data. Collinearity can cause instability within your data as it shows strong links between variables that could skew outputs of models you apply. Therefore, it is good to check this early on in your EDA; if any collinearity is revealed then you can work a solution before it causes an issue, such as removing one of the two variables that have been identified as colinear. The default of both Pyspark and SparklyR correlation functions is to use the Pearson method.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-18-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-18-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-18-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-18-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-18-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-18-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.ml.stat</span><span class="w"> </span><span class="kn">import</span> <span class="n">Correlation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.ml.feature</span><span class="w"> </span><span class="kn">import</span> <span class="n">VectorAssembler</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">input_col_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;vehicle_id&quot;</span><span class="p">,</span><span class="s2">&quot;test_mileage&quot;</span><span class="p">,</span><span class="s2">&quot;cylinder_capacity&quot;</span><span class="p">]</span>
+
+<span class="n">vector_assembler</span> <span class="o">=</span> <span class="n">VectorAssembler</span><span class="p">(</span><span class="n">inputCols</span><span class="o">=</span><span class="n">input_col_names</span><span class="p">,</span> <span class="n">outputCol</span><span class="o">=</span><span class="s2">&quot;features&quot;</span><span class="p">)</span>
+<span class="n">data_vector</span> <span class="o">=</span> <span class="n">vector_assembler</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">mot</span><span class="p">)</span>
+<span class="n">features_vector</span>  <span class="o">=</span> <span class="n">data_vector</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;features&quot;</span><span class="p">)</span>
+<span class="c1">#features_vector.show()</span>
+<span class="n">matrix</span> <span class="o">=</span> <span class="n">Correlation</span><span class="o">.</span><span class="n">corr</span><span class="p">(</span><span class="n">features_vector</span><span class="p">,</span> <span class="s2">&quot;features&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">corr_matrix</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">toArray</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="n">features</span> <span class="o">=</span> <span class="n">input_col_names</span>
+<span class="n">corr_matrix_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">corr_matrix</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">features</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">features</span><span class="p">)</span> 
+<span class="n">corr_matrix_df</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-18-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-18-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">corr_matrix</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">mot_clean</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">              </span><span class="nf">ml_corr</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;vehicle_id&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;test_mileage&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;cylinder_capacity&quot;</span><span class="p">))</span>
+<span class="n">corr_matrix</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-19-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-19-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-19-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-19-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-19-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-19-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>	                 vehicle_id	test_mileage	cylinder_capacity
+vehicle_id	        1.000000  -0.000168	    -0.00001
+test_mileage	     -0.000168	 1.000000	     0.26972
+cylinder_capacity	 -0.000010	 0.269720	     1.00000
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-19-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-19-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># A tibble: 3 × 3
+    vehicle_id test_mileage cylinder_capacity
+         &lt;dbl&gt;        &lt;dbl&gt;             &lt;dbl&gt;
+1  1              -0.000128      -0.000000333
+2 -0.000128        1              0.270      
+3 -0.000000333     0.270          1
+</pre></div>
+</div>
+</div></div>
+<section id="simple-eda-of-big-data">
+<h2>Simple EDA of big data<a class="headerlink" href="#simple-eda-of-big-data" title="Permalink to this heading">#</a></h2>
+<p>We now have a version of the big data that we can sample for EDA! At this point, some simple EDA on the big data can be useful for sample verification further on. In PySpark you can use <code class="docutils literal notranslate"><span class="pre">.summary()</span></code>to provide summary statistics on numeric and string columns; however, the statistics for a string will be based on length of the string and therefore an example is not shown here. In SparklyR you can use <code class="docutils literal notranslate"><span class="pre">sdf_describe()</span></code> which produces the same outputs.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-20-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-20-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-20-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-20-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-20-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-20-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="c1"># Summary statistics for a numeric column</span>
+<span class="n">summary_mileage</span> <span class="o">=</span> <span class="n">mot</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;test_mileage&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-20-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-20-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Summary statistics for a numeric and string column </span>
+<span class="n">summary_mileage</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sdf_describe</span><span class="p">(</span><span class="n">mot_clean</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;test_mileage&quot;</span><span class="p">)</span>
+<span class="n">summary_mileage</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-21-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-21-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-21-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-21-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-21-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-21-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>+-------+-----------------+
+|summary|     test_mileage|
++-------+-----------------+
+|  count|         39601678|
+|   mean|75561.09864907745|
+| stddev|48373.21593230994|
+|    min|                1|
+|    25%|            39360|
+|    50%|            67306|
+|    75%|           102216|
+|    max|           999999|
++-------+-----------------+
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-21-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-21-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># Source:   table&lt;`sparklyr_tmp_79c6c9f3_ad03_4a70_9e2d_7fc866427ca4`&gt; [?? x 2]
+# Database: spark_connection
+  summary test_mileage
+  &lt;chr&gt;   &lt;chr&gt;
+1 count   39601678
+2 mean    75561.09864907745
+3 stddev  48373.21593231007
+4 min     1
+5 max     999999
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+<section id="sampling-big-data-for-eda">
+<h1>Sampling big data for EDA<a class="headerlink" href="#sampling-big-data-for-eda" title="Permalink to this heading">#</a></h1>
+<p>Generally the larger your sample the more representative of your original population the sample is. However, when you are working with big data it is perhaps not realistic to take a 10% or even a 1% sample as this could still equate to upwards of 10 million rows. This would mean that Spark would still be needed for EDA, whereas ideally you want to do is use Python or R instead.</p>
+<p>There are two main methods you can adopt for informing your sample size:</p>
+<ol class="arabic simple">
+<li><p>Use a sample calculator.</p></li>
+<li><p>Input your own sample size into standard sampling methods: <code class="docutils literal notranslate"><span class="pre">.sample()</span></code> in Pyspark or <code class="docutils literal notranslate"><span class="pre">sdf_sample()</span></code> in SparklyR (please refer to out <a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-functions/sampling.html#sampling-an-overview">Sampling: an overview page</a> for more details).</p></li>
+</ol>
+<p>The worked example in this guidance will determine sample size using the sample calculator; the sample will then be taken using the standard sampling methods. The <code class="docutils literal notranslate"><span class="pre">mot_clean</span></code> dataset created above will be used. If you want to determine your own sample size, based on a fraction of the population, this could be simply inputted into the standard sampling methods.</p>
+<section id="using-a-sample-calculator">
+<h2>Using a sample calculator<a class="headerlink" href="#using-a-sample-calculator" title="Permalink to this heading">#</a></h2>
+<p>Here, a function has been created so that you can determine an ideal sample size for your data based on a number of input parameters and on a finite population. If you want to create a sample for an infinite population then simply remove the adjusted_size part of the function. To find z-score, please refer to the conversion table provided <a class="reference external" href="https://www.calculator.net/sample-size-calculator.html">here</a>.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-22-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-22-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-22-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-22-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-22-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-22-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">sample_size_finite</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+<span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Calculates a suggested sample size for a finite population.</span>
+<span class="sd">  </span>
+<span class="sd">  Parameters:</span>
+<span class="sd">  N (int): population size</span>
+<span class="sd">  z (float): z score (e.g. 1.96 = 95% confidence)</span>
+<span class="sd">  p (float): population proportion (0 &lt; p &lt; 1; use 0.5 if unknown)</span>
+<span class="sd">  e (float): margin of error (e.g. 0.05 for 5%; must be &gt; 0) </span>
+<span class="sd">  </span>
+<span class="sd">  Returns:</span>
+<span class="sd">  int: adjusted sample size (rounded up)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="c1"># Initial sample size without finite population correction</span>
+  <span class="n">n</span> <span class="o">=</span> <span class="p">(</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">p</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">p</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">e</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+  
+  <span class="c1"># Adjusted sample size for finite population</span>
+  <span class="n">adjusted_size</span> <span class="o">=</span> <span class="n">n</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">n</span> <span class="o">/</span> <span class="n">N</span><span class="p">))</span>
+  
+  <span class="c1"># Return the ceiling of the adjusted sample size.</span>
+  <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">adjusted_size</span><span class="p">)</span>
+
+<span class="c1"># We will now use the function to determine a sample size for the mot_clean data, based on a 99.99% confidence interval and 1% margin of error.</span>
+<span class="c1"># As we set the mot_clean_size variable we will input this as N.</span>
+
+<span class="n">sample_size</span> <span class="o">=</span> <span class="n">sample_size_finite</span><span class="p">(</span><span class="n">mot_clean_size</span><span class="p">,</span> <span class="mf">3.89</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+<span class="n">sample_size</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-22-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-22-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">sample_size_finite</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">#&#39; Calculates a suggested sample size for a finite population.</span>
+<span class="w">    </span><span class="c1">#&#39;</span>
+<span class="w">    </span><span class="c1">#&#39; @param N = population size</span>
+<span class="w">    </span><span class="c1">#&#39; @param z = z score (e.g. 1.96 = 95% confidence)</span>
+<span class="w">    </span><span class="c1">#&#39; @param p = population proportion (use 0.5 if unknown)</span>
+<span class="w">    </span><span class="c1">#&#39; @param e = margin of error (e.g. 0.05 for 5%)</span>
+
+<span class="w">  </span><span class="c1"># Initial sample size without finite population correction</span>
+<span class="w">  </span><span class="n">n</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="p">(</span><span class="n">z</span><span class="o">^</span><span class="m">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="m">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">p</span><span class="p">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">e</span><span class="o">^</span><span class="m">2</span><span class="p">)</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1"># Adjusted sample size for finite population</span>
+<span class="w">  </span><span class="n">adjusted_size</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="m">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">N</span><span class="p">))</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1"># Return the ceiling of the adjusted sample size. </span>
+<span class="w">  </span><span class="nf">print</span><span class="p">(</span><span class="nf">ceiling</span><span class="p">(</span><span class="n">adjusted_size</span><span class="p">))</span>
+<span class="p">}</span>
+
+<span class="c1"># We will now use the function to determine a sample size for the mot_clean data, based on a 99.99% confidence interval and 1% margin of error.</span>
+<span class="c1"># As we set the mot_clean_size variable we will input this as N.</span>
+
+<span class="n">sample_size</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sample_size_finite</span><span class="p">(</span><span class="n">mot_clean_size</span><span class="p">,</span><span class="w"> </span><span class="m">3.89</span><span class="p">,</span><span class="w"> </span><span class="m">0.5</span><span class="p">,</span><span class="w"> </span><span class="m">0.01</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-23-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-23-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-23-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-23-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-23-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-23-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>37795
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-23-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-23-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>[1] 37795
+</pre></div>
+</div>
+</div></div>
+<p>The sample size suggestion is approximately 0.1% of the mot_clean dataset. Note, that additional iterations were tested and this sample size gave a good representation of categorical and numerical variables when compared to the big data <strong>for this specific example</strong>.</p>
+</section>
+<section id="taking-the-sample">
+<h2>Taking the sample<a class="headerlink" href="#taking-the-sample" title="Permalink to this heading">#</a></h2>
+<p>Now that sample size has been determined we can input this into standard sampling functions in Pyspark or SparklyR to take the sample for EDA. For more information on using sampling functions please refer to our <a class="reference internal" href="../spark-functions/sampling.html"><span class="doc std std-doc">guidance</span></a> on this specifically.</p>
+<p>First, you need to set determine <code class="docutils literal notranslate"><span class="pre">fraction</span></code>, this is needed when using sampling functions in Pyspark and SparklyR. If you want to input your own sample size do this here, or input it directly into the sampling functions.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-24-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-24-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-24-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-24-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-24-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-24-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">fraction</span> <span class="o">=</span> <span class="n">sample_size</span><span class="o">/</span><span class="n">mot_clean_size</span>
+
+<span class="n">mot_sample</span> <span class="o">=</span> <span class="n">mot</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">withReplacement</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                       <span class="n">fraction</span> <span class="o">=</span> <span class="n">fraction</span><span class="p">,</span> 
+                       <span class="n">seed</span> <span class="o">=</span> <span class="mi">99</span><span class="p">)</span>
+<span class="n">mot_sample</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-24-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-24-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">fraction</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sample_size</span><span class="o">/</span><span class="n">mot_clean_size</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="nf">print</span><span class="p">()</span>
+<span class="n">mot_sample</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">mot_clean</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_sample</span><span class="p">(</span><span class="n">fraction</span><span class="p">,</span><span class="w"> </span><span class="n">replacement</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">,</span><span class="w"> </span><span class="n">seed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">99</span><span class="p">)</span>
+<span class="n">mot_sample</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">sparklyr</span><span class="o">::</span><span class="nf">sdf_nrow</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-25-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-25-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-25-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-25-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-25-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-25-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>39606
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-25-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-25-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>37660
+</pre></div>
+</div>
+</div></div>
+<p>Once the sample has been taken it can be exported. Bear in mind that although you have sampled your original dataframe the partition number is retained. As the sample is much smaller than the original dataframe we can re-partition the sample data using <code class="docutils literal notranslate"><span class="pre">.coalesce()</span></code> in Pyspark or <code class="docutils literal notranslate"><span class="pre">sdf_coalesce()</span></code> in SparklyR. Please remember to close the Spark session after your have exported your data.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-26-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-26-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-26-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-26-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-26-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-26-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="c1"># It is best practice to always stop a Spark session.</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-26-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-26-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">``</span>`<span class="n">r</span>
+<span class="c1">### writing out to s3 bucket</span>
+<span class="c1"># mot_sample %&gt;% </span>
+<span class="c1">#  sparklyr::sdf_coalesce(1) %&gt;%</span>
+<span class="c1">#  sparklyr::spark_write_csv(mot_sample,         </span>
+<span class="c1">#                            path = &quot;s3a://onscdp-dev-data01-5320d6ca/bat/dapcats/mot_eda_sample_0.1.csv&quot;,</span>
+<span class="c1">#                            header = TRUE, </span>
+<span class="c1">#                            mode = &#39;overwrite&#39;)</span>
+
+<span class="c1">### writing out to current directory</span>
+<span class="nf">write.csv</span><span class="p">(</span><span class="n">mot_sample</span><span class="p">,</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;mot_eda_sample_0.1.csv&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span>
+
+<span class="c1"># It is best practice to always stop a Spark session.</span>
+<span class="nf">spark_disconnect</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+<section id="eda-on-a-big-data-sample">
+<h1>EDA on a big data sample<a class="headerlink" href="#eda-on-a-big-data-sample" title="Permalink to this heading">#</a></h1>
+<p>Now you have your sample taken and exported you can carry out the EDA. As long as your sample is small enough then Spark is no longer needed and you can carry out the EDA in a normal session using Python or R. Once the data is read in, you will apply similar functions to those used on the big data above; remember that you are now working in Python or R, not Spark, therefore the functions may be different and we can produce results and plots much quicker. Also, Spark uses ‘estimations’ for results, which is not the case for Python and R.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-27-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-27-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-27-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-27-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-27-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-27-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="c1"># Read in the sample data ready for EDA</span>
+<span class="n">mot_eda_sample</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;D:/repos/ons-spark/ons-spark/data/mot_eda_sample_0.1.csv&quot;</span><span class="p">)</span>
+
+<span class="c1"># Check the schema and datatypes and preview data </span>
+<span class="n">mot_eda_sample</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+<span class="n">mot_eda_sample</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-27-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-27-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Read in the sample data ready for EDA</span>
+<span class="n">mot_eda_sample</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">read.csv</span><span class="p">(</span><span class="s">&quot;D:/repos/ons-spark/ons-spark/data/mot_eda_sample_0.1.csv&quot;</span><span class="p">)</span>
+
+<span class="c1"># Check schema and preview data</span>
+<span class="n">pillar</span><span class="o">::</span><span class="nf">glimpse</span><span class="p">(</span><span class="n">mot_eda_sample</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-28-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-28-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-28-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-28-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-28-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-28-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
+RangeIndex: 37660 entries, 0 to 37659
+Data columns (total 7 columns):
+ #   Column             Non-Null Count  Dtype 
+---  ------             --------------  ----- 
+ 0   vehicle_id         37660 non-null  int64 
+ 1   test_date          37660 non-null  object
+ 2   test_mileage       37660 non-null  int64 
+ 3   postcode_area      37660 non-null  object
+ 4   make               37660 non-null  object
+ 5   colour             37660 non-null  object
+ 6   cylinder_capacity  37660 non-null  int64 
+
+
+dtypes: int64(3), object(4)
+memory usage: 2.0+ MB
+
+   vehicle_id   test_date  test_mileage postcode_area      make  colour  cylinder_capacity
+0   936278007  2023-04-28         42480            ML    NISSAN  ORANGE                998
+1   858355106  2023-04-28         42340            NE  KAWASAKI   BLACK                553
+2  1027196372  2023-04-28         93433            GL      FIAT    BLUE               1242
+3  1397627616  2023-04-28        217404             B    TOYOTA    GREY               1798
+4   384731403  2023-05-03          4592            DN    YAMAHA   WHITE                125
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-28-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-28-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>Rows: 37,660
+Columns: 7
+$ vehicle_id        &lt;int&gt; 936278007, 858355106, 1027196372, 1397627616, 384731…
+$ test_date         &lt;chr&gt; &quot;2023-04-28&quot;, &quot;2023-04-28&quot;, &quot;2023-04-28&quot;, &quot;2023-04-2…
+$ test_mileage      &lt;int&gt; 42480, 42340, 93433, 217404, 4592, 6801, 11466, 1259…
+$ postcode_area     &lt;chr&gt; &quot;ML&quot;, &quot;NE&quot;, &quot;GL&quot;, &quot;B&quot;, &quot;DN&quot;, &quot;CT&quot;, &quot;PR&quot;, &quot;W&quot;, &quot;NW&quot;, …
+$ make              &lt;chr&gt; &quot;NISSAN&quot;, &quot;KAWASAKI&quot;, &quot;FIAT&quot;, &quot;TOYOTA&quot;, &quot;YAMAHA&quot;, &quot;T…
+$ colour            &lt;chr&gt; &quot;ORANGE&quot;, &quot;BLACK&quot;, &quot;BLUE&quot;, &quot;GREY&quot;, &quot;WHITE&quot;, &quot;SILVER&quot;…
+$ cylinder_capacity &lt;int&gt; 998, 553, 1242, 1798, 125, 765, 1078, 124, 1497, 125…
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-29-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-29-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-29-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-29-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-29-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-29-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="c1"># Again, check the data types of each column in the dataframe, change them if necessary</span>
+
+<span class="n">mot_eda_sample</span><span class="p">[</span><span class="s1">&#39;test_date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">mot_eda_sample</span><span class="p">[</span><span class="s1">&#39;test_date&#39;</span><span class="p">])</span>
+<span class="n">mot_eda_sample</span><span class="p">[</span><span class="s1">&#39;colour&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Categorical</span><span class="p">(</span><span class="n">mot_eda_sample</span><span class="p">[</span><span class="s1">&#39;colour&#39;</span><span class="p">])</span>
+<span class="n">mot_eda_sample</span><span class="p">[</span><span class="s1">&#39;make&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Categorical</span><span class="p">(</span><span class="n">mot_eda_sample</span><span class="p">[</span><span class="s1">&#39;make&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-29-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-29-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Again, check the data types of each column in the dataframe, change them if necessary</span>
+
+<span class="n">mot_eda_sample</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">mot_eda_sample</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">test_date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.Date</span><span class="p">(</span><span class="n">test_date</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">mutate_at</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;make&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;colour&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">as.factor</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<p>A good place to start with EDA is to calculate the descriptive statistics of your sample data set. This will give you a nice overview of the data. For numerical variables you get: quartiles, min, max, mean values and number of NA’s and for categorical variables you get a snippet of the count data for groups within a column. It is also a good idea to save your summary statistics as a variable, you may one to use these later for further analysis.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-30-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-30-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-30-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-30-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-30-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-30-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">summary</span> <span class="o">=</span> <span class="n">mot_eda_sample</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">summary</span><span class="p">)</span>
+
+<span class="c1"># you can also use .describe() on specified cateogircal columns</span>
+<span class="n">mot_eda_sample</span><span class="p">[</span><span class="s1">&#39;colour].describe()</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-30-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-30-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">summary</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">summary</span><span class="p">(</span><span class="n">mot_eda_sample</span><span class="p">)</span>
+<span class="n">summary</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-31-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-31-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-31-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-31-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-31-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-31-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>         vehicle_id                      test_date   test_mileage  \
+count  3.766000e+04                          37660   37660.000000   
+mean   7.491470e+08  2023-07-01 01:07:08.635156736   75578.674482   
+min    3.173600e+04            2023-01-02 00:00:00       6.000000   
+25%    3.766455e+08            2023-03-23 00:00:00   39360.750000   
+50%    7.469845e+08            2023-07-06 00:00:00   67142.500000   
+75%    1.122075e+09            2023-10-02 00:00:00  101951.250000   
+max    1.499980e+09            2023-12-31 00:00:00  999999.000000   
+std    4.327012e+08                            NaN   48708.057036   
+
+       cylinder_capacity  
+count       37660.000000  
+mean         1696.151275  
+min            48.000000  
+25%          1329.000000  
+50%          1597.000000  
+75%          1995.000000  
+max          7300.000000  
+std           595.992351 
+
+mot[&#39;colour&#39;].describe()
+count     37660
+unique       20
+top       WHITE
+freq       7366
+Name: colour, dtype: object
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-31-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-31-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>vehicle_id          test_date           test_mileage    postcode_area     
+ Min.   :3.174e+04   Min.   :2023-01-02   Min.   :     6   Length:37660      
+ 1st Qu.:3.766e+08   1st Qu.:2023-03-23   1st Qu.: 39361   Class :character  
+ Median :7.470e+08   Median :2023-07-06   Median : 67142   Mode  :character  
+ Mean   :7.491e+08   Mean   :2023-07-01   Mean   : 75579                     
+ 3rd Qu.:1.122e+09   3rd Qu.:2023-10-02   3rd Qu.:101951                     
+ Max.   :1.500e+09   Max.   :2023-12-31   Max.   :999999                     
+                                                                             
+            make           colour     cylinder_capacity
+ FORD         : 5233   WHITE  :7366   Min.   :  48     
+ VAUXHALL     : 3495   BLACK  :7110   1st Qu.:1329     
+ VOLKSWAGEN   : 3420   BLUE   :5923   Median :1597     
+ MERCEDES-BENZ: 2086   SILVER :5878   Mean   :1696     
+ BMW          : 2020   GREY   :5614   3rd Qu.:1995     
+ AUDI         : 1868   RED    :3665   Max.   :7300     
+ (Other)      :19538   (Other):2104                 
+</pre></div>
+</div>
+</div></div>
+<p>Applying correlation functions to your sample data can be used to check whether the patterns in collinearity revealed during pre-sampling have been maintained post-sampling.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-32-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-32-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-32-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-32-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-32-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-32-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">mot_eda_sample</span><span class="o">.</span><span class="n">corr</span><span class="p">(</span><span class="n">numeric_only</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-32-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-32-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">correlation_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">mot_eda_sample</span><span class="p">[,</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;vehicle_id&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;test_mileage&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;cylinder_capacity&quot;</span><span class="p">)]</span>
+<span class="nf">cor</span><span class="p">(</span><span class="n">correlation_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-33-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-33-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-33-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-33-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-33-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-33-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>                   vehicle_id  test_mileage  cylinder_capacity
+vehicle_id           1.000000      0.006824          -0.004033
+test_mileage         0.006824      1.000000           0.270533
+cylinder_capacity   -0.004033      0.270533           1.000000
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-33-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-33-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>                    vehicle_id test_mileage cylinder_capacity
+vehicle_id         1.000000000   0.00682399      -0.004033095
+test_mileage       0.006823990   1.00000000       0.270533043
+cylinder_capacity -0.004033095   0.27053304       1.000000000
+</pre></div>
+</div>
+</div></div>
+<p>To take a deeper dive into your sample data you can apply <code class="docutils literal notranslate"><span class="pre">group_by()</span></code> and <code class="docutils literal notranslate"><span class="pre">summarise()</span></code> from the <code class="docutils literal notranslate"><span class="pre">dplyr</span></code> package in R or <code class="docutils literal notranslate"><span class="pre">groupby()</span></code> and <code class="docutils literal notranslate"><span class="pre">.agg()</span></code> in Python. By using these functions you can filter your data to get the answers you want. By grouping data you can select one or more columns to group your data by, for example <code class="docutils literal notranslate"><span class="pre">colour</span></code>. Then, through summary and aggregation you can apply additional functions:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mean()</span></code> and <code class="docutils literal notranslate"><span class="pre">median()</span></code> can be used to find the center of your data</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">min()</span></code> and <code class="docutils literal notranslate"><span class="pre">max()</span></code> give the range of your data</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sd()</span></code> and <code class="docutils literal notranslate"><span class="pre">IQR()</span></code> give the spread of your data</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n()</span></code> and <code class="docutils literal notranslate"><span class="pre">n_distinct</span></code> give count data</p></li>
+<li><p>this is not an exhaustive list so if you want to know anything else use google, there is likely a function!</p></li>
+</ul>
+<p>In this first example we will determine the most popular car colour - note that the method applied here could be used for any of the categorical variables in the data frame. We will group the data by <code class="docutils literal notranslate"><span class="pre">colour</span></code>, determine the the count data, mutate this into a percentage and arrange the output data.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-34-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-34-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-34-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-34-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-34-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-34-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">colour_percentage</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">mot_eda_sample</span>
+    <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;colour&#39;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;colour&#39;</span><span class="p">,</span><span class="s1">&#39;size&#39;</span><span class="p">))</span>
+    <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">percentage</span><span class="o">=</span><span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">mot_eda_sample</span><span class="p">))</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;percentage&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">colour_percentage</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-34-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-34-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">colour_percentage</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">mot_eda_sample</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">              </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">colour</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">              </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">summarise</span><span class="p">(</span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="n">colour</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">              </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">percentage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">count</span><span class="o">/</span><span class="p">(</span><span class="nf">nrow</span><span class="p">(</span><span class="n">mot_eda_sample</span><span class="p">))</span><span class="o">*</span><span class="m">100</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">              </span><span class="nf">arrange</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">percentage</span><span class="p">))</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-35-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-35-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-35-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-35-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-35-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-35-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>          colour  count  percentage
+0          WHITE   7366   19.559214
+1          BLACK   7110   18.879448
+2           BLUE   5923   15.727562
+3         SILVER   5878   15.608072
+4           GREY   5614   14.907063
+5            RED   3665    9.731811
+6          GREEN    691    1.834838
+7         ORANGE    286    0.759426
+8         YELLOW    237    0.629315
+9          BROWN    224    0.594796
+10         BEIGE    220    0.584174
+11        PURPLE    124    0.329262
+12        BRONZE     95    0.252257
+13          GOLD     78    0.207116
+14     TURQUOISE     40    0.106213
+15          PINK     30    0.079660
+16        MAROON     29    0.077005
+17         CREAM     25    0.066383
+18  MULTI-COLOUR     24    0.063728
+19    NOT STATED      1    0.002655
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-35-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-35-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># A tibble: 20 × 3
+   colour           n percentage
+   &lt;chr&gt;        &lt;int&gt;      &lt;dbl&gt;
+ 1 WHITE         7366   19.6
+ 2 BLACK         7110   18.9
+ 3 BLUE          5923   15.7
+ 4 SILVER        5878   15.6
+ 5 GREY          5614   14.9
+ 6 RED           3665    9.73
+ 7 GREEN          691    1.83
+ 8 ORANGE         286    0.759
+ 9 YELLOW         237    0.629
+10 BROWN          224    0.595
+11 BEIGE          220    0.584
+12 PURPLE         124    0.329
+13 BRONZE          95    0.252  
+14 GOLD            78    0.207
+15 TURQUOISE       40    0.106
+16 PINK            30    0.0797
+17 MAROON          29    0.0770
+18 CREAM           25    0.0664
+19 MULTI-COLOUR    24    0.0637
+20 NOT STATED       1    0.00266
+</pre></div>
+</div>
+</div></div>
+<p>As well as calculating descriptive statistics it is important to visualize your data. Plots helps you see the spread of the data, to assess skew and to spot whether anomalies or nulls are present. In this example, we have applied <code class="docutils literal notranslate"><span class="pre">mean()</span></code> to show the mean <code class="docutils literal notranslate"><span class="pre">test_mileage</span></code> of cars grouped by <code class="docutils literal notranslate"><span class="pre">colour</span></code>. The argument <code class="docutils literal notranslate"><span class="pre">na.rm</span></code> has been added to the <code class="docutils literal notranslate"><span class="pre">summarise()</span></code> function which lets you decide whether you want NA values removing or leaving in the calculations. A bar chart has been used for visualisation.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-36-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-36-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-36-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-36-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-36-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-36-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">mean_mileage</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">mot_eda_sample</span>
+    <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;colour&#39;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">mean_mileage</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;test_mileage&#39;</span><span class="p">,</span><span class="s1">&#39;mean&#39;</span><span class="p">))</span>
+    <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;mean_mileage&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">mean_mileage</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-36-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-36-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">mean_mileage</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">mot_eda_sample</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">                </span><span class="nf">group_by</span><span class="p">(</span><span class="n">colour</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span>
+<span class="w">                </span><span class="nf">summarise</span><span class="p">(</span><span class="n">mean_mileage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">test_mileage</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">                </span><span class="nf">arrange</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">mean_mileage</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">                </span><span class="nf">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-37-UHl0aG9uIE91dHB1dA==" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-37-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-37-UiBPdXRwdXQ=" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-37-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-37-UHl0aG9uIE91dHB1dA==" class="sphinx-tabs-panel code-tab group-tab" id="panel-37-UHl0aG9uIE91dHB1dA==" name="UHl0aG9uIE91dHB1dA==" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>          colour  mean_mileage
+0         SILVER  86479.125043
+1           GOLD  83671.474359
+2         MAROON  83003.137931
+3          GREEN  81787.465991
+4          BEIGE  81261.990909
+5          WHITE  76983.261879
+6          BLACK  76787.602532
+7           BLUE  74151.760425
+8         YELLOW  73962.924051
+9          BROWN  72189.325893
+10        BRONZE  71280.473684
+11          GREY  69890.805843
+12  MULTI-COLOUR  66295.791667
+13           RED  65283.650750
+14     TURQUOISE  63925.875000
+15        PURPLE  63629.895161
+16         CREAM  54210.720000
+17        ORANGE  53829.835664
+18          PINK  50783.933333
+19    NOT STATED   7712.000000
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-37-UiBPdXRwdXQ=" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-37-UiBPdXRwdXQ=" name="UiBPdXRwdXQ=" role="tabpanel" tabindex="0"><div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span># A tibble: 20 × 2
+   colour       mean_mileage
+   &lt;chr&gt;               &lt;dbl&gt;
+ 1 SILVER             86479.
+ 2 GOLD               83671.
+ 3 MAROON             83003.
+ 4 GREEN              81787.
+ 5 BEIGE              81262.
+ 6 WHITE              76983.
+ 7 BLACK              76788.
+ 8 BLUE               74152.
+ 9 YELLOW             73963.
+10 BROWN              72189.
+11 BRONZE             71280.
+12 GREY               69891.
+13 MULTI-COLOUR       66296.
+14 RED                65284.
+15 TURQUOISE          63926.
+16 PURPLE             63630.
+17 CREAM              54211.
+18 ORANGE             53830.
+19 PINK               50784.
+20 NOT STATED          7712.
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-38-UHl0aG9u" aria-selected="true" class="sphinx-tabs-tab code-tab group-tab" id="tab-38-UHl0aG9u" name="UHl0aG9u" role="tab" tabindex="0">Python</button><button aria-controls="panel-38-Ug==" aria-selected="false" class="sphinx-tabs-tab code-tab group-tab" id="tab-38-Ug==" name="Ug==" role="tab" tabindex="-1">R</button></div><div aria-labelledby="tab-38-UHl0aG9u" class="sphinx-tabs-panel code-tab group-tab" id="panel-38-UHl0aG9u" name="UHl0aG9u" role="tabpanel" tabindex="0"><div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">mean_mileage</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;mean test mileage by colour&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;colour&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;mean_mileage&#39;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;colour&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;mean_test_mileage&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-38-Ug==" class="sphinx-tabs-panel code-tab group-tab" hidden="true" id="panel-38-Ug==" name="Ug==" role="tabpanel" tabindex="0"><div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span>
+
+<span class="nf">ggplot</span><span class="p">(</span><span class="n">mean_mileage</span><span class="p">,</span><span class="w"> </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">reorder</span><span class="p">(</span><span class="n">colour</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">mean_mileage</span><span class="p">),</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean_mileage</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_bar</span><span class="p">(</span><span class="n">stat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;identity&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;skyblue&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_text</span><span class="p">(</span><span class="nf">aes</span><span class="p">(</span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="n">mean_mileage</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">)),</span><span class="w"> </span><span class="n">vjust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">angle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">45</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span>
+<span class="w">    </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Mean Mileage by Car Colour&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Car Colour&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Mean Mileage&quot;</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">()</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme</span><span class="p">(</span><span class="n">axis.text.x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">element_text</span><span class="p">(</span><span class="n">angle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">45</span><span class="p">,</span><span class="w"> </span><span class="n">hjust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div></div>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-39-39-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-39-39-0" name="39-0" role="tab" tabindex="0">Python Output</button><button aria-controls="panel-39-39-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-39-39-1" name="39-1" role="tab" tabindex="-1">R Output</button></div><div aria-labelledby="tab-39-39-0" class="sphinx-tabs-panel" id="panel-39-39-0" name="39-0" role="tabpanel" tabindex="0"><figure class="align-default" id="meantestmileagevscolourpython">
+<a class="reference internal image-reference" href="../_images/mean_test_mileage_colour_python.png"><img alt="A diagram showing mean test mileage vs colour for 2023 MOT sample data using Python." src="../_images/mean_test_mileage_colour_python.png" style="width: 100%;" /></a>
+</figure>
+</div><div aria-labelledby="tab-39-39-1" class="sphinx-tabs-panel" hidden="true" id="panel-39-39-1" name="39-1" role="tabpanel" tabindex="0"><figure class="align-default" id="meantestmileagevscolourr">
+<a class="reference internal image-reference" href="../_images/mean_test_mileage_colour_R.png"><img alt="A diagram showing mean test mileage vs colour for 2023 MOT sample data using R." src="../_images/mean_test_mileage_colour_R.png" style="width: 100%;" /></a>
+</figure>
+</div></div>
+<section id="further-resources">
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this heading">#</a></h2>
+<p>Spark at the ONS Articles:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-analysis/big-data-workflow.html">Big data workflow</a></p></li>
+<li><p><a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-functions/sampling.html">Sampling: an overview</a></p></li>
+<li><p><a class="reference external" href="https://best-practice-and-impact.github.io/ons-spark/spark-analysis/working-with-duplicates.html">Working with duplicates</a></p></li>
+</ul>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./spark-analysis"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="big-data-workflow.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Big data workflow</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="interpolation.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Interpolation in Spark</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Sampling Big Data for Exploratory Data Analysis</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-spark-and-loading-your-data">Setting up Spark and loading your data</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pre-sampling">Pre-sampling</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-eda-of-big-data">Simple EDA of big data</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#sampling-big-data-for-eda">Sampling big data for EDA</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-a-sample-calculator">Using a sample calculator</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#taking-the-sample">Taking the sample</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#eda-on-a-big-data-sample">EDA on a big data sample</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-resources">Further Resources</a></li>
+</ul>
+</li>
+</ul>
+
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Analysis Standards and Pipelines in Quality and Improvement, Office for National Statistics
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
