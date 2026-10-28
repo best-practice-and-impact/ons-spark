@@ -158,8 +158,10 @@ The `reverse_convert.py` script does not run the `.R` or `.ipynb` files outputte
 
 ## Building the book
 
+This repository uses the Sphinx-based Jupyter Book (version 1.x), not the MyST-based Jupyter Book 2. If commands report `myst-cli` or `Unable to resolve any 'articles' to export`, install the requirements below in your active virtual environment to replace the incompatible version.
+
 1. Ensure that python is installed and you have cloned the repository as described above.
-2. Run `pip install -r requirements.txt` (it is recommended you do this within a virtual environment)
+2. Run `python -m pip install -r requirements.txt` (it is recommended you do this within a virtual environment)
 3. Run `jupyter-book clean ons-spark/` to remove any existing builds
 4. Run `jupyter-book build ons-spark/`
 5. Check the built HTML pages are correct (these will be in ons-spark/_build/html)
