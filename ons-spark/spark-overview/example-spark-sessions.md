@@ -63,7 +63,7 @@ Notes on local master settings:
 
 For laptop setup requirements, see [Getting Started with Spark](../spark-overview/spark-start).
 
-(example-spark-default-session)=
+
 ### Default session
 
 The default session is the right first choice for nearly all work on the cluster.
@@ -96,7 +96,7 @@ sc <- spark_connect(
 ```
 ````
 
-(example-spark-inspect-session)=
+
 ### How to inspect the default session
 
 The effective default session is whatever Spark and the platform inject at runtime. The most reliable method is to inspect a live session rather than copy settings from static snippets.
