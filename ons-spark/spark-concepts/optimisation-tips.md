@@ -6,17 +6,6 @@ This article was created through a combination of experience, knowledge, frustra
 - You have spent time getting to know your data, e.g. exploring [data quality dimensions](https://www.gov.uk/government/publications/the-government-data-quality-framework/the-government-data-quality-framework#Data-quality-dimensions), distributions within key variables, size of dataset on disk/memory etc.
 - You are aware of good coding practices e.g. recommendations made in the [Quality Assurance of Code for Analysis and Research](https://best-practice-and-impact.github.io/qa-of-code-guidance/intro.html) book (also known as *the Duck Book*).
 
-### Workload size guide
-
-Row count is only a rough starting signal, not a rule for choosing resources. Row width, joins, shuffles, window functions, Python UDFs, and skew can make even moderate row counts expensive. Start with the default session and assess the actual workload before tuning.
-
-| Workload band | Illustrative row count | Typical characteristics | Guidance |
-|---|---:|---|---|
-| Small | Up to ~1 million rows | Narrow tables, filters, simple aggregations, light joins | Start with the default session. Use local mode only for sampled or dummy data. |
-| Medium | ~1 million to ~50 million rows | Repeated transformations, moderate joins, standard production pipelines | Stay on the default session first. Inspect the Spark UI before changing settings. |
-| Large | ~50 million to ~200 million rows | Heavy shuffles, wide aggregations, complex joins, window functions | Default session may still work, but validate partitioning, skew, and storage behaviour early. |
-| Extra-large | 200 million+ rows, or multiple very large inputs | Severe skew, repeated shuffle stages, large intermediate outputs | Start with defaults, then add targeted settings only for observed bottlenecks. |
-
 ### Get the basics right
 
 Prefer query and data-layout improvements before changing session settings. The sections below cover reducing data volume, choosing file formats, avoiding unnecessary actions, and managing shuffles.
@@ -43,76 +32,31 @@ Prefer query and data-layout improvements before changing session settings. The 
 - Filter early, where the query semantics allow, to reduce data entering joins and other expensive stages.
 - Shuffles are expensive; avoid unnecessary redistribution with `repartition()`.
 - Consider [`.coalesce()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.coalesce.html)/[`sdf_coalesce()`](https://spark.rstudio.com/packages/sparklyr/latest/reference/sdf_coalesce.html) after substantial filtering or to reduce output file counts, but do not apply it routinely. Too few partitions can reduce parallelism.
+- AQE can combine small partitions after a shuffle, reducing the need for manual changes. See [Automatic partition sizing with AQE](../spark-concepts/partitions.html#automatic-partition-sizing-with-aqe) and [Partition count configuration](../spark-concepts/partitions.html#partition-count-configuration) for details and examples.
 
-With both `spark.sql.adaptive.enabled` and `spark.sql.adaptive.coalescePartitions.enabled` enabled, AQE can [automatically coalesce post-shuffle partitions](https://spark.apache.org/docs/latest/sql-performance-tuning.html#coalescing-post-shuffle-partitions) using runtime statistics after wide operations such as joins and aggregations. Both settings default to `true` in Spark 3.5. This reduces the need to manually lower shuffle partition counts or add `coalesce()` after a shuffle; it does not automatically control every output file count.
-
-Spark's default `spark.sql.shuffle.partitions` is `200`, although platforms can override it. With AQE, this supplies the initial shuffle partition count unless `spark.sql.adaptive.coalescePartitions.initialPartitionNum` is set. Start with the effective defaults and inspect task sizes and durations in the Spark UI before making changes. AQE needs a sufficiently large initial partition count to coalesce from; it does not make every initial count suitable.
-
-##### Partition count configuration
-
-If runtime evidence justifies a manual initial count, estimate it from the expected shuffle data volume, not simply the input file size. The following example divides an estimated 100 GB shuffle by an illustrative 0.5 GB target and rounds up. Neither this target nor the resulting count is a universal optimum or an AQE advisory-size setting; validate memory use, spill, and task duration for your workload.
-
-````{tabs}
-```{code-tab} py
-from math import ceil
-from pyspark.sql import SparkSession
-
-shuffle_data_size_gb = 100
-target_partition_size_gb = 0.5
-initial_partitions = max(1, ceil(shuffle_data_size_gb / target_partition_size_gb))
-
-spark = (
-        SparkSession.builder
-        .appName("partition-tuned-session")
-        .config("spark.sql.shuffle.partitions", str(initial_partitions))
-        .getOrCreate()
-)
-```
-
-```{code-tab} r R
-library(sparklyr)
-
-shuffle_data_size_gb <- 100
-target_partition_size_gb <- 0.5
-initial_partitions <- max(1, ceiling(shuffle_data_size_gb / target_partition_size_gb))
-
-config <- spark_config()
-config$spark.sql.shuffle.partitions <- as.character(initial_partitions)
-
-sc <- spark_connect(
-    app_name = "partition-tuned-session",
-    config = config
-)
-```
-````
-
->See guidance on [Partitioning](../spark-concepts/partitions) and [Shuffling](../spark-concepts/shuffling) for more details.
+> [!TIP]
+> See guidance on [Partitioning](../spark-concepts/partitions) and [Shuffling](../spark-concepts/shuffling) for more details.
 
 Run code on full dataset(s). Need further optimisation? Grab a link to the Spark UI.
 
 ### Investigate issues
 
-#### Troubleshooting workflow
-
-When a default session struggles:
-1. Check the Spark UI for skew, long stages, shuffle volume, failed executors, and storage growth.
-2. Check the Spark properties shown in the Spark UI's `Environment` tab, or print the running session's configuration using [How to inspect the default session](../spark-overview/example-spark-sessions.html#example-spark-inspect-session). For SQL settings changed at runtime, also check the value through `spark.conf.get("setting.name")` in PySpark or `SET setting.name` in Spark SQL; these changes may not appear in the Environment tab.
-3. Classify the issue: memory pressure, local disk pressure, skew, partition count, or Python overhead. Use the execution plan and stage/task evidence to identify the cause.
-4. Prefer query or data-layout improvements first. If a configuration change is needed, change one setting at a time for the observed symptom.
-5. Re-run a comparable workload and confirm the effect before keeping changes.
-
-#### 5. Investigate wide operations in the Spark UI
+#### 5. Investigate and characterise the issue
+- Check the Spark UI for uneven task sizes (skew), data spilling from memory to disk, long stages, large shuffles, failed executors, and growing storage use. Use the task details to check whether the problem is related to memory, disk space, partition count, or time spent running Python code.
+- Check the Spark properties shown in the Spark UI's `Environment` tab, or use [How to inspect the default session](../spark-overview/example-spark-sessions.html#example-spark-inspect-session). For SQL settings changed while the session is running, use `spark.conf.get("setting.name")` in PySpark or `SET setting.name` in Spark SQL; these changes may not appear in the Environment tab.
 - Set the [job description](../spark-concepts/partitions.html#run-the-jobs-and-investigate-ui) in the code to help identify actions that relate to jobs in the UI.
-- Look for task skew and spill to disk.
-- Do a group by and count of join keys or window keys to look for the skew in the data.
+- For skew, compare task sizes in the Spark UI or group by the join or window keys and count the rows for each key.
+- Try improving the query or how the data is stored before changing session settings. If a setting needs changing, change one at a time and re-run the same workload to check whether it helps.
 
->See articles on [Spark Application and UI](../spark-concepts/spark-application-and-ui.html#spark-application-overview) and [Partitions](../spark-concepts/partitions.html#intermediate-partitions-in-wide-operations) for more details.
+> [!TIP]
+> See articles on [Spark Application and UI](../spark-concepts/spark-application-and-ui.html#spark-application-overview) and [Partitions](../spark-concepts/partitions.html#intermediate-partitions-in-wide-operations) for more details.
 
 #### 6. How is Spark processing the data?
 - Check the execution plan using [`.explain()`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.explain.html)/[`explain()`](https://dplyr.tidyverse.org/reference/explain.html).
 - Find the relevant SQL DAG in the UI.
 - Complex plans can be simplified using persistence 
 
+> [!TIP]
 > See articles on [Caching](../spark-concepts/cache), [Persistence](../spark-concepts/persistence), and [Checkpointing and staging](../spark-concepts/checkpoint-staging) for the appropriate way to break or reuse lineage.
 
 ### Optimise
@@ -134,15 +78,26 @@ When a default session struggles:
 - Keep track of executor storage and empty when a cache is not needed.
 - Warning: caching an object can force the entire object to be materialised, even if only parts of it are used in your code (e.g. if you filter a persisted object). This can increase run-time over not using persist.
 
+> [!TIP]
 > See article on [Persistence in Spark](../spark-concepts/persistence) for more details.
 
 #### 10. Spark session parameters
 
 Add extra settings only when they address an observed problem, rather than copying a session template. Review the [configuration hierarchy](../spark-overview/spark-defaults) and follow platform guidance for settings controlled by the cluster.
 
->[!TIP]
+>[!NOTE]
 >When overriding a default, add a comment beside the setting explaining the observed problem, why the chosen value helps, and any platform-specific assumptions. Revisit the override when the workload or platform changes.
 
+##### Workload size guide
+
+Row count is only a rough guide, not a rule for choosing resources. The number of columns, joins, shuffles, window functions, Python UDFs, and uneven group sizes can make even smaller datasets slow to process. Start with the default session and check how it handles your work before changing settings.
+
+| Workload band | Illustrative row count | Typical characteristics | Guidance |
+|---|---:|---|---|
+| Small | Up to ~1 million rows | Narrow tables, filters, simple aggregations, light joins | Start with the default session. Use local mode only for sampled or dummy data. |
+| Medium | ~1 million to ~50 million rows | Repeated transformations, moderate joins, standard production pipelines | Stay on the default session first. Inspect the Spark UI before changing settings. |
+| Large | ~50 million to ~200 million rows | Heavy shuffles, wide aggregations, complex joins, window functions | Default session may still work, but check partitioning, uneven group sizes, and storage use early. |
+| Extra-large | 200 million+ rows, or multiple very large inputs | Very uneven group sizes, repeated shuffle stages, large intermediate outputs | Start with defaults, then change settings only for problems you have observed. |
 
 ##### Ad hoc settings for special cases
 
@@ -156,10 +111,7 @@ Add extra settings only when they address an observed problem, rather than copyi
 
 Do not treat these as universal values or guaranteed fixes. Validate each change against the same workload and keep only changes with a demonstrated benefit.
 
-- Explore some [Spark session parameters](../spark-overview/spark-session-guidance) to help tune the session to the particular job at hand.
-- For troublesome joins, grouping or windows with a small number of larger keys try a smaller number of larger executors.
-- For troublesome joins, grouping or windows with a large number of smaller keys try a larger number of smaller executors.
-
+>[!TIP]
 > See [Partitioning](../spark-concepts/partitions) for partition sizing and [Garbage collection](../spark-concepts/garbage-collection) for the executor-sizing trade-offs.
 
 ### Further Resources

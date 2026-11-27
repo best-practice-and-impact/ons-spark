@@ -1077,11 +1077,59 @@ More importantly it's good practice to be aware of the size of the DataFrame and
 A more accurate answer depends on a variety of factors including: the size of the data, data types, distributions within the data, type of processing and other properties defined in the [`SparkSession`](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.html). Here are some tips for quick wins:
 
 - As suggested above, the first step is getting the code right. Only look to optimise if you're running into performance issues.
-- Decreasing the `spark.sql.shuffle.partitions` parameter is sensible for smaller datasets.
+- For smaller datasets, check whether AQE is already combining small shuffle partitions before decreasing `spark.sql.shuffle.partitions`; see below.
 - If you search for an answer on the web, you might find the optimum size for a Spark partitions is 100-200MB. In practice, this is impossible to keep track of in an analysis script, but it gives you an idea of what is considered big or small.
 - It makes sense for the number of partitions to be some multiple of the number of cores in the Spark session. This will help to avoid redundant cores.
 
 Remember, it's only worth experimenting on the *optimum* number if you have a real performance issue. 
+
+#### Automatic partition sizing with AQE
+
+Adaptive Query Execution (AQE) can [combine small partitions after a shuffle](https://spark.apache.org/docs/latest/sql-performance-tuning.html#coalescing-post-shuffle-partitions), using information collected while the job runs. This applies after wide operations such as joins and aggregations. It requires both `spark.sql.adaptive.enabled` and `spark.sql.adaptive.coalescePartitions.enabled` to be enabled. Both default to `true` in Spark 3.5, but your platform may use different settings.
+
+This reduces the need to manually lower the shuffle partition count or add `coalesce()` after a shuffle. It does not control the number of files written in every case. The earlier examples show fixed shuffle partition counts; with AQE enabled, you may see fewer partitions.
+
+Spark's default `spark.sql.shuffle.partitions` is `200`, although platforms can override it. With AQE, this is the starting shuffle partition count unless `spark.sql.adaptive.coalescePartitions.initialPartitionNum` is set. Check the settings in your session and look at task sizes and durations in the Spark UI before making changes. AQE needs enough starting partitions to combine; a starting count that is too low can still cause problems.
+
+#### Partition count configuration
+
+If the Spark UI shows that you need to change the starting count, estimate it from the amount of data being shuffled, not just the input file size. This example divides an estimated 100 GB shuffle by a target of 0.5 GB per partition and rounds up.
+
+These are example values, not recommended settings for every job. The 0.5 GB target is only used for this calculation; it does not set AQE's target partition size. Check memory use, spill to disk, and task duration to see whether the count works for your data.
+
+````{tabs}
+```{code-tab} py
+from math import ceil
+from pyspark.sql import SparkSession
+
+shuffle_data_size_gb = 100
+target_partition_size_gb = 0.5
+initial_partitions = max(1, ceil(shuffle_data_size_gb / target_partition_size_gb))
+
+spark = (
+        SparkSession.builder
+        .appName("partition-tuned-session")
+        .config("spark.sql.shuffle.partitions", str(initial_partitions))
+        .getOrCreate()
+)
+```
+
+```{code-tab} r R
+library(sparklyr)
+
+shuffle_data_size_gb <- 100
+target_partition_size_gb <- 0.5
+initial_partitions <- max(1, ceiling(shuffle_data_size_gb / target_partition_size_gb))
+
+config <- spark_config()
+config$spark.sql.shuffle.partitions <- as.character(initial_partitions)
+
+sc <- spark_connect(
+    app_name = "partition-tuned-session",
+    config = config
+)
+```
+````
 
 ### Partitions when Unioning or Binding DataFrames
 
